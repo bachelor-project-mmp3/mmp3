@@ -6,6 +6,7 @@
 
 - create .env file and add database url from heroku postgresql credentials
   DATABASE_URL=....
+- run `npm install`
 - then run `npm run dev`
 
 # DB schema
