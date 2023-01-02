@@ -1,8 +1,11 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 const Header: React.FC = () => {
+  const { data: session, status } = useSession()
+
   const router = useRouter();
   const isActive: (pathname: string) => boolean = (pathname) =>
     router.pathname === pathname;
@@ -14,6 +17,13 @@ const Header: React.FC = () => {
           Feed
         </a>
       </Link>
+
+      <p>{status}</p>
+      { session != null ? <p>{session.user.name}, {session.user.email}</p> : null }
+
+      <button onClick={() => signIn('fhs')}>Sign in with FH Login</button>
+      <button onClick={() => signOut()}>Sign out</button>
+      
       <style jsx>{`
         .bold {
           font-weight: bold;
