@@ -11,11 +11,21 @@ datasource db {
 }
 
 model Event {
-  id       String  @id @default(cuid())
-  title    String
-  info     String?
-  host     User?   @relation(fields: [authorId], references: [id])
-  authorId String?
+  id                  String   @id @default(cuid())
+  title               String   @db.VarChar(100)
+  info                String?  @db.Text
+  host                User?    @relation(fields: [authorId], references: [id])
+  authorId            String?
+  createdAt           DateTime @default(now()) @map(name: "created_at")
+  updatedAt           DateTime @updatedAt @map(name: "updated_at")
+  date                DateTime
+  timeLimit           DateTime
+  dish                String   @db.VarChar(100)
+  costs               Float
+  capacity            Int
+  ingredients         String?  @db.Text
+  image               String
+  currentParticipants Int      @default(1)
 }
 
 model User {
