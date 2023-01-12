@@ -26,6 +26,8 @@ model Event {
   ingredients         String?  @db.Text
   image               String
   currentParticipants Int      @default(1)
+
+  @@map(name: "events")
 }
 
 model User {
