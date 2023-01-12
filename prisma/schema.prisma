@@ -29,12 +29,30 @@ model Event {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String?  @unique
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
-  events    Event[]
+  id         String     @id @default(cuid())
+  firstName  String     @db.VarChar(50)
+  lastName   String     @db.VarChar(50)
+  email      String?    @unique
+  livingType LivingType @default(DORMITORY)
+  city       String     @db.VarChar(50)
+  zip        Int?
+  uptown     String     @db.VarChar(50)
+  street     String?    @db.VarChar(100)
+  dormitory  String?    @db.VarChar(100)
+  roomNumber String?    @db.VarChar(10)
+  image      String?
+  interests  String?    @db.Text
+  phone      String?    @db.VarChar(15)
+  instagram  String?    @db.VarChar(50)
+  study      String     @db.VarChar(100)
+  createdAt  DateTime   @default(now()) @map(name: "created_at")
+  updatedAt  DateTime   @updatedAt @map(name: "updated_at")
+  events     Event[]
 
   @@map(name: "users")
+}
+
+enum LivingType {
+  PRIVATE
+  DORMITORY
 }

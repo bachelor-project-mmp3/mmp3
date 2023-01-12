@@ -8,7 +8,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const events = await prisma.event.findMany({
     include: {
       host : {
-        select: { name: true },
+        select: { firstName: true },
       },
     },
   });

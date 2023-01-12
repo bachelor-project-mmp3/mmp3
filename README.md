@@ -4,16 +4,18 @@
 
 # Run Project
 
-- create .env file and add database url from heroku postgresql credentials
-  DATABASE_URL=....
+- create .env file with following variables
+  DATABASE_URL=.... (your local postgresql database)
+  CLIENT_ID=....
+  CLIENT_SECRET=....
+  NEXTAUTH_URL="http://localhost:3000/"
+  NEXTAUTH_SECRET=....
 - run `npm install`
 - then run `npm run dev`
 
 # DB schema
 
 - in /prisma/schema.prisma we will define our database models
-- already started with user and events (not completed yet)
-- after updating schema we must run `npx prisma db push` to push db changes
 - run `npx prisma studio` to add new data to database (currently users and events)
 
 - For docomentation (CRUD, migrations...) visit https://www.prisma.io/docs/concepts/components/prisma-client
@@ -23,7 +25,15 @@
 `prisma migrate dev` for local migrations
 
 - add field to schema.prisma and run `npx prisma migrate dev --name added_defined_fields_to_event`
+
+### Production migrations
+
+First setup Heroku connection:
+
 - for migrations in production login in terminal to heroku `heroku login`
+- add git remote to heroku `heroku git:remote --app teamspaghetti`
+
+After pushing changes to main branch, run `git push heroku HEAD:master`
 
 # Create first api route example
 

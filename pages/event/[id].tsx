@@ -11,7 +11,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     },
     include: {
       host: {
-        select: { name: true },
+        select: { firstName: true },
       },
     },
   });
@@ -26,7 +26,7 @@ const Post: React.FC<EventProps> = (props) => {
       <div>
         <h1>Event Details</h1>
         <h2>{props?.title}</h2>
-        <p>Host: {props?.host?.name}</p>
+        <p>Host: {props?.host?.firstName}</p>
         <p>Infos: {props?.info}</p>
       </div>
       <style jsx>{`

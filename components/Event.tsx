@@ -6,13 +6,13 @@ export type EventProps = {
   title: string;
   info?: string;
   host: {
-    name: string;
+    firstName: string;
     email: string;
   } | null;
 };
 
 const Event: React.FC<{ event: EventProps }> = ({ event }) => {
-  const hostName = event.host.name ? event.host.name : "Unknown host";
+  const hostName = event.host.firstName ? event.host.firstName : "Unknown host";
   return (
     <div onClick={() => Router.push("/event/[id]", `/event/${event.id}`)}>
       <h2>{event.title}</h2>
