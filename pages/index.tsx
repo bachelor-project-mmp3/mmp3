@@ -13,7 +13,7 @@ export const getStaticProps: GetStaticProps = async () => {
     },
   });
   return {
-    props: { events },
+    props: { events: JSON.parse(JSON.stringify(events)) },
     revalidate: 10,
   };
 };
