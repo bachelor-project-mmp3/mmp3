@@ -35,6 +35,10 @@ First setup Heroku connection:
 
 After pushing changes to main branch, run `git push heroku HEAD:master`
 
+## Seeds
+
+- run `npx prisma db seed` locally
+
 # Create first api route example
 
 - for create, update or delete a event via backend route, look at example of https://vercel.com/guides/nextjs-prisma-postgres

@@ -26,6 +26,7 @@ model Event {
   ingredients         String?        @db.Text
   image               String
   currentParticipants Int            @default(1)
+  cancelled           Boolean        @default(false)
   requests            Request[]
   reviews             Review[]
   notifications       Notification[]
