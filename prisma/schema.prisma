@@ -27,6 +27,7 @@ model Event {
   image               String
   currentParticipants Int       @default(1)
   requests            Request[]
+  reviews             Review[]
 
   @@map(name: "events")
 }
@@ -52,6 +53,7 @@ model User {
   updatedAt  DateTime   @updatedAt @map(name: "updated_at")
   events     Event[]
   requests   Request[]
+  reviews    Review[]
 
   @@map(name: "users")
 }
@@ -77,4 +79,18 @@ enum RequestStatus {
   ACCEPTED
   DECLINED
   CANCELLED
+}
+
+model Review {
+  id          String  @id @default(cuid())
+  dish        Int
+  environment Int
+  total       Int
+  text        String? @db.Text
+  User        User?   @relation(fields: [userId], references: [id])
+  userId      String?
+  Event       Event?  @relation(fields: [eventId], references: [id])
+  eventId     String?
+
+  @@map(name: "reviews")
 }
