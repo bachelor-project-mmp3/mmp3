@@ -1,7 +1,7 @@
 name: email-test
 on:
   schedule:
-    - cron: "50 15 * * *"
+    - cron: "20 18 * * *"
 jobs:
   cron:
     runs-on: ubuntu-latest
@@ -9,5 +9,5 @@ jobs:
       - name: Call our API route Test
         run: |
           curl --request POST \
-          --url '${{ env.BASE_URL }}/api/cron' \
-          --header 'Authorization: Bearer ${{ secrets.API_SECRET_KEY }}'
+          --url "${{ env.BASE_URL }}/api/cron" \
+          --header "Authorization: Bearer ${{ secrets.API_SECRET_KEY }}"
