@@ -1,7 +1,7 @@
-name: daily-cron
+name: email-test
 on:
   schedule:
-    - cron: "0 1 * * *"
+    - cron: "35 16 * * *"
 jobs:
   cron:
     runs-on: ubuntu-latest
