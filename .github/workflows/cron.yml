@@ -1,13 +1,11 @@
 name: email-test
 on:
   schedule:
-    - cron: "20 18 * * *"
+    - cron: "45 19 * * *"
 jobs:
   cron:
     runs-on: ubuntu-latest
     steps:
       - name: Call our API route Test
         run: |
-          curl --request POST \
-          --url "${{ env.BASE_URL }}/api/cron" \
-          --header "Authorization: Bearer ${{ secrets.API_SECRET_KEY }}"
+          curl --request POST --url "https://mmp3.vercel.app/api/cron" --header "Authorization: Bearer ${{ secrets.API_SECRET_KEY }}"
