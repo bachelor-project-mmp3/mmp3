@@ -40,15 +40,17 @@ export default async function handler(
         }
 
         transporter.sendMail(mailData, function (err, info) {
-          if(err)
+          if(err){
             console.log(err)
-          else
+            res.status(200).json({ statusCode: 200, success: false, message:err })
+          }
+          else{
             console.log(info)
+            res.status(200).json({ statusCode: 200, success: true })
+          }
         })
-
-        res.status(200);
       } else {
-        res.status(401);
+        res.status(401).json({ statusCode: 401, success: false });
       }
     } catch (err) {
       res.status(500).json({ statusCode: 500, message: err.message });

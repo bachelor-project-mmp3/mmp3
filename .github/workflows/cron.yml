@@ -1,7 +1,7 @@
 name: email-test
 on:
   schedule:
-    - cron: "40 10 * * *"
+    - cron: "45 19 * * *"
 jobs:
   cron:
     runs-on: ubuntu-latest
