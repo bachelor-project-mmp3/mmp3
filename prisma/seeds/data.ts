@@ -46,7 +46,6 @@ export const events = [
         info: 'Drei Gänge Menü, also nehmt viel Hunger mit! Nicht für Vegetarier geeignet.',
         date: '2023-03-30T18:00:00.927Z',
         timeLimit: '2023-03-29T18:00:00.927Z',
-        dish: 'Pizza Salami, Tiramisu',
         costs: 4.5,
         capacity: 5,
         image: 'default image',
@@ -58,7 +57,6 @@ export const events = [
         info: 'Achtung, scharf',
         date: '2022-12-30T17:00:00.927Z',
         timeLimit: '2022-12-29T17:00:00.927Z',
-        dish: 'Massam Chicken Curry mit Pitabrot',
         costs: 5,
         capacity: 4,
         image: 'default image',
@@ -71,7 +69,6 @@ export const events = [
         info: 'Frisch gerollt und vielfältig',
         date: '2023-02-20T19:00:00.927Z',
         timeLimit: '2023-02-19T19:00:00.927Z',
-        dish: 'Lachs Nigiri, Avocade Maki, Gurken Maki, Inside-Out Rolls',
         costs: 7.5,
         capacity: 3,
         image: 'default image',
@@ -83,13 +80,47 @@ export const events = [
         info: 'Tracht ist Pflicht! Nüchtern bleibt hier keiner, gerne Weißbier mitbringen.',
         date: '2023-05-01T11:00:00.927Z',
         timeLimit: '2023-04-30T11:00:00.927Z',
-        dish: 'Weißwurst mit süßen Senf und Brezen',
         costs: 4,
         capacity: 6,
         image: 'default image',
         authorId: 'clcudeerp0000q4fwzv4db5c8'
     }
 ]
+
+export const dishes = [
+    {
+        id:'clcudeesd0006q4fwxxxq4o2ls',
+        title: "Pizza Salami",
+        description: "Fluffiger Teig mit gutem Belag",
+        link: "https://www.google.at",
+        eventId: 'clcudeesb0003q4fwnnj0difb',
+    },
+    {
+        id:'clcudeesd0006q4fwxyzq4o2ls',
+        title: "Tiramisu",
+        description: "Achtung Rum enthalten",
+        eventId: 'clcudeesb0003q4fwnnj0difb',
+    },
+    {
+        id:'clcudeesd0006q4fwzzzq4o2ls',
+        title: "Gemüse Curry",
+        description: "Zuchini, Tomaten und Kartoffeln",
+        eventId: 'clcudeesd0004q4fwlctptbbm',
+    },
+    {
+        id:'aaaudeesd0006q4fwzzzq4o2ls',
+        title: "Sushi",
+        description: "Avocade, Inside-Out Gurke, Lachs-Nigiri",
+        eventId: 'clcudeesd0005q4fwhbm8zdef',
+    },
+    {
+        id:'bbbudeesd0006q4fwzzzq4o2ls',
+        title: "Weißwurst mit süßen Senf und Brezen",
+        description: "Tracht ist Pflicht! Nüchtern bleibt hier keiner, gerne Weißbier mitbringen.",
+        eventId: 'clcudeesd0006q4fwhmq4o2ls',
+    },
+]
+
 
 export const requests = [
     {

@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { users, events, requests, reviews, notifications } from './data';
+import { users, events, requests, reviews, notifications, dishes } from './data';
 
 const prisma = new PrismaClient()
 
@@ -18,6 +18,9 @@ async function main() {
 
   await prisma.notification.deleteMany()
   console.log('Deleted records in notifications table')
+
+  await prisma.dish.deleteMany()
+  console.log('Deleted records in dishes table')
 
   await prisma.user.createMany({
     data: users,
@@ -43,6 +46,11 @@ async function main() {
     data: notifications,
   });
   console.log('Created notifications successfully')
+
+  await prisma.dish.createMany({
+    data: dishes,
+  });
+  console.log('Created disehs successfully')
 }
 main()
   .then(async () => {
