@@ -22,7 +22,7 @@
 
 ## Migrations
 
-`prisma migrate dev` for local migrations
+`npx prisma migrate dev` for local migrations
 
 - add field to schema.prisma and run `npx prisma migrate dev --name added_defined_fields_to_event`
 
