@@ -18,8 +18,6 @@
 - in /prisma/schema.prisma we will define our database models
 - run `npx prisma studio` to add new data to database (currently users and events)
 
-- import seed manually: `npx prisma db seed`
-
 - For docomentation (CRUD, migrations...) visit https://www.prisma.io/docs/concepts/components/prisma-client
 
 ## Migrations
