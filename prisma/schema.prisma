@@ -58,14 +58,14 @@ model User {
 }
 
 model Request {
-  id            String          @id @default(cuid())
-  status        RequestStatus   @default(PENDING)
-  User          User?           @relation(fields: [userId], references: [id])
-  userId        String?
-  Event         Event?          @relation(fields: [eventId], references: [id])
-  eventId       String?
-  createdAt     DateTime        @default(now()) @map(name: "created_at")
-  updatedAt     DateTime        @updatedAt @map(name: "updated_at")
+  id        String        @id @default(cuid())
+  status    RequestStatus @default(PENDING)
+  User      User?         @relation(fields: [userId], references: [id])
+  userId    String?
+  Event     Event?        @relation(fields: [eventId], references: [id])
+  eventId   String?
+  createdAt DateTime      @default(now()) @map(name: "created_at")
+  updatedAt DateTime      @updatedAt @map(name: "updated_at")
 
   @@map(name: "requests")
 }
@@ -78,32 +78,32 @@ enum RequestStatus {
 }
 
 model Review {
-  id            String         @id @default(cuid())
-  dish          Int
-  environment   Int
-  total         Int
-  text          String?        @db.Text
-  User          User?          @relation(fields: [userId], references: [id])
-  userId        String?
-  Event         Event?         @relation(fields: [eventId], references: [id])
-  eventId       String?
-  createdAt     DateTime       @default(now()) @map(name: "created_at")
-  updatedAt     DateTime       @updatedAt @map(name: "updated_at")
+  id          String   @id @default(cuid())
+  dish        Int
+  environment Int
+  total       Int
+  text        String?  @db.Text
+  User        User?    @relation(fields: [userId], references: [id])
+  userId      String?
+  Event       Event?   @relation(fields: [eventId], references: [id])
+  eventId     String?
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
 
   @@map(name: "reviews")
 }
 
 model Notification {
-  id            String           @id @default(cuid())
-  message       String           @db.Text
-  seen          Boolean          @default(false)
-  type          NotificationType
-  User          User?            @relation(fields: [userId], references: [id])
-  userId        String?
-  Event         Event?           @relation(fields: [eventId], references: [id])
-  eventId       String?
-  createdAt     DateTime         @default(now()) @map(name: "created_at")
-  updatedAt     DateTime         @updatedAt @map(name: "updated_at")
+  id        String           @id @default(cuid())
+  message   String           @db.Text
+  seen      Boolean          @default(false)
+  type      NotificationType
+  User      User?            @relation(fields: [userId], references: [id])
+  userId    String?
+  Event     Event?           @relation(fields: [eventId], references: [id])
+  eventId   String?
+  createdAt DateTime         @default(now()) @map(name: "created_at")
+  updatedAt DateTime         @updatedAt @map(name: "updated_at")
 
   @@map(name: "notifications")
 }
