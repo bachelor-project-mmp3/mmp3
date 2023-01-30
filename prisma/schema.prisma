@@ -31,8 +31,15 @@ model Event {
   notifications       Notification[]
   menu                Dish[]
   recipeLink          String?
+  status              EventStatus    @default(UPCOMING)
 
   @@map(name: "events")
+}
+
+enum EventStatus {
+  UPCOMING
+  OVER
+  CANCELLED
 }
 
 model Dish {
