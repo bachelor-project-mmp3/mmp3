@@ -4,7 +4,7 @@ import Layout from "../components/Layout"
 import Event, { EventProps } from "../components/Event"
 import prisma from '../lib/prisma';
 
-/*export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const events = await prisma.event.findMany({
     include: {
       host : {
@@ -16,23 +16,23 @@ import prisma from '../lib/prisma';
     props: { events: JSON.parse(JSON.stringify(events)) },
     revalidate: 10,
   };
-};*/
+};
 
 type Props = {
   events: EventProps[]
 }
 
-const Blog: React.FC = () => {
+const Blog: React.FC<Props> = (props) => {
   return (
     <Layout>
       <div className="page">
         <h1>Events</h1>
         <main>
-          {/*props.events.map((event) => (
+          {props.events.map((event) => (
             <div key={event.id} className="post">
               <Event event={event} />
             </div>
-          ))*/}
+          ))}
         </main>
       </div>
       <style jsx>{`

@@ -4,7 +4,7 @@ import Layout from "../../components/Layout"
 import { EventProps } from "../../components/Event"
 import prisma from '../../lib/prisma';
 
-/*export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const event = await prisma.event.findUnique({
     where: {
       id: String(params?.id),
@@ -15,20 +15,51 @@ import prisma from '../../lib/prisma';
       },
     },
   });
+
+ 
+
+  const dishes = await prisma.dish.findMany({
+    where: {
+      eventId: String(params?.id)
+    },
+  })
   
   return {
-    props: JSON.parse(JSON.stringify(event))
+    props: {event:JSON.parse(JSON.stringify(event)), dishes: JSON.parse(JSON.stringify(dishes))}
   };
-};*/
+};
 
-const Post: React.FC = () => {
+type DishProps = {
+  id: string;
+  title: string;
+  description?: string;
+  link?: string;
+};
+
+interface EventDetailProps {
+  event: EventProps,
+  dishes: DishProps[]
+}
+
+
+const EventDetail: React.FC<EventDetailProps> = (props) => {
   return (
     <Layout>
       <div>
         <h1>Event Details</h1>
-       {/*} <h2>{props?.title}</h2>
-        <p>Host: {props?.host?.firstName}</p>
-  <p>Infos: {props?.info}</p>*/}
+        <h2>{props?.event.title}</h2>
+        <p>Host: {props?.event.host?.firstName}</p>
+        <p>Infos: {props?.event.info}</p>
+        {props.dishes.map((dish, index) => (
+            <div key={dish.id} className="dish">
+              <>
+              <p>{index+1}. Gang</p>
+              <p>Titel:{dish.title}</p>
+              {dish.description && (<p>Beschreibung: {dish.description}</p>)}
+              {dish.link && <p>Link: {dish.link}</p>}
+              </>
+            </div>
+          ))}
       </div>
       <style jsx>{`
         .page {
@@ -55,4 +86,4 @@ const Post: React.FC = () => {
   )
 }
 
-export default Post
+export default EventDetail
