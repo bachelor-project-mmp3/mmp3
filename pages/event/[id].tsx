@@ -4,7 +4,6 @@ import Layout from "../../components/Layout"
 import { EventProps } from "../../components/Event"
 import prisma from '../../lib/prisma';
 
-/*
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const event = await prisma.event.findUnique({
     where: {
@@ -21,16 +20,15 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     props: JSON.parse(JSON.stringify(event))
   };
 };
-*/
 
-const Post: React.FC<EventProps> = () => {
+const Post: React.FC<EventProps> = (props) => {
   return (
     <Layout>
       <div>
         <h1>Event Details</h1>
-        {/*<h2>{props?.title}</h2>
+        <h2>{props?.title}</h2>
         <p>Host: {props?.host?.firstName}</p>
-  <p>Infos: {props?.info}</p>*/}
+  <p>Infos: {props?.info}</p>
       </div>
       <style jsx>{`
         .page {
