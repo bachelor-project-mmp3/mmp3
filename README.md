@@ -33,7 +33,7 @@ First setup Heroku connection:
 - for migrations in production login in terminal to heroku `heroku login`
 - add git remote to heroku `heroku git:remote --app teamspaghetti`
 
-After pushing changes to main branch, run `git push heroku HEAD:master`
+After pushing changes to master branch, run `git push heroku HEAD:master`
 
 ## Seeds
 
