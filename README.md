@@ -41,7 +41,12 @@ After pushing changes to master branch, run `git push heroku HEAD:master`
 
 # Create first api route example
 
--   for create, update or delete a event via backend route, look at example of https://vercel.com/guides/nextjs-prisma-postgres
+-   for create, update or delete an event via backend route, look at example of https://vercel.com/guides/nextjs-prisma-postgres
+
+# Call cron job for testing
+
+-   Productive system:`curl --request POST --url "http://mmp3.vercel.app/event/clcudeesb0003q4fwnnj0difb/api/cron" --header "Authorization: Bearer 2702c850-bbab-41ef-aa3a-2dae652aa989"`
+-   Local: `curl --request POST --url "http://localhost:3000/api/cron" --header "Authorization: Bearer 2702c850-bbab-41ef-aa3a-2dae652aa989"`
 
 # Format files with Prettier:
 
