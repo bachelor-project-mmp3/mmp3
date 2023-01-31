@@ -28,11 +28,12 @@ const Blog: React.FC<Props> = (props) => {
             <div className="page">
                 <h1>Events</h1>
                 <main>
-                    {props.events.map((event) => (
-                        <div key={event.id} className="post">
-                            <Event event={event} />
-                        </div>
-                    ))}
+                    {props.events &&
+                        props.events.map((event) => (
+                            <div key={event.id} className="post">
+                                <Event event={event} />
+                            </div>
+                        ))}
                 </main>
             </div>
             <style jsx>{`
