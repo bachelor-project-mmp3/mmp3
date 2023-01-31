@@ -1,66 +1,70 @@
-import React from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 const Header: React.FC = () => {
-  const { data: session, status } = useSession()
+    const { data: session, status } = useSession();
 
-  const router = useRouter();
-  const isActive: (pathname: string) => boolean = (pathname) =>
-    router.pathname === pathname;
+    const router = useRouter();
+    const isActive: (pathname: string) => boolean = (pathname) =>
+        router.pathname === pathname;
 
-  let left = (
-    <div className="left">
-      <Link href="/">
-        <a className="bold" data-active={isActive("/")}>
-          Feed
-        </a>
-      </Link>
+    let left = (
+        <div className="left">
+            <Link href="/">
+                <a className="bold" data-active={isActive('/')}>
+                    Feed
+                </a>
+            </Link>
 
-      <p>{status}</p>
-      { session != null ? <p>{session.user.name}, {session.user.email}</p> : null }
+            <p>{status}</p>
+            {session != null ? (
+                <p>
+                    {session.user.name}, {session.user.email}
+                </p>
+            ) : null}
 
-      <button onClick={() => signIn('fhs')}>Sign in with FH Login</button>
-      <button onClick={() => signOut()}>Sign out</button>
-      
-      <style jsx>{`
-        .bold {
-          font-weight: bold;
-        }
+            <button onClick={() => signIn('fhs')}>Sign in with FH Login</button>
+            <button onClick={() => signOut()}>Sign out</button>
 
-        a {
-          text-decoration: none;
-          color: #000;
-          display: inline-block;
-        }
+            <style jsx>{`
+                .bold {
+                    font-weight: bold;
+                }
 
-        .left a[data-active="true"] {
-          color: gray;
-        }
+                a {
+                    text-decoration: none;
+                    color: #000;
+                    display: inline-block;
+                }
 
-        a + a {
-          margin-left: 1rem;
-        }
-      `}</style>
-    </div>
-  );
+                .left a[data-active='true'] {
+                    color: gray;
+                }
 
-  let right = null;
+                a + a {
+                    margin-left: 1rem;
+                }
+            `}</style>
+        </div>
+    );
 
-  return (
-    <nav>
-      {left}
-      {right}
-      <style jsx>{`
-        nav {
-          display: flex;
-          padding: 2rem;
-          align-items: center;
-        }
-      `}</style>
-    </nav>
-  );
+    let right = null;
+
+    return (
+        <nav>
+            {left}
+            {right}
+            <style jsx>{`
+                nav {
+                    display: flex;
+                    padding: 2rem;
+                    align-items: center;
+                }
+            `}</style>
+        </nav>
+    );
 };
 
 export default Header;

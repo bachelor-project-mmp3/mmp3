@@ -1,8 +1,8 @@
-import {RequestStatus, NotificationType } from "@prisma/client";
+import { RequestStatus, NotificationType } from '@prisma/client';
 
 export const users = [
     {
-        id:'clcudeerp0000q4fwzv4db5c8',
+        id: 'clcudeerp0000q4fwzv4db5c8',
         firstName: 'Kerstin',
         lastName: 'Reichinger',
         email: 'kerstin.reichinger@gmx.at',
@@ -14,7 +14,7 @@ export const users = [
         roomNumber: '110',
     },
     {
-        id:'clcudeerq0001q4fw3wlqh0x6',
+        id: 'clcudeerq0001q4fw3wlqh0x6',
         firstName: 'Lisa',
         lastName: 'Rader',
         email: 'lrader.mmt-b2020@fh-salzburg.ac.at',
@@ -24,9 +24,9 @@ export const users = [
         study: 'MultimediaTechnology',
         dormitory: 'Studentenheim Puch',
         roomNumber: '122',
-      },
-      {
-        id:'clcudeerq0002q4fwwuoaigwf',
+    },
+    {
+        id: 'clcudeerq0002q4fwwuoaigwf',
         firstName: 'Timo',
         lastName: 'Mustermann',
         email: '12345@test.at',
@@ -36,7 +36,7 @@ export const users = [
         interests: 'Kunst, Musik machen, Party',
         instagram: null,
         study: 'MultimediaArt',
-      },
+    },
 ];
 
 export const events = [
@@ -49,10 +49,10 @@ export const events = [
         costs: 4.5,
         capacity: 5,
         image: 'default image',
-        authorId: 'clcudeerq0002q4fwwuoaigwf'
+        authorId: 'clcudeerq0002q4fwwuoaigwf',
     },
     {
-        id:'clcudeesd0004q4fwlctptbbm',
+        id: 'clcudeesd0004q4fwlctptbbm',
         title: 'Indische Vielfalt',
         info: 'Achtung, scharf',
         date: '2022-12-30T17:00:00.927Z',
@@ -61,10 +61,10 @@ export const events = [
         capacity: 4,
         image: 'default image',
         authorId: 'clcudeerq0001q4fw3wlqh0x6',
-        currentParticipants: 3
+        currentParticipants: 3,
     },
     {
-        id:'clcudeesd0005q4fwhbm8zdef',
+        id: 'clcudeesd0005q4fwhbm8zdef',
         title: 'Sushi Night',
         info: 'Frisch gerollt und vielfältig',
         date: '2023-02-20T19:00:00.927Z',
@@ -72,10 +72,10 @@ export const events = [
         costs: 7.5,
         capacity: 3,
         image: 'default image',
-        authorId: 'clcudeerq0002q4fwwuoaigwf'
+        authorId: 'clcudeerq0002q4fwwuoaigwf',
     },
     {
-        id:'clcudeesd0006q4fwhmq4o2ls',
+        id: 'clcudeesd0006q4fwhmq4o2ls',
         title: 'Weißwurscht-Frühshoppen',
         info: 'Tracht ist Pflicht! Nüchtern bleibt hier keiner, gerne Weißbier mitbringen.',
         date: '2023-05-01T11:00:00.927Z',
@@ -83,44 +83,44 @@ export const events = [
         costs: 4,
         capacity: 6,
         image: 'default image',
-        authorId: 'clcudeerp0000q4fwzv4db5c8'
-    }
-]
+        authorId: 'clcudeerp0000q4fwzv4db5c8',
+    },
+];
 
 export const dishes = [
     {
-        id:'clcudeesd0006q4fwxxxq4o2ls',
-        title: "Pizza Salami",
-        description: "Fluffiger Teig mit gutem Belag",
-        link: "https://www.google.at",
+        id: 'clcudeesd0006q4fwxxxq4o2ls',
+        title: 'Pizza Salami',
+        description: 'Fluffiger Teig mit gutem Belag',
+        link: 'https://www.google.at',
         eventId: 'clcudeesb0003q4fwnnj0difb',
     },
     {
-        id:'clcudeesd0006q4fwxyzq4o2ls',
-        title: "Tiramisu",
-        description: "Achtung Rum enthalten",
+        id: 'clcudeesd0006q4fwxyzq4o2ls',
+        title: 'Tiramisu',
+        description: 'Achtung Rum enthalten',
         eventId: 'clcudeesb0003q4fwnnj0difb',
     },
     {
-        id:'clcudeesd0006q4fwzzzq4o2ls',
-        title: "Gemüse Curry",
-        description: "Zuchini, Tomaten und Kartoffeln",
+        id: 'clcudeesd0006q4fwzzzq4o2ls',
+        title: 'Gemüse Curry',
+        description: 'Zuchini, Tomaten und Kartoffeln',
         eventId: 'clcudeesd0004q4fwlctptbbm',
     },
     {
-        id:'aaaudeesd0006q4fwzzzq4o2ls',
-        title: "Sushi",
-        description: "Avocade, Inside-Out Gurke, Lachs-Nigiri",
+        id: 'aaaudeesd0006q4fwzzzq4o2ls',
+        title: 'Sushi',
+        description: 'Avocade, Inside-Out Gurke, Lachs-Nigiri',
         eventId: 'clcudeesd0005q4fwhbm8zdef',
     },
     {
-        id:'bbbudeesd0006q4fwzzzq4o2ls',
-        title: "Weißwurst mit süßen Senf und Brezen",
-        description: "Tracht ist Pflicht! Nüchtern bleibt hier keiner, gerne Weißbier mitbringen.",
+        id: 'bbbudeesd0006q4fwzzzq4o2ls',
+        title: 'Weißwurst mit süßen Senf und Brezen',
+        description:
+            'Tracht ist Pflicht! Nüchtern bleibt hier keiner, gerne Weißbier mitbringen.',
         eventId: 'clcudeesd0006q4fwhmq4o2ls',
     },
-]
-
+];
 
 export const requests = [
     {
@@ -138,7 +138,7 @@ export const requests = [
         userId: 'clcudeerq0001q4fw3wlqh0x6',
         eventId: 'clcudeesd0006q4fwhmq4o2ls',
     },
-]
+];
 
 export const reviews = [
     {
@@ -157,7 +157,7 @@ export const reviews = [
         userId: 'clcudeerq0002q4fwwuoaigwf',
         eventId: 'clcudeesd0004q4fwlctptbbm',
     },
-]
+];
 
 export const notifications = [
     {
@@ -183,11 +183,11 @@ export const notifications = [
     },
     // message for the host, navigate to requests
     {
-        message: 'Du hast eine neue Anfrage zum Weißwurscht-Frühshoppen erhalten!',
+        message:
+            'Du hast eine neue Anfrage zum Weißwurscht-Frühshoppen erhalten!',
         seen: false,
         type: NotificationType.GENERAL,
         userId: 'clcudeerp0000q4fwzv4db5c8',
         eventId: 'clcudeesd0006q4fwhmq4o2ls',
     },
-
-]
+];
