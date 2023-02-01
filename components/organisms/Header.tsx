@@ -6,22 +6,11 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 const Header: React.FC = () => {
     const { data: session, status } = useSession();
 
-    const router = useRouter();
-    const isActive: (pathname: string) => boolean = (pathname) =>
-        router.pathname === pathname;
-
     let left = (
         <div className="left">
-            <Link href="/">
-                <a className="bold" data-active={isActive('/')}>
-                    LandingPage
-                </a>
-            </Link>
-            <Link href="/events">
-                <a className="bold" data-active={isActive('/events')}>
-                    Events
-                </a>
-            </Link>
+            <Link href="/">LandingPage</Link>
+            <Link href="/events">Events</Link>
+
             <p>{status}</p>
             {session != null ? (
                 <p>
