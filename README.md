@@ -56,3 +56,30 @@ After pushing changes to master branch, run `git push heroku HEAD:master`
 # Run Lint:
 
 -   run `npm run lint`
+
+# Naming Conventions
+
+## Git Commits
+
+-   write in present time
+-   Start with Capital letter
+-   if ticket available, add number at the end e.g. `#123`
+
+## Branches
+
+-   begin with `feature/` or `bugfix/`
+-   between words add underlines
+
+## Styled Components
+
+-   begin with `Styled`
+-   append with html tag like `Button`
+
+## Comments
+
+-   Comments should only describe why you a specific code and not what the code does
+
+## Functions
+
+-   naming should be self-descriptive
+-   camelCase
