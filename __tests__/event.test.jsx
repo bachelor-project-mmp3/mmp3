@@ -15,7 +15,7 @@ const event = {
 
 describe('Event', () => {
     it('renders a event', () => {
-        render(<Event props={{ event }} />);
+        render(<ExtendedEventPreview props={{ event }} />);
 
         const heading = screen.getByText(/Pzza/i);
         expect(heading).toBeInTheDocument();

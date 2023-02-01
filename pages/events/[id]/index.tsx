@@ -1,8 +1,7 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import Layout from '../../components/Layout';
-import { EventProps } from '../../components/Event';
-import prisma from '../../lib/prisma';
+import Layout from '../../../components/Layout';
+import prisma from '../../../lib/prisma';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const event = await prisma.event.findUnique({
@@ -13,33 +12,42 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
             host: {
                 select: { firstName: true },
             },
-        },
-    });
-
-    const dishes = await prisma.dish.findMany({
-        where: {
-            eventId: String(params?.id),
+            menu: {
+                select: {
+                    id: true,
+                    title: true,
+                    description: true,
+                    link: true,
+                },
+            },
         },
     });
 
     return {
         props: {
             event: JSON.parse(JSON.stringify(event)),
-            dishes: JSON.parse(JSON.stringify(dishes)),
         },
     };
 };
 
-type DishProps = {
+type EventProps = {
     id: string;
     title: string;
-    description?: string;
-    link?: string;
+    info?: string;
+    host: {
+        firstName: string;
+        email: string;
+    } | null;
+    menu: {
+        id: string;
+        title: string;
+        description?: string;
+        link?: string;
+    }[];
 };
 
 interface EventDetailProps {
     event: EventProps;
-    dishes: DishProps[];
 }
 
 const EventDetail: React.FC<EventDetailProps> = (props) => {
@@ -50,7 +58,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
                 <h2>{props?.event.title}</h2>
                 <p>Host: {props?.event.host?.firstName}</p>
                 <p>Infos: {props?.event.info}</p>
-                {props.dishes.map((dish, index) => (
+                {props?.event.menu.map((dish, index) => (
                     <div key={dish.id} className="dish">
                         <>
                             <p>{index + 1}. Gang</p>

@@ -11,12 +11,12 @@ export type EventProps = {
     } | null;
 };
 
-const Event: React.FC<{ event: EventProps }> = ({ event }) => {
+const ExtendetEventPreview: React.FC<{ event: EventProps }> = ({ event }) => {
     const hostName = event?.host.firstName
         ? event?.host.firstName
         : 'Unknown host';
     return (
-        <div onClick={() => Router.push('/event/[id]', `/event/${event.id}`)}>
+        <div onClick={() => Router.push('/events/[id]', `/events/${event.id}`)}>
             <h2>{event.title}</h2>
             <small>Host: {hostName}</small>
             {event.info && <div>Info: {event.info}</div>}
@@ -30,4 +30,4 @@ const Event: React.FC<{ event: EventProps }> = ({ event }) => {
     );
 };
 
-export default Event;
+export default ExtendetEventPreview;

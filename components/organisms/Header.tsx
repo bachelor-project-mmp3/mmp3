@@ -14,10 +14,14 @@ const Header: React.FC = () => {
         <div className="left">
             <Link href="/">
                 <a className="bold" data-active={isActive('/')}>
-                    Feed
+                    LandingPage
                 </a>
             </Link>
-
+            <Link href="/events">
+                <a className="bold" data-active={isActive('/events')}>
+                    Events
+                </a>
+            </Link>
             <p>{status}</p>
             {session != null ? (
                 <p>
