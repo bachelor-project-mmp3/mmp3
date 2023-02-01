@@ -2,8 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { Button } from './../atoms/Button';
 
-const Header: React.FC = () => {
+export const Header = () => {
     const { data: session, status } = useSession();
 
     let left = (
@@ -18,8 +19,12 @@ const Header: React.FC = () => {
                 </p>
             ) : null}
 
-            <button onClick={() => signIn('fhs')}>Sign in with FH Login</button>
-            <button onClick={() => signOut()}>Sign out</button>
+            <Button variant={'primary'} onClick={() => signIn('fhs')} disabled>
+                Sign in with FH Login
+            </Button>
+            <Button variant={'secondary'} onClick={() => signOut()}>
+                Sign out
+            </Button>
 
             <style jsx>{`
                 .bold {
