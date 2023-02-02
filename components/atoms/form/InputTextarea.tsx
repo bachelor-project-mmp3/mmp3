@@ -1,34 +1,33 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-interface InputNumberProps {
+interface InputTextareaProps {
     id: string;
-    placeholder?: string;
-    step?: string;
-    min?: string;
+    cols: number;
+    rows: number;
+    placeholder: string;
     value: string;
     onChange?: (e: any) => void;
     children: ReactNode;
 }
 
-export const InputNumber = ({
+export const InputTextarea = ({
     id,
+    cols,
+    rows,
     placeholder,
-    step,
-    min,
     value,
     onChange,
     children,
-}: InputNumberProps) => {
+}: InputTextareaProps) => {
     return (
         <>
             <label htmlFor={id}>{children}</label>
             <StyledInput
                 id={id}
                 name={id}
-                type="text"
-                step={step}
-                min={min}
+                cols={cols}
+                rows={rows}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
@@ -37,7 +36,7 @@ export const InputNumber = ({
     );
 };
 
-const StyledInput = styled.input`
-    width: 70%;
+const StyledInput = styled.textarea`
+    width: 100%;
     padding: 10px;
 `;

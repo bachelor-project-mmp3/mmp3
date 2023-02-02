@@ -5,6 +5,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    // DELETE api/events/{id}
     if (req.method === 'DELETE') {
         try {
             const eventId = req.query.id.toString();

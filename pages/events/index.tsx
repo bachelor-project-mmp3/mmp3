@@ -7,6 +7,7 @@ import ExtendetEventPreview, {
 } from '../../components/organisms/events/ExtendedEventPreview';
 
 export const getStaticProps: GetStaticProps = async () => {
+    // TODO: put this in GET events api
     const events = await prisma.event.findMany({
         include: {
             host: {

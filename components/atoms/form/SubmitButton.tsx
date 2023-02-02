@@ -1,7 +1,14 @@
-import React from 'react';
+import styled from 'styled-components';
 
-const SubmitButton: React.FC = () => {
-    return <div>TODO</div>;
+interface SubmitButtonProps {
+    value: string;
+}
+
+export const SubmitButton = ({ value }: SubmitButtonProps) => {
+    return <StyledInput type="submit" value={value} />;
 };
 
-export default SubmitButton;
+const StyledInput = styled.input`
+    width: 100%;
+    padding: 10px;
+`;
