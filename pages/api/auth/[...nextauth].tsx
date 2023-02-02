@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
 
                 const fetchedUser = await response.json();
 
-                const user = await prisma.user.findUnique({
+                let user = await prisma.user.findUnique({
                     where: {
                         email: String(fetchedUser?.email),
                     },
@@ -36,7 +36,7 @@ export const authOptions: NextAuthOptions = {
 
                 if(!user){
                     try {
-                        await prisma.user.create({
+                        const createdUser = await prisma.user.create({
                             data: {
                                 firstName: fetchedUser.given_name,
                                 lastName: fetchedUser.family_name,
@@ -44,6 +44,7 @@ export const authOptions: NextAuthOptions = {
                                 email: fetchedUser.email
                             },
                         });
+                        user = createdUser;
                     } catch (err){
                         console.log(err)
                     }
@@ -53,10 +54,19 @@ export const authOptions: NextAuthOptions = {
                     id: profile.sub,
                     name: `${fetchedUser.given_name} ${fetchedUser.family_name}`,
                     email: fetchedUser.email,
+                    image: fetchedUser.image
                 };
             },
         },
     ],
+    callbacks: {
+        async session({ session, token }: any) {
+          if (token) {
+            session.user.id = token.sub;
+          }
+          return session;
+        },
+    },
     pages: {
         signIn: '/',
     },

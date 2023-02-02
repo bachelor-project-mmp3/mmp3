@@ -1,7 +1,28 @@
-import React from 'react';
+import styled from 'styled-components';
 
-const InputFile: React.FC = () => {
-    return <div>TODO</div>;
+interface InputFileProps {
+    id: string;
+    onChange?: (e: any) => void;
+}
+
+export const InputFile = ({
+    id,
+    onChange,
+}: InputFileProps) => {
+    return (
+        <>
+            <label htmlFor={id}>Upload Photo</label>
+            <StyledInputFile
+                id={id}
+                name={id}
+                type="file"
+                accept="image/*"
+                onChange={onChange}>
+            </StyledInputFile>
+        </>
+    );
 };
 
-export default InputFile;
+const StyledInputFile = styled.input`
+    padding: 10px;
+`;
