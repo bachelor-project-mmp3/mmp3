@@ -1,4 +1,5 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
+import prisma from '../../../lib/prisma';
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -25,12 +26,33 @@ export const authOptions: NextAuthOptions = {
                     }
                 );
 
-                const user = await response.json();
+                const fetchedUser = await response.json();
+
+                const user = await prisma.user.findUnique({
+                    where: {
+                        email: String(fetchedUser?.email),
+                    },
+                });
+
+                if(!user){
+                    try {
+                        await prisma.user.create({
+                            data: {
+                                firstName: fetchedUser.given_name,
+                                lastName: fetchedUser.family_name,
+                                study: fetchedUser.studies.split('-')[0],
+                                email: fetchedUser.email
+                            },
+                        });
+                    } catch (err){
+                        console.log(err)
+                    }
+                }
 
                 return {
                     id: profile.sub,
-                    name: `${user.given_name} ${user.family_name}`,
-                    email: user.email,
+                    name: `${fetchedUser.given_name} ${fetchedUser.family_name}`,
+                    email: fetchedUser.email,
                 };
             },
         },
