@@ -1,7 +1,37 @@
-import React from 'react';
+import { ReactNode } from 'react';
+import styled from 'styled-components';
 
-const InputText: React.FC = () => {
-    return <div>TODO</div>;
+interface InputTextProps {
+    id: string;
+    placeholder: string;
+    value: string;
+    onChange?: (e: any) => void;
+    children: ReactNode;
+}
+
+export const InputText = ({
+    id,
+    placeholder,
+    value,
+    onChange,
+    children,
+}: InputTextProps) => {
+    return (
+        <>
+            <label htmlFor={id}>{children}</label>
+            <StyledInput
+                id={id}
+                name={id}
+                type="text"
+                placeholder={placeholder}
+                value={value}
+                onChange={onChange}
+            />
+        </>
+    );
 };
 
-export default InputText;
+const StyledInput = styled.input`
+    width: 100%;
+    padding: 10px;
+`;

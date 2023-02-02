@@ -2,6 +2,15 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import Layout from '../../../components/Layout';
 import prisma from '../../../lib/prisma';
+import { Button } from '../../../components/atoms/Button';
+import Router from 'next/router';
+
+async function deleteEvent(id: string): Promise<void> {
+    await fetch(`/api/events/${id}`, {
+        method: 'DELETE',
+    });
+    await Router.push('/events');
+}
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const event = await prisma.event.findUnique({
@@ -71,6 +80,11 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
                     </div>
                 ))}
             </div>
+            <Button
+                variant={'primary'}
+                onClick={() => deleteEvent(props?.event.id)}>
+                Delete event
+            </Button>
             <style jsx>{`
                 .page {
                     background: white;

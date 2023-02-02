@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 interface ButtonProps {
     variant: 'primary' | 'secondary';
-    onClick?: () => {};
+    onClick?: (e: any) => void;
     children: ReactNode;
     disabled?: boolean;
 }

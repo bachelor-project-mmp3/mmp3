@@ -14,15 +14,15 @@ model Event {
   id                  String         @id @default(cuid())
   title               String         @db.VarChar(100)
   info                String?        @db.Text
-  host                User?          @relation(fields: [authorId], references: [id])
-  authorId            String?
+  host                User?          @relation(fields: [authorId], references: [id]) //TODO: change authorId to hostId
+  authorId            String?//TODO: naming change to hostId
   createdAt           DateTime       @default(now()) @map(name: "created_at")
   updatedAt           DateTime       @updatedAt @map(name: "updated_at")
   date                DateTime
   timeLimit           DateTime
   costs               Float
   capacity            Int
-  ingredients         String?        @db.Text
+  ingredients         String?        @db.Text //TODO: delete
   image               String
   currentParticipants Int            @default(1)
   cancelled           Boolean        @default(false)
