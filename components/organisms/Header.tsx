@@ -1,8 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { Button } from './../atoms/Button';
+import { Button } from '../atoms/Button';
 
 export const Header = () => {
     const { data: session, status } = useSession();
@@ -11,6 +10,7 @@ export const Header = () => {
         <div className="left">
             <Link href="/">LandingPage</Link>
             <Link href="/events">Events</Link>
+            <Link href="/events/create">CreateEvent</Link>
             <Link href={`/profile/${session?.user?.id}`}>Profile</Link>
 
             

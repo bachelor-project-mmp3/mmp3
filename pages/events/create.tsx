@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import Layout from '../../components/Layout';
 import Router from 'next/router';
 import { InputText } from '../../components/atoms/form/InputText';
+import { InputDateTime } from '../../components/atoms/form/InputDateTime';
+import { InputNumber } from '../../components/atoms/form/InputNumber';
+import { InputTextarea } from '../../components/atoms/form/InputTextarea';
+import { SubmitButton } from '../../components/atoms/form/SubmitButton';
 
 //maybe refactoring?
 function formatDateForDateInput(input) {
@@ -66,49 +70,53 @@ const CreateEvent: React.FC = () => {
                         value={title}>
                         Event title
                     </InputText>
-                    <label htmlFor="date">Date and time</label>
-                    <input
+                    <InputDateTime
                         id="date"
-                        type="datetime-local"
-                        onChange={(e) => setDate(e.target.value)}
-                        min={date}
                         value={date}
-                    />
-                    <label htmlFor="cost">Cost</label>
-                    <input
-                        id="cost"
-                        type="number"
-                        onChange={(e) => setCosts(e.target.value)}
+                        min={date}
+                        onChange={(e) => setDate(e.target.value)}>
+                        Date and time
+                    </InputDateTime>
+
+                    <InputDateTime
+                        id="timeLimit"
+                        value={timeLimit}
+                        min={timeLimit}
+                        max={date}
+                        onChange={(e) => setTimeLimit(e.target.value)}>
+                        Receive requests until
+                    </InputDateTime>
+
+                    <InputNumber
+                        id="costs"
+                        placeholder="0"
+                        step="0.01"
                         min="0"
                         value={costs}
-                    />
-                    <label htmlFor="guests">Guests</label>
-                    <input
+                        onChange={(e) => setCosts(e.target.value)}>
+                        Costs
+                    </InputNumber>
+
+                    <InputNumber
                         id="guests"
-                        type="number"
-                        onChange={(e) => setCapacity(e.target.value)}
+                        placeholder="0"
                         min="0"
                         value={capacity}
-                    />
-                    <label htmlFor="timeLimit">Request sendable until</label>
-                    <input
-                        id="timeLimit"
-                        type="datetime-local"
-                        onChange={(e) => setTimeLimit(e.target.value)}
-                        min={timeLimit}
-                        value={timeLimit}
-                    />
-                    <label htmlFor="information">Short information</label>
-                    <textarea
+                        onChange={(e) => setCapacity(e.target.value)}>
+                        Guests
+                    </InputNumber>
+
+                    <InputTextarea
                         id="information"
                         cols={50}
-                        onChange={(e) => setInfo(e.target.value)}
-                        placeholder="Information"
                         rows={8}
+                        placeholder="Write a little bit about your event plans"
                         value={info}
-                    />
+                        onChange={(e) => setInfo(e.target.value)}>
+                        Short information
+                    </InputTextarea>
 
-                    <input type="submit" value="Create" />
+                    <SubmitButton value="Submit"></SubmitButton>
                     <a
                         className="back"
                         href="#"
