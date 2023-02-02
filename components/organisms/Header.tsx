@@ -11,7 +11,7 @@ export const Header = () => {
             <Link href="/">LandingPage</Link>
             <Link href="/events">Events</Link>
             <Link href="/events/create">CreateEvent</Link>
-            <Link href={`/profile/${session?.user?.id}`}>Profile</Link>
+            <Link href={`/profile/${session?.user?.userId}`}>Profile</Link>
 
             
             <p>{status}</p>

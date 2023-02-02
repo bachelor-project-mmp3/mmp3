@@ -54,7 +54,6 @@ export const authOptions: NextAuthOptions = {
                     id: profile.sub,
                     name: `${fetchedUser.given_name} ${fetchedUser.family_name}`,
                     email: fetchedUser.email,
-                    image: fetchedUser.image
                 };
             },
         },
@@ -62,7 +61,7 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async session({ session, token }: any) {
           if (token) {
-            session.user.id = token.sub;
+            session.user.userId = token.sub;
           }
           return session;
         },
