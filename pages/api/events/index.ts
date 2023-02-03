@@ -6,6 +6,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    // TODO: check authentication
     // POST /api/events
     if (req.method === 'POST') {
         try {
@@ -17,7 +18,7 @@ export default async function handler(
             const intCapacity = parseInt(capacity);
             const session = await getSession({ req });
 
-            const result = await prisma.event.create({
+            const event = await prisma.event.create({
                 data: {
                     title: title,
                     info: info,
@@ -29,7 +30,7 @@ export default async function handler(
                     image: 'default image',
                 },
             });
-            res.json(result);
+            res.status(200).json(event);
         } catch (err) {
             res.status(500).json({ statusCode: 500, message: err.message });
         }

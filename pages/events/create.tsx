@@ -53,9 +53,10 @@ const CreateEvent: React.FC = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body),
             });
+            //TODO route to event detail after creation
             await Router.push('/events');
         } catch (error) {
-            console.error('Hello' + error);
+            console.error('Failed to create event:' + error);
         }
     };
     return (

@@ -5,6 +5,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    // TODO: check authentication
     // DELETE api/events/{id}
     if (req.method === 'DELETE') {
         try {
@@ -12,7 +13,7 @@ export default async function handler(
             const event = await prisma.event.delete({
                 where: { id: eventId },
             });
-            res.json(event);
+            res.status(200).json({ message: 'Deleted event successfully' });
         } catch (err) {
             res.status(500).json({ statusCode: 500, message: err.message });
         }
