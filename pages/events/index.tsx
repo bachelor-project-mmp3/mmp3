@@ -1,13 +1,12 @@
 import React from 'react';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import Layout from '../../components/Layout';
 import prisma from '../../lib/prisma';
 import ExtendetEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
 
-export const getStaticProps: GetStaticProps = async () => {
-    // TODO: put this in GET events api
+export const getServerSideProps: GetServerSideProps = async () => {
     const events = await prisma.event.findMany({
         include: {
             host: {
@@ -17,7 +16,6 @@ export const getStaticProps: GetStaticProps = async () => {
     });
     return {
         props: { events: JSON.parse(JSON.stringify(events)) },
-        revalidate: 10,
     };
 };
 
