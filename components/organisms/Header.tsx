@@ -9,27 +9,32 @@ export const Header = () => {
     let left = (
         <div className="left">
             <Link href="/">LandingPage</Link>
-            <Link href="/events">Events</Link>
-            <Link href="/events/create">CreateEvent</Link>
-            <Link href={`/profile/${session?.user?.userId}`}>Profile</Link>
+            {status === 'authenticated' && (
+                <>
+                    <Link href="/events">Events</Link>
+                    <Link href="/events/create">CreateEvent</Link>
+                    <Link href={`/profile/${session?.user?.userId}`}>
+                        Profile
+                    </Link>
+                </>
+            )}
 
-            
             <p>{status}</p>
-            {session != null ?
+            {session != null ? (
                 <p>
                     {session.user.name}, {session.user.email}
                 </p>
-            : null}
+            ) : null}
 
-            {status != 'authenticated' ? 
+            {status != 'authenticated' ? (
                 <Button variant={'primary'} onClick={() => signIn('fhs')}>
                     Sign in with FH Login
                 </Button>
-                : 
+            ) : (
                 <Button variant={'secondary'} onClick={() => signOut()}>
                     Sign out
-                </Button>}
-            
+                </Button>
+            )}
 
             <style jsx>{`
                 .bold {
