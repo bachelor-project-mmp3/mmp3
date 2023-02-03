@@ -1,5 +1,5 @@
 import React from 'react';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 
 export type EventProps = {
     id: string;
@@ -12,11 +12,13 @@ export type EventProps = {
 };
 
 const ExtendetEventPreview: React.FC<{ event: EventProps }> = ({ event }) => {
+    const router = useRouter();
+
     const hostName = event?.host.firstName
         ? event?.host.firstName
         : 'Unknown host';
     return (
-        <div onClick={() => Router.push('/events/[id]', `/events/${event.id}`)}>
+        <div onClick={() => router.push(`/events/${event.id}`)}>
             <h2>{event.title}</h2>
             <small>Host: {hostName}</small>
             {event.info && <div>Info: {event.info}</div>}

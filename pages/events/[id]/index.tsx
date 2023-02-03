@@ -9,7 +9,8 @@ async function deleteEvent(id: string): Promise<void> {
     await fetch(`/api/events/${id}`, {
         method: 'DELETE',
     });
-    await Router.push('/events');
+    // replace url, because event doesn't exist anymore
+    Router.replace('/events');
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {

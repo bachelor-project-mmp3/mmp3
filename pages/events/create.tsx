@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Layout from '../../components/Layout';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { InputText } from '../../components/atoms/form/InputText';
 import { InputDateTime } from '../../components/atoms/form/InputDateTime';
 import { InputNumber } from '../../components/atoms/form/InputNumber';
@@ -19,6 +19,7 @@ function formatDateForDateInput(input) {
 }
 
 const CreateEvent: React.FC = () => {
+    const router = useRouter();
     let currentDate = new Date();
 
     let cDay = formatDateForDateInput(currentDate.getDate());
@@ -48,13 +49,15 @@ const CreateEvent: React.FC = () => {
                 costs,
                 capacity,
             };
-            await fetch('/api/events', {
+
+            const res = await fetch('/api/events', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body),
             });
-            //TODO route to event detail after creation
-            await Router.push('/events');
+            const eventId = await res.json();
+
+            router.push(`/events/${eventId}`);
         } catch (error) {
             console.error('Failed to create event:' + error);
         }
@@ -121,7 +124,7 @@ const CreateEvent: React.FC = () => {
                     <a
                         className="back"
                         href="#"
-                        onClick={() => Router.push('/')}>
+                        onClick={() => router.push('/')}>
                         or Cancel
                     </a>
                 </form>

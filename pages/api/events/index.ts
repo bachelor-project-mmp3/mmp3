@@ -30,7 +30,7 @@ export default async function handler(
                     image: 'default image',
                 },
             });
-            res.status(200).json(event);
+            res.status(200).json(event.id);
         } catch (err) {
             res.status(500).json({ statusCode: 500, message: err.message });
         }
