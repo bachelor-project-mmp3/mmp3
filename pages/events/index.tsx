@@ -2,7 +2,7 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import Layout from '../../components/Layout';
 import prisma from '../../lib/prisma';
-import ExtendetEventPreview, {
+import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
 
@@ -32,7 +32,7 @@ const Events: React.FC<Props> = (props) => {
                     {props.events &&
                         props.events.map((event) => (
                             <div key={event.id} className="post">
-                                <ExtendetEventPreview event={event} />
+                                <ExtendedEventPreview event={event} />
                             </div>
                         ))}
                 </main>

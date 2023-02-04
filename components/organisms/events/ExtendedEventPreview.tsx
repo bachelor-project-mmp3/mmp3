@@ -11,7 +11,7 @@ export type EventProps = {
     } | null;
 };
 
-const ExtendetEventPreview: React.FC<{ event: EventProps }> = ({ event }) => {
+const ExtendedEventPreview: React.FC<{ event: EventProps }> = ({ event }) => {
     const router = useRouter();
 
     const hostName = event?.host.firstName
@@ -32,4 +32,4 @@ const ExtendetEventPreview: React.FC<{ event: EventProps }> = ({ event }) => {
     );
 };
 
-export default ExtendetEventPreview;
+export default ExtendedEventPreview;
