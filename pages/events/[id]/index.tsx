@@ -1,9 +1,7 @@
-import React from 'react';
-import { GetServerSideProps } from 'next';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
-import prisma from '../../../lib/prisma';
 import { Button } from '../../../components/atoms/Button';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 async function deleteEvent(id: string): Promise<void> {
     await fetch(`/api/events/${id}`, {
@@ -13,32 +11,12 @@ async function deleteEvent(id: string): Promise<void> {
     Router.replace('/events');
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-    const event = await prisma.event.findUnique({
-        where: {
-            id: String(params?.id),
-        },
-        include: {
-            host: {
-                select: { firstName: true },
-            },
-            menu: {
-                select: {
-                    id: true,
-                    title: true,
-                    description: true,
-                    link: true,
-                },
-            },
-        },
-    });
-
+// TODO: maybe load some data before page gets rendered, like session maybe?
+/*export const getServerSideProps: GetServerSideProps = async () => {
     return {
-        props: {
-            event: JSON.parse(JSON.stringify(event)),
-        },
+        props: { },
     };
-};
+};*/
 
 type EventProps = {
     id: string;
@@ -60,15 +38,38 @@ interface EventDetailProps {
     event: EventProps;
 }
 
-const EventDetail: React.FC<EventDetailProps> = (props) => {
+const EventDetail: React.FC<EventDetailProps> = () => {
+    const router = useRouter();
+
+    const [event, setEvent] = useState(null);
+    const [isLoading, setLoading] = useState(false);
+
+    useEffect(() => {
+        // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
+        if (router.isReady) {
+            setLoading(true);
+            fetch(`/api/events/${router.query.id}`, {
+                method: 'GET',
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    setEvent(data.event);
+                    setLoading(false);
+                });
+        }
+    }, [router.isReady, router.query.id]);
+
+    if (isLoading) return <p>Loading...</p>;
+    if (!event) return <p>No event detail </p>;
+
     return (
         <Layout>
             <div>
                 <h1>Event Details</h1>
-                <h2>{props?.event.title}</h2>
-                <p>Host: {props?.event.host?.firstName}</p>
-                <p>Infos: {props?.event.info}</p>
-                {props?.event.menu.map((dish, index) => (
+                <h2>{event.title}</h2>
+                <p>Host: {event.host?.firstName}</p>
+                <p>Infos: {event.info}</p>
+                {event.menu.map((dish, index) => (
                     <div key={dish.id} className="dish">
                         <>
                             <p>{index + 1}. Gang</p>
@@ -81,30 +82,13 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
                     </div>
                 ))}
             </div>
-            <Button
-                variant={'primary'}
-                onClick={() => deleteEvent(props?.event.id)}>
+            <Button variant={'primary'} onClick={() => deleteEvent(event.id)}>
                 Delete event
             </Button>
             <style jsx>{`
                 .page {
                     background: white;
                     padding: 2rem;
-                }
-
-                .actions {
-                    margin-top: 2rem;
-                }
-
-                button {
-                    background: #ececec;
-                    border: 0;
-                    border-radius: 0.125rem;
-                    padding: 1rem 2rem;
-                }
-
-                button + button {
-                    margin-left: 1rem;
                 }
             `}</style>
         </Layout>
