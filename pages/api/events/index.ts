@@ -14,8 +14,15 @@ export default async function handler(
         try {
             // POST Create event /api/events
             if (req.method === 'POST') {
-                const { title, info, date, timeLimit, costs, capacity } =
-                    req.body;
+                const {
+                    title,
+                    info,
+                    date,
+                    timeLimit,
+                    costs,
+                    capacity,
+                    dishes,
+                } = req.body;
 
                 const dateTimeDate = new Date(date);
                 const dateTimeTimeLimit = new Date(timeLimit);
@@ -23,6 +30,13 @@ export default async function handler(
                 const intCapacity = parseInt(capacity);
                 const session = await getSession({ req });
 
+                await prisma.dish.create({
+                    data: {
+                        title: dishes.dishName,
+                        link: dishes.dishUrl,
+                        description: dishes.dishInfo,
+                    },
+                });
                 const event = await prisma.event.create({
                     data: {
                         title: title,
@@ -32,6 +46,7 @@ export default async function handler(
                         timeLimit: dateTimeTimeLimit,
                         costs: floatCosts,
                         capacity: intCapacity,
+                        // menu: {connect: {}}
                         image: 'default image',
                     },
                 });

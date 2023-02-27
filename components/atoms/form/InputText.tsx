@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 interface InputTextProps {
     id: string;
-    placeholder: string;
+    placeholder?: string;
     value: string;
     onChange?: (e: any) => void;
     children: ReactNode;

@@ -6,6 +6,9 @@ import { InputDateTime } from '../../components/atoms/form/InputDateTime';
 import { InputNumber } from '../../components/atoms/form/InputNumber';
 import { InputTextarea } from '../../components/atoms/form/InputTextarea';
 import { SubmitButton } from '../../components/atoms/form/SubmitButton';
+import { InputUrl } from '../../components/atoms/form/InputUrl';
+import { Button } from '../../components/atoms/Button';
+import { useForm } from 'react-hook-form';
 
 //maybe refactoring?
 function formatDateForDateInput(input) {
@@ -37,9 +40,56 @@ const CreateEvent: React.FC = () => {
     const [timeLimit, setTimeLimit] = useState(dateTimeNow);
     const [costs, setCosts] = useState('');
     const [capacity, setCapacity] = useState('');
+    const [dishes, setDishes] = useState([
+        {
+            dishName: '',
+            dishUrl: '',
+            dishInfo: '',
+        },
+    ]);
 
-    const submitData = async (e: React.SyntheticEvent) => {
-        e.preventDefault();
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors },
+    } = useForm();
+    React.useEffect(() => {
+        register('title', { required: true });
+        register('date', { required: true, valueAsDate: true });
+        register('timelimit', { required: true, valueAsDate: true });
+        register('costs', { required: true, min: 0 });
+        register('guests', { required: true, min: 1 });
+    }, [register]);
+
+    // handle input change
+    const handleChange = (event, index) => {
+        const values = [...dishes];
+        values[index][event.target.name] = event.target.value;
+
+        setDishes(values);
+    };
+    // handle click event of the Remove button
+    const handleRemoveClick = (index) => {
+        if (dishes.length !== 1) {
+            const list = [...dishes];
+            list.splice(index, 1);
+            setDishes(list);
+        }
+    };
+
+    // handle click event of the Add button
+    const handleAddClick = () => {
+        setDishes([
+            ...dishes,
+            {
+                dishName: '',
+                dishUrl: '',
+                dishInfo: '',
+            },
+        ]);
+    };
+    const onSubmit = async () => {
         try {
             const body = {
                 title,
@@ -48,6 +98,7 @@ const CreateEvent: React.FC = () => {
                 timeLimit,
                 costs,
                 capacity,
+                dishes,
             };
 
             const res = await fetch('/api/events', {
@@ -66,50 +117,85 @@ const CreateEvent: React.FC = () => {
         <Layout>
             <div>
                 <h1>Create Event</h1>
-                <form onSubmit={submitData}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <InputText
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={(e) => {
+                            setValue('title', e.target.value);
+                            setTitle(e.target.value);
+                        }}
                         id="title"
                         placeholder="Title"
                         value={title}>
                         Event title
                     </InputText>
+                    {/* errors will return when field validation fails  */}
+                    {errors.title && (
+                        <span>Please enter a title of the event</span>
+                    )}
+
                     <InputDateTime
                         id="date"
                         value={date}
                         min={date}
-                        onChange={(e) => setDate(e.target.value)}>
+                        onChange={(e) => {
+                            setValue('date', e.target.value);
+                            setDate(e.target.value);
+                        }}>
                         Date and time
                     </InputDateTime>
+                    {errors.date && <span>Please enter a date</span>}
 
                     <InputDateTime
-                        id="timeLimit"
+                        id="timelimit"
                         value={timeLimit}
                         min={timeLimit}
                         max={date}
-                        onChange={(e) => setTimeLimit(e.target.value)}>
+                        onChange={(e) => {
+                            setValue('timelimit', e.target.value);
+                            setTimeLimit(e.target.value);
+                        }}>
                         Receive requests until
                     </InputDateTime>
-
+                    {errors.date && (
+                        <span>
+                            Please enter a date and time when to close to join
+                        </span>
+                    )}
                     <InputNumber
                         id="costs"
                         placeholder="0"
                         step="0.01"
                         min="0"
                         value={costs}
-                        onChange={(e) => setCosts(e.target.value)}>
+                        onChange={(e) => {
+                            setValue('costs', e.target.value);
+                            setCosts(e.target.value);
+                        }}>
                         Costs
                     </InputNumber>
-
+                    {errors.costs && errors.costs.type === 'required' && (
+                        <span>Please enter the costs for your event</span>
+                    )}
+                    {errors.costs && errors.costs.type === 'min' && (
+                        <span role="alert">Must be at least 0</span>
+                    )}
                     <InputNumber
                         id="guests"
                         placeholder="0"
                         min="0"
                         value={capacity}
-                        onChange={(e) => setCapacity(e.target.value)}>
+                        onChange={(e) => {
+                            setValue('guests', e.target.value);
+                            setCapacity(e.target.value);
+                        }}>
                         Guests
                     </InputNumber>
-
+                    {errors.guests && errors.guests.type === 'required' && (
+                        <span>Please enter the number of guests</span>
+                    )}
+                    {errors.guests && errors.guests.type === 'min' && (
+                        <span role="alert">Must be at least 0</span>
+                    )}
                     <InputTextarea
                         id="information"
                         cols={50}
@@ -119,8 +205,52 @@ const CreateEvent: React.FC = () => {
                         onChange={(e) => setInfo(e.target.value)}>
                         Short information
                     </InputTextarea>
-
-                    <SubmitButton value="Submit"></SubmitButton>
+                    {dishes.map((currentDish, i) => {
+                        return (
+                            <div key={i}>
+                                <InputText
+                                    onChange={(e) => handleChange(e, i)}
+                                    id="dishName"
+                                    placeholder={currentDish.dishName}
+                                    value={currentDish.dishName}>
+                                    Name of the dish
+                                </InputText>
+                                <InputUrl
+                                    onChange={(e) => handleChange(e, i)}
+                                    id="dishUrl"
+                                    placeholder="https://www.google.at"
+                                    value={currentDish.dishUrl}>
+                                    Link for the dish's recipe
+                                </InputUrl>
+                                <InputTextarea
+                                    id="dishInfo"
+                                    cols={50}
+                                    rows={8}
+                                    placeholder="Add any information about the dish"
+                                    value={currentDish.dishInfo}
+                                    onChange={(e) => handleChange(e, i)}>
+                                    Short information
+                                </InputTextarea>
+                                <div>
+                                    {dishes.length !== 1 && (
+                                        <Button
+                                            onClick={() => handleRemoveClick(i)}
+                                            variant={'primary'}>
+                                            Remove
+                                        </Button>
+                                    )}
+                                    {dishes.length - 1 === i && (
+                                        <Button
+                                            onClick={handleAddClick}
+                                            variant={'primary'}>
+                                            Add
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+                    <SubmitButton></SubmitButton>
                     <a
                         className="back"
                         href="#"
@@ -129,34 +259,6 @@ const CreateEvent: React.FC = () => {
                     </a>
                 </form>
             </div>
-            <style jsx>{`
-                .page {
-                    background: var(--geist-background);
-                    padding: 3rem;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-
-                input[type='text'],
-                textarea {
-                    width: 100%;
-                    padding: 0.5rem;
-                    margin: 0.5rem 0;
-                    border-radius: 0.25rem;
-                    border: 0.125rem solid rgba(0, 0, 0, 0.2);
-                }
-
-                input[type='submit'] {
-                    background: #ececec;
-                    border: 0;
-                    padding: 1rem 2rem;
-                }
-
-                .back {
-                    margin-left: 1rem;
-                }
-            `}</style>
         </Layout>
     );
 };

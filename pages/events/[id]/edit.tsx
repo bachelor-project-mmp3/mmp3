@@ -6,6 +6,7 @@ const EditEvent: React.FC = () => {
         <Layout>
             <div>
                 <h1>Edit Event</h1>
+                //TODO: create edit event form
             </div>
         </Layout>
     );
