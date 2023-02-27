@@ -14,9 +14,17 @@ export default async function handler(
         try {
             // POST Create event /api/events
             if (req.method === 'POST') {
-                const { title, info, date, timeLimit, costs, capacity } =
-                    req.body;
+                const {
+                    title,
+                    info,
+                    date,
+                    timeLimit,
+                    costs,
+                    capacity,
+                    dishes,
+                } = req.body;
 
+                console.log('Yes');
                 const dateTimeDate = new Date(date);
                 const dateTimeTimeLimit = new Date(timeLimit);
                 const floatCosts = parseFloat(costs);
@@ -32,6 +40,9 @@ export default async function handler(
                         timeLimit: dateTimeTimeLimit,
                         costs: floatCosts,
                         capacity: intCapacity,
+                        menu: {
+                            create: dishes,
+                        },
                         image: 'default image',
                     },
                 });

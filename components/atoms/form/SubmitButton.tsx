@@ -1,11 +1,7 @@
 import styled from 'styled-components';
 
-interface SubmitButtonProps {
-    value: string;
-}
-
-export const SubmitButton = ({ value }: SubmitButtonProps) => {
-    return <StyledInput type="submit" value={value} />;
+export const SubmitButton = () => {
+    return <StyledInput type="submit" />;
 };
 
 const StyledInput = styled.input`
