@@ -57,8 +57,8 @@ const CreateEvent: React.FC = () => {
 
     React.useEffect(() => {
         register('title', { required: true, minLength: 3 });
-        register('date', { required: true, min: dateTimeNow });
-        register('timelimit', { required: true, min: dateTimeNow, max: date });
+        register('date', { required: true });
+        register('timelimit', { required: true });
         register('costs', { required: true, min: 0, max: 99 });
         register('guests', { required: true, min: 1 });
     }, [register]);
@@ -91,6 +91,7 @@ const CreateEvent: React.FC = () => {
         ]);
     };
     const onSubmit = async () => {
+        console.log('Hallo');
         try {
             const body = {
                 title,
