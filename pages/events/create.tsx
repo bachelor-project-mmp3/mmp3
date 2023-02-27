@@ -232,7 +232,7 @@ const CreateEvent: React.FC = () => {
                                     id="link"
                                     placeholder="https://www.google.at"
                                     value={currentDish.link}>
-                                    Link for the dish's recipe
+                                    {"Link for the dish's recipe"}
                                 </InputUrl>
                                 <InputTextarea
                                     id="description"
