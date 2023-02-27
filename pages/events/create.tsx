@@ -42,9 +42,9 @@ const CreateEvent: React.FC = () => {
     const [capacity, setCapacity] = useState('');
     const [dishes, setDishes] = useState([
         {
-            dishName: '',
-            dishUrl: '',
-            dishInfo: '',
+            title: '',
+            link: '',
+            description: '',
         },
     ]);
 
@@ -83,9 +83,9 @@ const CreateEvent: React.FC = () => {
         setDishes([
             ...dishes,
             {
-                dishName: '',
-                dishUrl: '',
-                dishInfo: '',
+                title: '',
+                link: '',
+                description: '',
             },
         ]);
     };
@@ -210,24 +210,24 @@ const CreateEvent: React.FC = () => {
                             <div key={i}>
                                 <InputText
                                     onChange={(e) => handleChange(e, i)}
-                                    id="dishName"
-                                    placeholder={currentDish.dishName}
-                                    value={currentDish.dishName}>
+                                    id="title"
+                                    placeholder="Enter a title"
+                                    value={currentDish.title}>
                                     Name of the dish
                                 </InputText>
                                 <InputUrl
                                     onChange={(e) => handleChange(e, i)}
-                                    id="dishUrl"
+                                    id="link"
                                     placeholder="https://www.google.at"
-                                    value={currentDish.dishUrl}>
+                                    value={currentDish.link}>
                                     Link for the dish's recipe
                                 </InputUrl>
                                 <InputTextarea
-                                    id="dishInfo"
+                                    id="description"
                                     cols={50}
                                     rows={8}
                                     placeholder="Add any information about the dish"
-                                    value={currentDish.dishInfo}
+                                    value={currentDish.description}
                                     onChange={(e) => handleChange(e, i)}>
                                     Short information
                                 </InputTextarea>

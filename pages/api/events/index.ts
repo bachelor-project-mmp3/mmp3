@@ -24,19 +24,13 @@ export default async function handler(
                     dishes,
                 } = req.body;
 
+                console.log('Yes');
                 const dateTimeDate = new Date(date);
                 const dateTimeTimeLimit = new Date(timeLimit);
                 const floatCosts = parseFloat(costs);
                 const intCapacity = parseInt(capacity);
                 const session = await getSession({ req });
 
-                await prisma.dish.create({
-                    data: {
-                        title: dishes.dishName,
-                        link: dishes.dishUrl,
-                        description: dishes.dishInfo,
-                    },
-                });
                 const event = await prisma.event.create({
                     data: {
                         title: title,
@@ -46,7 +40,9 @@ export default async function handler(
                         timeLimit: dateTimeTimeLimit,
                         costs: floatCosts,
                         capacity: intCapacity,
-                        // menu: {connect: {}}
+                        menu: {
+                            create: dishes,
+                        },
                         image: 'default image',
                     },
                 });
