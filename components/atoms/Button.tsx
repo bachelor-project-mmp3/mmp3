@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../themeConfig';
+import { theme } from '../../ThemeConfig';
 
 interface ButtonProps {
     variant: 'primary' | 'secondary';
