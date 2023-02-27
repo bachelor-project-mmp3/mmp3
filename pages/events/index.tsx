@@ -4,13 +4,6 @@ import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
 
-// TODO: maybe load some data before page gets rendered, like session maybe?
-/*export const getServerSideProps: GetServerSideProps = async () => {
-    return {
-        props: { },
-    };
-};*/
-
 type Props = {
     events: EventProps[];
 };
