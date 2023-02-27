@@ -15,7 +15,18 @@ export default async function handler(
             // PATCH /api/profile/${id}
             if (req.method === 'PATCH') {
                 try {
-                    const { uploadResult } = req.body;
+                    const {
+                        imageUrl,
+                        firstName,
+                        lastName,
+                        dormitory,
+                        roomNumber,
+                        aboutYou,
+                        instagram,
+                        phone,
+                    } = req.body;
+                    console.log(req.body);
+
                     const session = await getSession({ req });
                     const userId = session?.user?.userId;
 
@@ -24,9 +35,17 @@ export default async function handler(
                             id: userId,
                         },
                         data: {
-                            image: uploadResult,
+                            image: imageUrl,
+                            firstName: firstName,
+                            lastName: lastName,
+                            dormitory: dormitory,
+                            roomNumber: roomNumber,
+                            interests: aboutYou,
+                            phone: phone,
+                            instagram: instagram,
                         },
                     });
+
                     res.json(result);
                 } catch (err) {
                     res.status(500).json({ message: err.message });
