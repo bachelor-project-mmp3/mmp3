@@ -7,12 +7,16 @@ interface InputTextProps {
     value: string;
     onChange?: (e: any) => void;
     children: ReactNode;
+    minLength?: 3;
+    required?: boolean;
 }
 
 export const InputText = ({
     id,
     placeholder,
     value,
+    minLength,
+    required,
     onChange,
     children,
 }: InputTextProps) => {
@@ -25,6 +29,8 @@ export const InputText = ({
                 type="text"
                 placeholder={placeholder}
                 value={value}
+                minLength={minLength}
+                required={required}
                 onChange={onChange}
             />
         </>

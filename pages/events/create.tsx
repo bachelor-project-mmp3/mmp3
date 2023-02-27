@@ -54,11 +54,12 @@ const CreateEvent: React.FC = () => {
         setValue,
         formState: { errors },
     } = useForm();
+
     React.useEffect(() => {
-        register('title', { required: true });
-        register('date', { required: true, valueAsDate: true });
-        register('timelimit', { required: true, valueAsDate: true });
-        register('costs', { required: true, min: 0 });
+        register('title', { required: true, minLength: 3 });
+        register('date', { required: true, min: dateTimeNow });
+        register('timelimit', { required: true, min: dateTimeNow, max: date });
+        register('costs', { required: true, min: 0, max: 99 });
         register('guests', { required: true, min: 1 });
     }, [register]);
 
@@ -129,8 +130,13 @@ const CreateEvent: React.FC = () => {
                         Event title
                     </InputText>
                     {/* errors will return when field validation fails  */}
-                    {errors.title && (
+                    {errors.title && errors.title.type === 'required' && (
                         <span>Please enter a title of the event</span>
+                    )}
+                    {errors.title && errors.title.type === 'min' && (
+                        <span>
+                            Please enter a title of at least 3 characters
+                        </span>
                     )}
 
                     <InputDateTime
@@ -176,6 +182,9 @@ const CreateEvent: React.FC = () => {
                     {errors.costs && errors.costs.type === 'required' && (
                         <span>Please enter the costs for your event</span>
                     )}
+                    {errors.costs && errors.costs.type === 'max' && (
+                        <span role="alert">Must be maximum 99</span>
+                    )}
                     {errors.costs && errors.costs.type === 'min' && (
                         <span role="alert">Must be at least 0</span>
                     )}
@@ -212,7 +221,9 @@ const CreateEvent: React.FC = () => {
                                     onChange={(e) => handleChange(e, i)}
                                     id="title"
                                     placeholder="Enter a title"
-                                    value={currentDish.title}>
+                                    minLength={3}
+                                    value={currentDish.title}
+                                    required={true}>
                                     Name of the dish
                                 </InputText>
                                 <InputUrl
