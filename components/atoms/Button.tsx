@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { theme } from '../../themeConfig';
 
 interface ButtonProps {
     variant: 'primary' | 'secondary';
@@ -28,7 +29,7 @@ interface ButtonStyleProps {
 
 const StyledButton = styled.button<ButtonStyleProps>`
     background-color: ${(props) =>
-        props.variant === 'primary' ? 'red' : 'white'};
+        props.variant === 'primary' ? theme.primay : theme.secondary};
     color: ${(props) => (props.disabled ? 'pink' : 'lime')};
     padding: 10px;
 `;
