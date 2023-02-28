@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import { StyledInput, StyledLabel } from './InputText';
 
 interface InputNumberProps {
     id: string;
@@ -9,6 +9,7 @@ interface InputNumberProps {
     value: string;
     onChange?: (e: any) => void;
     children: ReactNode;
+    isInvalid?: string;
 }
 
 export const InputNumber = ({
@@ -19,10 +20,11 @@ export const InputNumber = ({
     value,
     onChange,
     children,
+    isInvalid,
 }: InputNumberProps) => {
     return (
         <>
-            <label htmlFor={id}>{children}</label>
+            <StyledLabel htmlFor={id}>{children}</StyledLabel>
             <StyledInput
                 id={id}
                 name={id}
@@ -31,13 +33,9 @@ export const InputNumber = ({
                 min={min}
                 placeholder={placeholder}
                 value={value}
+                isInvalid={isInvalid}
                 onChange={onChange}
             />
         </>
     );
 };
-
-const StyledInput = styled.input`
-    width: 70%;
-    padding: 10px;
-`;

@@ -18,16 +18,24 @@ export const theme = {
     cremeDark: '#FFF6A9',
     cremeLight: '#FFFACD',
     fonts: {
-       headline: "2.5em",
-       headline2: "2em",
-       headline3: "1.8em",
-       headline4: "1.7em",
-       headline5: "1.3em", 
-       paragraph: "1.2em",
-       smallParagraph: "1em",
-       info: "0.8em",
-       caption: "0.7em"
-    }
+        headline: '2.5em', //30pt
+        headline2: '2em', //24pt
+        headline3: '1.8em', //22pt
+        headline4: '1.7em', // 20pt
+        headline5: '1.3em', // 16pt
+        paragraph: '1.2em', // 14pt
+        smallParagraph: '1em', // 12pt
+        info: '0.8em', // 10pt
+        caption: '0.7em', // 8pt
+    },
+};
+
+const size = {
+    tablet: '768px',
+};
+
+export const device = {
+    tablet: `(min-width: ${size.tablet})`,
 };
 
 export const GlobalStyles = createGlobalStyle`
