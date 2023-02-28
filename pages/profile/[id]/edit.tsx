@@ -61,7 +61,15 @@ const Profile: React.FC = () => {
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log(data.profile);
                     setProfile(data.profile);
+                    setFirstName(data.profile.firstName);
+                    setLastName(data.profile.lastName);
+                    setDormitory(data.profile.dormitory);
+                    setRoomNumber(data.profile.roomNumber);
+                    setInstagram(data.profile.instagram);
+                    setPhone(data.profile.phone);
+                    setAboutYou(data.profile.interests);
                     setLoading(false);
                 });
         }
@@ -143,6 +151,7 @@ const Profile: React.FC = () => {
                     <Select
                         id="dormitory"
                         options={dormitories}
+                        selected={dormitory}
                         onChange={(e) => {
                             setValue('dormitory', e.target.value);
                             setDormitory(e.target.value);
