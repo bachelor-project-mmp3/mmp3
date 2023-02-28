@@ -4,6 +4,7 @@ import Layout from '../../components/Layout';
 import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
+import { device } from '../../ThemeConfig';
 
 type Props = {
     events: EventProps[];
@@ -51,5 +52,12 @@ export default Events;
 const EventsList = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 2em;
+    gap: 20px;
+    margin: auto;
+
+    @media ${device.tablet} {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
 `;
