@@ -13,7 +13,7 @@ export const ErrorMessage = ({ children }: ErrorMessageProps) => {
 const StyledSpan = styled.span`
     color: red;
     font-size: ${theme.fonts.mobile.info};
-    margin-left: 1.2em;
+    margin-left: 20px;
 
     @media ${device.tablet} {
         font-size: ${theme.fonts.normal.info};

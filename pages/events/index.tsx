@@ -1,9 +1,11 @@
+import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
+import { device } from '../../ThemeConfig';
 
 type Props = {
     events: EventProps[];
@@ -12,6 +14,7 @@ type Props = {
 const Events: React.FC<Props> = () => {
     const [events, setEvents] = useState(null);
     const [isLoading, setLoading] = useState(false);
+    const { data: session } = useSession();
 
     useEffect(() => {
         setLoading(true);
@@ -36,6 +39,10 @@ const Events: React.FC<Props> = () => {
                     {events &&
                         events.map((event) => (
                             <ExtendedEventPreview
+                                userIsHost={
+                                    session?.user?.userId === event.host.id ??
+                                    false
+                                }
                                 key={event.id}
                                 event={event}
                             />
@@ -51,5 +58,12 @@ export default Events;
 const EventsList = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 2em;
+    gap: 20px;
+    margin: auto;
+
+    @media ${device.tablet} {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
 `;

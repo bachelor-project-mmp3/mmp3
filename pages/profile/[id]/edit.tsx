@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '../../../components/atoms/form/ErrorMessage';
 import { Select } from '../../../components/atoms/form/Select';
 import { ProfileForm } from '../../../components/organisms/forms/ProfileForm';
+import { Button } from '../../../components/atoms/Button';
 import Link from 'next/link';
 import styled from 'styled-components';
 import Instagram from '../../../public/icons/insta.svg';
@@ -250,7 +251,8 @@ const Profile: React.FC = () => {
                             }}
                             id="instagram"
                             placeholder="Enter your instagram username"
-                            value={instagram}>
+                            value={instagram}
+                            padding="left">
                             Contact Information
                         </InputText>
                     </StyledDiv>
@@ -264,7 +266,8 @@ const Profile: React.FC = () => {
                             }}
                             id="phone"
                             placeholder="+43 123 45 67 890"
-                            value={phone}></InputText>
+                            value={phone}
+                            padding="left"></InputText>
                     </StyledDiv>
 
                     <StyledDiv>
@@ -286,7 +289,8 @@ const Profile: React.FC = () => {
                                 </ErrorMessage>
                             )}
                     </StyledDiv>
-                    <SubmitButton></SubmitButton>
+                    <Button variant={'secondary'}>Delete event</Button>
+                    <SubmitButton value="Save"></SubmitButton>
                 </ProfileForm>
             </div>
         </Layout>

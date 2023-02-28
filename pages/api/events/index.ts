@@ -53,12 +53,19 @@ export default async function handler(
             else if (req.method === 'GET') {
                 const today = new Date();
                 const events = await prisma.event.findMany({
+                    orderBy: [
+                        {
+                            date: 'asc',
+                        },
+                    ],
                     include: {
                         host: {
                             select: {
                                 firstName: true,
                                 lastName: true,
                                 image: true,
+                                dormitory: true,
+                                id: true,
                             },
                         },
                         menu: true,

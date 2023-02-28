@@ -16,5 +16,5 @@ const Layout: React.FC<Props> = (props) => (
 export default Layout;
 
 const StyledLayout = styled.div`
-    padding: 0 1em;
+    padding: 0 12px;
 `;

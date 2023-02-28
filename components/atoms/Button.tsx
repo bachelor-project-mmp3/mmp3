@@ -29,7 +29,7 @@ interface ButtonStyleProps {
 
 const StyledButton = styled.button<ButtonStyleProps>`
     background-color: ${(props) =>
-        props.variant === 'primary' ? theme.primay : theme.secondary};
+        props.variant === 'primary' ? theme.primary : theme.secondary};
     color: ${(props) => (props.disabled ? 'pink' : 'lime')};
     padding: 10px;
 `;

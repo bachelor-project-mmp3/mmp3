@@ -7,6 +7,7 @@ interface InputUrlProps {
     value: string;
     onChange?: (e: any) => void;
     children: ReactNode;
+    padding?: 'left' | 'right';
 }
 
 export const InputUrl = ({
@@ -14,6 +15,7 @@ export const InputUrl = ({
     placeholder,
     value,
     onChange,
+    padding,
     children,
 }: InputUrlProps) => {
     return (
@@ -23,6 +25,7 @@ export const InputUrl = ({
                 id={id}
                 name={id}
                 type="url"
+                padding={padding}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
