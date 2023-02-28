@@ -1,15 +1,17 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../ThemeConfig';
+import React from 'react';
+import css from 'styled-jsx/css';
 
 interface ButtonProps {
-    variant: 'primary' | 'secondary';
+    variant: 'primary' | 'secondary' | 'red';
     onClick?: (e: any) => void;
     children: ReactNode;
     disabled?: boolean;
 }
 
-export const Button = ({
+export const Button: React.FC<ButtonProps> = ({
     variant,
     children,
     onClick,
@@ -23,13 +25,51 @@ export const Button = ({
 };
 
 interface ButtonStyleProps {
-    variant: 'primary' | 'secondary';
+    variant: 'primary' | 'secondary' | 'red';
     disabled: boolean;
 }
 
 const StyledButton = styled.button<ButtonStyleProps>`
-    background-color: ${(props) =>
-        props.variant === 'primary' ? theme.primay : theme.secondary};
-    color: ${(props) => (props.disabled ? 'pink' : 'lime')};
-    padding: 10px;
+    padding: 8px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    ${({ variant }) =>
+        variant === 'primary' &&
+        `
+        background-color: ${theme.primary};
+        border: 2px solid ${theme.primary};
+        color: white;
+        :hover {
+            background-color: ${theme.hoverPrimary};
+            border: 2px solid ${theme.hoverPrimary};
+        }
+    `}
+    ${({ variant }) =>
+        variant === 'secondary' &&
+        `
+        background-color: white;
+        color:  ${theme.primary};
+        border: 2px solid ${theme.primary};
+        :hover {
+            color: ${theme.hoverPrimary};
+            border: 2px solid ${theme.hoverPrimary};
+        }
+    `}
+    ${({ variant }) =>
+        variant === 'red' &&
+        `
+        background-color: white;
+        color: ${theme.red};
+        border: 2px solid ${theme.red};
+        :hover {
+            color: ${theme.hoverRed};
+            border: 2px solid ${theme.hoverRed};
+        }
+    `}
+    ${({ disabled }) =>
+        disabled &&
+        `
+    opacity: 0.5;
+    cursor: not-allowed;
+    `}
 `;

@@ -8,6 +8,7 @@ import Clock from '../../../public/icons/uhr.svg';
 import Seat from '../../../public/icons/sessel.svg';
 import Location from '../../../public/icons/location.svg';
 import MenuStar from '../../../public/icons/sternmenu.svg';
+import { Button } from '../../atoms/Button';
 
 export type EventProps = {
     id: string;
@@ -133,6 +134,11 @@ const ExtendedEventPreview: React.FC<{
                         </DishEntry>
                     ))}
                 </Dishes>
+                <ButtonWrapper variant="primary" onClick={() => alert('TODO')}>
+                    <Button variant="primary" onClick={() => alert('TODO')}>
+                        Ask to join
+                    </Button>
+                </ButtonWrapper>
             </Card>
         </CardWithDateTime>
     );
@@ -310,4 +316,8 @@ const DishEntry = styled.div`
 const Dishes = styled.div`
     display: flex;
     gap: 10px;
+`;
+
+const ButtonWrapper = styled.div`
+    text-align: end;
 `;
