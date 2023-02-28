@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
 import Router, { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 import { uploadImage } from '../../api/helper/uploadHelper';
 import { InputFile } from '../../../components/atoms/form/InputFile';
 import { SubmitButton } from '../../../components/atoms/form/SubmitButton';
@@ -13,14 +12,14 @@ import { ErrorMessage } from '../../../components/atoms/form/ErrorMessage';
 import { Select } from '../../../components/atoms/form/Select';
 import { ProfileForm } from '../../../components/organisms/forms/ProfileForm';
 import { Button } from '../../../components/atoms/Button';
+import { Info } from '../../../components/atoms/Info';
 import Link from 'next/link';
 import styled from 'styled-components';
 import Instagram from '../../../public/icons/insta.svg';
 import Phone from '../../../public/icons/phone.svg';
-import Info from '../../../public/icons/phone.svg';
+import { device, theme } from '../../../ThemeConfig';
 
 const Profile: React.FC = () => {
-    const { data: session } = useSession();
     const router = useRouter();
 
     const [profile, setProfile] = useState(null);
@@ -82,6 +81,10 @@ const Profile: React.FC = () => {
         register('lastName', { required: true, minLength: 3 });
         register('roomNumber', { required: true });
         register('privacy', { required: true });
+        register('image', {
+            required: true,
+            validate: { fileSize: (image) => image.size < 2100000 },
+        });
     }, [register, router.isReady, router.query.id, setValue]);
 
     if (isLoading) return <p>Loading...</p>;
@@ -93,8 +96,6 @@ const Profile: React.FC = () => {
 
             if (image.size < 2100000) {
                 imageUrl = await uploadImage(image, 'profile');
-            } else {
-                // TODO: throw error image size
             }
 
             const body = {
@@ -113,7 +114,7 @@ const Profile: React.FC = () => {
                 body: JSON.stringify(body),
             });
 
-            await Router.push(`/profile/${session?.user?.userId}`);
+            await Router.push(`/profile/${profile.id}`);
         } catch (error) {
             console.error('Failed to save user:' + error);
         }
@@ -128,11 +129,21 @@ const Profile: React.FC = () => {
                         <InputFile
                             id="image"
                             onChange={(e) => {
+                                setValue('image', e.target.files[0]);
                                 setImage(e.target.files[0]);
                             }}></InputFile>
+                        {/*errors will return when field validation fails  */}
+                        {errors.image && errors.image.type === 'required' && (
+                            <ErrorMessage>Please upload a photo</ErrorMessage>
+                        )}
+                        {errors.image && errors.image.type === 'fileSize' && (
+                            <ErrorMessage>
+                                Please upload a photo with max. 2MB
+                            </ErrorMessage>
+                        )}
                     </StyledDiv>
 
-                    {/* TODO: Validation for Photo */}
+                    <TextRequired>* Required</TextRequired>
 
                     <StyledDiv>
                         <InputText
@@ -194,6 +205,7 @@ const Profile: React.FC = () => {
                     <StyledText>
                         <p>Course of studies: {profile.study}</p>
                         <p>FH email adress: {profile.email}</p>
+                        <Info>Only visible for your guests of your event</Info>
                     </StyledText>
 
                     <StyledDiv>
@@ -242,7 +254,7 @@ const Profile: React.FC = () => {
                         </InputTextarea>
                     </StyledDiv>
 
-                    <StyledDiv>
+                    <StyledContactBlock>
                         <StyledInstagram />
                         <InputText
                             onChange={(e) => {
@@ -255,7 +267,7 @@ const Profile: React.FC = () => {
                             padding="left">
                             Contact Information
                         </InputText>
-                    </StyledDiv>
+                    </StyledContactBlock>
 
                     <StyledDiv>
                         <StyledPhone />
@@ -289,8 +301,17 @@ const Profile: React.FC = () => {
                                 </ErrorMessage>
                             )}
                     </StyledDiv>
-                    <Button variant={'secondary'}>Delete event</Button>
-                    <SubmitButton value="Save"></SubmitButton>
+                    <ButtonWrapper>
+                        <Button
+                            variant="secondary"
+                            onClick={() =>
+                                router.push(`/profile/${profile.id}`)
+                            }>
+                            Cancel
+                        </Button>
+
+                        <SubmitButton value="Save"></SubmitButton>
+                    </ButtonWrapper>
                 </ProfileForm>
             </div>
         </Layout>
@@ -311,6 +332,13 @@ const StyledDiv = styled.div`
     margin-bottom: 1.5em;
 `;
 
+const StyledContactBlock = styled.div`
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+`;
+
 const StyledWrapper = styled.div`
     display: flex;
 `;
@@ -329,4 +357,20 @@ const StyledPhone = styled(Phone)`
     position: absolute;
     bottom: 12px;
     left: 20px;
+`;
+
+const TextRequired = styled.p`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-end;
+    font-size: ${theme.fonts.mobile.info};
+    @media ${device.tablet} {
+        font-size: ${theme.fonts.normal.info};
+    }
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: space-around;
 `;

@@ -9,7 +9,6 @@ interface InputFileProps {
 export const InputFile = ({ id, onChange }: InputFileProps) => {
     return (
         <>
-            <label htmlFor={id}>Upload Photo</label>
             <StyledInputFile
                 id={id}
                 name={id}
