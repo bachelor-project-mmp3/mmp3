@@ -10,6 +10,9 @@ import { InputTextarea } from '../../../components/atoms/form/InputTextarea';
 import { Text } from '../../../components/atoms/Text';
 import { Checkbox } from '../../../components/atoms/form/Checkbox';
 import { useForm } from 'react-hook-form';
+import { ErrorMessage } from '../../../components/atoms/form/ErrorMessage';
+import { Button } from '../../../components/atoms/Button';
+import styled from 'styled-components';
 import Select from '../../../components/atoms/form/Select';
 
 const Profile: React.FC = () => {
@@ -28,29 +31,25 @@ const Profile: React.FC = () => {
     const [phone, setPhone] = useState('');
     const [dormitory, setDormitory] = useState('');
 
-    const dormitories = [
-        '--- Select dormitory ---',
-        'Campus Urstein',
-        'Campus Kuchl',
-        'Campus Schwarzach',
-    ];
-
+    const dormitories = ['Campus Urstein', 'Campus Kuchl', 'Campus Schwarzach'];
     const {
         register,
         handleSubmit,
         setValue,
         formState: { errors },
-    } = useForm();
-
-    React.useEffect(() => {
-        register('firstName');
-        register('lastName');
-        register('roomNumber');
-        register('aboutYou');
-        register('instagram');
-        register('phone');
-        register('dormitory');
-    }, [register]);
+    } = useForm({
+        defaultValues: {
+            image: image,
+            firstName: firstName,
+            lastName: lastName,
+            roomNumber: roomNumber,
+            aboutYou: aboutYou,
+            dormitory: dormitory,
+            instagram: instagram,
+            phone: phone,
+            privacy: false,
+        },
+    });
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
@@ -61,19 +60,25 @@ const Profile: React.FC = () => {
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data.profile);
                     setProfile(data.profile);
                     setFirstName(data.profile.firstName);
                     setLastName(data.profile.lastName);
-                    setDormitory(data.profile.dormitory);
                     setRoomNumber(data.profile.roomNumber);
                     setInstagram(data.profile.instagram);
                     setPhone(data.profile.phone);
                     setAboutYou(data.profile.interests);
                     setLoading(false);
+                    setValue('firstName', data.profile.firstName);
+                    setValue('lastName', data.profile.lastName);
+                    setValue('roomNumber', data.profile.roomNumber);
                 });
         }
-    }, [router.isReady, router.query.id]);
+
+        register('firstName', { required: true, minLength: 3 });
+        register('lastName', { required: true, minLength: 3 });
+        register('roomNumber', { required: true });
+        register('privacy', { required: true });
+    }, [register, router.isReady, router.query.id]);
 
     if (isLoading) return <p>Loading...</p>;
     if (!profile) return <p>No profile</p>;
@@ -81,7 +86,6 @@ const Profile: React.FC = () => {
     const onSubmit = async () => {
         try {
             let imageUrl;
-            console.log('IMAGE SIZE:', image.size);
 
             if (image.size < 2100000) {
                 imageUrl = await uploadImage(image, 'profile');
@@ -93,7 +97,6 @@ const Profile: React.FC = () => {
                 imageUrl,
                 firstName,
                 lastName,
-                dormitory,
                 roomNumber,
                 aboutYou,
                 instagram,
@@ -117,95 +120,165 @@ const Profile: React.FC = () => {
             <div>
                 <h1>Edit Profile</h1>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <InputFile
-                        id={'photoUpload'}
-                        onChange={(e) => {
-                            setImage(e.target.files[0]);
-                        }}></InputFile>
+                    <StyledInputWithError>
+                        <InputFile
+                            id="image"
+                            onChange={(e) => {
+                                setImage(e.target.files[0]);
+                            }}></InputFile>
+                    </StyledInputWithError>
 
-                    <InputText
-                        onChange={(e) => {
-                            setValue('firstName', e.target.value);
-                            setFirstName(e.target.value);
-                        }}
-                        id="firstName"
-                        placeholder="firstName"
-                        value={firstName}>
-                        Firstname
-                    </InputText>
+                    {/* TODO: Validation for Photo */}
 
-                    <InputText
-                        onChange={(e) => {
-                            setValue('lastName', e.target.value);
-                            setLastName(e.target.value);
-                        }}
-                        id="lastName"
-                        placeholder="lastName"
-                        value={lastName}>
-                        Lastname
-                    </InputText>
+                    <StyledInputWithError>
+                        <InputText
+                            onChange={(e) => {
+                                setValue('firstName', e.target.value);
+                                setFirstName(e.target.value);
+                            }}
+                            id="firstName"
+                            placeholder="firstName"
+                            value={firstName}
+                            isInvalid={errors.firstName ? 'true' : 'false'}>
+                            Firstname
+                        </InputText>
+
+                        {/*errors will return when field validation fails  */}
+                        {errors.firstName &&
+                            errors.firstName.type === 'required' && (
+                                <ErrorMessage>
+                                    Please enter a firstname
+                                </ErrorMessage>
+                            )}
+                        {errors.firstName &&
+                            errors.firstName.type === 'minLength' && (
+                                <ErrorMessage>
+                                    Please enter a firstname of at least 3
+                                    characters
+                                </ErrorMessage>
+                            )}
+                    </StyledInputWithError>
+
+                    <StyledInputWithError>
+                        <InputText
+                            onChange={(e) => {
+                                setValue('lastName', e.target.value);
+                                setLastName(e.target.value);
+                            }}
+                            id="lastName"
+                            placeholder="lastName"
+                            value={lastName}
+                            isInvalid={errors.lastName ? 'true' : 'false'}>
+                            Lastname
+                        </InputText>
+                        {/*errors will return when field validation fails  */}
+                        {errors.lastName &&
+                            errors.lastName.type === 'required' && (
+                                <ErrorMessage>
+                                    Please enter a lastname
+                                </ErrorMessage>
+                            )}
+                        {errors.lastName &&
+                            errors.lastName.type === 'minLength' && (
+                                <ErrorMessage>
+                                    Please enter a lastname of at least 3
+                                    characters
+                                </ErrorMessage>
+                            )}
+                    </StyledInputWithError>
 
                     <Text>Course of studies: {profile.study}</Text>
                     <Text>FH email adress: {profile.email}</Text>
 
-                    <Select
-                        id="dormitory"
-                        options={dormitories}
-                        selected={dormitory}
-                        onChange={(e) => {
-                            setValue('dormitory', e.target.value);
-                            setDormitory(e.target.value);
-                        }}>
-                        Accommodation
-                    </Select>
+                    <StyledInputWithError>
+                        <Select
+                            id="dormitory"
+                            options={dormitories}
+                            selected={dormitory}
+                            onChange={(e) => {
+                                setValue('dormitory', e.target.value);
+                                setDormitory(e.target.value);
+                            }}>
+                            Accommodation
+                        </Select>
+                    </StyledInputWithError>
 
-                    <InputText
-                        onChange={(e) => {
-                            setValue('roomNumber', e.target.value);
-                            setRoomNumber(e.target.value);
-                        }}
-                        id="roomNumber"
-                        placeholder="000"
-                        value={roomNumber}>
-                        Room number
-                    </InputText>
+                    <StyledInputWithError>
+                        <InputText
+                            onChange={(e) => {
+                                setValue('roomNumber', e.target.value);
+                                setRoomNumber(e.target.value);
+                            }}
+                            id="roomNumber"
+                            placeholder="000"
+                            value={roomNumber}
+                            isInvalid={errors.roomNumber ? 'true' : 'false'}>
+                            Room number
+                        </InputText>
 
-                    <InputTextarea
-                        id="aboutYou"
-                        cols={50}
-                        rows={8}
-                        placeholder="Leave some personal notes about you, such as hobbies, interests as well as about your diet, potential allergies and intolerances."
-                        value={aboutYou}
-                        onChange={(e) => setAboutYou(e.target.value)}>
-                        About you
-                    </InputTextarea>
+                        {/*errors will return when field validation fails  */}
+                        {errors.roomNumber &&
+                            errors.roomNumber.type === 'required' && (
+                                <ErrorMessage>
+                                    Please enter a room number
+                                </ErrorMessage>
+                            )}
+                    </StyledInputWithError>
 
-                    <InputText
-                        onChange={(e) => {
-                            setValue('instagram', e.target.value);
-                            setInstagram(e.target.value);
-                        }}
-                        id="instagram"
-                        placeholder="Enter your instagram username"
-                        value={instagram}>
-                        Instagram
-                    </InputText>
+                    <StyledInputWithError>
+                        <InputTextarea
+                            id="aboutYou"
+                            cols={50}
+                            rows={8}
+                            placeholder="Leave some personal notes about you, such as hobbies, interests as well as about your diet, potential allergies and intolerances."
+                            value={aboutYou}
+                            onChange={(e) => setAboutYou(e.target.value)}>
+                            About you
+                        </InputTextarea>
+                    </StyledInputWithError>
 
-                    <InputText
-                        onChange={(e) => {
-                            setValue('phone', e.target.value);
-                            setPhone(e.target.value);
-                        }}
-                        id="phone"
-                        placeholder="+43 123 45 67 890"
-                        value={phone}>
-                        Phone
-                    </InputText>
+                    <StyledInputWithError>
+                        <InputText
+                            onChange={(e) => {
+                                setValue('instagram', e.target.value);
+                                setInstagram(e.target.value);
+                            }}
+                            id="instagram"
+                            placeholder="Enter your instagram username"
+                            value={instagram}>
+                            Instagram
+                        </InputText>
+                    </StyledInputWithError>
 
-                    <Checkbox id="privacy">
-                        I have read and agree to the privacy policy
-                    </Checkbox>
+                    <StyledInputWithError>
+                        <InputText
+                            onChange={(e) => {
+                                setValue('phone', e.target.value);
+                                setPhone(e.target.value);
+                            }}
+                            id="phone"
+                            placeholder="+43 123 45 67 890"
+                            value={phone}>
+                            Phone
+                        </InputText>
+                    </StyledInputWithError>
 
+                    <StyledInputWithError>
+                        <Checkbox
+                            id="privacy"
+                            onChange={(e) => {
+                                setValue('privacy', e.target.value);
+                            }}>
+                            I have read and agree to the privacy policy
+                        </Checkbox>
+                        {/*errors will return when field validation fails */}
+                        {errors.privacy &&
+                            errors.privacy.type === 'required' && (
+                                <ErrorMessage>
+                                    Please accept privacy
+                                </ErrorMessage>
+                            )}
+                    </StyledInputWithError>
                     <SubmitButton></SubmitButton>
                 </form>
             </div>
@@ -214,3 +287,10 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
+
+const StyledInputWithError = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 1.5em;
+`;

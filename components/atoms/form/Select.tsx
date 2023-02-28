@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { theme, device } from '../../../ThemeConfig';
 
 interface InputSelectProps {
     id: string;
@@ -17,8 +18,11 @@ export const Select = ({
 }: InputSelectProps) => {
     return (
         <>
-            <label htmlFor={id}>{children}</label>
+            <StyledLabel htmlFor={id}>{children}</StyledLabel>
             <StyledSelect id={id} name={id} onChange={onChange}>
+                <option disabled={true} value="">
+                    --- Choose an option ---
+                </option>
                 {options.map((option) => (
                     <option
                         value={option}
@@ -31,9 +35,21 @@ export const Select = ({
         </>
     );
 };
-const StyledSelect = styled.select`
-    width: 30%;
-    padding: 10px;
-`;
 
 export default Select;
+
+export const StyledSelect = styled.select`
+    border-color: ${theme.lightGrey};
+    width: 100%;
+    padding: 0.8em 1em;
+    border-radius: 2.5em;
+    border-style: solid;
+    font-size: ${theme.fonts.info};
+    @media ${device.tablet} {
+        width: 50%;
+    }
+`;
+
+export const StyledLabel = styled.label`
+    margin: 0 0 0.5em 1em;
+`;
