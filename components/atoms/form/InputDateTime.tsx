@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import { StyledInput, StyledLabel } from './InputText';
 
 interface InputDateTimeProps {
     id: string;
@@ -8,6 +8,7 @@ interface InputDateTimeProps {
     min: string;
     max?: string;
     children: ReactNode;
+    isInvalid?: string;
 }
 export const InputDateTime = ({
     id,
@@ -15,11 +16,12 @@ export const InputDateTime = ({
     onChange,
     min,
     max,
+    isInvalid,
     children,
 }: InputDateTimeProps) => {
     return (
         <>
-            <label htmlFor={id}>{children}</label>
+            <StyledLabel htmlFor={id}>{children}</StyledLabel>
             <StyledInput
                 id={id}
                 name={id}
@@ -27,12 +29,9 @@ export const InputDateTime = ({
                 value={value}
                 min={min}
                 max={max}
+                isInvalid={isInvalid}
                 onChange={onChange}
             />
         </>
     );
 };
-const StyledInput = styled.input`
-    width: 30%;
-    padding: 10px;
-`;

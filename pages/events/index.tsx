@@ -1,15 +1,11 @@
+import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
-
-// TODO: maybe load some data before page gets rendered, like session maybe?
-/*export const getServerSideProps: GetServerSideProps = async () => {
-    return {
-        props: { },
-    };
-};*/
+import { device } from '../../ThemeConfig';
 
 type Props = {
     events: EventProps[];
@@ -18,6 +14,7 @@ type Props = {
 const Events: React.FC<Props> = () => {
     const [events, setEvents] = useState(null);
     const [isLoading, setLoading] = useState(false);
+    const { data: session } = useSession();
 
     useEffect(() => {
         setLoading(true);
@@ -36,33 +33,37 @@ const Events: React.FC<Props> = () => {
 
     return (
         <Layout>
-            <div className="page">
+            <div>
                 <h1>Events</h1>
-                <main>
+                <EventsList>
                     {events &&
                         events.map((event) => (
-                            <div key={event.id} className="post">
-                                <ExtendedEventPreview event={event} />
-                            </div>
+                            <ExtendedEventPreview
+                                userIsHost={
+                                    session?.user?.userId === event.host.id ??
+                                    false
+                                }
+                                key={event.id}
+                                event={event}
+                            />
                         ))}
-                </main>
+                </EventsList>
             </div>
-            <style jsx>{`
-                .post {
-                    background: white;
-                    transition: box-shadow 0.1s ease-in;
-                }
-
-                .post:hover {
-                    box-shadow: 1px 1px 3px #aaa;
-                }
-
-                .post + .post {
-                    margin-top: 2rem;
-                }
-            `}</style>
         </Layout>
     );
 };
 
 export default Events;
+
+const EventsList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: auto;
+
+    @media ${device.tablet} {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+`;
