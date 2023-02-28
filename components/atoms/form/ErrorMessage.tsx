@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../../ThemeConfig';
+import { device, theme } from '../../../ThemeConfig';
 
 interface ErrorMessageProps {
     children: ReactNode;
@@ -12,6 +12,10 @@ export const ErrorMessage = ({ children }: ErrorMessageProps) => {
 
 const StyledSpan = styled.span`
     color: red;
-    font-size: ${theme.fonts.info};
+    font-size: ${theme.fonts.mobile.info};
     margin-left: 1.2em;
+
+    @media ${device.tablet} {
+        font-size: ${theme.fonts.normal.info};
+    }
 `;

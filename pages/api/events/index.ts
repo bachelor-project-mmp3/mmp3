@@ -51,11 +51,20 @@ export default async function handler(
             // TODO extend with query parameters for filtering later
             // GET events /api/events
             else if (req.method === 'GET') {
+                const today = new Date();
                 const events = await prisma.event.findMany({
                     include: {
                         host: {
-                            select: { firstName: true },
+                            select: {
+                                firstName: true,
+                                lastName: true,
+                                image: true,
+                            },
                         },
+                        menu: true,
+                    },
+                    where: {
+                        date: { gte: today },
                     },
                 });
 

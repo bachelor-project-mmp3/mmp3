@@ -52,9 +52,10 @@ export const StyledInput = styled.input<InputStyleProps>`
     padding: 0.8em 1em;
     border-radius: 2.5em;
     border-style: solid;
-    font-size: ${theme.fonts.info};
+    font-size: ${theme.fonts.mobile.info};
     @media ${device.tablet} {
         max-width: 50%;
+        font-size: ${theme.fonts.normal.info};
     }
 `;
 
