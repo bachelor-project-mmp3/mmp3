@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
+import styled from 'styled-components';
+import { device } from '../../../ThemeConfig';
 
-const EventForm: React.FC = () => {
-    return <div>TODO</div>;
+interface EventFormProps {
+    onSubmit: (e: any) => void;
+    children: ReactNode;
+}
+
+export const EventForm = ({ onSubmit, children }: EventFormProps) => {
+    return <StyledForm onSubmit={onSubmit}>{children}</StyledForm>;
 };
 
-export default EventForm;
+export const StyledForm = styled.form`
+    @media ${device.tablet} {
+        padding-left: 25%;
+    }
+`;

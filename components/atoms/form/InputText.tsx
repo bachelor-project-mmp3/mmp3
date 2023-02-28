@@ -48,16 +48,16 @@ export interface InputStyleProps {
 export const StyledInput = styled.input<InputStyleProps>`
     border-color: ${(props) =>
         props.isInvalid === 'true' ? theme.red : theme.lightGrey};
-    width: 100%;
+    max-width: 100%;
     padding: 0.8em 1em;
     border-radius: 2.5em;
     border-style: solid;
     font-size: ${theme.fonts.info};
     @media ${device.tablet} {
-        width: 50%;
+        max-width: 50%;
     }
 `;
 
 export const StyledLabel = styled.label`
-    margin: 0 0 0.5em 1em;
+    padding: 0 0 0.5em 1em;
 `;

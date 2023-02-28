@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { ErrorMessage } from '../../components/atoms/form/ErrorMessage';
 import { useSession } from 'next-auth/react';
 import { StyledLabel } from '../../components/atoms/form/InputText';
+import { EventForm } from '../../components/organisms/forms/EventForm';
 
 //maybe refactoring?
 function formatDateForDateInput(input) {
@@ -146,7 +147,7 @@ const CreateEvent: React.FC = () => {
         <Layout>
             <div>
                 <h1>Create Event</h1>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <EventForm onSubmit={handleSubmit(onSubmit)}>
                     <StyledInputWithError>
                         <InputText
                             onChange={(e) => {
@@ -338,7 +339,7 @@ const CreateEvent: React.FC = () => {
                         onClick={() => router.push('/')}>
                         or Cancel
                     </a>
-                </form>
+                </EventForm>
             </div>
         </Layout>
     );
