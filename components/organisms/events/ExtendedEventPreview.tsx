@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { theme } from '../../../ThemeConfig';
+import { device, theme } from '../../../ThemeConfig';
 import Crown from '../../../public/icons/krone.svg';
 
 export type EventProps = {
@@ -170,15 +170,27 @@ const DateAndTime = styled.div`
     position: relative;
     z-index: 10;
     font-size: ${theme.fonts.mobile.smallParagraph};
+    @media ${device.tablet} {
+        width: 50%;
+        font-size: ${theme.fonts.normal.smallParagraph};
+    }
 `;
 
 const EventTitle = styled.div`
     font-size: ${theme.fonts.mobile.headline4};
     font-weight: bold;
+    @media ${device.tablet} {
+        width: 50%;
+        font-size: ${theme.fonts.normal.headline4};
+    }
 `;
 
 const Costs = styled.div`
     font-size: ${theme.fonts.mobile.smallParagraph};
+    @media ${device.tablet} {
+        width: 50%;
+        font-size: ${theme.fonts.normal.smallParagraph};
+    }
 `;
 
 const TitleAndCostsWrapper = styled.div`
