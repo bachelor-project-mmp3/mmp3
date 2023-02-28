@@ -13,6 +13,6 @@ export const EventForm = ({ onSubmit, children }: EventFormProps) => {
 
 export const StyledForm = styled.form`
     @media ${device.tablet} {
-        padding-left: 25%;
+        padding: 0 25%;
     }
 `;
