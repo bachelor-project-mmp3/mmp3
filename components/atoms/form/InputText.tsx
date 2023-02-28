@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { theme, device } from '../../../ThemeConfig';
-import { switchCase } from '@babel/types';
 
 interface InputTextProps {
     id: string;
@@ -13,6 +12,7 @@ interface InputTextProps {
     required?: boolean;
     isInvalid?: string;
     variant?: 'center' | 'right';
+    padding?: 'left' | 'right';
 }
 
 export const InputText = ({
@@ -25,6 +25,7 @@ export const InputText = ({
     isInvalid,
     children,
     variant,
+    padding,
 }: InputTextProps) => {
     return (
         <>
@@ -34,6 +35,7 @@ export const InputText = ({
                 name={id}
                 type="text"
                 variant={variant}
+                padding={padding}
                 placeholder={placeholder}
                 value={value}
                 minLength={minLength}
@@ -48,6 +50,7 @@ export const InputText = ({
 export interface InputStyleProps {
     isInvalid: boolean;
     variant: 'center' | 'right';
+    padding: 'left' | 'right';
 }
 
 export const StyledInput = styled.input<InputStyleProps>`
@@ -61,9 +64,17 @@ export const StyledInput = styled.input<InputStyleProps>`
             ? 'right'
             : 'left'};
     max-width: 100%;
-    padding: 0.8em 1em;
-    border-radius: 2.5em;
-    border-style: solid;
+    padding: 13px 0;
+    padding-left: ${(props) => {
+        return props.padding === 'left' ? '45px' : '20px';
+    }};
+    padding-right: ${(props) => {
+        return props.padding === 'right' ? '45px' : '20px';
+    }};
+
+    border-radius: 40px;
+    border: none;
+    box-shadow: 8px 8px 20px -11px ${theme.darkGrey};
     font-size: ${theme.fonts.mobile.info};
     @media ${device.tablet} {
         font-size: ${theme.fonts.normal.info};
@@ -71,5 +82,5 @@ export const StyledInput = styled.input<InputStyleProps>`
 `;
 
 export const StyledLabel = styled.label`
-    padding: 0 0 0.5em 1em;
+    padding: 0 0 8px 18px;
 `;
