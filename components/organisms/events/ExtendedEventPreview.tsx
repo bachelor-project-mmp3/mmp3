@@ -9,6 +9,7 @@ import Seat from '../../../public/icons/sessel.svg';
 import Location from '../../../public/icons/location.svg';
 import MenuStar from '../../../public/icons/sternmenu.svg';
 import { Button } from '../../atoms/Button';
+import { useSession } from 'next-auth/react';
 
 export type EventProps = {
     id: string;
@@ -31,6 +32,13 @@ export type EventProps = {
         link: string;
         description: string;
         id: string;
+    }> | null;
+    requests: Array<{
+        info: string;
+        eventId: string;
+        userId: string;
+        id: string;
+        status: string;
     }> | null;
 };
 
@@ -69,19 +77,36 @@ const getFormattedTime = (date: string) => {
 
 const ExtendedEventPreview: React.FC<{
     event: EventProps;
-    userIsHost: boolean;
-}> = ({ event, userIsHost }) => {
+}> = ({ event }) => {
     const router = useRouter();
+    const { data: session } = useSession();
 
+    const timeLimit = getTimeLeftToJoin(event.timeLimit);
+    const date = getFormattedDate(event.date);
+    const time = getFormattedTime(event.date);
+    const userIsHost = session?.user?.userId === event.host.id ?? false;
     const hostName = event?.host.firstName
         ? event?.host.firstName
         : 'Unknown host';
 
-    const timeLimit = getTimeLeftToJoin(event.timeLimit);
+    const userHasJoined = event.requests.some(
+        (request) => request.userId === session?.user?.userId
+    );
 
-    const date = getFormattedDate(event.date);
-    const time = getFormattedTime(event.date);
-    console.log(userIsHost, 'userishost');
+    const onJoinEvent = async (eventId: string, userId: string) => {
+        const data = {
+            eventId: eventId,
+            userId: userId,
+        };
+
+        const res = await fetch('/api/requests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        router.replace(router.asPath);
+    };
 
     return (
         <CardWithDateTime>
@@ -134,11 +159,26 @@ const ExtendedEventPreview: React.FC<{
                         </DishEntry>
                     ))}
                 </Dishes>
-                <ButtonWrapper variant="primary" onClick={() => alert('TODO')}>
-                    <Button variant="primary" onClick={() => alert('TODO')}>
-                        Ask to join
-                    </Button>
-                </ButtonWrapper>
+                {!userIsHost && (
+                    <ButtonWrapper>
+                        {userHasJoined ? (
+                            <Button
+                                variant="primary"
+                                disabled
+                                onClick={() => alert('todo')}>
+                                Widthdraw
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="primary"
+                                onClick={() =>
+                                    onJoinEvent(event.id, session?.user?.userId)
+                                }>
+                                Ask to join
+                            </Button>
+                        )}
+                    </ButtonWrapper>
+                )}
             </Card>
         </CardWithDateTime>
     );
@@ -321,3 +361,13 @@ const Dishes = styled.div`
 const ButtonWrapper = styled.div`
     text-align: end;
 `;
+function useEffect(arg0: () => void, arg1: undefined[]) {
+    throw new Error('Function not implemented.');
+}
+
+function useState(arg0: string): [any, any] {
+    throw new Error('Function not implemented.');
+}
+function useCallback(arg0: () => Promise<void>, arg1: undefined[]) {
+    throw new Error('Function not implemented.');
+}

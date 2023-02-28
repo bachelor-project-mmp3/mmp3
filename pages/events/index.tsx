@@ -14,7 +14,6 @@ type Props = {
 const Events: React.FC<Props> = () => {
     const [events, setEvents] = useState(null);
     const [isLoading, setLoading] = useState(false);
-    const { data: session } = useSession();
 
     useEffect(() => {
         setLoading(true);
@@ -39,10 +38,6 @@ const Events: React.FC<Props> = () => {
                     {events &&
                         events.map((event) => (
                             <ExtendedEventPreview
-                                userIsHost={
-                                    session?.user?.userId === event.host.id ??
-                                    false
-                                }
                                 key={event.id}
                                 event={event}
                             />
