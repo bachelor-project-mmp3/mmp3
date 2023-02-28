@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import { StyledInput, StyledLabel } from './InputText';
 
 interface InputUrlProps {
     id: string;
@@ -18,7 +18,7 @@ export const InputUrl = ({
 }: InputUrlProps) => {
     return (
         <>
-            <label htmlFor={id}>{children}</label>
+            <StyledLabel htmlFor={id}>{children}</StyledLabel>
             <StyledInput
                 id={id}
                 name={id}
@@ -30,8 +30,3 @@ export const InputUrl = ({
         </>
     );
 };
-
-const StyledInput = styled.input`
-    width: 100%;
-    padding: 10px;
-`;
