@@ -13,6 +13,8 @@ import styled from 'styled-components';
 import { ErrorMessage } from '../../components/atoms/form/ErrorMessage';
 import { useSession } from 'next-auth/react';
 import { StyledLabel } from '../../components/atoms/form/InputText';
+import { EventForm } from '../../components/organisms/forms/EventForm';
+import { device, theme } from '../../ThemeConfig';
 
 //maybe refactoring?
 function formatDateForDateInput(input) {
@@ -145,8 +147,8 @@ const CreateEvent: React.FC = () => {
     return (
         <Layout>
             <div>
-                <h1>Create Event</h1>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <h1>Create a new Event</h1>
+                <EventForm onSubmit={handleSubmit(onSubmit)}>
                     <StyledInputWithError>
                         <InputText
                             onChange={(e) => {
@@ -187,17 +189,14 @@ const CreateEvent: React.FC = () => {
                             <ErrorMessage>Please enter a date</ErrorMessage>
                         )}
                     </StyledInputWithError>
+                    <StyledLabel>Location</StyledLabel>
                     <StyledInformation>
-                        <div>
-                            <StyledLabel>Location</StyledLabel>
-                            <div>
-                                The exact location will only be shared with
-                                guests
-                            </div>
-                        </div>
+                        <StyledInformationRight>
+                            The exact location will only be shared with guests
+                        </StyledInformationRight>
 
                         {dormitory && <div>{dormitory}</div>}
-                        {roomnumber && <div>Room No. {roomnumber}</div>}
+                        {roomnumber && <div>Room number: {roomnumber}</div>}
                     </StyledInformation>
                     <StyledInputWithError>
                         <InputDateTime
@@ -219,54 +218,60 @@ const CreateEvent: React.FC = () => {
                             </ErrorMessage>
                         )}
                     </StyledInputWithError>
-                    <StyledInputWithError>
-                        <InputNumber
-                            id="costs"
-                            placeholder="0"
-                            step="0.01"
-                            min="0"
-                            value={costs}
-                            onChange={(e) => {
-                                setValue('costs', e.target.value);
-                                setCosts(e.target.value);
-                            }}
-                            isInvalid={errors.title ? 'true' : 'false'}>
-                            Costs
-                        </InputNumber>
-                        {errors.costs && errors.costs.type === 'required' && (
-                            <ErrorMessage>
-                                Please enter the costs for your event
-                            </ErrorMessage>
-                        )}
-                        {errors.costs && errors.costs.type === 'max' && (
-                            <ErrorMessage>Must be maximum 99</ErrorMessage>
-                        )}
-                        {errors.costs && errors.costs.type === 'min' && (
-                            <ErrorMessage>Must be at least 0</ErrorMessage>
-                        )}
-                    </StyledInputWithError>
-                    <StyledInputWithError>
-                        <InputNumber
-                            id="guests"
-                            placeholder="0"
-                            min="0"
-                            value={capacity}
-                            onChange={(e) => {
-                                setValue('guests', e.target.value);
-                                setCapacity(e.target.value);
-                            }}
-                            isInvalid={errors.title ? 'true' : 'false'}>
-                            Guests
-                        </InputNumber>
-                        {errors.guests && errors.guests.type === 'required' && (
-                            <ErrorMessage>
-                                Please enter the number of guests
-                            </ErrorMessage>
-                        )}
-                        {errors.guests && errors.guests.type === 'min' && (
-                            <ErrorMessage>Must be at least 0</ErrorMessage>
-                        )}
-                    </StyledInputWithError>
+                    <StyledInputWithErrorNumbers>
+                        <StyledInputWithError className="small">
+                            <InputNumber
+                                id="costs"
+                                placeholder="0"
+                                step="0.01"
+                                min="0"
+                                value={costs}
+                                onChange={(e) => {
+                                    setValue('costs', e.target.value);
+                                    setCosts(e.target.value);
+                                }}
+                                isInvalid={errors.title ? 'true' : 'false'}
+                                variant={'right'}>
+                                Costs
+                            </InputNumber>
+                            {errors.costs &&
+                                errors.costs.type === 'required' && (
+                                    <ErrorMessage>
+                                        Please enter the costs for your event
+                                    </ErrorMessage>
+                                )}
+                            {errors.costs && errors.costs.type === 'max' && (
+                                <ErrorMessage>Must be maximum 99</ErrorMessage>
+                            )}
+                            {errors.costs && errors.costs.type === 'min' && (
+                                <ErrorMessage>Must be at least 0</ErrorMessage>
+                            )}
+                        </StyledInputWithError>
+                        <StyledInputWithError className="small">
+                            <InputNumber
+                                id="guests"
+                                placeholder="0"
+                                min="0"
+                                value={capacity}
+                                onChange={(e) => {
+                                    setValue('guests', e.target.value);
+                                    setCapacity(e.target.value);
+                                }}
+                                isInvalid={errors.title ? 'true' : 'false'}
+                                variant="center">
+                                Guests
+                            </InputNumber>
+                            {errors.guests &&
+                                errors.guests.type === 'required' && (
+                                    <ErrorMessage>
+                                        Please enter the number of guests
+                                    </ErrorMessage>
+                                )}
+                            {errors.guests && errors.guests.type === 'min' && (
+                                <ErrorMessage>Must be at least 0</ErrorMessage>
+                            )}
+                        </StyledInputWithError>
+                    </StyledInputWithErrorNumbers>
                     <StyledInputWithError>
                         <InputTextarea
                             id="information"
@@ -338,7 +343,7 @@ const CreateEvent: React.FC = () => {
                         onClick={() => router.push('/')}>
                         or Cancel
                     </a>
-                </form>
+                </EventForm>
             </div>
         </Layout>
     );
@@ -346,13 +351,41 @@ const CreateEvent: React.FC = () => {
 
 export default CreateEvent;
 
-const StyledInputWithError = styled.div`
+// const StyledInputWithError = styled.div.attrs(() => ({ tabIndex: 0 }))`
+//     display: flex;
+//     flex-direction: column;
+//     margin-bottom: 1.7em;
+// `;
+const StyledInputWithError = styled.div.attrs((/* props */) => ({
+    tabIndex: 0,
+}))`
     display: flex;
     flex-direction: column;
-    width: 100%;
-    margin-bottom: 1.5em;
+    margin-bottom: 1.7em;
+    &.small {
+        width: 45%; // <Thing> tagged with an additional CSS class ".something"
+    }
 `;
 
 const StyledInformation = styled.div`
-    margin: 0 0 0.5em 1em;
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 0.5em 2em;
+`;
+
+const StyledInformationRight = styled.div`
+    text-align: right;
+    color: ${theme.darkGrey};
+    padding-bottom: 10px;
+    @media ${device.tablet} {
+        font-size: ${theme.fonts.normal.info};
+    }
+    font-size: ${theme.fonts.mobile.info};
+`;
+
+const StyledInputWithErrorNumbers = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1.7em;
+    justify-content: space-between;
 `;
