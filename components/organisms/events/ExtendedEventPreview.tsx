@@ -13,6 +13,11 @@ export type EventProps = {
     id: string;
     title: string;
     info?: string;
+    timeLimit: string;
+    date: string;
+    costs: number;
+    currentParticipants: number;
+    capacity: number;
     host: {
         firstName: string;
         lastName: string;
