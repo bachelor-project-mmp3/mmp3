@@ -8,7 +8,7 @@ interface InputTextProps {
     placeholder?: string;
     value: string;
     onChange?: (e: any) => void;
-    children: ReactNode;
+    children?: ReactNode;
     minLength?: 3;
     required?: boolean;
     isInvalid?: string;
@@ -64,6 +64,8 @@ export const StyledInput = styled.input<InputStyleProps>`
     padding: 0.8em 1em;
     border-radius: 2.5em;
     border-style: solid;
+    border: none;
+    box-shadow: 8px 8px 20px -11px ${theme.darkGrey};
     font-size: ${theme.fonts.mobile.info};
     @media ${device.tablet} {
         font-size: ${theme.fonts.normal.info};

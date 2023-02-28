@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
-import { useSession } from 'next-auth/react';
 import Router, { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import { uploadImage } from '../../api/helper/uploadHelper';
 import { InputFile } from '../../../components/atoms/form/InputFile';
 import { SubmitButton } from '../../../components/atoms/form/SubmitButton';
 import { InputText } from '../../../components/atoms/form/InputText';
 import { InputTextarea } from '../../../components/atoms/form/InputTextarea';
-import { Text } from '../../../components/atoms/Text';
 import { Checkbox } from '../../../components/atoms/form/Checkbox';
 import { useForm } from 'react-hook-form';
 import { ErrorMessage } from '../../../components/atoms/form/ErrorMessage';
-import { Button } from '../../../components/atoms/Button';
+import { Select } from '../../../components/atoms/form/Select';
+import { ProfileForm } from '../../../components/organisms/forms/ProfileForm';
+import Link from 'next/link';
 import styled from 'styled-components';
-import Select from '../../../components/atoms/form/Select';
+import Instagram from '../../../public/icons/insta.svg';
+import Phone from '../../../public/icons/phone.svg';
+import Info from '../../../public/icons/phone.svg';
 
 const Profile: React.FC = () => {
     const { data: session } = useSession();
@@ -78,7 +81,7 @@ const Profile: React.FC = () => {
         register('lastName', { required: true, minLength: 3 });
         register('roomNumber', { required: true });
         register('privacy', { required: true });
-    }, [register, router.isReady, router.query.id]);
+    }, [register, router.isReady, router.query.id, setValue]);
 
     if (isLoading) return <p>Loading...</p>;
     if (!profile) return <p>No profile</p>;
@@ -119,18 +122,18 @@ const Profile: React.FC = () => {
         <Layout>
             <div>
                 <h1>Edit Profile</h1>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <StyledInputWithError>
+                <ProfileForm onSubmit={handleSubmit(onSubmit)}>
+                    <StyledDiv>
                         <InputFile
                             id="image"
                             onChange={(e) => {
                                 setImage(e.target.files[0]);
                             }}></InputFile>
-                    </StyledInputWithError>
+                    </StyledDiv>
 
                     {/* TODO: Validation for Photo */}
 
-                    <StyledInputWithError>
+                    <StyledDiv>
                         <InputText
                             onChange={(e) => {
                                 setValue('firstName', e.target.value);
@@ -140,7 +143,7 @@ const Profile: React.FC = () => {
                             placeholder="firstName"
                             value={firstName}
                             isInvalid={errors.firstName ? 'true' : 'false'}>
-                            Firstname
+                            Firstname*
                         </InputText>
 
                         {/*errors will return when field validation fails  */}
@@ -157,9 +160,9 @@ const Profile: React.FC = () => {
                                     characters
                                 </ErrorMessage>
                             )}
-                    </StyledInputWithError>
+                    </StyledDiv>
 
-                    <StyledInputWithError>
+                    <StyledDiv>
                         <InputText
                             onChange={(e) => {
                                 setValue('lastName', e.target.value);
@@ -169,7 +172,7 @@ const Profile: React.FC = () => {
                             placeholder="lastName"
                             value={lastName}
                             isInvalid={errors.lastName ? 'true' : 'false'}>
-                            Lastname
+                            Lastname*
                         </InputText>
                         {/*errors will return when field validation fails  */}
                         {errors.lastName &&
@@ -185,12 +188,14 @@ const Profile: React.FC = () => {
                                     characters
                                 </ErrorMessage>
                             )}
-                    </StyledInputWithError>
+                    </StyledDiv>
 
-                    <Text>Course of studies: {profile.study}</Text>
-                    <Text>FH email adress: {profile.email}</Text>
+                    <StyledText>
+                        <p>Course of studies: {profile.study}</p>
+                        <p>FH email adress: {profile.email}</p>
+                    </StyledText>
 
-                    <StyledInputWithError>
+                    <StyledDiv>
                         <Select
                             id="dormitory"
                             options={dormitories}
@@ -199,11 +204,11 @@ const Profile: React.FC = () => {
                                 setValue('dormitory', e.target.value);
                                 setDormitory(e.target.value);
                             }}>
-                            Accommodation
+                            Accommodation*
                         </Select>
-                    </StyledInputWithError>
+                    </StyledDiv>
 
-                    <StyledInputWithError>
+                    <StyledDiv>
                         <InputText
                             onChange={(e) => {
                                 setValue('roomNumber', e.target.value);
@@ -213,7 +218,7 @@ const Profile: React.FC = () => {
                             placeholder="000"
                             value={roomNumber}
                             isInvalid={errors.roomNumber ? 'true' : 'false'}>
-                            Room number
+                            Room number*
                         </InputText>
 
                         {/*errors will return when field validation fails  */}
@@ -223,9 +228,8 @@ const Profile: React.FC = () => {
                                     Please enter a room number
                                 </ErrorMessage>
                             )}
-                    </StyledInputWithError>
-
-                    <StyledInputWithError>
+                    </StyledDiv>
+                    <StyledDiv>
                         <InputTextarea
                             id="aboutYou"
                             cols={50}
@@ -235,9 +239,10 @@ const Profile: React.FC = () => {
                             onChange={(e) => setAboutYou(e.target.value)}>
                             About you
                         </InputTextarea>
-                    </StyledInputWithError>
+                    </StyledDiv>
 
-                    <StyledInputWithError>
+                    <StyledDiv>
+                        <StyledInstagram />
                         <InputText
                             onChange={(e) => {
                                 setValue('instagram', e.target.value);
@@ -246,11 +251,12 @@ const Profile: React.FC = () => {
                             id="instagram"
                             placeholder="Enter your instagram username"
                             value={instagram}>
-                            Instagram
+                            Contact Information
                         </InputText>
-                    </StyledInputWithError>
+                    </StyledDiv>
 
-                    <StyledInputWithError>
+                    <StyledDiv>
+                        <StyledPhone />
                         <InputText
                             onChange={(e) => {
                                 setValue('phone', e.target.value);
@@ -258,19 +264,20 @@ const Profile: React.FC = () => {
                             }}
                             id="phone"
                             placeholder="+43 123 45 67 890"
-                            value={phone}>
-                            Phone
-                        </InputText>
-                    </StyledInputWithError>
+                            value={phone}></InputText>
+                    </StyledDiv>
 
-                    <StyledInputWithError>
-                        <Checkbox
-                            id="privacy"
-                            onChange={(e) => {
-                                setValue('privacy', e.target.value);
-                            }}>
-                            I have read and agree to the privacy policy
-                        </Checkbox>
+                    <StyledDiv>
+                        <StyledWrapper>
+                            <Checkbox
+                                id="privacy"
+                                onChange={(e) => {
+                                    setValue('privacy', e.target.value);
+                                }}>
+                                I have read and agree to the{' '}
+                                <Link href="/privacy">privacy policy</Link>
+                            </Checkbox>
+                        </StyledWrapper>
                         {/*errors will return when field validation fails */}
                         {errors.privacy &&
                             errors.privacy.type === 'required' && (
@@ -278,9 +285,9 @@ const Profile: React.FC = () => {
                                     Please accept privacy
                                 </ErrorMessage>
                             )}
-                    </StyledInputWithError>
+                    </StyledDiv>
                     <SubmitButton></SubmitButton>
-                </form>
+                </ProfileForm>
             </div>
         </Layout>
     );
@@ -288,9 +295,34 @@ const Profile: React.FC = () => {
 
 export default Profile;
 
-const StyledInputWithError = styled.div`
+const StyledText = styled.div`
+    padding: 0 0 0.5em 1em;
+`;
+
+const StyledDiv = styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
     margin-bottom: 1.5em;
+`;
+
+const StyledWrapper = styled.div`
+    display: flex;
+`;
+
+const StyledInstagram = styled(Instagram)`
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    bottom: 12px;
+    left: 20px;
+`;
+
+const StyledPhone = styled(Phone)`
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    bottom: 12px;
+    left: 20px;
 `;

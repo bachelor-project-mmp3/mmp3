@@ -22,7 +22,7 @@ export const Checkbox = ({ id, onChange, children }: CheckboxProps) => {
 };
 
 const StyledInput = styled.input`
-    width: 20%;
+    width: 20px;
+    height: 20px;
+    margin-right: 20px;
 `;
-
-export default Checkbox;

@@ -20,7 +20,7 @@ export const InputFile = ({ id, onChange }: InputFileProps) => {
     );
 };
 
-const StyledInputFile = styled.input`
+export const StyledInputFile = styled.input`
     padding: 10px;
 `;
 
