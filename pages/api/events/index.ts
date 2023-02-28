@@ -65,6 +65,7 @@ export default async function handler(
                                 lastName: true,
                                 image: true,
                                 dormitory: true,
+                                id: true,
                             },
                         },
                         menu: true,

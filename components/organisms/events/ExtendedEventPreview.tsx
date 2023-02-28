@@ -30,7 +30,6 @@ export type EventProps = {
 
 const getTimeLeftToJoin = (timeLimit: string) => {
     const today = new Date();
-    console.log('now', today.toISOString());
     const timeLimitDate = new Date(timeLimit);
     const leftTimeToJoin = timeLimitDate.getTime() - today.getTime();
     const differenceInDays = Math.floor(leftTimeToJoin / (1000 * 3600 * 24));
@@ -62,7 +61,10 @@ const getFormattedTime = (date: string) => {
     return timeString;
 };
 
-const ExtendedEventPreview: React.FC<{ event: EventProps }> = ({ event }) => {
+const ExtendedEventPreview: React.FC<{
+    event: EventProps;
+    userIsHost: boolean;
+}> = ({ event, userIsHost }) => {
     const router = useRouter();
 
     const hostName = event?.host.firstName
@@ -73,7 +75,7 @@ const ExtendedEventPreview: React.FC<{ event: EventProps }> = ({ event }) => {
 
     const date = getFormattedDate(event.date);
     const time = getFormattedTime(event.date);
-    console.log(event.host.dormitory, 'dormitory');
+    console.log(userIsHost, 'userishost');
 
     return (
         <CardWithDateTime>
@@ -108,7 +110,7 @@ const ExtendedEventPreview: React.FC<{ event: EventProps }> = ({ event }) => {
                 {event.host.image && (
                     <>
                         <StyledCrown />
-                        <HostImage>
+                        <HostImage userIsHost={userIsHost}>
                             <StyledImage
                                 src={event.host.image}
                                 alt="Image"
@@ -168,13 +170,19 @@ const Card = styled.div`
     }
 `;
 
-const HostImage = styled.div`
+interface HostImageProps {
+    userIsHost: boolean;
+}
+
+const HostImage = styled.div<HostImageProps>`
     position: absolute;
     top: -16px;
     right: 32px;
     border-radius: 50%;
     width: 64px;
     height: 64px;
+    border: ${(props) =>
+        props.userIsHost ? '5px solid ' + theme.green : 'none'};
 `;
 
 const StyledImage = styled(Image)`
