@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { device, theme } from '../../../ThemeConfig';
+import { theme } from '../../../ThemeConfig';
 
 interface ErrorMessageProps {
     children: ReactNode;
@@ -15,7 +15,7 @@ const StyledSpan = styled.span`
     font-size: ${theme.fonts.mobile.info};
     margin-left: 20px;
 
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${theme.fonts.normal.info};
     }
 `;

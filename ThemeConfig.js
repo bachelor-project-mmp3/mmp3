@@ -1,10 +1,16 @@
 import { createGlobalStyle } from 'styled-components';
 
+const size = {
+    tablet: '768px',
+};
+
 export const theme = {
     body: '#FFFFFF',
     text: '#343434',
     red: '#EF4B4B',
+    hoverRed: '#8a0606',
     primary: '#F3B151',
+    hoverPrimary: '#e68a05',
     green: '#A9E6A6',
     orange: '#FCC372',
     backgroundLightGreen: '#DBFFB7',
@@ -41,14 +47,9 @@ export const theme = {
             caption: '16px',
         },
     },
-};
-
-const size = {
-    tablet: '768px',
-};
-
-export const device = {
-    tablet: `(min-width: ${size.tablet})`,
+    breakpoint: {
+        tablet: `(min-width: ${size.tablet})`,
+    },
 };
 
 export const GlobalStyles = createGlobalStyle`
@@ -75,7 +76,7 @@ export const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
-    @media ${device.tablet} {
+    @media ${({ theme }) => theme.breakpoint.tablet} {
       font-size: ${({ theme }) => theme.fonts.normal.paragraph};
   }
     color: ${({ theme }) => theme.text};

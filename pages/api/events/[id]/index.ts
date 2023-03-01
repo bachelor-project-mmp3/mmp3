@@ -36,6 +36,7 @@ export default async function handler(
                                 link: true,
                             },
                         },
+                        requests: true,
                     },
                 });
                 res.status(200).json({ event: event });

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { theme, device } from '../../../ThemeConfig';
+import { theme } from '../../../ThemeConfig';
 
 interface InputTextProps {
     id: string;
@@ -76,7 +76,8 @@ export const StyledInput = styled.input<InputStyleProps>`
     border: none;
     box-shadow: 8px 8px 20px -11px ${theme.darkGrey};
     font-size: ${theme.fonts.mobile.info};
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        width: 50%;
         font-size: ${theme.fonts.normal.info};
     }
 `;
