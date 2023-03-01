@@ -204,44 +204,60 @@ const Profile: React.FC = () => {
 
                     <StyledText>
                         <p>Course of studies: {profile.study}</p>
-                        <p>FH email adress: {profile.email}</p>
-                        <Info>Only visible for your guests of your event</Info>
+
+                        <StyledEmail>
+                            FH email adress: {profile.email}
+                        </StyledEmail>
+
+                        <Info>
+                            The email adress will only be shared with guests
+                        </Info>
                     </StyledText>
 
-                    <StyledDiv>
-                        <Select
-                            id="dormitory"
-                            options={dormitories}
-                            selected={dormitory}
-                            onChange={(e) => {
-                                setValue('dormitory', e.target.value);
-                                setDormitory(e.target.value);
-                            }}>
-                            Accommodation*
-                        </Select>
-                    </StyledDiv>
+                    <StyledDormitory>
+                        <StyledDiv className="small">
+                            <Select
+                                id="dormitory"
+                                options={dormitories}
+                                selected={dormitory}
+                                onChange={(e) => {
+                                    setValue('dormitory', e.target.value);
+                                    setDormitory(e.target.value);
+                                }}>
+                                Accommodation*
+                            </Select>
+                        </StyledDiv>
 
-                    <StyledDiv>
-                        <InputText
-                            onChange={(e) => {
-                                setValue('roomNumber', e.target.value);
-                                setRoomNumber(e.target.value);
-                            }}
-                            id="roomNumber"
-                            placeholder="000"
-                            value={roomNumber}
-                            isInvalid={errors.roomNumber ? 'true' : 'false'}>
-                            Room number*
-                        </InputText>
+                        <StyledDiv className="small">
+                            <InputText
+                                onChange={(e) => {
+                                    setValue('roomNumber', e.target.value);
+                                    setRoomNumber(e.target.value);
+                                }}
+                                id="roomNumber"
+                                placeholder="000"
+                                value={roomNumber}
+                                isInvalid={
+                                    errors.roomNumber ? 'true' : 'false'
+                                }>
+                                Room number*
+                            </InputText>
 
-                        {/*errors will return when field validation fails  */}
-                        {errors.roomNumber &&
-                            errors.roomNumber.type === 'required' && (
-                                <ErrorMessage>
-                                    Please enter a room number
-                                </ErrorMessage>
-                            )}
-                    </StyledDiv>
+                            {/*errors will return when field validation fails  */}
+                            {errors.roomNumber &&
+                                errors.roomNumber.type === 'required' && (
+                                    <ErrorMessage>
+                                        Please enter a room number
+                                    </ErrorMessage>
+                                )}
+                            <StyledInfo>
+                                <Info>
+                                    The room number will only be shared with
+                                    guests
+                                </Info>
+                            </StyledInfo>
+                        </StyledDiv>
+                    </StyledDormitory>
                     <StyledDiv>
                         <InputTextarea
                             id="aboutYou"
@@ -269,7 +285,7 @@ const Profile: React.FC = () => {
                         </InputText>
                     </StyledContactBlock>
 
-                    <StyledDiv>
+                    <StyledDivPhone>
                         <StyledPhone />
                         <InputText
                             onChange={(e) => {
@@ -280,7 +296,12 @@ const Profile: React.FC = () => {
                             placeholder="+43 123 45 67 890"
                             value={phone}
                             padding="left"></InputText>
-                    </StyledDiv>
+                    </StyledDivPhone>
+                    <StyledInfo>
+                        <Info>
+                            The phone number will only be shared with guests
+                        </Info>
+                    </StyledInfo>
 
                     <StyledDiv>
                         <StyledWrapper>
@@ -330,6 +351,22 @@ const StyledDiv = styled.div`
     flex-direction: column;
     width: 100%;
     margin-bottom: 1.5em;
+    @media ${device.tablet} {
+        &.small {
+            width: 45%;
+        }
+    }
+`;
+
+const StyledEmail = styled.p`
+    margin-bottom: 5px;
+`;
+
+const StyledDivPhone = styled.div`
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 `;
 
 const StyledContactBlock = styled.div`
@@ -337,6 +374,16 @@ const StyledContactBlock = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+`;
+
+const StyledDormitory = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    @media ${device.tablet} {
+        flex-wrap: no-wrap;
+    }
 `;
 
 const StyledWrapper = styled.div`
@@ -373,4 +420,9 @@ const TextRequired = styled.p`
 const ButtonWrapper = styled.div`
     display: flex;
     justify-content: space-around;
+`;
+
+const StyledInfo = styled.div`
+    padding: 0 0 8px 18px;
+    margin-top: 10px;
 `;

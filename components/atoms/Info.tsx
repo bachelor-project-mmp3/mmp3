@@ -1,48 +1,36 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../ThemeConfig';
 import InfoIcon from '../../public/icons/info.svg';
+import { device, theme } from '../../ThemeConfig.js';
 
 interface InfoProps {
     children: ReactNode;
 }
 
 export const Info = ({ children }: InfoProps) => {
-    const [isOpen, setIsOpen] = useState(false);
-
     return (
         <>
             <StyledWrapper>
-                {isOpen && (
-                    <>
-                        <StyledInfoBox>{children}</StyledInfoBox>
-                    </>
-                )}
-                <StyledIcon
-                    onClick={() =>
-                        isOpen ? setIsOpen(false) : setIsOpen(true)
-                    }
-                />
+                <StyledIcon />
+                {children}
             </StyledWrapper>
         </>
     );
 };
 
 const StyledWrapper = styled.div`
-    position: relative;
-`;
-
-const StyledInfoBox = styled.div`
-    padding: 10px;
-    background: ${theme.cremeLight};
-    width: 50%;
-    position: absolute;
-    z-index: 1;
-    left: 25px;
-    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    color: ${theme.darkGrey};
+    padding-bottom: 10px;
+    @media ${device.tablet} {
+        font-size: ${theme.fonts.normal.info};
+    }
+    font-size: ${theme.fonts.mobile.info};
 `;
 
 const StyledIcon = styled(InfoIcon)`
-    height: 16px;
-    width: 16px;
+    height: 15px;
+    width: 15px;
 `;
