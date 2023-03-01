@@ -13,7 +13,7 @@ import { ErrorMessage } from '../../components/atoms/form/ErrorMessage';
 import { useSession } from 'next-auth/react';
 import { StyledLabel } from '../../components/atoms/form/InputText';
 import { EventForm } from '../../components/organisms/forms/EventForm';
-import { device, theme } from '../../ThemeConfig';
+import { Button } from '../../components/atoms/Button';
 import AddDishIcon from '../../public/icons/addDish.svg';
 import DiscardIcon from '../../public/icons/discard.svg';
 import LinkIcon from '../../public/icons/link.svg';
@@ -336,12 +336,9 @@ const CreateEvent: React.FC = () => {
                         );
                     })}
                     <StyledFormComponentsInRow>
-                        <a
-                            className="back"
-                            href="#"
-                            onClick={() => router.push('/')}>
+                        <Button variant="red" onClick={() => router.push(`/`)}>
                             Cancel
-                        </a>
+                        </Button>
                         <SubmitButton value="Create event"></SubmitButton>
                     </StyledFormComponentsInRow>
                 </StyledMenuInput>
@@ -372,12 +369,12 @@ const StyledInformation = styled.div`
 
 const StyledInformationRight = styled.div`
     text-align: right;
-    color: ${theme.darkGrey};
+    color: ${({ theme }) => theme.darkGrey};
     padding-bottom: 10px;
-    @media ${device.tablet} {
-        font-size: ${theme.fonts.normal.info};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.info};
     }
-    font-size: ${theme.fonts.mobile.info};
+    font-size: ${({ theme }) => theme.fonts.mobile.info};
 `;
 
 const StyledFormComponentsInRow = styled.div`
@@ -391,7 +388,7 @@ const StyledMenuInputItem = styled.div`
 `;
 
 const StyledMenuInput = styled.div`
-    background-color: ${theme.backgroundLightestOrange};
+    background-color: ${({ theme }) => theme.backgroundLightestOrange};
     border-radius: 25px 25px 0 0;
     padding: 20px 20px 40px 20px;
 `;
@@ -416,7 +413,7 @@ const StyledDeleteButton = styled(DiscardIcon)`
     cursor: pointer;
     right: 20px;
     top: 45px;
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         top: 47px;
     }
 `;
@@ -427,13 +424,13 @@ const StyledLinkIcon = styled(LinkIcon)`
     width: 16px;
     left: 20px;
     top: 145px;
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         top: 154px;
     }
 `;
 
 const StyledHR = styled.hr`
-    border-top: 2px solid ${theme.midGrey};
+    border-top: 2px solid ${({ theme }) => theme.midGrey};
     border-radius: 4px;
     width: 90%;
     margin-bottom: 20px;

@@ -69,6 +69,7 @@ export default async function handler(
                             },
                         },
                         menu: true,
+                        requests: true,
                     },
                     where: {
                         date: { gte: today },

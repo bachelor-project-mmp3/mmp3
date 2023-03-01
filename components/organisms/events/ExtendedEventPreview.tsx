@@ -2,12 +2,13 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { device, theme } from '../../../ThemeConfig';
 import Crown from '../../../public/icons/krone.svg';
 import Clock from '../../../public/icons/uhr.svg';
 import Seat from '../../../public/icons/sessel.svg';
 import Location from '../../../public/icons/location.svg';
 import MenuStar from '../../../public/icons/sternmenu.svg';
+import { Button } from '../../atoms/Button';
+import { useSession } from 'next-auth/react';
 
 export type EventProps = {
     id: string;
@@ -19,6 +20,7 @@ export type EventProps = {
     currentParticipants: number;
     capacity: number;
     host: {
+        id: string;
         firstName: string;
         lastName: string;
         email: string;
@@ -30,6 +32,13 @@ export type EventProps = {
         link: string;
         description: string;
         id: string;
+    }> | null;
+    requests: Array<{
+        info: string;
+        eventId: string;
+        userId: string;
+        id: string;
+        status: string;
     }> | null;
 };
 
@@ -68,19 +77,36 @@ const getFormattedTime = (date: string) => {
 
 const ExtendedEventPreview: React.FC<{
     event: EventProps;
-    userIsHost: boolean;
-}> = ({ event, userIsHost }) => {
+}> = ({ event }) => {
     const router = useRouter();
+    const { data: session } = useSession();
 
+    const timeLimit = getTimeLeftToJoin(event.timeLimit);
+    const date = getFormattedDate(event.date);
+    const time = getFormattedTime(event.date);
+    const userIsHost = session?.user?.userId === event.host.id ?? false;
     const hostName = event?.host.firstName
         ? event?.host.firstName
         : 'Unknown host';
 
-    const timeLimit = getTimeLeftToJoin(event.timeLimit);
+    const userHasJoined = event.requests.some(
+        (request) => request.userId === session?.user?.userId
+    );
 
-    const date = getFormattedDate(event.date);
-    const time = getFormattedTime(event.date);
-    console.log(userIsHost, 'userishost');
+    const onJoinEvent = async (eventId: string, userId: string) => {
+        const data = {
+            eventId: eventId,
+            userId: userId,
+        };
+
+        const res = await fetch('/api/requests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        router.replace(router.asPath);
+    };
 
     return (
         <CardWithDateTime>
@@ -133,6 +159,26 @@ const ExtendedEventPreview: React.FC<{
                         </DishEntry>
                     ))}
                 </Dishes>
+                {!userIsHost && (
+                    <ButtonWrapper>
+                        {userHasJoined ? (
+                            <Button
+                                variant="primary"
+                                disabled
+                                onClick={() => alert('todo')}>
+                                Widthdraw
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="primary"
+                                onClick={() =>
+                                    onJoinEvent(event.id, session?.user?.userId)
+                                }>
+                                Ask to join
+                            </Button>
+                        )}
+                    </ButtonWrapper>
+                )}
             </Card>
         </CardWithDateTime>
     );
@@ -146,8 +192,10 @@ const CardWithDateTime = styled.div`
     margin-left: auto;
     margin-right: auto;
 
-    @media ${device.tablet} {
-        flex-basis: 50%;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        flex: 0 0 45%;
+        width: 45%;
+        max-width: 45%;
         min-width: 500px;
         margin-left: 0;
         margin-right: 0;
@@ -158,10 +206,11 @@ const Card = styled.div`
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
     border-bottom-left-radius: 40px;
-    box-shadow: 17px 17px 35px -11px ${theme.darkGrey};
+    box-shadow: 17px 17px 35px -11px ${({ theme }) => theme.darkGrey};
     padding: 10px 20px 20px 20px;
     position: relative;
     background: white;
+    height: 220px;
 
     &:before {
         content: '';
@@ -172,6 +221,10 @@ const Card = styled.div`
         top: -25px;
         left: 0;
         z-index: 1;
+    }
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        height: 260px;
     }
 `;
 
@@ -187,7 +240,7 @@ const HostImage = styled.div<HostImageProps>`
     width: 64px;
     height: 64px;
     border: ${(props) =>
-        props.userIsHost ? '5px solid ' + theme.green : 'none'};
+        props.userIsHost ? '5px solid ' + props.theme.green : 'none'};
 `;
 
 const StyledImage = styled(Image)`
@@ -229,39 +282,39 @@ const DateAndTime = styled.div`
     justify-content: space-between;
     padding: 8px 16px;
     gap: 24px;
-    background-color: ${theme.orange};
+    background-color: ${({ theme }) => theme.orange};
     border-top-right-radius: 16px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 32px;
     width: 208px;
     position: relative;
     z-index: 10;
-    font-size: ${theme.fonts.mobile.smallParagraph};
-    @media ${device.tablet} {
-        font-size: ${theme.fonts.normal.smallParagraph};
+    font-size: ${({ theme }) => theme.fonts.mobile.smallParagrap};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
         width: 250px;
     }
 `;
 
 const EventTitle = styled.div`
-    font-size: ${theme.fonts.mobile.headline4};
+    font-size: ${({ theme }) => theme.fonts.mobile.headline4};
     font-weight: bold;
     overflow: hidden;
     display: inline-block;
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    @media ${device.tablet} {
-        font-size: ${theme.fonts.normal.headline4};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline4};
     }
 `;
 
 const Costs = styled.div`
-    font-size: ${theme.fonts.mobile.smallParagraph};
+    font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     flex-basis: 50px;
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         width: 50%;
-        font-size: ${theme.fonts.normal.smallParagraph};
+        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
     }
 `;
 
@@ -275,7 +328,7 @@ const TitleAndCostsWrapper = styled.div`
 `;
 
 const TimeLimitAndSeatsWrapper = styled.div`
-    color: ${theme.midGrey};
+    color: ${({ theme }) => theme.midGrey};
 `;
 
 const TimeLimitAndSeatsRow = styled.div`
@@ -310,4 +363,8 @@ const DishEntry = styled.div`
 const Dishes = styled.div`
     display: flex;
     gap: 10px;
+`;
+
+const ButtonWrapper = styled.div`
+    text-align: end;
 `;
