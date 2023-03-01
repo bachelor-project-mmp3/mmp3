@@ -118,7 +118,6 @@ const CreateEvent: React.FC = () => {
         ]);
     };
     const onSubmit = async () => {
-        console.log('Hallo');
         try {
             const body = {
                 title,
@@ -310,7 +309,7 @@ const CreateEvent: React.FC = () => {
                                     <InputTextarea
                                         id="description"
                                         cols={50}
-                                        rows={8}
+                                        rows={5}
                                         placeholder="Add any information about the dish"
                                         value={currentDish.description}
                                         onChange={(e) => handleChange(e, i)}>

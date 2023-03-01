@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
-import { Button } from '../../../components/atoms/Button';
-import Router, { useRouter } from 'next/router';
-
-async function deleteEvent(id: string): Promise<void> {
-    await fetch(`/api/events/${id}`, {
-        method: 'DELETE',
-    });
-    // replace url, because event doesn't exist anymore
-    Router.replace('/events');
-}
+import { useRouter } from 'next/router';
+import { Head } from '../../../components/organisms/Head';
 
 // TODO: maybe load some data before page gets rendered, like session maybe?
 /*export const getServerSideProps: GetServerSideProps = async () => {
@@ -18,7 +10,7 @@ async function deleteEvent(id: string): Promise<void> {
     };
 };*/
 
-type EventProps = {
+export type EventProps = {
     id: string;
     title: string;
     info?: string;
@@ -34,7 +26,7 @@ type EventProps = {
     }[];
 };
 
-interface EventDetailProps {
+export interface EventDetailProps {
     event: EventProps;
 }
 
@@ -64,33 +56,21 @@ const EventDetail: React.FC<EventDetailProps> = () => {
 
     return (
         <Layout>
-            <div>
-                <h1>Event Details</h1>
-                <h2>{event.title}</h2>
-                <p>Host: {event.host?.firstName}</p>
-                <p>Infos: {event.info}</p>
-                {event.menu.map((dish, index) => (
-                    <div key={dish.id} className="dish">
-                        <>
-                            <p>{index + 1}. Gang</p>
-                            <p>Titel:{dish.title}</p>
-                            {dish.description && (
-                                <p>Beschreibung: {dish.description}</p>
-                            )}
-                            {dish.link && <p>Link: {dish.link}</p>}
-                        </>
-                    </div>
-                ))}
-            </div>
-            <Button variant={'primary'} onClick={() => deleteEvent(event.id)}>
-                Delete event
-            </Button>
-            <style jsx>{`
-                .page {
-                    background: white;
-                    padding: 2rem;
-                }
-            `}</style>
+            <Head backButton>{event.title}</Head>
+            <p>Host: {event.host?.firstName}</p>
+            <p>Infos: {event.info}</p>
+            {event.menu.map((dish, index) => (
+                <div key={dish.id} className="dish">
+                    <>
+                        <p>{index + 1}. Gang</p>
+                        <p>Titel:{dish.title}</p>
+                        {dish.description && (
+                            <p>Beschreibung: {dish.description}</p>
+                        )}
+                        {dish.link && <p>Link: {dish.link}</p>}
+                    </>
+                </div>
+            ))}
         </Layout>
     );
 };
