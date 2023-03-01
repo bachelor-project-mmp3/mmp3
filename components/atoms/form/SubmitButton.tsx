@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { device, theme } from '../../../ThemeConfig';
 
 interface InputUrlProps {
     value: string;
@@ -14,12 +13,12 @@ const StyledInput = styled.input`
     padding: 10px;
     border-radius: 40px;
     border: none;
-    box-shadow: 8px 8px 20px -11px ${theme.darkGrey};
-    background-color: ${theme.primary};
-    color: ${theme.body};
+    box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
+    background-color: ${({ theme }) => theme.bodprimary};
+    color: ${({ theme }) => theme.body};
     cursor: pointer;
-    font-size: ${theme.fonts.mobile.paragraph};
-    @media ${device.tablet} {
-        font-size: ${theme.fonts.mobile.paragraph};
+    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
     }
 `;

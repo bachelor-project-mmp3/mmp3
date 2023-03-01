@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { device } from '../../../ThemeConfig';
 
 interface ProfileFormProps {
     onSubmit: (e: any) => void;
@@ -12,7 +11,7 @@ export const ProfileForm = ({ onSubmit, children }: ProfileFormProps) => {
 };
 
 export const StyledForm = styled.form`
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         padding: 0 25%;
     }
 `;

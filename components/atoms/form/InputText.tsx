@@ -77,7 +77,7 @@ export const StyledInput = styled.input<InputStyleProps>`
     box-shadow: 8px 8px 20px -11px ${theme.darkGrey};
     font-size: ${theme.fonts.mobile.info};
     @media ${(props) => props.theme.breakpoint.tablet} {
-        width: 50%;
+        width: 100%;
         font-size: ${theme.fonts.normal.info};
     }
 `;

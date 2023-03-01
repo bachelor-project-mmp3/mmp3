@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { theme, device } from '../../../ThemeConfig';
 
 interface InputFileProps {
     id: string;
@@ -28,8 +27,8 @@ export const StyledImage = styled.input`
     padding: 0.8em 1em;
     border-radius: 2.5em;
     border-style: solid;
-    font-size: ${theme.fonts.info};
-    @media ${device.tablet} {
+    font-size: ${({ theme }) => theme.fonts.info};
+    @media ${(props) => props.theme.breakpoint.tablet}} {
         width: 50%;
     }
 `;

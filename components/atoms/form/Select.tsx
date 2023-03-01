@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { theme, device } from '../../../ThemeConfig';
 
 interface InputSelectProps {
     id: string;
@@ -47,8 +46,8 @@ export const StyledSelect = styled.select`
     border-style: solid;
     border: none;
     border-right: 16px solid transparent;
-    box-shadow: 8px 8px 20px -11px ${theme.darkGrey};
-    font-size: ${theme.fonts.info};
+    box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
+    font-size: ${({ theme }) => theme.fonts.info};
 `;
 
 export const StyledLabel = styled.label`

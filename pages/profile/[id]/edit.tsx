@@ -17,7 +17,6 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import Instagram from '../../../public/icons/insta.svg';
 import Phone from '../../../public/icons/phone.svg';
-import { device, theme } from '../../../ThemeConfig';
 
 const Profile: React.FC = () => {
     const router = useRouter();
@@ -70,6 +69,7 @@ const Profile: React.FC = () => {
                     setInstagram(data.profile.instagram);
                     setPhone(data.profile.phone);
                     setAboutYou(data.profile.interests);
+                    setDormitory(data.profile.dormitory);
                     setLoading(false);
                     setValue('firstName', data.profile.firstName);
                     setValue('lastName', data.profile.lastName);
@@ -102,6 +102,7 @@ const Profile: React.FC = () => {
                 imageUrl,
                 firstName,
                 lastName,
+                dormitory,
                 roomNumber,
                 aboutYou,
                 instagram,
@@ -351,7 +352,7 @@ const StyledDiv = styled.div`
     flex-direction: column;
     width: 100%;
     margin-bottom: 1.5em;
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         &.small {
             width: 45%;
         }
@@ -381,7 +382,7 @@ const StyledDormitory = styled.div`
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: wrap;
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         flex-wrap: no-wrap;
     }
 `;
@@ -411,9 +412,9 @@ const TextRequired = styled.p`
     flex-direction: row;
     width: 100%;
     justify-content: flex-end;
-    font-size: ${theme.fonts.mobile.info};
-    @media ${device.tablet} {
-        font-size: ${theme.fonts.normal.info};
+    font-size: ${({ theme }) => theme.fonts.mobile.info};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.info};
     }
 `;
 
