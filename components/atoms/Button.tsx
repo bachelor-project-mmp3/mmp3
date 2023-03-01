@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { theme } from '../../ThemeConfig';
 import React from 'react';
-import css from 'styled-jsx/css';
 
 interface ButtonProps {
     variant: 'primary' | 'secondary' | 'red';
@@ -33,37 +31,37 @@ const StyledButton = styled.button<ButtonStyleProps>`
     padding: 8px 10px;
     border-radius: 20px;
     font-weight: 600;
-    ${({ variant }) =>
-        variant === 'primary' &&
+    ${(props) =>
+        props.variant === 'primary' &&
         `
-        background-color: ${theme.primary};
-        border: 2px solid ${theme.primary};
+        background-color: ${props.theme.primary};
+        border: 2px solid  ${props.theme.primary};
         color: white;
         :hover {
-            background-color: ${theme.hoverPrimary};
-            border: 2px solid ${theme.hoverPrimary};
+            background-color: ${props.theme.hoverPrimary};
+            border: 2px solid ${props.theme.hoverPrimary};
         }
     `}
-    ${({ variant }) =>
-        variant === 'secondary' &&
+    ${(props) =>
+        props.variant === 'secondary' &&
         `
         background-color: white;
-        color:  ${theme.primary};
-        border: 2px solid ${theme.primary};
+        color:  ${props.theme.primary};
+        border: 2px solid ${props.theme.primary};
         :hover {
-            color: ${theme.hoverPrimary};
-            border: 2px solid ${theme.hoverPrimary};
+            color: ${props.theme.hoverPrimary};
+            border: 2px solid ${props.theme.hoverPrimary};
         }
     `}
-    ${({ variant }) =>
-        variant === 'red' &&
+    ${(props) =>
+        props.variant === 'red' &&
         `
         background-color: white;
-        color: ${theme.red};
-        border: 2px solid ${theme.red};
+        color:  ${props.theme.red};
+        border: 2px solid  ${props.theme.red};
         :hover {
-            color: ${theme.hoverRed};
-            border: 2px solid ${theme.hoverRed};
+            color: ${props.theme.hoverRed};
+            border: 2px solid ${props.theme.hoverRed};
         }
     `}
     ${({ disabled }) =>
@@ -72,4 +70,10 @@ const StyledButton = styled.button<ButtonStyleProps>`
     opacity: 0.5;
     cursor: not-allowed;
     `}
+    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
+        padding: 10px 12px;
+        border-radius: 24px;
+    }
 `;

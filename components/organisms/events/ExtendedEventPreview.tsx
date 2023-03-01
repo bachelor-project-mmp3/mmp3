@@ -2,7 +2,6 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { device, theme } from '../../../ThemeConfig';
 import Crown from '../../../public/icons/krone.svg';
 import Clock from '../../../public/icons/uhr.svg';
 import Seat from '../../../public/icons/sessel.svg';
@@ -192,8 +191,10 @@ const CardWithDateTime = styled.div`
     margin-left: auto;
     margin-right: auto;
 
-    @media ${device.tablet} {
-        flex-basis: 50%;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        flex: 0 0 45%;
+        width: 45%;
+        max-width: 45%;
         min-width: 500px;
         margin-left: 0;
         margin-right: 0;
@@ -204,10 +205,11 @@ const Card = styled.div`
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
     border-bottom-left-radius: 40px;
-    box-shadow: 17px 17px 35px -11px ${theme.darkGrey};
+    box-shadow: 17px 17px 35px -11px ${({ theme }) => theme.darkGrey};
     padding: 10px 20px 20px 20px;
     position: relative;
     background: white;
+    height: 220px;
 
     &:before {
         content: '';
@@ -218,6 +220,10 @@ const Card = styled.div`
         top: -25px;
         left: 0;
         z-index: 1;
+    }
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        height: 260px;
     }
 `;
 
@@ -233,7 +239,7 @@ const HostImage = styled.div<HostImageProps>`
     width: 64px;
     height: 64px;
     border: ${(props) =>
-        props.userIsHost ? '5px solid ' + theme.green : 'none'};
+        props.userIsHost ? '5px solid ' + props.theme.green : 'none'};
 `;
 
 const StyledImage = styled(Image)`
@@ -275,39 +281,39 @@ const DateAndTime = styled.div`
     justify-content: space-between;
     padding: 8px 16px;
     gap: 24px;
-    background-color: ${theme.orange};
+    background-color: ${({ theme }) => theme.orange};
     border-top-right-radius: 16px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 32px;
     width: 208px;
     position: relative;
     z-index: 10;
-    font-size: ${theme.fonts.mobile.smallParagraph};
-    @media ${device.tablet} {
-        font-size: ${theme.fonts.normal.smallParagraph};
+    font-size: ${({ theme }) => theme.fonts.mobile.smallParagrap};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
         width: 250px;
     }
 `;
 
 const EventTitle = styled.div`
-    font-size: ${theme.fonts.mobile.headline4};
+    font-size: ${({ theme }) => theme.fonts.mobile.headline4};
     font-weight: bold;
     overflow: hidden;
     display: inline-block;
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    @media ${device.tablet} {
-        font-size: ${theme.fonts.normal.headline4};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline4};
     }
 `;
 
 const Costs = styled.div`
-    font-size: ${theme.fonts.mobile.smallParagraph};
+    font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     flex-basis: 50px;
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         width: 50%;
-        font-size: ${theme.fonts.normal.smallParagraph};
+        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
     }
 `;
 
@@ -321,7 +327,7 @@ const TitleAndCostsWrapper = styled.div`
 `;
 
 const TimeLimitAndSeatsWrapper = styled.div`
-    color: ${theme.midGrey};
+    color: ${({ theme }) => theme.midGrey};
 `;
 
 const TimeLimitAndSeatsRow = styled.div`
@@ -361,13 +367,3 @@ const Dishes = styled.div`
 const ButtonWrapper = styled.div`
     text-align: end;
 `;
-function useEffect(arg0: () => void, arg1: undefined[]) {
-    throw new Error('Function not implemented.');
-}
-
-function useState(arg0: string): [any, any] {
-    throw new Error('Function not implemented.');
-}
-function useCallback(arg0: () => Promise<void>, arg1: undefined[]) {
-    throw new Error('Function not implemented.');
-}

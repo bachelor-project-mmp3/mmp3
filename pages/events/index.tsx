@@ -1,11 +1,9 @@
-import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
-import { device } from '../../ThemeConfig';
 
 type Props = {
     events: EventProps[];
@@ -56,9 +54,10 @@ const EventsList = styled.div`
     gap: 20px;
     margin: auto;
 
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: flex-start;
+        max-width: 1500px;
     }
 `;
