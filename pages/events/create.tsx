@@ -13,6 +13,7 @@ import { ErrorMessage } from '../../components/atoms/form/ErrorMessage';
 import { useSession } from 'next-auth/react';
 import { StyledLabel } from '../../components/atoms/form/InputText';
 import { EventForm } from '../../components/organisms/forms/EventForm';
+import { Button } from '../../components/atoms/Button';
 import AddDishIcon from '../../public/icons/addDish.svg';
 import DiscardIcon from '../../public/icons/discard.svg';
 import LinkIcon from '../../public/icons/link.svg';
@@ -335,12 +336,9 @@ const CreateEvent: React.FC = () => {
                         );
                     })}
                     <StyledFormComponentsInRow>
-                        <a
-                            className="back"
-                            href="#"
-                            onClick={() => router.push('/')}>
+                        <Button variant="red" onClick={() => router.push(`/`)}>
                             Cancel
-                        </a>
+                        </Button>
                         <SubmitButton value="Create event"></SubmitButton>
                     </StyledFormComponentsInRow>
                 </StyledMenuInput>
