@@ -20,6 +20,7 @@ export type EventProps = {
     currentParticipants: number;
     capacity: number;
     host: {
+        id: string;
         firstName: string;
         lastName: string;
         email: string;
