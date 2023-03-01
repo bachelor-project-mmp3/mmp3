@@ -76,7 +76,8 @@ const getFormattedTime = (date: string) => {
 
 const ExtendedEventPreview: React.FC<{
     event: EventProps;
-}> = ({ event }) => {
+    onSubmitJoin: (eventId: string, userId: string) => void;
+}> = ({ event, onSubmitJoin }) => {
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -91,21 +92,6 @@ const ExtendedEventPreview: React.FC<{
     const userHasJoined = event.requests.some(
         (request) => request.userId === session?.user?.userId
     );
-
-    const onJoinEvent = async (eventId: string, userId: string) => {
-        const data = {
-            eventId: eventId,
-            userId: userId,
-        };
-
-        const res = await fetch('/api/requests', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-
-        router.replace(router.asPath);
-    };
 
     return (
         <CardWithDateTime>
@@ -165,13 +151,16 @@ const ExtendedEventPreview: React.FC<{
                                 variant="primary"
                                 disabled
                                 onClick={() => alert('todo')}>
-                                Widthdraw
+                                Pending
                             </Button>
                         ) : (
                             <Button
                                 variant="primary"
                                 onClick={() =>
-                                    onJoinEvent(event.id, session?.user?.userId)
+                                    onSubmitJoin(
+                                        event.id,
+                                        session?.user?.userId
+                                    )
                                 }>
                                 Ask to join
                             </Button>

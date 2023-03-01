@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
+import { getEmailTemplate } from '../helper/mailTemplaes';
 
 export default async function handler(
     req: NextApiRequest,
@@ -21,7 +22,59 @@ export default async function handler(
                         User: { connect: { id: userId } },
                     },
                 });
-                res.status(200).json(request.id);
+
+                const event = await prisma.event.findUnique({
+                    where: { id: eventId },
+                    include: {
+                        host: { select: { firstName: true, email: true } },
+                    },
+                });
+
+                const guest = await prisma.user.findUnique({
+                    where: { id: userId },
+                    select: { firstName: true },
+                });
+
+                //send mail to host
+                let nodemailer = require('nodemailer');
+                const transporter = nodemailer.createTransport({
+                    port: 465,
+                    host: 'smtp.gmail.com',
+                    auth: {
+                        user: 'studentenfuttermmp3@gmail.com',
+                        pass: `${process.env.PASSWORD}`,
+                    },
+                    secure: true,
+                });
+
+                const mailData = getEmailTemplate(
+                    event.host.firstName,
+                    event.title,
+                    guest.firstName,
+                    userId
+                );
+
+                const mail = {
+                    from: 'studentenfuttermmp3@gmail.com',
+                    to: event.host.email,
+                    ...mailData,
+                };
+
+                transporter.sendMail(mail, function (err, info) {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).json({
+                            statusCode: 500,
+                            success: false,
+                            message: err,
+                        });
+                    } else {
+                        console.log(info);
+                        res.status(200).json({ requestId: request.id });
+                    }
+                });
+
+                res.status(200).json({ requestId: request.id });
             }
         } catch (err) {
             res.status(500).json({ message: err.message });
