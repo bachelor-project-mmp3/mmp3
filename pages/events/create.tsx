@@ -7,12 +7,16 @@ import { InputNumber } from '../../components/atoms/form/InputNumber';
 import { InputTextarea } from '../../components/atoms/form/InputTextarea';
 import { SubmitButton } from '../../components/atoms/form/SubmitButton';
 import { InputUrl } from '../../components/atoms/form/InputUrl';
-import { Button } from '../../components/atoms/Button';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { ErrorMessage } from '../../components/atoms/form/ErrorMessage';
 import { useSession } from 'next-auth/react';
 import { StyledLabel } from '../../components/atoms/form/InputText';
+import { EventForm } from '../../components/organisms/forms/EventForm';
+import { Button } from '../../components/atoms/Button';
+import AddDishIcon from '../../public/icons/addDish.svg';
+import DiscardIcon from '../../public/icons/discard.svg';
+import LinkIcon from '../../public/icons/link.svg';
 
 //maybe refactoring?
 function formatDateForDateInput(input) {
@@ -27,8 +31,6 @@ function formatDateForDateInput(input) {
 
 const CreateEvent: React.FC = () => {
     const { data: session } = useSession();
-    console.log(session?.user?.userId);
-
     const router = useRouter();
     let currentDate = new Date();
 
@@ -73,6 +75,7 @@ const CreateEvent: React.FC = () => {
         register('timelimit', { required: true });
         register('costs', { required: true, min: 0, max: 99 });
         register('guests', { required: true, min: 1 });
+        //TODO: check for correct validation
 
         if (session) {
             fetch(`/api/profile/${session?.user?.userId}`, {
@@ -82,7 +85,6 @@ const CreateEvent: React.FC = () => {
                 .then((data) => {
                     setDormitory(data.profile.dormitory);
                     setRoomnumber(data.profile.roomNumber);
-                    console.log(data.profile);
                     setLoading(false);
                 });
         }
@@ -144,82 +146,59 @@ const CreateEvent: React.FC = () => {
     if (isLoading) return <p>Loading...</p>;
     return (
         <Layout>
-            <div>
-                <h1>Create Event</h1>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <StyledInputWithError>
-                        <InputText
-                            onChange={(e) => {
-                                setValue('title', e.target.value);
-                                setTitle(e.target.value);
-                            }}
-                            id="title"
-                            placeholder="Title"
-                            value={title}
-                            isInvalid={errors.title ? 'true' : 'false'}>
-                            Titel
-                        </InputText>
-                        {/*errors will return when field validation fails  */}
-                        {errors.title && errors.title.type === 'required' && (
-                            <ErrorMessage>
-                                Please enter a title of the event
-                            </ErrorMessage>
-                        )}
-                        {errors.title && errors.title.type === 'min' && (
-                            <ErrorMessage>
-                                Please enter a title of at least 3 characters
-                            </ErrorMessage>
-                        )}
-                    </StyledInputWithError>
-                    <StyledInputWithError>
-                        <InputDateTime
-                            id="date"
-                            value={date}
-                            min={date}
-                            onChange={(e) => {
-                                setValue('date', e.target.value);
-                                setDate(e.target.value);
-                            }}
-                            isInvalid={errors.title ? 'true' : 'false'}>
-                            Date and time
-                        </InputDateTime>
-                        {errors.date && (
-                            <ErrorMessage>Please enter a date</ErrorMessage>
-                        )}
-                    </StyledInputWithError>
-                    <StyledInformation>
-                        <div>
-                            <StyledLabel>Location</StyledLabel>
-                            <div>
-                                The exact location will only be shared with
-                                guests
-                            </div>
-                        </div>
+            <h1>Create a new Event</h1>
+            <EventForm onSubmit={handleSubmit(onSubmit)}>
+                <StyledInputWithError>
+                    <InputText
+                        onChange={(e) => {
+                            setValue('title', e.target.value);
+                            setTitle(e.target.value);
+                        }}
+                        id="title"
+                        placeholder="Title"
+                        value={title}
+                        isInvalid={errors.title ? 'true' : 'false'}>
+                        Titel
+                    </InputText>
+                    {/*errors will return when field validation fails  */}
+                    {errors.title && errors.title.type === 'required' && (
+                        <ErrorMessage>
+                            Please enter a title of the event
+                        </ErrorMessage>
+                    )}
+                    {errors.title && errors.title.type === 'minLength' && (
+                        <ErrorMessage>
+                            Please enter a title of at least 3 characters
+                        </ErrorMessage>
+                    )}
+                </StyledInputWithError>
+                <StyledInputWithError>
+                    <InputDateTime
+                        id="date"
+                        value={date}
+                        min={date}
+                        onChange={(e) => {
+                            setValue('date', e.target.value);
+                            setDate(e.target.value);
+                        }}
+                        isInvalid={errors.title ? 'true' : 'false'}>
+                        Date and time
+                    </InputDateTime>
+                    {errors.date && (
+                        <ErrorMessage>Please enter a date</ErrorMessage>
+                    )}
+                </StyledInputWithError>
+                <StyledLabel>Location</StyledLabel>
+                <StyledInformation>
+                    <StyledInformationRight>
+                        The exact location will only be shared with guests
+                    </StyledInformationRight>
 
-                        {dormitory && <div>{dormitory}</div>}
-                        {roomnumber && <div>Room No. {roomnumber}</div>}
-                    </StyledInformation>
-                    <StyledInputWithError>
-                        <InputDateTime
-                            id="timelimit"
-                            value={timeLimit}
-                            min={timeLimit}
-                            max={date}
-                            onChange={(e) => {
-                                setValue('timelimit', e.target.value);
-                                setTimeLimit(e.target.value);
-                            }}
-                            isInvalid={errors.title ? 'true' : 'false'}>
-                            Receive requests until
-                        </InputDateTime>
-                        {errors.date && (
-                            <ErrorMessage>
-                                Please enter a date and time when to close to
-                                join
-                            </ErrorMessage>
-                        )}
-                    </StyledInputWithError>
-                    <StyledInputWithError>
+                    {dormitory && <div>{dormitory}</div>}
+                    {roomnumber && <div>Room number: {roomnumber}</div>}
+                </StyledInformation>
+                <StyledFormComponentsInRow>
+                    <StyledInputWithError className="small">
                         <InputNumber
                             id="costs"
                             placeholder="0"
@@ -230,7 +209,8 @@ const CreateEvent: React.FC = () => {
                                 setValue('costs', e.target.value);
                                 setCosts(e.target.value);
                             }}
-                            isInvalid={errors.title ? 'true' : 'false'}>
+                            isInvalid={errors.title ? 'true' : 'false'}
+                            variant={'right'}>
                             Costs
                         </InputNumber>
                         {errors.costs && errors.costs.type === 'required' && (
@@ -245,7 +225,7 @@ const CreateEvent: React.FC = () => {
                             <ErrorMessage>Must be at least 0</ErrorMessage>
                         )}
                     </StyledInputWithError>
-                    <StyledInputWithError>
+                    <StyledInputWithError className="small">
                         <InputNumber
                             id="guests"
                             placeholder="0"
@@ -255,7 +235,8 @@ const CreateEvent: React.FC = () => {
                                 setValue('guests', e.target.value);
                                 setCapacity(e.target.value);
                             }}
-                            isInvalid={errors.title ? 'true' : 'false'}>
+                            isInvalid={errors.title ? 'true' : 'false'}
+                            variant="center">
                             Guests
                         </InputNumber>
                         {errors.guests && errors.guests.type === 'required' && (
@@ -267,20 +248,41 @@ const CreateEvent: React.FC = () => {
                             <ErrorMessage>Must be at least 0</ErrorMessage>
                         )}
                     </StyledInputWithError>
-                    <StyledInputWithError>
-                        <InputTextarea
-                            id="information"
-                            cols={50}
-                            rows={8}
-                            placeholder="Write a little bit about your event plans"
-                            value={info}
-                            onChange={(e) => setInfo(e.target.value)}>
-                            Short information
-                        </InputTextarea>
-                    </StyledInputWithError>
+                </StyledFormComponentsInRow>
+                <StyledInputWithError>
+                    <InputDateTime
+                        id="timelimit"
+                        value={timeLimit}
+                        min={timeLimit}
+                        max={date}
+                        onChange={(e) => {
+                            setValue('timelimit', e.target.value);
+                            setTimeLimit(e.target.value);
+                        }}
+                        isInvalid={errors.title ? 'true' : 'false'}>
+                        Receive requests until
+                    </InputDateTime>
+                    {errors.date && (
+                        <ErrorMessage>
+                            Please enter a date and time when to close to join
+                        </ErrorMessage>
+                    )}
+                </StyledInputWithError>
+                <StyledInputWithError>
+                    <InputTextarea
+                        id="information"
+                        cols={50}
+                        rows={8}
+                        placeholder="Write a little bit about your event plans"
+                        value={info}
+                        onChange={(e) => setInfo(e.target.value)}>
+                        Short information
+                    </InputTextarea>
+                </StyledInputWithError>
+                <StyledMenuInput>
                     {dishes.map((currentDish, i) => {
                         return (
-                            <div key={i}>
+                            <StyledMenuInputItem key={i}>
                                 <StyledInputWithError>
                                     <InputText
                                         onChange={(e) => handleChange(e, i)}
@@ -288,6 +290,7 @@ const CreateEvent: React.FC = () => {
                                         placeholder="Enter a title"
                                         minLength={3}
                                         value={currentDish.title}
+                                        padding="right"
                                         required={true}>
                                         Name of the dish
                                     </InputText>
@@ -297,10 +300,12 @@ const CreateEvent: React.FC = () => {
                                         onChange={(e) => handleChange(e, i)}
                                         id="link"
                                         placeholder="https://www.google.at"
-                                        value={currentDish.link}>
+                                        value={currentDish.link}
+                                        padding="left">
                                         {"Link for the dish's recipe"}
                                     </InputUrl>
                                 </StyledInputWithError>
+                                <StyledLinkIcon />
                                 <StyledInputWithError>
                                     <InputTextarea
                                         id="description"
@@ -312,47 +317,121 @@ const CreateEvent: React.FC = () => {
                                         Short information
                                     </InputTextarea>
                                 </StyledInputWithError>
+                                <StyledHR />
                                 <div>
-                                    {dishes.length !== 1 && (
-                                        <Button
-                                            onClick={() => handleRemoveClick(i)}
-                                            variant={'primary'}>
-                                            Remove
-                                        </Button>
-                                    )}
                                     {dishes.length - 1 === i && (
-                                        <Button
-                                            onClick={handleAddClick}
-                                            variant={'primary'}>
-                                            Add
-                                        </Button>
+                                        <StyledAddButton
+                                            onClick={handleAddClick}>
+                                            <StyledAddDish />
+                                            <div>Add another dish</div>
+                                        </StyledAddButton>
                                     )}
                                 </div>
-                            </div>
+                                {dishes.length !== 1 && (
+                                    <StyledDeleteButton
+                                        onClick={() => handleRemoveClick(i)}
+                                    />
+                                )}
+                            </StyledMenuInputItem>
                         );
                     })}
-                    <SubmitButton></SubmitButton>
-                    <a
-                        className="back"
-                        href="#"
-                        onClick={() => router.push('/')}>
-                        or Cancel
-                    </a>
-                </form>
-            </div>
+                    <StyledFormComponentsInRow>
+                        <Button variant="red" onClick={() => router.push(`/`)}>
+                            Cancel
+                        </Button>
+                        <SubmitButton value="Create event"></SubmitButton>
+                    </StyledFormComponentsInRow>
+                </StyledMenuInput>
+            </EventForm>
         </Layout>
     );
 };
 
 export default CreateEvent;
 
-const StyledInputWithError = styled.div`
+const StyledInputWithError = styled.div.attrs((/* props */) => ({
+    tabIndex: 0,
+}))`
     display: flex;
     flex-direction: column;
+    margin-bottom: 27px;
     width: 100%;
-    margin-bottom: 1.5em;
+    &.small {
+        width: 45%; // <StyledInputWithError> tagged with an additional CSS class ".small"
+    }
 `;
 
 const StyledInformation = styled.div`
-    margin: 0 0 0.5em 1em;
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 27px 32px;
+`;
+
+const StyledInformationRight = styled.div`
+    text-align: right;
+    color: ${({ theme }) => theme.darkGrey};
+    padding-bottom: 10px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.info};
+    }
+    font-size: ${({ theme }) => theme.fonts.mobile.info};
+`;
+
+const StyledFormComponentsInRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`;
+
+const StyledMenuInputItem = styled.div`
+    position: relative;
+`;
+
+const StyledMenuInput = styled.div`
+    background-color: ${({ theme }) => theme.backgroundLightestOrange};
+    border-radius: 25px 25px 0 0;
+    padding: 20px 20px 40px 20px;
+`;
+
+const StyledAddDish = styled(AddDishIcon)`
+    height: 20px;
+    width: 20px;
+    margin-right: 10px;
+`;
+
+const StyledAddButton = styled.div`
+    display: flex;
+    flex-direction: row;
+    padding: 0 10px 10px 10px;
+    cursor: pointer;
+`;
+
+const StyledDeleteButton = styled(DiscardIcon)`
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    cursor: pointer;
+    right: 20px;
+    top: 45px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        top: 47px;
+    }
+`;
+
+const StyledLinkIcon = styled(LinkIcon)`
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 20px;
+    top: 145px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        top: 154px;
+    }
+`;
+
+const StyledHR = styled.hr`
+    border-top: 2px solid ${({ theme }) => theme.midGrey};
+    border-radius: 4px;
+    width: 90%;
+    margin-bottom: 20px;
 `;
