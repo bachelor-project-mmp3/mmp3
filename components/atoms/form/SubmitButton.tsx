@@ -9,16 +9,25 @@ export const SubmitButton = ({ value }: InputUrlProps) => {
 };
 
 const StyledInput = styled.input`
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    background-color: ${({ theme }) => theme.primary};
+    border: 2px solid ${({ theme }) => theme.primary};
+    color: white;
+    :hover {
+        background-color: ${({ theme }) => theme.hoverPrimary};
+        border: 2px solid ${({ theme }) => theme.hoverPrimary};
+    }
     width: 45%;
-    padding: 10px;
-    border-radius: 40px;
     border: none;
     box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
-    background-color: ${({ theme }) => theme.bodprimary};
     color: ${({ theme }) => theme.body};
     cursor: pointer;
     font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
     @media ${(props) => props.theme.breakpoint.tablet} {
-        font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
+        padding: 10px 30px;
+        border-radius: 24px;
+        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
     }
 `;

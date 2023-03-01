@@ -27,8 +27,9 @@ export const StyledImage = styled.input`
     padding: 0.8em 1em;
     border-radius: 2.5em;
     border-style: solid;
-    font-size: ${({ theme }) => theme.fonts.info};
+    font-size: ${({ theme }) => theme.fonts.mobile.info};
     @media ${(props) => props.theme.breakpoint.tablet}} {
+        font-size: ${({ theme }) => theme.fonts.normal.info};
         width: 50%;
     }
 `;

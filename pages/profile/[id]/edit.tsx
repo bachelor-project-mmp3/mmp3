@@ -325,7 +325,7 @@ const Profile: React.FC = () => {
                     </StyledDiv>
                     <ButtonWrapper>
                         <Button
-                            variant="secondary"
+                            variant="red"
                             onClick={() =>
                                 router.push(`/profile/${profile.id}`)
                             }>
