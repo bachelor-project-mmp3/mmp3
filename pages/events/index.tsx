@@ -1,11 +1,10 @@
-import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
-import { device } from '../../ThemeConfig';
 
 type Props = {
     events: EventProps[];
@@ -14,7 +13,39 @@ type Props = {
 const Events: React.FC<Props> = () => {
     const [events, setEvents] = useState(null);
     const [isLoading, setLoading] = useState(false);
-    const { data: session } = useSession();
+
+    const router = useRouter();
+    // Call this function whenever you want to
+    // refresh props!
+    const refreshData = () => {
+        router.replace(router.asPath);
+    };
+
+    const onSubmitJoin = async (eventId: string, userId: string) => {
+        const data = {
+            eventId: eventId,
+            userId: userId,
+        };
+
+        const res = await fetch('/api/requests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (res.status < 300) {
+            setLoading(true);
+            fetch('/api/events', {
+                method: 'GET',
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    setEvents(data.events);
+                    setLoading(false);
+                    refreshData();
+                });
+        }
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -39,12 +70,9 @@ const Events: React.FC<Props> = () => {
                     {events &&
                         events.map((event) => (
                             <ExtendedEventPreview
-                                userIsHost={
-                                    session?.user?.userId === event.host.id ??
-                                    false
-                                }
                                 key={event.id}
                                 event={event}
+                                onSubmitJoin={onSubmitJoin}
                             />
                         ))}
                 </EventsList>
@@ -61,9 +89,10 @@ const EventsList = styled.div`
     gap: 20px;
     margin: auto;
 
-    @media ${device.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: flex-start;
+        max-width: 1500px;
     }
 `;

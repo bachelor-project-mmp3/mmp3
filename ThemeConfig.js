@@ -1,10 +1,16 @@
 import { createGlobalStyle } from 'styled-components';
 
+const size = {
+    tablet: '768px',
+};
+
 export const theme = {
     body: '#FFFFFF',
     text: '#343434',
     red: '#EF4B4B',
+    hoverRed: '#8a0606',
     primary: '#F3B151',
+    hoverPrimary: '#e68a05',
     green: '#A9E6A6',
     orange: '#FCC372',
     backgroundLightGreen: '#DBFFB7',
@@ -44,14 +50,9 @@ export const theme = {
     layoutPadding: {
         web: '0 25%',
     },
-};
-
-const size = {
-    tablet: '768px',
-};
-
-export const device = {
-    tablet: `(min-width: ${size.tablet})`,
+    breakpoint: {
+        tablet: `(min-width: ${size.tablet})`,
+    },
 };
 
 export const GlobalStyles = createGlobalStyle`
@@ -91,8 +92,5 @@ export const GlobalStyles = createGlobalStyle`
   }
   a:hover {
     color: ${({ theme }) => theme.primary};
-  }
-  textarea, input{
-    font-family: HankenGrotesk, Arial, Roboto, sans-serif;
   }
 `;

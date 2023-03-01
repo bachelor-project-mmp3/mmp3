@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { device, theme } from '../../../ThemeConfig';
 
 interface InputUrlProps {
     value: string;
@@ -10,16 +9,25 @@ export const SubmitButton = ({ value }: InputUrlProps) => {
 };
 
 const StyledInput = styled.input`
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    background-color: ${({ theme }) => theme.primary};
+    border: 2px solid ${({ theme }) => theme.primary};
+    color: white;
+    :hover {
+        background-color: ${({ theme }) => theme.hoverPrimary};
+        border: 2px solid ${({ theme }) => theme.hoverPrimary};
+    }
     width: 45%;
-    padding: 10px;
-    border-radius: 40px;
     border: none;
-    box-shadow: 8px 8px 20px -11px ${theme.darkGrey};
-    background-color: ${theme.primary};
-    color: ${theme.body};
+    box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
+    color: ${({ theme }) => theme.body};
     cursor: pointer;
-    font-size: ${theme.fonts.mobile.paragraph};
-    @media ${device.tablet} {
-        font-size: ${theme.fonts.mobile.paragraph};
+    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        padding: 10px 30px;
+        border-radius: 24px;
+        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
     }
 `;
