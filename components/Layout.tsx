@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 import Header from './organisms/Header';
 import styled from 'styled-components';
-import { device, theme } from '../ThemeConfig';
 
 type Props = {
     children: ReactNode;
@@ -18,7 +17,7 @@ export default Layout;
 
 const StyledLayout = styled.div`
     padding: 0 20px;
-    @media ${device.tablet} {
-        padding: ${theme.layoutPadding.web};
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        padding: ${({ theme }) => theme.layoutPadding.web};
     }
 `;

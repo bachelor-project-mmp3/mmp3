@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { StyledLabel } from './InputText';
-import { device, theme } from '../../../ThemeConfig';
+import { theme } from '../../../ThemeConfig';
 import styled from 'styled-components';
 
 interface InputTextareaProps {
@@ -45,7 +45,7 @@ export const StyledTextArea = styled.textarea`
     padding: 13px 20px;
     box-shadow: 8px 8px 20px -11px ${theme.darkGrey};
     font-size: ${theme.fonts.mobile.info};
-    @media ${device.tablet} {
-        font-size: ${theme.fonts.normal.info};
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.info};
     }
 `;

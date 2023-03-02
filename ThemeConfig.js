@@ -79,7 +79,7 @@ export const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
-    @media ${device.tablet} {
+    @media ${({ theme }) => theme.breakpoint.tablet} {
       font-size: ${({ theme }) => theme.fonts.normal.paragraph};
   }
     color: ${({ theme }) => theme.text};
@@ -92,5 +92,8 @@ export const GlobalStyles = createGlobalStyle`
   }
   a:hover {
     color: ${({ theme }) => theme.primary};
+  }
+  textarea, input{
+    font-family: HankenGrotesk, Arial, Roboto, sans-serif;
   }
 `;

@@ -17,17 +17,7 @@ import { Button } from '../../components/atoms/Button';
 import AddDishIcon from '../../public/icons/addDish.svg';
 import DiscardIcon from '../../public/icons/discard.svg';
 import LinkIcon from '../../public/icons/link.svg';
-
-//maybe refactoring?
-function formatDateForDateInput(input) {
-    let output;
-    if (input < 10) {
-        output = '0' + input;
-    } else {
-        output = input;
-    }
-    return output;
-}
+import { formatDateForDateInput } from '../../helper/helperFunctions';
 
 const CreateEvent: React.FC = () => {
     const { data: session } = useSession();

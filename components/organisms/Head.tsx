@@ -1,15 +1,17 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { theme, device } from '../../ThemeConfig';
 import GoBackIcon from '../../public/icons/goBack.svg';
-import { router } from 'next/client';
+import { useRouter } from 'next/router';
 
 interface HeadProps {
     backButton?: boolean;
     children: ReactNode;
+    onClick: (e: any) => void;
 }
 
-export const Head = ({ backButton, children }: HeadProps) => {
+export const Head = ({ backButton, children, onClick }: HeadProps) => {
+    const router = useRouter();
+
     return (
         <StyledHead>
             <StyledBackButton backButton={backButton} onClick={router.back} />
@@ -27,9 +29,9 @@ export const StyledHead = styled.div<HeadStyleProps>`
     flex-direction: row;
     align-items: center;
     gap: 30px;
-    font-size: ${theme.fonts.mobile.headline};
-    @media ${device.tablet} {
-        font-size: ${theme.fonts.normal.headline};
+    font-size: ${({ theme }) => theme.fonts.mobile.headline};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline};
     }
     font-weight: bold;
 `;

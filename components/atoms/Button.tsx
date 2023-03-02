@@ -6,6 +6,7 @@ interface ButtonProps {
     variant: 'primary' | 'secondary' | 'red';
     onClick?: (e: any) => void;
     children: ReactNode;
+    card?: boolean;
     disabled?: boolean;
 }
 
@@ -13,10 +14,15 @@ export const Button: React.FC<ButtonProps> = ({
     variant,
     children,
     onClick,
+    card,
     disabled,
 }: ButtonProps) => {
     return (
-        <StyledButton onClick={onClick} disabled={disabled} variant={variant}>
+        <StyledButton
+            onClick={onClick}
+            disabled={disabled}
+            variant={variant}
+            card={card}>
             {children}
         </StyledButton>
     );
@@ -25,12 +31,14 @@ export const Button: React.FC<ButtonProps> = ({
 interface ButtonStyleProps {
     variant: 'primary' | 'secondary' | 'red';
     disabled: boolean;
+    card: boolean;
 }
 
 const StyledButton = styled.button<ButtonStyleProps>`
     padding: 8px 20px;
     border-radius: 20px;
     font-weight: 600;
+    width: ${(props) => (props.card ? 'auto' : '45%')};
     ${(props) =>
         props.variant === 'primary' &&
         `
@@ -76,6 +84,7 @@ const StyledButton = styled.button<ButtonStyleProps>`
         props.variant === 'red' &&
         !props.disabled &&
         `
+       
         :hover {
             color: ${props.theme.hoverRed};
             border: 2px solid ${props.theme.hoverRed};
