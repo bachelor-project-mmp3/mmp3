@@ -4,6 +4,7 @@ import Layout from '../../components/Layout';
 import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
+import { useRouter } from 'next/router';
 
 type Props = {
     events: EventProps[];
