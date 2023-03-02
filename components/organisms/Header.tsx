@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { Button } from '../atoms/Button';
+import router from 'next/router';
 
 export const Header = () => {
     const { data: session, status } = useSession();
+
+    useEffect(() => {
+        if (session) {
+            fetch(`/api/profile/${session.user.userId}`, {
+                method: 'GET',
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (!data.profile.roomNumber) {
+                        router.push(`/profile/${session.user.userId}/edit`);
+                    }
+                });
+        }
+    }, [session]);
 
     let left = (
         <div className="left">
@@ -27,11 +42,15 @@ export const Header = () => {
             ) : null}
 
             {status != 'authenticated' ? (
-                <Button variant={'primary'} onClick={() => signIn('fhs')}>
+                <Button
+                    variant={'primary'}
+                    onClick={() => signIn('fhs', { callbackUrl: '/events' })}>
                     Sign in with FH Login
                 </Button>
             ) : (
-                <Button variant={'secondary'} onClick={() => signOut()}>
+                <Button
+                    variant={'secondary'}
+                    onClick={() => signOut({ callbackUrl: '/' })}>
                     Sign out
                 </Button>
             )}

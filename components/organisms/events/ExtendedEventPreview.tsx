@@ -85,8 +85,8 @@ const ExtendedEventPreview: React.FC<{
     const timeLimit = getTimeLeftToJoin(event.timeLimit);
     const date = getFormattedDate(event.date);
     const time = getFormattedTime(event.date);
-    const userIsHost = session?.user?.userId === event.host.id ?? false;
-    const hostName = event?.host.firstName
+    const userIsHost = session?.user?.userId === event?.host?.id ?? false;
+    const hostName = event?.host?.firstName
         ? event?.host.firstName
         : 'Unknown host';
 
@@ -117,14 +117,14 @@ const ExtendedEventPreview: React.FC<{
                 <Host>{hostName}</Host>
                 <Place>
                     <StyledLocation />
-                    <div>{event.host.dormitory}</div>
+                    <div>{event?.host?.dormitory}</div>
                 </Place>
                 <TitleAndCostsWrapper>
                     <EventTitle>{event.title}</EventTitle>
                     <Costs>{event.costs} &#8364;</Costs>
                 </TitleAndCostsWrapper>
 
-                {event.host.image && (
+                {event?.host?.image && (
                     <>
                         <StyledCrown />
                         <HostImage userIsHost={userIsHost}>
