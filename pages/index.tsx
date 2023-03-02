@@ -12,8 +12,9 @@ const LandingPage: React.FC = () => {
             <Content>
                 <h1>Welcome to Studentenfutter</h1>
                 <h2>
-                    The platform for Salzburg's students to socialize through
-                    dinner events!{' '}
+                    {
+                        "The platform for Salzburg's students to socialize through dinner events!"
+                    }
                 </h2>
                 <p>
                     Vegetarian, vegan or allergy-save: Join events that fit you
@@ -22,7 +23,9 @@ const LandingPage: React.FC = () => {
                 {status != 'authenticated' ? (
                     <Button
                         variant={'primary'}
-                        onClick={() => signIn('fhs')}
+                        onClick={() =>
+                            signIn('fhs', { callbackUrl: '/events' })
+                        }
                         card>
                         {"Let's get started"}
                     </Button>

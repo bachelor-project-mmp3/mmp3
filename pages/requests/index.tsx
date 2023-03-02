@@ -2,6 +2,7 @@ import { RequestStatus } from '.prisma/client';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import Layout from '../../components/Layout';
+import { Header } from '../../components/organisms/Header';
 import Request from '../../components/organisms/requests/Request';
 
 const Requests: React.FC = () => {
@@ -50,7 +51,7 @@ const Requests: React.FC = () => {
     if (!requests) return <p>No requests </p>;
     return (
         <Layout>
-            <h1>Requests</h1>
+            <Header backButton>Invitations</Header>
             <div>
                 {requests &&
                     requests.map((request) => (

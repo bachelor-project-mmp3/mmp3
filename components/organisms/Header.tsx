@@ -1,14 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import { Button } from '../atoms/Button';
-import router from 'next/router';
+import React, { ReactNode } from 'react';
+import styled from 'styled-components';
+import GoBackIcon from '../../public/icons/goBack.svg';
+import { useRouter } from 'next/router';
 
-export const Header = () => {
-    const { data: session, status } = useSession();
+interface HeaderProps {
+    backButton?: boolean;
+    children: ReactNode;
+}
 
-    // TODO ADD HEAD HERE
-    return <div></div>;
+export const Header = ({ backButton, children }: HeaderProps) => {
+    const router = useRouter();
+
+    return (
+        <StyledHead>
+            <StyledBackButton backButton={backButton} onClick={router.back} />
+            {children}
+        </StyledHead>
+    );
 };
 
-export default Header;
+export interface HeaderStyleProps {
+    backButton: boolean;
+}
+
+export const StyledHead = styled.div<HeaderStyleProps>`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+    font-size: ${({ theme }) => theme.fonts.mobile.headline};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline};
+    }
+    font-weight: bold;
+`;
+
+const StyledBackButton = styled(GoBackIcon)<HeaderStyleProps>`
+    display: ${(props) => (props.backButton ? 'inline' : 'none')};
+    height: 16px;
+    width: 16px;
+    stroke-width: 20px;
+    cursor: pointer;
+`;

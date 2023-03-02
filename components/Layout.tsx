@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import Header from './organisms/Header';
 import styled from 'styled-components';
 import Navigation from './organisms/Navigation';
 
