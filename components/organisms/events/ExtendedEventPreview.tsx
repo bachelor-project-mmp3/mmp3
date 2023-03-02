@@ -122,6 +122,7 @@ const ExtendedEventPreview: React.FC<{
                         {userHasJoined ? (
                             <Button
                                 variant="primary"
+                                card
                                 disabled
                                 onClick={() => alert('todo')}>
                                 Pending

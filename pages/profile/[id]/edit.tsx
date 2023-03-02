@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
 import Router, { useRouter } from 'next/router';
-import { uploadImage } from '../../api/helper/uploadHelper';
 import { InputFile } from '../../../components/atoms/form/InputFile';
 import { SubmitButton } from '../../../components/atoms/form/SubmitButton';
 import { InputText } from '../../../components/atoms/form/InputText';
@@ -17,6 +16,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import Instagram from '../../../public/icons/insta.svg';
 import Phone from '../../../public/icons/phone.svg';
+import { uploadImage } from '../../../helper/uploadHelper';
 
 const Profile: React.FC = () => {
     const router = useRouter();

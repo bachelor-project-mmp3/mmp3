@@ -149,8 +149,8 @@ const EventDetail: React.FC<EventDetailProps> = () => {
             </StyledInfoEventDetails>
 
             <Card variant={'center'}>
-                {event.menu.map((dish, index) => (
-                    <StyledDishItem>
+                {event.menu.map((dish) => (
+                    <StyledDishItem key={dish.id}>
                         {dish.link && <a href={dish.link}>{dish.title}</a>}
                         {dish.description && (
                             <StyledToolTip>

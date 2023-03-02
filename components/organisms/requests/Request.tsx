@@ -99,6 +99,7 @@ const Request: React.FC<{
     );
 
     return (
+        //TODO: use Card comonent
         <Card>
             <Content>
                 <ImageAndLinkWrapper>

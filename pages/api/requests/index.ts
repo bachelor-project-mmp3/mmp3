@@ -2,9 +2,9 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
-import { getEmailTemplate } from '../helper/mailTemplaes';
+import { getEmailTemplate } from '../../../helper/mailTemplaes';
 import { getSession } from 'next-auth/react';
-import { getNodeMailerTransporter } from '../helper/nodemailer';
+import { getNodeMailerTransporter } from '../../../helper/nodemailer';
 
 export default async function handler(
     req: NextApiRequest,
