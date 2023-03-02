@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
 import { Button } from '../../../components/atoms/Button';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import {
     HostImageProps,
@@ -23,6 +23,7 @@ import {
 import { Header } from '../../../components/organisms/Header';
 import { Card } from '../../../components/atoms/Card';
 import MenuItem from '../../../components/organisms/events/MenuItem';
+import GuestListItem from '../../../components/organisms/events/GuestListItem';
 
 type EventProps = {
     id: string;
@@ -67,6 +68,34 @@ interface EventDetailProps {
     event: EventProps;
 }
 
+async function deleteEvent(id: string): Promise<void> {
+    await fetch(`/api/events/${id}`, {
+        method: 'DELETE',
+    });
+    // replace url, because event doesn't exist anymore
+    Router.push('/events');
+}
+
+async function joinEvent(eventId: string, userId: string): Promise<void> {
+    const data = {
+        eventId: eventId,
+        userId: userId,
+    };
+
+    const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+
+    if (res.status < 300) {
+        Router.replace(Router.asPath);
+        Router.reload();
+    } else {
+        Router.push('/events/${event.id}/edit');
+    }
+}
+
 const EventDetail: React.FC<EventDetailProps> = () => {
     const { data: session } = useSession();
     const router = useRouter();
@@ -102,7 +131,12 @@ const EventDetail: React.FC<EventDetailProps> = () => {
             ? event?.host.firstName + ' ' + event?.host.lastName
             : 'Unknown host';
 
+    const userHasJoined = event.requests.some(
+        (request) => request.userId === session?.user?.userId
+    );
+
     //TODO: check why image so far left when not host
+
     // @ts-ignore
     return (
         <Layout>
@@ -149,24 +183,72 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                     </div>
                 </StyledInfoEventDetailsBoxes>
             </StyledInfoEventDetails>
+            {/*{userIsHost && <div>*/}
+            {/*    <Button variant={'primary'} onClick={() => router.push(`/events/${event.id}/edit`)}>Edit event</Button>*/}
+            {/*</div>}*/}
+            {event.menu.length > 0 && (
+                <Card variant={'center'}>
+                    {event.menu.map((dish, index) => (
+                        <MenuItem
+                            key={index}
+                            dishTitle={dish.title}
+                            dishLink={dish.link}
+                            dishDescription={dish.description}
+                        />
+                    ))}
+                </Card>
+            )}
 
-            <Card variant={'center'}>
-                {event.menu.map((dish, index) => (
-                    <MenuItem
-                        key={index}
-                        dishTitle={dish.title}
-                        dishLink={dish.link}
-                        dishDescription={dish.description}
-                    />
-                ))}
-            </Card>
-            <Card variant={'description'}>{event.info}</Card>
+            {event.info && <Card variant={'description'}>{event.info}</Card>}
 
-            <Card>
-                {event.requests.map((request, index) => (
-                    <p key={index}>{request.User.firstName}</p>
-                ))}
-            </Card>
+            {event.requests.length > 0 && (
+                <Card variant={'description'}>
+                    {event.requests.map((request, index) => (
+                        <GuestListItem
+                            key={index}
+                            guest={request.User}
+                            userIsHost={userIsHost}
+                        />
+                    ))}
+                </Card>
+            )}
+            {userIsHost ? (
+                <StyledButtons userIsHost={userIsHost}>
+                    <Button
+                        variant={'red'}
+                        onClick={() => deleteEvent(event.id)}
+                        form>
+                        Cancel Event
+                    </Button>
+                    <Button
+                        variant={'primary'}
+                        onClick={() => router.push(`/events/${event.id}/edit`)}
+                        form>
+                        Edit event
+                    </Button>
+                </StyledButtons>
+            ) : (
+                <StyledButtons>
+                    {userHasJoined ? (
+                        <Button
+                            variant="primary"
+                            form
+                            disabled
+                            onClick={() => alert('todo')}>
+                            Pending
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="primary"
+                            form
+                            onClick={() =>
+                                joinEvent(event.id, session?.user?.userId)
+                            }>
+                            Ask to join
+                        </Button>
+                    )}
+                </StyledButtons>
+            )}
         </Layout>
     );
 };
@@ -225,4 +307,16 @@ const StyledCrown = styled(Crown)`
     height: 35px;
     width: 70px;
     transform: rotate(30deg);
+`;
+const StyledButtons = styled.div<HostImageProps>`
+    display: flex;
+    flex-direction: row;
+    justify-content: ${(props) =>
+        props.userIsHost ? 'space-between' : 'center'};
+    position: sticky;
+    width: auto;
+    bottom: 100px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        bottom: 40px;
+    }
 `;
