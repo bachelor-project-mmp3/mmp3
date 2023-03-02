@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import Header from './organisms/Header';
 import styled from 'styled-components';
+import Navigation from './organisms/Navigation';
 
 type Props = {
     children: ReactNode;
@@ -8,8 +9,8 @@ type Props = {
 
 const Layout: React.FC<Props> = (props) => (
     <div>
-        <Header />
         <StyledLayout>{props.children}</StyledLayout>
+        <Navigation />
     </div>
 );
 
