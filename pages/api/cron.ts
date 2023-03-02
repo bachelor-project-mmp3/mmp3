@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../lib/prisma';
+import { getNodeMailerTransporter } from './helper/nodemailer';
 
 export default async function handler(
     req: NextApiRequest,
@@ -17,16 +18,7 @@ export default async function handler(
                 let emailArray = users.map((user) => user.email);
 
                 //setup nodemailer for sending mails
-                let nodemailer = require('nodemailer');
-                const transporter = nodemailer.createTransport({
-                    port: 465,
-                    host: 'smtp.gmail.com',
-                    auth: {
-                        user: 'studentenfuttermmp3@gmail.com',
-                        pass: `${process.env.PASSWORD}`,
-                    },
-                    secure: true,
-                });
+                const transporter = getNodeMailerTransporter();
 
                 // prepare mail
                 const mailData = {

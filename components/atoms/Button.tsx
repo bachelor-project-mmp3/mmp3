@@ -28,15 +28,22 @@ interface ButtonStyleProps {
 }
 
 const StyledButton = styled.button<ButtonStyleProps>`
-    padding: 8px 10px;
+    padding: 8px 20px;
     border-radius: 20px;
     font-weight: 600;
+    box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
     ${(props) =>
         props.variant === 'primary' &&
         `
         background-color: ${props.theme.primary};
         border: 2px solid  ${props.theme.primary};
         color: white;
+    `}
+    ${(props) =>
+        props.variant === 'primary' &&
+        !props.disabled &&
+        `
+
         :hover {
             background-color: ${props.theme.hoverPrimary};
             border: 2px solid ${props.theme.hoverPrimary};
@@ -48,6 +55,11 @@ const StyledButton = styled.button<ButtonStyleProps>`
         background-color: white;
         color:  ${props.theme.primary};
         border: 2px solid ${props.theme.primary};
+    `}
+    ${(props) =>
+        props.variant === 'secondary' &&
+        !props.disabled &&
+        `
         :hover {
             color: ${props.theme.hoverPrimary};
             border: 2px solid ${props.theme.hoverPrimary};
@@ -59,6 +71,12 @@ const StyledButton = styled.button<ButtonStyleProps>`
         background-color: white;
         color:  ${props.theme.red};
         border: 2px solid  ${props.theme.red};
+
+    `}
+    ${(props) =>
+        props.variant === 'red' &&
+        !props.disabled &&
+        `
         :hover {
             color: ${props.theme.hoverRed};
             border: 2px solid ${props.theme.hoverRed};
@@ -70,10 +88,10 @@ const StyledButton = styled.button<ButtonStyleProps>`
     opacity: 0.5;
     cursor: not-allowed;
     `}
-    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
+    font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     @media ${(props) => props.theme.breakpoint.tablet} {
-        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
-        padding: 10px 12px;
+        font-size: ${({ theme }) => theme.fonts.normal.info};
+        padding: 10px 30px;
         border-radius: 24px;
     }
 `;

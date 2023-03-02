@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
@@ -12,6 +13,29 @@ type Props = {
 const Events: React.FC<Props> = () => {
     const [events, setEvents] = useState(null);
     const [isLoading, setLoading] = useState(false);
+
+    const router = useRouter();
+
+    const onSubmitJoin = async (eventId: string, userId: string) => {
+        const data = {
+            eventId: eventId,
+            userId: userId,
+        };
+
+        const res = await fetch('/api/requests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (res.status < 300) {
+            setLoading(true);
+            router.replace(router.asPath);
+            router.reload();
+        } else {
+            router.push('/404');
+        }
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -38,6 +62,7 @@ const Events: React.FC<Props> = () => {
                             <ExtendedEventPreview
                                 key={event.id}
                                 event={event}
+                                onSubmitJoin={onSubmitJoin}
                             />
                         ))}
                 </EventsList>
