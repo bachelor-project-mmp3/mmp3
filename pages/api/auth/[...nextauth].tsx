@@ -34,19 +34,19 @@ export const authOptions: NextAuthOptions = {
                     },
                 });
 
-                if(!user){
+                if (!user) {
                     try {
                         const createdUser = await prisma.user.create({
                             data: {
                                 firstName: fetchedUser.given_name,
                                 lastName: fetchedUser.family_name,
                                 study: fetchedUser.studies.split('-')[0],
-                                email: fetchedUser.email
+                                email: fetchedUser.email,
                             },
                         });
                         user = createdUser;
-                    } catch (err){
-                        console.log(err)
+                    } catch (err) {
+                        console.log(err);
                     }
                 }
 
@@ -66,15 +66,12 @@ export const authOptions: NextAuthOptions = {
                 },
             });
 
-          if (token) {
-            session.user.userId = user.id;
-            session.user.image = user.image;
-          }
-          return session;
+            if (token) {
+                session.user.userId = user.id;
+                session.user.image = user.image;
+            }
+            return session;
         },
-    },
-    pages: {
-        signIn: '/',
     },
 };
 
