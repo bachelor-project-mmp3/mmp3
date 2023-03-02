@@ -21,6 +21,7 @@ import {
     getTimeLeftToJoin,
 } from '../../../helper/helperFunctions';
 import { Head } from '../../../components/organisms/Head';
+import { Card } from '../../../components/atoms/Card';
 
 type EventProps = {
     id: string;
@@ -147,20 +148,21 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                 </StyledInfoEventDetailsBoxes>
             </StyledInfoEventDetails>
 
-            {event.menu.map((dish, index) => (
-                <div key={dish.id} className="dish">
-                    <>
-                        <div>{index + 1}. Gang</div>
-                        <div>Titel:{dish.title}</div>
+            <Card variant={'center'}>
+                {event.menu.map((dish, index) => (
+                    <StyledDishItem>
+                        {dish.link && <a href={dish.link}>{dish.title}</a>}
                         {dish.description && (
-                            <div>
-                                <div>Beschreibung: {dish.description}</div>
-                            </div>
+                            <StyledToolTip>
+                                Hover over me
+                                <StyledToolTipText>
+                                    {dish.description}
+                                </StyledToolTipText>
+                            </StyledToolTip>
                         )}
-                        {dish.link && <div>Link: {dish.link}</div>}
-                    </>
-                </div>
-            ))}
+                    </StyledDishItem>
+                ))}
+            </Card>
         </Layout>
     );
 };
@@ -219,4 +221,29 @@ const StyledCrown = styled(Crown)`
     height: 35px;
     width: 70px;
     transform: rotate(30deg);
+`;
+
+const StyledDishItem = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+`;
+
+const StyledToolTip = styled.div`
+    position: relative;
+    display: inline-block;
+`;
+
+const StyledToolTipText = styled.span`
+    display: none;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
 `;
