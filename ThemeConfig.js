@@ -47,6 +47,9 @@ export const theme = {
             caption: '16px',
         },
     },
+    layoutPadding: {
+        web: '0 25%',
+    },
     breakpoint: {
         tablet: `(min-width: ${size.tablet})`,
     },
@@ -89,5 +92,8 @@ export const GlobalStyles = createGlobalStyle`
   }
   a:hover {
     color: ${({ theme }) => theme.primary};
+  }
+  textarea, input{
+    font-family: HankenGrotesk, Arial, Roboto, sans-serif;
   }
 `;

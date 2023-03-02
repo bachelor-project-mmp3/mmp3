@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import React from 'react';
 
 interface CardProps {
-    variant?: 'no-padding';
+    variant?: 'no-padding' | 'center';
     height?: string;
     width?: string;
     children: ReactNode;
@@ -23,7 +23,7 @@ export const Card: React.FC<CardProps> = ({
 };
 
 interface CardStyleProps {
-    variant: 'no-padding';
+    variant: 'no-padding' | 'center';
 }
 
 const StyledCard = styled.div<CardStyleProps>`
@@ -37,4 +37,5 @@ const StyledCard = styled.div<CardStyleProps>`
         `
         padding: 0;
     `}
+    text-align: ${(props) => props.variant === 'center' && 'center'}
 `;

@@ -16,5 +16,8 @@ const Layout: React.FC<Props> = (props) => (
 export default Layout;
 
 const StyledLayout = styled.div`
-    padding: 0 12px;
+    padding: 0 20px;
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        padding: ${({ theme }) => theme.layoutPadding.web};
+    }
 `;
