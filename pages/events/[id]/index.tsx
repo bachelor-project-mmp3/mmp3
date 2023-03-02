@@ -22,6 +22,7 @@ import {
 } from '../../../helper/helperFunctions';
 import { Head } from '../../../components/organisms/Head';
 import { Card } from '../../../components/atoms/Card';
+import MenuItem from '../../../components/organisms/events/MenuItem';
 
 type EventProps = {
     id: string;
@@ -82,6 +83,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log(data);
                     setEvent(data.event);
                     setLoading(false);
                 });
@@ -100,6 +102,8 @@ const EventDetail: React.FC<EventDetailProps> = () => {
             ? event?.host.firstName + ' ' + event?.host.lastName
             : 'Unknown host';
 
+    //TODO: check why image so far left when not host
+    // @ts-ignore
     return (
         <Layout>
             <Head backButton onClick={router.back}>
@@ -150,17 +154,19 @@ const EventDetail: React.FC<EventDetailProps> = () => {
 
             <Card variant={'center'}>
                 {event.menu.map((dish, index) => (
-                    <StyledDishItem>
-                        {dish.link && <a href={dish.link}>{dish.title}</a>}
-                        {dish.description && (
-                            <StyledToolTip>
-                                Hover over me
-                                <StyledToolTipText>
-                                    {dish.description}
-                                </StyledToolTipText>
-                            </StyledToolTip>
-                        )}
-                    </StyledDishItem>
+                    <MenuItem
+                        key={index}
+                        dishTitle={dish.title}
+                        dishLink={dish.link}
+                        dishDescription={dish.description}
+                    />
+                ))}
+            </Card>
+            <Card variant={'description'}>{event.info}</Card>
+
+            <Card>
+                {event.requests.map((request, index) => (
+                    <p key={index}>{request.User.firstName}</p>
                 ))}
             </Card>
         </Layout>
@@ -216,34 +222,9 @@ const StyledImage = styled(Image)`
 
 const StyledCrown = styled(Crown)`
     position: absolute;
-    right: 0px;
+    right: 0;
     top: 20px;
     height: 35px;
     width: 70px;
     transform: rotate(30deg);
-`;
-
-const StyledDishItem = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin: 20px;
-`;
-
-const StyledToolTip = styled.div`
-    position: relative;
-    display: inline-block;
-`;
-
-const StyledToolTipText = styled.span`
-    display: none;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-
-    /* Position the tooltip text - see examples below! */
-    position: absolute;
-    z-index: 1;
 `;
