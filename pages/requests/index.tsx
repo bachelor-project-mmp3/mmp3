@@ -25,9 +25,9 @@ const Requests: React.FC = () => {
             });
     }, []);
 
-    const onSubmitAccept = async (requestId: string) => {
+    const onSubmit = async (requestId: string, status: RequestStatus) => {
         const data = {
-            status: RequestStatus.ACCEPTED,
+            status,
         };
 
         // TODO: guest receices email
@@ -57,7 +57,12 @@ const Requests: React.FC = () => {
                         <Request
                             key={request.id}
                             request={request}
-                            onSubmitAccept={() => onSubmitAccept(request.id)}
+                            onSubmitAccept={() =>
+                                onSubmit(request.id, RequestStatus.ACCEPTED)
+                            }
+                            onSubmitDecline={() =>
+                                onSubmit(request.id, RequestStatus.DECLINED)
+                            }
                         />
                     ))}
             </div>
