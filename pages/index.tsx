@@ -32,7 +32,7 @@ const LandingPage: React.FC = () => {
                 ) : (
                     <Button
                         variant={'secondary'}
-                        onClick={() => signOut()}
+                        onClick={() => signOut({ callbackUrl: '/' })}
                         card>
                         Sign out
                     </Button>
@@ -48,4 +48,8 @@ const Content = styled.div`
     margin-top: 100px;
     text-align: center;
     padding: 20px;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        margin-left: -350px;
+    }
 `;

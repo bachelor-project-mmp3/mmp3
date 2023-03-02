@@ -12,10 +12,10 @@ export const Header = ({ backButton, children }: HeaderProps) => {
     const router = useRouter();
 
     return (
-        <StyledHead>
+        <StyledHeader>
             <StyledBackButton backButton={backButton} onClick={router.back} />
             {children}
-        </StyledHead>
+        </StyledHeader>
     );
 };
 
@@ -23,14 +23,15 @@ export interface HeaderStyleProps {
     backButton: boolean;
 }
 
-export const StyledHead = styled.div<HeaderStyleProps>`
+export const StyledHeader = styled.div<HeaderStyleProps>`
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 30px;
-    font-size: ${({ theme }) => theme.fonts.mobile.headline};
+    padding-bottom: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobile.headline3};
     @media ${(props) => props.theme.breakpoint.tablet} {
-        font-size: ${({ theme }) => theme.fonts.normal.headline};
+        font-size: ${({ theme }) => theme.fonts.normal.headline3};
     }
     font-weight: bold;
 `;
@@ -41,4 +42,9 @@ const StyledBackButton = styled(GoBackIcon)<HeaderStyleProps>`
     width: 16px;
     stroke-width: 20px;
     cursor: pointer;
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        height: 24px;
+        width: 24px;
+    }
 `;

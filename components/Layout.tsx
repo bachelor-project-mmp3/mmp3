@@ -7,14 +7,24 @@ type Props = {
 };
 
 const Layout: React.FC<Props> = (props) => (
-    <div>
-        <StyledLayout>{props.children}</StyledLayout>
+    <LayoutWrapper>
         <Navigation />
-    </div>
+        <StyledLayout>{props.children}</StyledLayout>
+    </LayoutWrapper>
 );
 
 export default Layout;
 
 const StyledLayout = styled.div`
-    padding: 0 20px;
+    padding: 30px 20px 80px 20px;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        padding: 30px 20px;
+    }
+`;
+
+const LayoutWrapper = styled.div`
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        margin-left: 350px;
+    }
 `;
