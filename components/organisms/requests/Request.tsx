@@ -5,6 +5,7 @@ import Crown from '../../../public/icons/krone.svg';
 import { Button } from '../../../components/atoms/Button';
 import Image from 'next/image';
 import Check from '../../../public/icons/hakerl.svg';
+import Discard from '../../../public/icons/discard.svg';
 import { useRouter } from 'next/router';
 
 export type RequestProps = {
@@ -40,7 +41,7 @@ function getCanJoinByTimeLimit(timeLimit: string) {
 function getIsPlaceLeft(currentParticipants: number, capacity: number) {
     return currentParticipants < capacity;
 }
-
+//todo helper
 const getPastTime = (updatedAt: string) => {
     const today = new Date();
     const timeLimitDate = new Date(updatedAt);
@@ -61,7 +62,8 @@ const getPastTime = (updatedAt: string) => {
 const Request: React.FC<{
     request: RequestProps;
     onSubmitAccept: () => void;
-}> = ({ request, onSubmitAccept }) => {
+    onSubmitDecline: () => void;
+}> = ({ request, onSubmitAccept, onSubmitDecline }) => {
     const { data: session } = useSession();
     const router = useRouter();
     const userIsHost = session?.user?.userId !== request.User.id ?? false;
@@ -76,12 +78,16 @@ const Request: React.FC<{
                 return `${request.User.firstName} ${request.User.lastName} wants to join ${request.Event.title}`;
             } else if (request.status === 'ACCEPTED') {
                 return `${request.User.firstName} ${request.User.lastName} joined ${request.Event.title}`;
+            } else if (request.status === 'DECLINED') {
+                return `You declined request from ${request.User.firstName} ${request.User.lastName} for ${request.Event.title}`;
             }
         } else {
             if (request.status === 'PENDING') {
                 return `You sent ${request.Event.host.firstName} ${request.Event.host.lastName} a request to join ${request.Event.title}`;
             } else if (request.status === 'ACCEPTED') {
                 return `${request.Event.host.firstName} ${request.Event.host.lastName} accepted your request to join ${request.Event.title}`;
+            } else if (request.status === 'DECLINED') {
+                return `${request.Event.host.firstName} ${request.Event.host.lastName} declined your request to join ${request.Event.title}`;
             }
         }
     };
@@ -93,6 +99,7 @@ const Request: React.FC<{
     );
 
     return (
+        //TODO: use Card comonent
         <Card>
             <Content>
                 <ImageAndLinkWrapper>
@@ -141,9 +148,14 @@ const Request: React.FC<{
                 userIsHost &&
                 isRegistrationTimeinFuture &&
                 isPlaceLeft && (
-                    <ApproveButton onClick={() => onSubmitAccept()}>
-                        <StyledCheck />
-                    </ApproveButton>
+                    <>
+                        <DeclineButton onClick={() => onSubmitDecline()}>
+                            <StyledDiscard />
+                        </DeclineButton>
+                        <ApproveButton onClick={() => onSubmitAccept()}>
+                            <StyledCheck />
+                        </ApproveButton>
+                    </>
                 )}
             {request.status === 'ACCEPTED' && !userIsHost && (
                 <ButtonWrapper>
@@ -174,6 +186,13 @@ const Card = styled.div`
     margin-right: auto;
     margin-bottom: 40px;
     height: 150px;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        margin: initial;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 40px;
+    }
 `;
 
 const Content = styled.div`
@@ -198,6 +217,11 @@ const StyledCheck = styled(Check)`
     color: white;
 `;
 
+const StyledDiscard = styled(Discard)`
+    height: 18px;
+    width: 18px;
+`;
+
 const ApproveButton = styled.div`
     border-radius: 50%;
     background-color: ${({ theme }) => theme.primary};
@@ -211,6 +235,25 @@ const ApproveButton = styled.div`
 
     :hover {
         background-color: ${({ theme }) => theme.hoverPrimary};
+    }
+`;
+
+const DeclineButton = styled.div`
+    border-radius: 50%;
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    cursor: pointer;
+    box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
+    background-color: white;
+    color: ${({ theme }) => theme.red};
+    border: 1px solid ${({ theme }) => theme.red};
+    right: 100px;
+
+    :hover {
+        color: ${({ theme }) => theme.hoverRed};
+        border: 1px solid ${({ theme }) => theme.hoverRed};
     }
 `;
 

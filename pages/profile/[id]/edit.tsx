@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
 import Router, { useRouter } from 'next/router';
-import { uploadImage } from '../../api/helper/uploadHelper';
 import { InputFile } from '../../../components/atoms/form/InputFile';
 import { SubmitButton } from '../../../components/atoms/form/SubmitButton';
 import { InputText } from '../../../components/atoms/form/InputText';
@@ -17,6 +16,8 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import Instagram from '../../../public/icons/insta.svg';
 import Phone from '../../../public/icons/phone.svg';
+import { uploadImage } from '../../../helper/uploadHelper';
+import { Header } from '../../../components/organisms/Header';
 
 const Profile: React.FC = () => {
     const router = useRouter();
@@ -123,219 +124,203 @@ const Profile: React.FC = () => {
 
     return (
         <Layout>
-            <div>
-                <h1>Edit Profile</h1>
-                <ProfileForm onSubmit={handleSubmit(onSubmit)}>
-                    <StyledDiv>
-                        <InputFile
-                            id="image"
-                            onChange={(e) => {
-                                setValue('image', e.target.files[0]);
-                                setImage(e.target.files[0]);
-                            }}></InputFile>
-                        {/*errors will return when field validation fails  */}
-                        {errors.image && errors.image.type === 'required' && (
-                            <ErrorMessage>Please upload a photo</ErrorMessage>
-                        )}
-                        {errors.image && errors.image.type === 'fileSize' && (
+            <Header backButton>Edit Profile</Header>
+            <ProfileForm onSubmit={handleSubmit(onSubmit)}>
+                <StyledDiv>
+                    <InputFile
+                        id="image"
+                        onChange={(e) => {
+                            setValue('image', e.target.files[0]);
+                            setImage(e.target.files[0]);
+                        }}></InputFile>
+                    {/*errors will return when field validation fails  */}
+                    {errors.image && errors.image.type === 'required' && (
+                        <ErrorMessage>Please upload a photo</ErrorMessage>
+                    )}
+                    {errors.image && errors.image.type === 'fileSize' && (
+                        <ErrorMessage>
+                            Please upload a photo with max. 2MB
+                        </ErrorMessage>
+                    )}
+                </StyledDiv>
+
+                <TextRequired>* Required</TextRequired>
+
+                <StyledDiv>
+                    <InputText
+                        onChange={(e) => {
+                            setValue('firstName', e.target.value);
+                            setFirstName(e.target.value);
+                        }}
+                        id="firstName"
+                        placeholder="firstName"
+                        value={firstName}
+                        isInvalid={errors.firstName ? 'true' : 'false'}>
+                        Firstname*
+                    </InputText>
+
+                    {/*errors will return when field validation fails  */}
+                    {errors.firstName &&
+                        errors.firstName.type === 'required' && (
                             <ErrorMessage>
-                                Please upload a photo with max. 2MB
+                                Please enter a firstname
                             </ErrorMessage>
                         )}
+                    {errors.firstName &&
+                        errors.firstName.type === 'minLength' && (
+                            <ErrorMessage>
+                                Please enter a firstname of at least 3
+                                characters
+                            </ErrorMessage>
+                        )}
+                </StyledDiv>
+
+                <StyledDiv>
+                    <InputText
+                        onChange={(e) => {
+                            setValue('lastName', e.target.value);
+                            setLastName(e.target.value);
+                        }}
+                        id="lastName"
+                        placeholder="lastName"
+                        value={lastName}
+                        isInvalid={errors.lastName ? 'true' : 'false'}>
+                        Lastname*
+                    </InputText>
+                    {/*errors will return when field validation fails  */}
+                    {errors.lastName && errors.lastName.type === 'required' && (
+                        <ErrorMessage>Please enter a lastname</ErrorMessage>
+                    )}
+                    {errors.lastName &&
+                        errors.lastName.type === 'minLength' && (
+                            <ErrorMessage>
+                                Please enter a lastname of at least 3 characters
+                            </ErrorMessage>
+                        )}
+                </StyledDiv>
+
+                <StyledText>
+                    <p>Course of studies: {profile.study}</p>
+
+                    <StyledEmail>FH email adress: {profile.email}</StyledEmail>
+
+                    <Info>
+                        The email adress will only be shared with guests
+                    </Info>
+                </StyledText>
+
+                <StyledDormitory>
+                    <StyledDiv className="small">
+                        <Select
+                            id="dormitory"
+                            options={dormitories}
+                            selected={dormitory}
+                            onChange={(e) => {
+                                setValue('dormitory', e.target.value);
+                                setDormitory(e.target.value);
+                            }}>
+                            Accommodation*
+                        </Select>
                     </StyledDiv>
 
-                    <TextRequired>* Required</TextRequired>
-
-                    <StyledDiv>
+                    <StyledDiv className="small">
                         <InputText
                             onChange={(e) => {
-                                setValue('firstName', e.target.value);
-                                setFirstName(e.target.value);
+                                setValue('roomNumber', e.target.value);
+                                setRoomNumber(e.target.value);
                             }}
-                            id="firstName"
-                            placeholder="firstName"
-                            value={firstName}
-                            isInvalid={errors.firstName ? 'true' : 'false'}>
-                            Firstname*
+                            id="roomNumber"
+                            placeholder="000"
+                            value={roomNumber}
+                            isInvalid={errors.roomNumber ? 'true' : 'false'}>
+                            Room number*
                         </InputText>
 
                         {/*errors will return when field validation fails  */}
-                        {errors.firstName &&
-                            errors.firstName.type === 'required' && (
+                        {errors.roomNumber &&
+                            errors.roomNumber.type === 'required' && (
                                 <ErrorMessage>
-                                    Please enter a firstname
+                                    Please enter a room number
                                 </ErrorMessage>
                             )}
-                        {errors.firstName &&
-                            errors.firstName.type === 'minLength' && (
-                                <ErrorMessage>
-                                    Please enter a firstname of at least 3
-                                    characters
-                                </ErrorMessage>
-                            )}
+                        <StyledInfo>
+                            <Info>
+                                The room number will only be shared with guests
+                            </Info>
+                        </StyledInfo>
                     </StyledDiv>
+                </StyledDormitory>
+                <StyledDiv>
+                    <InputTextarea
+                        id="aboutYou"
+                        cols={50}
+                        rows={8}
+                        placeholder="Leave some personal notes about you, such as hobbies, interests as well as about your diet, potential allergies and intolerances."
+                        value={aboutYou}
+                        onChange={(e) => setAboutYou(e.target.value)}>
+                        About you
+                    </InputTextarea>
+                </StyledDiv>
 
-                    <StyledDiv>
-                        <InputText
+                <StyledContactBlock>
+                    <StyledInstagram />
+                    <InputText
+                        onChange={(e) => {
+                            setValue('instagram', e.target.value);
+                            setInstagram(e.target.value);
+                        }}
+                        id="instagram"
+                        placeholder="Enter your instagram username"
+                        value={instagram}
+                        padding="left">
+                        Contact Information
+                    </InputText>
+                </StyledContactBlock>
+
+                <StyledDivPhone>
+                    <StyledPhone />
+                    <InputText
+                        onChange={(e) => {
+                            setValue('phone', e.target.value);
+                            setPhone(e.target.value);
+                        }}
+                        id="phone"
+                        placeholder="+43 123 45 67 890"
+                        value={phone}
+                        padding="left"></InputText>
+                </StyledDivPhone>
+                <StyledInfo>
+                    <Info>
+                        The phone number will only be shared with guests
+                    </Info>
+                </StyledInfo>
+
+                <StyledDiv>
+                    <StyledWrapper>
+                        <Checkbox
+                            id="privacy"
                             onChange={(e) => {
-                                setValue('lastName', e.target.value);
-                                setLastName(e.target.value);
-                            }}
-                            id="lastName"
-                            placeholder="lastName"
-                            value={lastName}
-                            isInvalid={errors.lastName ? 'true' : 'false'}>
-                            Lastname*
-                        </InputText>
-                        {/*errors will return when field validation fails  */}
-                        {errors.lastName &&
-                            errors.lastName.type === 'required' && (
-                                <ErrorMessage>
-                                    Please enter a lastname
-                                </ErrorMessage>
-                            )}
-                        {errors.lastName &&
-                            errors.lastName.type === 'minLength' && (
-                                <ErrorMessage>
-                                    Please enter a lastname of at least 3
-                                    characters
-                                </ErrorMessage>
-                            )}
-                    </StyledDiv>
+                                setValue('privacy', e.target.value);
+                            }}>
+                            I have read and agree to the{' '}
+                            <Link href="/privacy">privacy policy</Link>
+                        </Checkbox>
+                    </StyledWrapper>
+                    {/*errors will return when field validation fails */}
+                    {errors.privacy && errors.privacy.type === 'required' && (
+                        <ErrorMessage>Please accept privacy</ErrorMessage>
+                    )}
+                </StyledDiv>
+                <ButtonWrapper>
+                    <Button
+                        variant="red"
+                        onClick={() => router.push(`/profile/${profile.id}`)}>
+                        Cancel
+                    </Button>
 
-                    <StyledText>
-                        <p>Course of studies: {profile.study}</p>
-
-                        <StyledEmail>
-                            FH email adress: {profile.email}
-                        </StyledEmail>
-
-                        <Info>
-                            The email adress will only be shared with guests
-                        </Info>
-                    </StyledText>
-
-                    <StyledDormitory>
-                        <StyledDiv className="small">
-                            <Select
-                                id="dormitory"
-                                options={dormitories}
-                                selected={dormitory}
-                                onChange={(e) => {
-                                    setValue('dormitory', e.target.value);
-                                    setDormitory(e.target.value);
-                                }}>
-                                Accommodation*
-                            </Select>
-                        </StyledDiv>
-
-                        <StyledDiv className="small">
-                            <InputText
-                                onChange={(e) => {
-                                    setValue('roomNumber', e.target.value);
-                                    setRoomNumber(e.target.value);
-                                }}
-                                id="roomNumber"
-                                placeholder="000"
-                                value={roomNumber}
-                                isInvalid={
-                                    errors.roomNumber ? 'true' : 'false'
-                                }>
-                                Room number*
-                            </InputText>
-
-                            {/*errors will return when field validation fails  */}
-                            {errors.roomNumber &&
-                                errors.roomNumber.type === 'required' && (
-                                    <ErrorMessage>
-                                        Please enter a room number
-                                    </ErrorMessage>
-                                )}
-                            <StyledInfo>
-                                <Info>
-                                    The room number will only be shared with
-                                    guests
-                                </Info>
-                            </StyledInfo>
-                        </StyledDiv>
-                    </StyledDormitory>
-                    <StyledDiv>
-                        <InputTextarea
-                            id="aboutYou"
-                            cols={50}
-                            rows={8}
-                            placeholder="Leave some personal notes about you, such as hobbies, interests as well as about your diet, potential allergies and intolerances."
-                            value={aboutYou}
-                            onChange={(e) => setAboutYou(e.target.value)}>
-                            About you
-                        </InputTextarea>
-                    </StyledDiv>
-
-                    <StyledContactBlock>
-                        <StyledInstagram />
-                        <InputText
-                            onChange={(e) => {
-                                setValue('instagram', e.target.value);
-                                setInstagram(e.target.value);
-                            }}
-                            id="instagram"
-                            placeholder="Enter your instagram username"
-                            value={instagram}
-                            padding="left">
-                            Contact Information
-                        </InputText>
-                    </StyledContactBlock>
-
-                    <StyledDivPhone>
-                        <StyledPhone />
-                        <InputText
-                            onChange={(e) => {
-                                setValue('phone', e.target.value);
-                                setPhone(e.target.value);
-                            }}
-                            id="phone"
-                            placeholder="+43 123 45 67 890"
-                            value={phone}
-                            padding="left"></InputText>
-                    </StyledDivPhone>
-                    <StyledInfo>
-                        <Info>
-                            The phone number will only be shared with guests
-                        </Info>
-                    </StyledInfo>
-
-                    <StyledDiv>
-                        <StyledWrapper>
-                            <Checkbox
-                                id="privacy"
-                                onChange={(e) => {
-                                    setValue('privacy', e.target.value);
-                                }}>
-                                I have read and agree to the{' '}
-                                <Link href="/privacy">privacy policy</Link>
-                            </Checkbox>
-                        </StyledWrapper>
-                        {/*errors will return when field validation fails */}
-                        {errors.privacy &&
-                            errors.privacy.type === 'required' && (
-                                <ErrorMessage>
-                                    Please accept privacy
-                                </ErrorMessage>
-                            )}
-                    </StyledDiv>
-                    <ButtonWrapper>
-                        <Button
-                            variant="red"
-                            onClick={() =>
-                                router.push(`/profile/${profile.id}`)
-                            }>
-                            Cancel
-                        </Button>
-
-                        <SubmitButton value="Save"></SubmitButton>
-                    </ButtonWrapper>
-                </ProfileForm>
-            </div>
+                    <SubmitButton value="Save"></SubmitButton>
+                </ButtonWrapper>
+            </ProfileForm>
         </Layout>
     );
 };

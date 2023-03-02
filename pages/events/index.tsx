@@ -5,6 +5,7 @@ import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
 import { useRouter } from 'next/router';
+import { Header } from '../../components/organisms/Header';
 
 type Props = {
     events: EventProps[];
@@ -54,19 +55,17 @@ const Events: React.FC<Props> = () => {
 
     return (
         <Layout>
-            <div>
-                <h1>Events</h1>
-                <EventsList>
-                    {events &&
-                        events.map((event) => (
-                            <ExtendedEventPreview
-                                key={event.id}
-                                event={event}
-                                onSubmitJoin={onSubmitJoin}
-                            />
-                        ))}
-                </EventsList>
-            </div>
+            <Header>Find an event to join</Header>
+            <EventsList>
+                {events &&
+                    events.map((event) => (
+                        <ExtendedEventPreview
+                            key={event.id}
+                            event={event}
+                            onSubmitJoin={onSubmitJoin}
+                        />
+                    ))}
+            </EventsList>
         </Layout>
     );
 };

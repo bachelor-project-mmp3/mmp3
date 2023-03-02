@@ -1,78 +1,50 @@
-import React from 'react';
-import Link from 'next/link';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import { Button } from '../atoms/Button';
+import React, { ReactNode } from 'react';
+import styled from 'styled-components';
+import GoBackIcon from '../../public/icons/goBack.svg';
+import { useRouter } from 'next/router';
 
-export const Header = () => {
-    const { data: session, status } = useSession();
+interface HeaderProps {
+    backButton?: boolean;
+    children: ReactNode;
+}
 
-    let left = (
-        <div className="left">
-            <Link href="/">LandingPage</Link>
-            {status === 'authenticated' && (
-                <>
-                    <Link href="/events">Events</Link>
-                    <Link href="/events/create">CreateEvent</Link>
-                    <Link href={`/profile/${session?.user?.userId}`}>
-                        Profile
-                    </Link>
-                </>
-            )}
-
-            <p>{status}</p>
-            {session != null ? (
-                <p>
-                    {session.user.name}, {session.user.email}
-                </p>
-            ) : null}
-
-            {status != 'authenticated' ? (
-                <Button variant={'primary'} onClick={() => signIn('fhs')}>
-                    Sign in with FH Login
-                </Button>
-            ) : (
-                <Button variant={'secondary'} onClick={() => signOut()}>
-                    Sign out
-                </Button>
-            )}
-
-            <style jsx>{`
-                .bold {
-                    font-weight: bold;
-                }
-
-                a {
-                    text-decoration: none;
-                    color: #000;
-                    display: inline-block;
-                }
-
-                .left a[data-active='true'] {
-                    color: gray;
-                }
-
-                a + a {
-                    margin-left: 1rem;
-                }
-            `}</style>
-        </div>
-    );
-
-    let right = null;
+export const Header = ({ backButton, children }: HeaderProps) => {
+    const router = useRouter();
 
     return (
-        <nav>
-            {left}
-            {right}
-            <style jsx>{`
-                nav {
-                    display: flex;
-                    padding: 2rem;
-                    align-items: center;
-                }
-            `}</style>
-        </nav>
+        <StyledHeader>
+            <StyledBackButton backButton={backButton} onClick={router.back} />
+            {children}
+        </StyledHeader>
     );
 };
 
-export default Header;
+export interface HeaderStyleProps {
+    backButton: boolean;
+}
+
+export const StyledHeader = styled.div<HeaderStyleProps>`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+    padding-bottom: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobile.headline3};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline3};
+    }
+    font-weight: bold;
+`;
+
+const StyledBackButton = styled(GoBackIcon)<HeaderStyleProps>`
+    display: ${(props) => (props.backButton ? 'inline' : 'none')};
+    height: 16px;
+    width: 16px;
+    stroke-width: 20px;
+    cursor: pointer;
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        height: 24px;
+        width: 24px;
+    }
+`;

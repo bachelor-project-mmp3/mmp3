@@ -47,9 +47,6 @@ export const theme = {
             caption: '16px',
         },
     },
-    layoutPadding: {
-        web: '0 25%',
-    },
     breakpoint: {
         tablet: `(min-width: ${size.tablet})`,
     },
@@ -84,8 +81,7 @@ export const GlobalStyles = createGlobalStyle`
   }
     color: ${({ theme }) => theme.text};
     font-family: HankenGrotesk, Arial, Roboto, sans-serif;
-    background: rgb(219,255,183);
-    background: linear-gradient(173deg, rgba(219,255,183,1) 0%, rgba(241,255,226,1) 35%, rgba(255,255,255,1) 65%, rgba(255,250,205,1) 86%, rgba(255,246,169,1) 100%);
+    background: linear-gradient(173deg, rgba(219,255,183,1) 0%, rgba(241,255,226,1) 35%, rgba(255,255,255,1) 65%, rgba(255,250,205,1) 86%, rgba(255,246,169,1) 100%) fixed;
   }
   a {
     color: ${({ theme }) => theme.text};

@@ -10,4 +10,6 @@ export const EventForm = ({ onSubmit, children }: EventFormProps) => {
     return <StyledForm onSubmit={onSubmit}>{children}</StyledForm>;
 };
 
-export const StyledForm = styled.form``;
+export const StyledForm = styled.form`
+    max-width: 600px;
+`;

@@ -3,8 +3,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import prisma from '../../../../lib/prisma';
 import { authOptions } from '../../auth/[...nextauth]';
-import { getEmailTemplate } from '../../helper/mailTemplaes';
-import { getNodeMailerTransporter } from '../../helper/nodemailer';
+import { getEmailTemplate } from '../../../../helper/mailTemplaes';
+import { getNodeMailerTransporter } from '../../../../helper/nodemailer';
 
 export default async function handler(
     req: NextApiRequest,
@@ -17,6 +17,21 @@ export default async function handler(
             // PATCH Join event /api/requests
             if (req.method === 'PATCH') {
                 const { status } = req.body;
+                let data;
+
+                if (status === RequestStatus.ACCEPTED) {
+                    data = {
+                        status: status,
+                        Event: {
+                            update: { currentParticipants: { increment: 1 } },
+                        },
+                    };
+                }
+                if (status === RequestStatus.DECLINED) {
+                    data = {
+                        status: status,
+                    };
+                }
 
                 const request = await prisma.request.update({
                     where: {
@@ -35,17 +50,12 @@ export default async function handler(
                             select: { firstName: true, id: true, email: true },
                         },
                     },
-                    data: {
-                        status: status,
-                        Event: {
-                            update: { currentParticipants: { increment: 1 } },
-                        },
-                    },
+                    data,
                 });
+                const transporter = getNodeMailerTransporter();
 
                 if (status === RequestStatus.ACCEPTED) {
                     //send mail to guest
-                    const transporter = getNodeMailerTransporter();
                     const mailData = getEmailTemplate({
                         hostFirstName: request.Event.host.firstName,
                         eventTitle: request.Event.title,
@@ -53,6 +63,35 @@ export default async function handler(
                         guestId: request.User.id,
                         type: 'accepted',
                         eventId: request.Event.id,
+                    });
+                    const mail = {
+                        from: 'studentenfuttermmp3@gmail.com',
+                        to: request.User.email,
+                        ...mailData,
+                    };
+
+                    transporter.sendMail(mail, function (err, info) {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).json({
+                                statusCode: 500,
+                                success: false,
+                                message: err,
+                            });
+                        } else {
+                            console.log(info);
+                            res.status(200).json({ request });
+                        }
+                    });
+                }
+
+                if (status === RequestStatus.DECLINED) {
+                    //send mail to guest
+                    const mailData = getEmailTemplate({
+                        hostFirstName: request.Event.host.firstName,
+                        eventTitle: request.Event.title,
+                        guestName: request.User.firstName,
+                        type: 'declined',
                     });
                     const mail = {
                         from: 'studentenfuttermmp3@gmail.com',

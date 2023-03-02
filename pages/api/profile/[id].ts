@@ -57,6 +57,21 @@ export default async function handler(
                     where: {
                         id: String(req.query.id),
                     },
+                    include: {
+                        events: {
+                            select: {
+                                id: true,
+                                title: true,
+                                image: true,
+                                date: true,
+                            },
+                            where: {
+                                date: {
+                                    lte: new Date(),
+                                },
+                            },
+                        },
+                    },
                 });
                 res.status(200).json({ profile: profile });
             } else {

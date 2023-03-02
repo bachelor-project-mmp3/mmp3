@@ -20,7 +20,7 @@ import {
     getFormattedTime,
     getTimeLeftToJoin,
 } from '../../../helper/helperFunctions';
-import { Head } from '../../../components/organisms/Head';
+import { Header } from '../../../components/organisms/Header';
 import { Card } from '../../../components/atoms/Card';
 import MenuItem from '../../../components/organisms/events/MenuItem';
 
@@ -106,9 +106,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
     // @ts-ignore
     return (
         <Layout>
-            <Head backButton onClick={router.back}>
-                {event.title}
-            </Head>
+            <Header backButton>{event.title}</Header>
             <StyledInfoEventDetails>
                 <StyledInfoEventDetailsBoxes>
                     <TimeLimitAndSeatsWrapper>

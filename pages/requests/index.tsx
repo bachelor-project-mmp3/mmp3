@@ -2,6 +2,7 @@ import { RequestStatus } from '.prisma/client';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import Layout from '../../components/Layout';
+import { Header } from '../../components/organisms/Header';
 import Request from '../../components/organisms/requests/Request';
 
 const Requests: React.FC = () => {
@@ -25,9 +26,9 @@ const Requests: React.FC = () => {
             });
     }, []);
 
-    const onSubmitAccept = async (requestId: string) => {
+    const onSubmit = async (requestId: string, status: RequestStatus) => {
         const data = {
-            status: RequestStatus.ACCEPTED,
+            status,
         };
 
         // TODO: guest receices email
@@ -50,14 +51,19 @@ const Requests: React.FC = () => {
     if (!requests) return <p>No requests </p>;
     return (
         <Layout>
-            <h1>Requests</h1>
+            <Header backButton>Invitations</Header>
             <div>
                 {requests &&
                     requests.map((request) => (
                         <Request
                             key={request.id}
                             request={request}
-                            onSubmitAccept={() => onSubmitAccept(request.id)}
+                            onSubmitAccept={() =>
+                                onSubmit(request.id, RequestStatus.ACCEPTED)
+                            }
+                            onSubmitDecline={() =>
+                                onSubmit(request.id, RequestStatus.DECLINED)
+                            }
                         />
                     ))}
             </div>

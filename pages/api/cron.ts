@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getNodeMailerTransporter } from '../../helper/nodemailer';
 import prisma from '../../lib/prisma';
-import { getNodeMailerTransporter } from './helper/nodemailer';
 
 export default async function handler(
     req: NextApiRequest,
