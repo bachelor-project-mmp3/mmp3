@@ -47,9 +47,6 @@ export const theme = {
             caption: '16px',
         },
     },
-    layoutPadding: {
-        web: '0 25%',
-    },
     breakpoint: {
         tablet: `(min-width: ${size.tablet})`,
     },
