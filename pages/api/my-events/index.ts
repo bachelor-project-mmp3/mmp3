@@ -14,28 +14,56 @@ export default async function handler(
         try {
             // GET /api/my-events/
             if (req.method === 'GET') {
-                console.log(req.body);
                 const session = await getSession({ req });
                 const userId = session?.user?.userId;
+                const today = new Date();
 
-                const events = await prisma.event.findMany({
+                const upcomingEvents = await prisma.event.findMany({
                     include: {
                         host: {
                             select: {
                                 image: true,
+                                firstName: true,
+                                lastName: true,
+                                dormitory: true,
                             },
                         },
                         menu: true,
                         requests: true,
                     },
                     where: {
-                        host: {
-                            id: userId,
-                        },
+                        AND: [
+                            { date: { gte: today } },
+                            { host: { id: userId } },
+                        ],
                     },
                 });
 
-                res.status(200).json({ events: events });
+                const pastEvents = await prisma.event.findMany({
+                    include: {
+                        host: {
+                            select: {
+                                image: true,
+                                firstName: true,
+                                lastName: true,
+                                dormitory: true,
+                            },
+                        },
+                        menu: true,
+                        requests: true,
+                    },
+                    where: {
+                        AND: [
+                            { date: { lte: today } },
+                            { host: { id: userId } },
+                        ],
+                    },
+                });
+
+                res.status(200).json({
+                    upcomingEvents: upcomingEvents,
+                    pastEvents: pastEvents,
+                });
             } else {
                 res.status(405).end('Method Not Allowed');
             }
