@@ -164,6 +164,7 @@ const WrapperColumn = styled.div`
     width: 100%;
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 45%;
+        min-width: 500px;
     }
     &.top {
         align-self: flex-start;

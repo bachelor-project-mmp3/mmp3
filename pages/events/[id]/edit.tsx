@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
 import Router, { useRouter } from 'next/router';
 import { Button } from '../../../components/atoms/Button';
+import { Header } from '../../../components/organisms/Header';
 
 async function deleteEvent(id: string): Promise<void> {
     await fetch(`/api/events/${id}`, {
@@ -74,14 +75,10 @@ const EditEvent: React.FC<EventDetailProps> = () => {
     if (!event) return <p>No event detail </p>;
     return (
         <Layout>
-            <div>
-                <h1>Edit Event</h1>
-                <Button
-                    variant={'primary'}
-                    onClick={() => deleteEvent(event.id)}>
-                    Delete event
-                </Button>
-            </div>
+            <Header backButton>Edit event</Header>
+            <Button variant={'primary'} onClick={() => deleteEvent(event.id)}>
+                Delete event
+            </Button>
         </Layout>
     );
 };

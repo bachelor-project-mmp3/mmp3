@@ -186,6 +186,13 @@ const Card = styled.div`
     margin-right: auto;
     margin-bottom: 40px;
     height: 150px;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        margin: initial;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 40px;
+    }
 `;
 
 const Content = styled.div`
