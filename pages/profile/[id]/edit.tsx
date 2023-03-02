@@ -328,7 +328,8 @@ const Profile: React.FC = () => {
                             variant="red"
                             onClick={() =>
                                 router.push(`/profile/${profile.id}`)
-                            }>
+                            }
+                            form>
                             Cancel
                         </Button>
 
