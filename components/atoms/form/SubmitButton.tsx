@@ -24,10 +24,10 @@ const StyledInput = styled.input`
     box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
     color: ${({ theme }) => theme.body};
     cursor: pointer;
-    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
-    @media ${(props) => props.theme.breakpoint.tablet} {
+    font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
+    @media ${({ theme }) => theme.breakpoint.tablet} {
         padding: 10px 30px;
         border-radius: 24px;
-        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
+        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
     }
 `;

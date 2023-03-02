@@ -1,10 +1,10 @@
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
+import { useRouter } from 'next/router';
 
 type Props = {
     events: EventProps[];

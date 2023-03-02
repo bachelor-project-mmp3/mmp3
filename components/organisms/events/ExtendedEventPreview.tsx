@@ -9,6 +9,11 @@ import Location from '../../../public/icons/location.svg';
 import MenuStar from '../../../public/icons/sternmenu.svg';
 import { Button } from '../../atoms/Button';
 import { useSession } from 'next-auth/react';
+import {
+    getFormattedDate,
+    getFormattedTime,
+    getTimeLeftToJoin,
+} from '../../../helper/helperFunctions';
 
 export type EventProps = {
     id: string;
@@ -40,39 +45,6 @@ export type EventProps = {
         id: string;
         status: string;
     }> | null;
-};
-
-const getTimeLeftToJoin = (timeLimit: string) => {
-    const today = new Date();
-    const timeLimitDate = new Date(timeLimit);
-    const leftTimeToJoin = timeLimitDate.getTime() - today.getTime();
-    const differenceInDays = Math.floor(leftTimeToJoin / (1000 * 3600 * 24));
-    if (differenceInDays < 1) {
-        const differenceInHours = leftTimeToJoin / (1000 * 3600);
-
-        if (differenceInHours < 1) {
-            return '<1 hour left to apply';
-        }
-
-        return Math.floor(differenceInHours) + ' hours left to apply';
-    }
-    return differenceInDays + ' days left to apply';
-};
-
-const getFormattedDate = (date: string) => {
-    let formattedDate = new Date(date);
-    return formattedDate.toLocaleDateString('en-US');
-};
-
-const getFormattedTime = (date: string) => {
-    const formattedTime = new Date(date);
-    let timeString = formattedTime.toLocaleTimeString('en-US');
-
-    const amPm = timeString.substring(timeString.length - 2, timeString.length);
-    const hoursAndMinutes = timeString.substring(0, timeString.length - 6);
-    timeString = hoursAndMinutes + ' ' + amPm;
-
-    return timeString;
 };
 
 const ExtendedEventPreview: React.FC<{
@@ -157,6 +129,7 @@ const ExtendedEventPreview: React.FC<{
                         ) : (
                             <Button
                                 variant="primary"
+                                card
                                 onClick={() =>
                                     onSubmitJoin(
                                         event.id,
@@ -217,11 +190,11 @@ const Card = styled.div`
     }
 `;
 
-interface HostImageProps {
+export interface HostImageProps {
     userIsHost: boolean;
 }
 
-const HostImage = styled.div<HostImageProps>`
+export const HostImage = styled.div<HostImageProps>`
     position: absolute;
     top: -16px;
     right: 32px;
@@ -232,11 +205,11 @@ const HostImage = styled.div<HostImageProps>`
         props.userIsHost ? '5px solid ' + props.theme.green : 'none'};
 `;
 
-const StyledImage = styled(Image)`
+export const StyledImage = styled(Image)`
     border-radius: 50%;
 `;
 
-const StyledCrown = styled(Crown)`
+export const StyledCrown = styled(Crown)`
     position: absolute;
     right: 32px;
     top: -35px;
@@ -245,12 +218,12 @@ const StyledCrown = styled(Crown)`
     transform: rotate(30deg);
 `;
 
-const StyledClock = styled(Clock)`
+export const StyledClock = styled(Clock)`
     height: 16px;
     width: 16px;
 `;
 
-const StyledSeat = styled(Seat)`
+export const StyledSeat = styled(Seat)`
     height: 16px;
     width: 16px;
 `;
@@ -316,11 +289,11 @@ const TitleAndCostsWrapper = styled.div`
     width: 90%;
 `;
 
-const TimeLimitAndSeatsWrapper = styled.div`
+export const TimeLimitAndSeatsWrapper = styled.div`
     color: ${({ theme }) => theme.midGrey};
 `;
 
-const TimeLimitAndSeatsRow = styled.div`
+export const TimeLimitAndSeatsRow = styled.div`
     display: flex;
     align-items: center;
     gap: 5px;

@@ -17,17 +17,7 @@ import { Button } from '../../components/atoms/Button';
 import AddDishIcon from '../../public/icons/addDish.svg';
 import DiscardIcon from '../../public/icons/discard.svg';
 import LinkIcon from '../../public/icons/link.svg';
-
-//maybe refactoring?
-function formatDateForDateInput(input) {
-    let output;
-    if (input < 10) {
-        output = '0' + input;
-    } else {
-        output = input;
-    }
-    return output;
-}
+import { formatDateForDateInput } from '../../helper/helperFunctions';
 
 const CreateEvent: React.FC = () => {
     const { data: session } = useSession();
@@ -118,7 +108,6 @@ const CreateEvent: React.FC = () => {
         ]);
     };
     const onSubmit = async () => {
-        console.log('Hallo');
         try {
             const body = {
                 title,
@@ -310,7 +299,7 @@ const CreateEvent: React.FC = () => {
                                     <InputTextarea
                                         id="description"
                                         cols={50}
-                                        rows={8}
+                                        rows={5}
                                         placeholder="Add any information about the dish"
                                         value={currentDish.description}
                                         onChange={(e) => handleChange(e, i)}>

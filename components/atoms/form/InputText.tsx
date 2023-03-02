@@ -54,9 +54,8 @@ export interface InputStyleProps {
 }
 
 export const StyledInput = styled.input<InputStyleProps>`
-    border-color: ${(props) => {
-        return props.isInvalid === 'true' ? theme.red : theme.lightGrey;
-    }};
+    border-color: ${(props) =>
+        props.isInvalid === 'true' ? theme.red : theme.lightGrey};
     text-align: ${(props) =>
         props.variant === 'center'
             ? 'center'
@@ -64,13 +63,10 @@ export const StyledInput = styled.input<InputStyleProps>`
             ? 'right'
             : 'left'};
     max-width: 100%;
-    padding: 13px 0;
-    padding-left: ${(props) => {
-        return props.padding === 'left' ? '45px' : '20px';
-    }};
-    padding-right: ${(props) => {
-        return props.padding === 'right' ? '45px' : '20px';
-    }};
+    padding-top: 13px;
+    padding-bottom: 13px;
+    padding-left: ${(props) => (props.padding === 'left' ? '45px' : '20px')};
+    padding-right: ${(props) => (props.padding === 'right' ? '45px' : '20px')};
 
     border-radius: 40px;
     border: none;
