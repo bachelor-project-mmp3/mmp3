@@ -6,6 +6,7 @@ interface ButtonProps {
     variant: 'primary' | 'secondary' | 'red';
     onClick?: (e: any) => void;
     children: ReactNode;
+    card?: boolean;
     disabled?: boolean;
 }
 
@@ -13,10 +14,15 @@ export const Button: React.FC<ButtonProps> = ({
     variant,
     children,
     onClick,
+    card,
     disabled,
 }: ButtonProps) => {
     return (
-        <StyledButton onClick={onClick} disabled={disabled} variant={variant}>
+        <StyledButton
+            onClick={onClick}
+            disabled={disabled}
+            variant={variant}
+            card={card}>
             {children}
         </StyledButton>
     );
@@ -25,12 +31,15 @@ export const Button: React.FC<ButtonProps> = ({
 interface ButtonStyleProps {
     variant: 'primary' | 'secondary' | 'red';
     disabled: boolean;
+    card: boolean;
 }
 
 const StyledButton = styled.button<ButtonStyleProps>`
     padding: 8px 20px;
     border-radius: 20px;
     font-weight: 600;
+    box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
+    width: ${(props) => (props.card ? 'auto' : '45%')};
     ${(props) =>
         props.variant === 'primary' &&
         `
@@ -87,9 +96,9 @@ const StyledButton = styled.button<ButtonStyleProps>`
     opacity: 0.5;
     cursor: not-allowed;
     `}
-    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
+    font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     @media ${(props) => props.theme.breakpoint.tablet} {
-        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
+        font-size: ${({ theme }) => theme.fonts.normal.info};
         padding: 10px 30px;
         border-radius: 24px;
     }

@@ -1,10 +1,10 @@
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
+import { useRouter } from 'next/router';
 
 type Props = {
     events: EventProps[];
@@ -15,11 +15,6 @@ const Events: React.FC<Props> = () => {
     const [isLoading, setLoading] = useState(false);
 
     const router = useRouter();
-    // Call this function whenever you want to
-    // refresh props!
-    const refreshData = () => {
-        router.replace(router.asPath);
-    };
 
     const onSubmitJoin = async (eventId: string, userId: string) => {
         const data = {
@@ -35,15 +30,10 @@ const Events: React.FC<Props> = () => {
 
         if (res.status < 300) {
             setLoading(true);
-            fetch('/api/events', {
-                method: 'GET',
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    setEvents(data.events);
-                    setLoading(false);
-                    refreshData();
-                });
+            router.replace(router.asPath);
+            router.reload();
+        } else {
+            router.push('/404');
         }
     };
 
