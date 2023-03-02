@@ -123,8 +123,7 @@ const ExtendedEventPreview: React.FC<{
                             <Button
                                 variant="primary"
                                 disabled
-                                onClick={() => alert('todo')}
-                                card>
+                                onClick={() => alert('todo')}>
                                 Pending
                             </Button>
                         ) : (
