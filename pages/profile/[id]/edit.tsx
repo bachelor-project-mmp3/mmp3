@@ -314,7 +314,8 @@ const Profile: React.FC = () => {
                 <ButtonWrapper>
                     <Button
                         variant="red"
-                        onClick={() => router.push(`/profile/${profile.id}`)}>
+                        onClick={() => router.push(`/profile/${profile.id}`)}
+                        form>
                         Cancel
                     </Button>
 

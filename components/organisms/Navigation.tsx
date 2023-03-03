@@ -20,7 +20,9 @@ const Navigation: React.FC = () => {
             ) : (
                 <>
                     <DesktopNavigation>
-                        <LogoText>Studentenfutter</LogoText>
+                        <LogoText>
+                            <Link href="/">Studentenfutter</Link>
+                        </LogoText>
                         <DesktopNavigationItems>
                             <DesktopNavigationItem
                                 isActive={
@@ -262,4 +264,8 @@ const LogoText = styled.div`
     font-weight: 600;
     text-align: center;
     padding-top: 20px;
+
+    * {
+        text-decoration: none;
+    }
 `;

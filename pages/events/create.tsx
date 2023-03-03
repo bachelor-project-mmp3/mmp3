@@ -326,7 +326,10 @@ const CreateEvent: React.FC = () => {
                         );
                     })}
                     <StyledFormComponentsInRow>
-                        <Button variant="red" onClick={() => router.push(`/`)}>
+                        <Button
+                            variant="red"
+                            onClick={() => router.push(`/`)}
+                            form>
                             Cancel
                         </Button>
                         <SubmitButton value="Create event"></SubmitButton>
