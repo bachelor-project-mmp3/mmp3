@@ -127,7 +127,7 @@ const CreateEvent: React.FC = () => {
             });
             const eventId = await res.json();
 
-            router.push(`/events/${eventId}`);
+            router.replace(`/events/${eventId}`);
         } catch (error) {
             console.error('Failed to create event:' + error);
         }
@@ -328,7 +328,7 @@ const CreateEvent: React.FC = () => {
                     <StyledFormComponentsInRow>
                         <Button
                             variant="red"
-                            onClick={() => router.push(`/`)}
+                            onClick={() => router.replace(`/events`)}
                             form>
                             Cancel
                         </Button>

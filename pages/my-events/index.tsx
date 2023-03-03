@@ -58,7 +58,7 @@ const MyEvents: React.FC = () => {
                 <WrapperColumn>
                     <StyledHeadline>Upcoming Events</StyledHeadline>
 
-                    {upcomingEvents ? (
+                    {upcomingEvents?.length > 0 ? (
                         upcomingEvents.map((event) => (
                             <ExtendedEventPreview
                                 key={event.id}
@@ -73,7 +73,7 @@ const MyEvents: React.FC = () => {
                 <WrapperColumn className="top">
                     <StyledHeadline>Past Events</StyledHeadline>
                     <EventsWrapper>
-                        {pastEvents ? (
+                        {pastEvents?.length > 0 ? (
                             pastEvents.map((event) => (
                                 <>
                                     <EventItem>
@@ -114,6 +114,7 @@ const InvitationWrapper = styled.div`
     flex-direction: row;
     align-items: center;
     padding: 0 30px;
+    cursor: pointer;
     justify-content: space-between;
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 500px;

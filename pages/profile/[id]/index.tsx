@@ -51,9 +51,12 @@ const Profile: React.FC = () => {
     return (
         <Layout>
             <div>
-                <StyledBurger
-                    onClick={() => setIsMenuOpen(isMenuOpen ? false : true)}
-                />
+                {session?.user.userId == profile.id && (
+                    <StyledBurger
+                        onClick={() => setIsMenuOpen(isMenuOpen ? false : true)}
+                    />
+                )}
+
                 {isMenuOpen && (
                     <>
                         <FakeBlur onClick={() => setIsMenuOpen(false)} />
@@ -150,7 +153,7 @@ const Profile: React.FC = () => {
                     <WrapperColumn className="top">
                         <StyledH2>{profile.firstName}s hosted events</StyledH2>
                         <EventsWrapper>
-                            {profile.events ? (
+                            {profile.events?.length > 0 ? (
                                 profile.events.map((event) => (
                                     <>
                                         <EventItem>
