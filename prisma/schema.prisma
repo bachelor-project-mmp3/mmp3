@@ -30,7 +30,7 @@ model Event {
   reviews             Review[]
   notifications       Notification[]
   menu                Dish[]
-  recipeLink          String?
+  recipeLink          String?//TODO: delete, links in den dishes
   status              EventStatus    @default(UPCOMING)
 
   @@map(name: "events")

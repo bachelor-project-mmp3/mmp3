@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
+import { StyledForm } from './EventForm';
 
-const ProfileForm: React.FC = () => {
-    return <div>TODO</div>;
+interface ProfileFormProps {
+    onSubmit: (e: any) => void;
+    children: ReactNode;
+}
+
+export const ProfileForm = ({ onSubmit, children }: ProfileFormProps) => {
+    return <StyledForm onSubmit={onSubmit}>{children}</StyledForm>;
 };
-
-export default ProfileForm;

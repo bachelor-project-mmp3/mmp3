@@ -14,8 +14,15 @@ export default async function handler(
         try {
             // POST Create event /api/events
             if (req.method === 'POST') {
-                const { title, info, date, timeLimit, costs, capacity } =
-                    req.body;
+                const {
+                    title,
+                    info,
+                    date,
+                    timeLimit,
+                    costs,
+                    capacity,
+                    dishes,
+                } = req.body;
 
                 const dateTimeDate = new Date(date);
                 const dateTimeTimeLimit = new Date(timeLimit);
@@ -32,7 +39,10 @@ export default async function handler(
                         timeLimit: dateTimeTimeLimit,
                         costs: floatCosts,
                         capacity: intCapacity,
-                        image: 'default image',
+                        menu: {
+                            create: dishes,
+                        },
+                        image: 'https://firebasestorage.googleapis.com/v0/b/studentenfutter-dba6a.appspot.com/o/profile%2Fpexels-cats-coming-920220.jpg?alt=media&token=fde91666-3d24-471b-9bd3-8a1825edde79',
                     },
                 });
                 res.status(200).json(event.id);
@@ -40,11 +50,28 @@ export default async function handler(
             // TODO extend with query parameters for filtering later
             // GET events /api/events
             else if (req.method === 'GET') {
+                const today = new Date();
                 const events = await prisma.event.findMany({
+                    orderBy: [
+                        {
+                            date: 'asc',
+                        },
+                    ],
                     include: {
                         host: {
-                            select: { firstName: true },
+                            select: {
+                                firstName: true,
+                                lastName: true,
+                                image: true,
+                                dormitory: true,
+                                id: true,
+                            },
                         },
+                        menu: true,
+                        requests: true,
+                    },
+                    where: {
+                        timeLimit: { gte: today },
                     },
                 });
 

@@ -20,13 +20,23 @@ export default async function handler(
             }
             // GET event detail api/events/{id}
             else if (req.method === 'GET') {
+                //TODO: add pending requests to see if current user is pending on event
                 const event = await prisma.event.findUnique({
                     where: {
                         id: String(req.query.id),
                     },
                     include: {
                         host: {
-                            select: { firstName: true },
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                email: true,
+                                dormitory: true,
+                                roomNumber: true,
+                                image: true,
+                                phone: true,
+                            },
                         },
                         menu: {
                             select: {
@@ -36,6 +46,25 @@ export default async function handler(
                                 link: true,
                             },
                         },
+                        requests: {
+                            where: {
+                                OR: [
+                                    { status: 'ACCEPTED' },
+                                    { status: 'PENDING' },
+                                ],
+                            },
+                            select: {
+                                User: {
+                                    select: {
+                                        firstName: true,
+                                        lastName: true,
+                                        image: true,
+                                    },
+                                },
+                                status: true,
+                                userId: true,
+                            },
+                        },
                     },
                 });
                 res.status(200).json({ event: event });
@@ -43,6 +72,7 @@ export default async function handler(
                 res.status(405).end('Method Not Allowed');
             }
         } catch (err) {
+            console.log('KERSTIN UND Lisa TEST2');
             res.status(500).json({ message: err.message });
         }
     } else {

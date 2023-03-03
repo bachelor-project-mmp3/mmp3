@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import Layout from '../../components/Layout';
 import ExtendedEventPreview, {
     EventProps,
 } from '../../components/organisms/events/ExtendedEventPreview';
-
-// TODO: maybe load some data before page gets rendered, like session maybe?
-/*export const getServerSideProps: GetServerSideProps = async () => {
-    return {
-        props: { },
-    };
-};*/
+import { useRouter } from 'next/router';
+import { Header } from '../../components/organisms/Header';
 
 type Props = {
     events: EventProps[];
@@ -18,6 +14,29 @@ type Props = {
 const Events: React.FC<Props> = () => {
     const [events, setEvents] = useState(null);
     const [isLoading, setLoading] = useState(false);
+
+    const router = useRouter();
+
+    const onSubmitJoin = async (eventId: string, userId: string) => {
+        const data = {
+            eventId: eventId,
+            userId: userId,
+        };
+
+        const res = await fetch('/api/requests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (res.status < 300) {
+            setLoading(true);
+            router.replace(router.asPath);
+            router.reload();
+        } else {
+            router.push('/404');
+        }
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -36,33 +55,33 @@ const Events: React.FC<Props> = () => {
 
     return (
         <Layout>
-            <div className="page">
-                <h1>Events</h1>
-                <main>
-                    {events &&
-                        events.map((event) => (
-                            <div key={event.id} className="post">
-                                <ExtendedEventPreview event={event} />
-                            </div>
-                        ))}
-                </main>
-            </div>
-            <style jsx>{`
-                .post {
-                    background: white;
-                    transition: box-shadow 0.1s ease-in;
-                }
-
-                .post:hover {
-                    box-shadow: 1px 1px 3px #aaa;
-                }
-
-                .post + .post {
-                    margin-top: 2rem;
-                }
-            `}</style>
+            <Header>Find an event to join</Header>
+            <EventsList>
+                {events &&
+                    events.map((event) => (
+                        <ExtendedEventPreview
+                            key={event.id}
+                            event={event}
+                            onSubmitJoin={onSubmitJoin}
+                        />
+                    ))}
+            </EventsList>
         </Layout>
     );
 };
 
 export default Events;
+
+const EventsList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: auto;
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        max-width: 1500px;
+    }
+`;

@@ -1,50 +1,30 @@
 import React, { ReactNode } from 'react';
-import Header from './organisms/Header';
+import styled from 'styled-components';
+import Navigation from './organisms/Navigation';
 
 type Props = {
     children: ReactNode;
 };
 
 const Layout: React.FC<Props> = (props) => (
-    <div>
-        <Header />
-        <div className="layout">{props.children}</div>
-        <style jsx global>{`
-            html {
-                box-sizing: border-box;
-            }
-
-            *,
-            *:before,
-            *:after {
-                box-sizing: inherit;
-            }
-
-            body {
-                margin: 0;
-                padding: 0;
-                font-size: 16px;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-                    Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
-                    'Segoe UI Emoji', 'Segoe UI Symbol';
-                background: rgba(0, 0, 0, 0.05);
-            }
-
-            input,
-            textarea {
-                font-size: 16px;
-            }
-
-            button {
-                cursor: pointer;
-            }
-        `}</style>
-        <style jsx>{`
-            .layout {
-                padding: 0 2rem;
-            }
-        `}</style>
-    </div>
+    <LayoutWrapper>
+        <Navigation />
+        <StyledLayout>{props.children}</StyledLayout>
+    </LayoutWrapper>
 );
 
 export default Layout;
+
+const StyledLayout = styled.div`
+    padding: 30px 20px 80px 20px;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        padding: 30px 20px;
+    }
+`;
+
+const LayoutWrapper = styled.div`
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        margin-left: 350px;
+    }
+`;

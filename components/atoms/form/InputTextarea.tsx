@@ -1,4 +1,6 @@
 import { ReactNode } from 'react';
+import { StyledLabel } from './InputText';
+import { theme } from '../../../ThemeConfig';
 import styled from 'styled-components';
 
 interface InputTextareaProps {
@@ -22,8 +24,8 @@ export const InputTextarea = ({
 }: InputTextareaProps) => {
     return (
         <>
-            <label htmlFor={id}>{children}</label>
-            <StyledInput
+            <StyledLabel htmlFor={id}>{children}</StyledLabel>
+            <StyledTextArea
                 id={id}
                 name={id}
                 cols={cols}
@@ -36,7 +38,14 @@ export const InputTextarea = ({
     );
 };
 
-const StyledInput = styled.textarea`
-    width: 100%;
-    padding: 10px;
+export const StyledTextArea = styled.textarea`
+    max-width: 100%;
+    border-radius: 40px;
+    border: none;
+    padding: 13px 20px;
+    box-shadow: 8px 8px 20px -11px ${theme.darkGrey};
+    font-size: ${theme.fonts.mobile.info};
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.info};
+    }
 `;
