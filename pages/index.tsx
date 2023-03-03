@@ -24,16 +24,14 @@ const LandingPage: React.FC = () => {
                     <Button
                         variant={'primary'}
                         onClick={() =>
-                            signIn('fhs', { callbackUrl: '/events' })
-                        }
-                        card>
+                            signIn('fhs', { callbackUrl: '/my-events' })
+                        }>
                         {"Let's get started"}
                     </Button>
                 ) : (
                     <Button
                         variant={'secondary'}
-                        onClick={() => signOut({ callbackUrl: '/' })}
-                        card>
+                        onClick={() => signOut({ callbackUrl: '/' })}>
                         Sign out
                     </Button>
                 )}

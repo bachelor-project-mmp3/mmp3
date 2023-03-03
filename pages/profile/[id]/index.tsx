@@ -105,20 +105,15 @@ const Profile: React.FC = () => {
                         )}
                     </WrapperColumn>
                     <WrapperColumn className="top">
-                        <StyledH2>{profile.firstName} hosted events</StyledH2>
+                        <StyledH2>{profile.firstName}s hosted events</StyledH2>
                         <EventsWrapper>
-                            {profile.events &&
+                            {profile.events ? (
                                 profile.events.map((event) => (
                                     <>
                                         <EventItem>
                                             <SmallEventPreview
                                                 title={event.title}
-                                                imageEvent={
-                                                    event.image ==
-                                                    'default image'
-                                                        ? 'https://firebasestorage.googleapis.com/v0/b/studentenfutter-dba6a.appspot.com/o/profile%2Fpexels-cats-coming-920220.jpg?alt=media&token=fde91666-3d24-471b-9bd3-8a1825edde79'
-                                                        : event.image
-                                                }
+                                                imageEvent={event.image}
                                                 imageHost={profile.image}
                                                 onClick={() =>
                                                     router.push(
@@ -130,7 +125,10 @@ const Profile: React.FC = () => {
                                                 }></SmallEventPreview>
                                         </EventItem>
                                     </>
-                                ))}
+                                ))
+                            ) : (
+                                <p>No hosted events...</p>
+                            )}
                         </EventsWrapper>
                     </WrapperColumn>
                 </WrapperRow>
@@ -175,6 +173,7 @@ const WrapperRow = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
     flex-wrap: wrap @media ${(props) => props.theme.breakpoint.tablet} {
         flex-wrap: no-wrap;
@@ -226,6 +225,7 @@ const StyledName = styled.h1`
 
 const StyledH2 = styled.h2`
     align-self: flex-start;
+    margin-top: 80px;
 `;
 
 const StyledMember = styled.p`
@@ -249,7 +249,7 @@ const StyledAboutMe = styled.p`
 
 const EventItem = styled.div`
     width: 45%;
-    height: 200px;
+    height: 170px;
     margin-bottom: 20px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         margin-bottom: 80px;

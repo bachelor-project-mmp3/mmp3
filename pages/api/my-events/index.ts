@@ -22,10 +22,11 @@ export default async function handler(
                     include: {
                         host: {
                             select: {
-                                image: true,
                                 firstName: true,
                                 lastName: true,
+                                image: true,
                                 dormitory: true,
+                                id: true,
                             },
                         },
                         menu: true,
@@ -36,6 +37,7 @@ export default async function handler(
                             { date: { gte: today } },
                             { host: { id: userId } },
                         ],
+                        //OR: { requests: { some: { userId: userId } } },
                     },
                 });
 
