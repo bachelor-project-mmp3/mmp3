@@ -10,7 +10,6 @@ import Link from 'next/link';
 
 const Navigation: React.FC = () => {
     const router = useRouter();
-    console.log(router, 'router');
     const { data: session } = useSession();
 
     return (

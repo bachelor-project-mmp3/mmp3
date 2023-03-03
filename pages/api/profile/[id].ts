@@ -38,7 +38,7 @@ export default async function handler(
                             image: imageUrl,
                             firstName: firstName,
                             lastName: lastName,
-                            dormitory: dormitory,
+                            dormitory: dormitory ? dormitory : 'Campus Urstein',
                             roomNumber: roomNumber,
                             interests: aboutYou,
                             phone: phone,

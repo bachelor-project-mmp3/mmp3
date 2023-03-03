@@ -17,7 +17,6 @@ const StyledInput = styled.input`
     color: white;
     :hover {
         background-color: ${({ theme }) => theme.hoverPrimary};
-        border: 2px solid ${({ theme }) => theme.hoverPrimary};
     }
     width: 45%;
     border: none;

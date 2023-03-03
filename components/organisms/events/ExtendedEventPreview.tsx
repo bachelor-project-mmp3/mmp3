@@ -145,6 +145,7 @@ const ExtendedEventPreview: React.FC<{
                         ) : (
                             <Button
                                 variant="primary"
+                                form
                                 onClick={() =>
                                     onSubmitJoin(
                                         event.id,

@@ -20,7 +20,7 @@ export default async function handler(
             }
             // GET event detail api/events/{id}
             else if (req.method === 'GET') {
-                console.log('LISA UND KERSTIN');
+                //TODO: add pending requests to see if current user is pending on event
                 const event = await prisma.event.findUnique({
                     where: {
                         id: String(req.query.id),
@@ -48,7 +48,10 @@ export default async function handler(
                         },
                         requests: {
                             where: {
-                                status: 'ACCEPTED',
+                                OR: [
+                                    { status: 'ACCEPTED' },
+                                    { status: 'PENDING' },
+                                ],
                             },
                             select: {
                                 User: {
@@ -58,6 +61,8 @@ export default async function handler(
                                         image: true,
                                     },
                                 },
+                                status: true,
+                                userId: true,
                             },
                         },
                     },
