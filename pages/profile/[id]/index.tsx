@@ -76,12 +76,14 @@ const Profile: React.FC = () => {
                                     onClick={() =>
                                         signOut({ callbackUrl: '/' })
                                     }>
-                                    <StyledImageLogout
-                                        src={profile.image}
-                                        alt="Image"
-                                        width="300"
-                                        height="300"
-                                    />
+                                    {profile.image && (
+                                        <StyledImageLogout
+                                            src={profile.image}
+                                            alt="Image"
+                                            width="300"
+                                            height="300"
+                                        />
+                                    )}
                                     <StyledLogout>Logout</StyledLogout>
                                 </LogoutWrapper>
                                 <StyledLine />
