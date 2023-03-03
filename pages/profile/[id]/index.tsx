@@ -76,12 +76,14 @@ const Profile: React.FC = () => {
                                     onClick={() =>
                                         signOut({ callbackUrl: '/' })
                                     }>
-                                    <StyledImageLogout
-                                        src={profile.image}
-                                        alt="Image"
-                                        width="300"
-                                        height="300"
-                                    />
+                                    {profile.image && (
+                                        <StyledImageLogout
+                                            src={profile.image}
+                                            alt="Image"
+                                            width="300"
+                                            height="300"
+                                        />
+                                    )}
                                     <StyledLogout>Logout</StyledLogout>
                                 </LogoutWrapper>
                                 <StyledLine />
@@ -242,6 +244,7 @@ const StyledImage = styled(Image)`
     border-radius: 100%;
     height: 200;
     widht: 300;
+    object-fit: cover;
 `;
 
 const StyledLocation = styled(Location)`
@@ -354,6 +357,7 @@ const StyledImageLogout = styled(Image)`
     border-radius: 50%;
     width: 38px;
     height: 38px;
+    object-fit: cover;
 `;
 
 const FakeBlur = styled.div`

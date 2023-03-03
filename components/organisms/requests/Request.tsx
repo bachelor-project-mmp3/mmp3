@@ -66,6 +66,7 @@ const Request: React.FC<{
 }> = ({ request, onSubmitAccept, onSubmitDecline }) => {
     const { data: session } = useSession();
     const router = useRouter();
+
     const userIsHost = session?.user?.userId !== request.User.id ?? false;
     const timeAgo = getPastTime(request.updatedAt);
     const isRegistrationTimeinFuture = getCanJoinByTimeLimit(
@@ -90,6 +91,7 @@ const Request: React.FC<{
                 return `${request.Event.host.firstName} ${request.Event.host.lastName} declined your request to join ${request.Event.title}`;
             }
         }
+        return '';
     };
 
     const requestText = getRequestText();
@@ -157,6 +159,7 @@ const Request: React.FC<{
                         </ApproveButton>
                     </>
                 )}
+
             {request.status === 'ACCEPTED' && !userIsHost && (
                 <ButtonWrapper>
                     <Button
