@@ -14,6 +14,7 @@ import {
     getFormattedTime,
     getTimeLeftToJoin,
 } from '../../../helper/helperFunctions';
+import { RequestStatus } from '.prisma/client';
 
 export type EventProps = {
     id: string;
@@ -62,9 +63,13 @@ const ExtendedEventPreview: React.FC<{
         ? event?.host.firstName
         : 'Unknown host';
 
-    const userHasJoined = event.requests.some(
+    // TODO use from helper
+    const hasUserSendRequest = event.requests.find(
         (request) => request.userId === session?.user?.userId
     );
+    const isRequestAccepted = hasUserSendRequest
+        ? hasUserSendRequest.status === RequestStatus.ACCEPTED
+        : false;
 
     return (
         <CardWithDateTime>
@@ -119,14 +124,26 @@ const ExtendedEventPreview: React.FC<{
                 </Dishes>
                 {!userIsHost && (
                     <ButtonWrapper>
-                        {userHasJoined ? (
-                            <Button
-                                variant="primary"
-                                card
-                                disabled
-                                onClick={() => alert('todo')}>
-                                Pending
-                            </Button>
+                        {hasUserSendRequest ? (
+                            <>
+                                {isRequestAccepted ? (
+                                    <Button
+                                        variant="primary"
+                                        card
+                                        disabled
+                                        onClick={() => alert('todo')}>
+                                        Leave Event
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="primary"
+                                        card
+                                        disabled
+                                        onClick={() => alert('todo')}>
+                                        Pending
+                                    </Button>
+                                )}
+                            </>
                         ) : (
                             <Button
                                 variant="primary"

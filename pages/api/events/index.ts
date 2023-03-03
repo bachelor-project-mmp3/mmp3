@@ -24,7 +24,6 @@ export default async function handler(
                     dishes,
                 } = req.body;
 
-                console.log('Yes');
                 const dateTimeDate = new Date(date);
                 const dateTimeTimeLimit = new Date(timeLimit);
                 const floatCosts = parseFloat(costs);
@@ -72,7 +71,7 @@ export default async function handler(
                         requests: true,
                     },
                     where: {
-                        date: { gte: today },
+                        timeLimit: { gte: today },
                     },
                 });
 
