@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
 import { Button } from '../../../components/atoms/Button';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import {
     HostImageProps,
@@ -22,6 +22,17 @@ import {
 } from '../../../helper/helperFunctions';
 import { Header } from '../../../components/organisms/Header';
 import { Card } from '../../../components/atoms/Card';
+import MenuItem from '../../../components/organisms/events/MenuItem';
+import GuestListItem from '../../../components/organisms/events/GuestListItem';
+import { RequestStatus } from '.prisma/client';
+import {
+    hasUserSendRequestHelper,
+    hostNameHelper,
+    isRequestAcceptedHelper,
+    userHasJoinedHelper,
+    userIsHostHelper,
+} from '../../../helper/EventsAndUserHelper';
+import Link from 'next/link';
 
 type EventProps = {
     id: string;
@@ -66,6 +77,34 @@ interface EventDetailProps {
     event: EventProps;
 }
 
+async function deleteEvent(id: string): Promise<void> {
+    await fetch(`/api/events/${id}`, {
+        method: 'DELETE',
+    });
+    // replace url, because event doesn't exist anymore
+    Router.push('/events');
+}
+
+async function joinEvent(eventId: string, userId: string): Promise<void> {
+    const data = {
+        eventId: eventId,
+        userId: userId,
+    };
+
+    const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+
+    if (res.status < 300) {
+        Router.replace(Router.asPath);
+        Router.reload();
+    } else {
+        Router.push('/events/${event.id}/edit');
+    }
+}
+
 const EventDetail: React.FC<EventDetailProps> = () => {
     const { data: session } = useSession();
     const router = useRouter();
@@ -94,12 +133,22 @@ const EventDetail: React.FC<EventDetailProps> = () => {
     const timeLimit = getTimeLeftToJoin(event.timeLimit);
     const date = getFormattedDate(event.date);
     const time = getFormattedTime(event.date);
-    const userIsHost = session?.user?.userId === event.host.id ?? false;
-    const hostName =
-        event?.host.firstName && event?.host.lastName
-            ? event?.host.firstName + ' ' + event?.host.lastName
-            : 'Unknown host';
+    const userIsHost = userIsHostHelper(session?.user?.userId, event.host.id);
+    const hostName = hostNameHelper(
+        event?.host.firstName,
+        event?.host.lastName
+    );
 
+    const hasUserSendRequest = hasUserSendRequestHelper(
+        event.requests,
+        session
+    );
+
+    const isRequestAccepted = isRequestAcceptedHelper(hasUserSendRequest);
+
+    //TODO: Add onClick to PhoneButton to copy phone number
+
+    // @ts-ignore
     return (
         <Layout>
             <Header backButton>{event.title}</Header>
@@ -126,7 +175,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                 </StyledInfoEventDetailsBoxes>
                 <StyledInfoEventDetailsBoxes textAlign="right">
                     {event.host.image && (
-                        <>
+                        <StyledCrownAndImage>
                             <StyledCrown />
                             <HostImage userIsHost={userIsHost}>
                                 <StyledImage
@@ -136,31 +185,95 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                                     style={{ objectFit: 'cover' }}
                                 />
                             </HostImage>
-                        </>
+                        </StyledCrownAndImage>
                     )}
                     <div>by {hostName}</div>
                     <div>
-                        <StyledPhoneIcon />
-                        <StyledEmailIcon />
+                        {/*<StyledPhoneIcon />*/}
+                        <Link href={`mailto:${event.host.email}`}>
+                            <StyledEmailIcon />
+                        </Link>
                     </div>
                 </StyledInfoEventDetailsBoxes>
             </StyledInfoEventDetails>
+            {/*{userIsHost && <div>*/}
+            {/*    <Button variant={'primary'} onClick={() => router.push(`/events/${event.id}/edit`)}>Edit event</Button>*/}
+            {/*</div>}*/}
+            {event.menu.length > 0 && (
+                <Card variant={'center'}>
+                    {event.menu.map((dish, index) => (
+                        <MenuItem
+                            key={index}
+                            dishTitle={dish.title}
+                            dishLink={dish.link}
+                            dishDescription={dish.description}
+                        />
+                    ))}
+                </Card>
+            )}
 
-            <Card variant={'center'}>
-                {event.menu.map((dish) => (
-                    <StyledDishItem key={dish.id}>
-                        {dish.link && <a href={dish.link}>{dish.title}</a>}
-                        {dish.description && (
-                            <StyledToolTip>
-                                Hover over me
-                                <StyledToolTipText>
-                                    {dish.description}
-                                </StyledToolTipText>
-                            </StyledToolTip>
-                        )}
-                    </StyledDishItem>
-                ))}
-            </Card>
+            {event.info && <Card variant={'description'}>{event.info}</Card>}
+
+            {event.requests.length > 0 && (
+                <Card variant={'description'}>
+                    {event.requests.map((request, index) => (
+                        <GuestListItem
+                            key={index}
+                            guest={request.User}
+                            userIsHost={userIsHost}
+                        />
+                    ))}
+                </Card>
+            )}
+            {userIsHost ? (
+                <StyledButtons userIsHost={userIsHost}>
+                    <Button
+                        variant={'red'}
+                        // onClick={() => deleteEvent(event.id)}
+                        form
+                        disabled>
+                        Cancel Event
+                    </Button>
+                    <Button
+                        variant={'primary'}
+                        // onClick={() => router.push(`/events/${event.id}/edit`)}
+                        form
+                        disabled>
+                        Edit event
+                    </Button>
+                </StyledButtons>
+            ) : (
+                <StyledButtons>
+                    {hasUserSendRequest ? (
+                        <>
+                            {isRequestAccepted ? (
+                                <Button
+                                    variant="primary"
+                                    disabled
+                                    onClick={() => alert('todo')}>
+                                    Leave Event
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="primary"
+                                    disabled
+                                    onClick={() => alert('todo')}>
+                                    Pending
+                                </Button>
+                            )}
+                        </>
+                    ) : (
+                        <Button
+                            variant="primary"
+                            form
+                            onClick={() =>
+                                joinEvent(event.id, session?.user?.userId)
+                            }>
+                            Ask to join
+                        </Button>
+                    )}
+                </StyledButtons>
+            )}
         </Layout>
     );
 };
@@ -196,7 +309,7 @@ const StyledInfoEventDetailsBoxes = styled.div<StyledInfoEventDetailsBoxesProps>
     display: flex;
     flex-direction: column;
     gap: 10px;
-    text-align: ${(props) => (props.textAlign === 'right' ? 'right' : 'left')};
+    align-items: ${(props) => (props.textAlign === 'right' ? 'end' : 'start')};
 `;
 
 const HostImage = styled.div<HostImageProps>`
@@ -214,34 +327,25 @@ const StyledImage = styled(Image)`
 
 const StyledCrown = styled(Crown)`
     position: absolute;
-    right: 0px;
-    top: 20px;
+    right: -20px;
+    top: -30px;
     height: 35px;
     width: 70px;
     transform: rotate(30deg);
 `;
-
-const StyledDishItem = styled.div`
+const StyledButtons = styled.div<HostImageProps>`
     display: flex;
-    flex-direction: column;
-    margin: 20px;
+    flex-direction: row;
+    justify-content: ${(props) =>
+        props.userIsHost ? 'space-between' : 'center'};
+    position: sticky;
+    width: auto;
+    bottom: 100px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        bottom: 40px;
+    }
 `;
 
-const StyledToolTip = styled.div`
+const StyledCrownAndImage = styled.div`
     position: relative;
-    display: inline-block;
-`;
-
-const StyledToolTipText = styled.span`
-    display: none;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-
-    /* Position the tooltip text - see examples below! */
-    position: absolute;
-    z-index: 1;
 `;
