@@ -61,6 +61,8 @@ export default async function handler(
                                         image: true,
                                     },
                                 },
+                                status: true,
+                                userId: true,
                             },
                         },
                     },

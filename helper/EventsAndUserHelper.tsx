@@ -14,10 +14,8 @@ export const userHasJoinedHelper = (event, session) => {
     );
 };
 
-export const hasUserSendRequestHelper = (event, session) => {
-    return event.requests.find(
-        (request) => request.userId === session?.user?.userId
-    );
+export const hasUserSendRequestHelper = (requests, session) => {
+    return requests.find((request) => request.userId === session?.user?.userId);
 };
 
 export const isRequestAcceptedHelper = (hasUserSendRequest) => {

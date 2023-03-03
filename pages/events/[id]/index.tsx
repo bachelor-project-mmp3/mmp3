@@ -32,6 +32,7 @@ import {
     userHasJoinedHelper,
     userIsHostHelper,
 } from '../../../helper/EventsAndUserHelper';
+import Link from 'next/Link';
 
 type EventProps = {
     id: string;
@@ -120,7 +121,6 @@ const EventDetail: React.FC<EventDetailProps> = () => {
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
                     setEvent(data.event);
                     setLoading(false);
                 });
@@ -139,11 +139,14 @@ const EventDetail: React.FC<EventDetailProps> = () => {
         event?.host.lastName
     );
 
-    const userHasJoined = userHasJoinedHelper(event, session);
-
-    const hasUserSendRequest = hasUserSendRequestHelper(event, session);
+    const hasUserSendRequest = hasUserSendRequestHelper(
+        event.requests,
+        session
+    );
 
     const isRequestAccepted = isRequestAcceptedHelper(hasUserSendRequest);
+
+    //TODO: Add onClick to PhoneButton to copy phone number
 
     // @ts-ignore
     return (
@@ -186,8 +189,10 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                     )}
                     <div>by {hostName}</div>
                     <div>
-                        <StyledPhoneIcon />
-                        <StyledEmailIcon />
+                        {/*<StyledPhoneIcon />*/}
+                        <Link href={`mailto:${event.host.email}`}>
+                            <StyledEmailIcon />
+                        </Link>
                     </div>
                 </StyledInfoEventDetailsBoxes>
             </StyledInfoEventDetails>
@@ -239,14 +244,24 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                 </StyledButtons>
             ) : (
                 <StyledButtons>
-                    {userHasJoined ? (
-                        <Button
-                            variant="primary"
-                            form
-                            disabled
-                            onClick={() => alert('todo')}>
-                            Pending
-                        </Button>
+                    {hasUserSendRequest ? (
+                        <>
+                            {isRequestAccepted ? (
+                                <Button
+                                    variant="primary"
+                                    disabled
+                                    onClick={() => alert('todo')}>
+                                    Leave Event
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="primary"
+                                    disabled
+                                    onClick={() => alert('todo')}>
+                                    Pending
+                                </Button>
+                            )}
+                        </>
                     ) : (
                         <Button
                             variant="primary"
