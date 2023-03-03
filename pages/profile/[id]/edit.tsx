@@ -116,7 +116,7 @@ const Profile: React.FC = () => {
                 body: JSON.stringify(body),
             });
 
-            await Router.push(`/profile/${profile.id}`);
+            await Router.replace(`/profile/${profile.id}`);
         } catch (error) {
             console.error('Failed to save user:' + error);
         }
@@ -314,7 +314,7 @@ const Profile: React.FC = () => {
                 <ButtonWrapper>
                     <Button
                         variant="red"
-                        onClick={() => router.push(`/profile/${profile.id}`)}
+                        onClick={() => router.replace(`/profile/${profile.id}`)}
                         form>
                         Cancel
                     </Button>
