@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import { Card } from '../../../components/atoms/Card';
 import { useRouter } from 'next/router';
@@ -10,6 +10,8 @@ import { SmallEventPreview } from '../../../components/organisms/events/SmallEve
 import Location from '../../../public/icons/location.svg';
 import Study from '../../../public/icons/major.svg';
 import Instagram from '../../../public/icons/insta.svg';
+import Burger from '../../../public/icons/burger_menu.svg';
+import Link from 'next/link';
 
 // TODO: maybe load some data before page gets rendered, like session maybe?
 /*export const getServerSideProps: GetServerSideProps = async () => {
@@ -24,6 +26,7 @@ const Profile: React.FC = () => {
 
     const [profile, setProfile] = useState(null);
     const [isLoading, setLoading] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
@@ -48,6 +51,44 @@ const Profile: React.FC = () => {
     return (
         <Layout>
             <div>
+                <StyledBurger
+                    onClick={() => setIsMenuOpen(isMenuOpen ? false : true)}
+                />
+                {isMenuOpen && (
+                    <>
+                        <FakeBlur onClick={() => setIsMenuOpen(false)} />
+                        <MenuMobile>
+                            <NavItemsWrapper>
+                                <StyledNavItem
+                                    href={`/profile/${profile.id}/edit`}>
+                                    Edit Profile
+                                </StyledNavItem>
+                                <StyledLine />
+                                <StyledNavItem href="/privacy">
+                                    Data privacy
+                                </StyledNavItem>
+                                <StyledLine />
+                                <StyledNavItem href="/imprint">
+                                    Imprint
+                                </StyledNavItem>
+                                <StyledLine />
+                                <LogoutWrapper
+                                    onClick={() =>
+                                        signOut({ callbackUrl: '/' })
+                                    }>
+                                    <StyledImageLogout
+                                        src={profile.image}
+                                        alt="Image"
+                                        width="300"
+                                        height="300"
+                                    />
+                                    <StyledLogout>Logout</StyledLogout>
+                                </LogoutWrapper>
+                                <StyledLine />
+                            </NavItemsWrapper>
+                        </MenuMobile>
+                    </>
+                )}
                 <WrapperRow>
                     <WrapperColumn>
                         {profile.image && (
@@ -184,6 +225,7 @@ const EventsWrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    row-gap: 50px;
     width: 100%;
 `;
 
@@ -196,6 +238,7 @@ const DormitoryAndStudyRow = styled.div`
 `;
 
 const StyledImage = styled(Image)`
+    margin-top: 50px;
     border-radius: 100%;
     height: 200;
     widht: 300;
@@ -254,4 +297,71 @@ const EventItem = styled.div`
     @media ${(props) => props.theme.breakpoint.tablet} {
         margin-bottom: 80px;
     }
+`;
+
+const StyledBurger = styled(Burger)`
+    position: absolute;
+    right: 20px;
+    top: 35px px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        display: none;
+    }
+`;
+
+const MenuMobile = styled.div`
+    box-shadow: 0 -15px 40px -10px ${({ theme }) => theme.darkGrey};
+    border-top-right-radius: 40px;
+    border-top-left-radius: 40px;
+    background: white;
+    width: 100vw;
+    height: 50vh;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 120;
+    padding-top: 50px;
+    gap: 30px;
+`;
+
+const StyledNavItem = styled(Link)`
+    text-decoration: none;
+    padding-left: 50px;
+`;
+const NavItemsWrapper = styled.div`
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+`;
+const StyledLogout = styled.p`
+    margin-top: 0;
+    margin-bottom: 0;
+`;
+
+const StyledLine = styled.div`
+    background: ${({ theme }) => theme.lightGrey};
+    height: 2px;
+`;
+
+const LogoutWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    padding-left: 50px;
+    align-items: center;
+    gap: 15px;
+`;
+
+const StyledImageLogout = styled(Image)`
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+`;
+
+const FakeBlur = styled.div`
+    z-index: 110;
+    position: fixed;
+    backdrop-filter: blur(3px);
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
 `;
