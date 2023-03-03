@@ -3,6 +3,8 @@ import React from 'react';
 import { Button } from '../components/atoms/Button';
 import Layout from '../components/Layout';
 import styled from 'styled-components';
+import { Router } from 'next/router';
+import Link from 'next/link';
 
 const LandingPage: React.FC = () => {
     const { data: session, status } = useSession();
@@ -29,11 +31,16 @@ const LandingPage: React.FC = () => {
                         {"Let's get started"}
                     </Button>
                 ) : (
-                    <Button
-                        variant={'secondary'}
-                        onClick={() => signOut({ callbackUrl: '/' })}>
-                        Sign out
-                    </Button>
+                    <>
+                        <Button
+                            variant={'secondary'}
+                            onClick={() => signOut({ callbackUrl: '/' })}>
+                            Sign out
+                        </Button>
+                        <p>
+                            <Link href="/events">{'->View events'}</Link>
+                        </p>
+                    </>
                 )}
             </Content>
         </Layout>

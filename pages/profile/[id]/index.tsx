@@ -150,7 +150,7 @@ const Profile: React.FC = () => {
                     <WrapperColumn className="top">
                         <StyledH2>{profile.firstName}s hosted events</StyledH2>
                         <EventsWrapper>
-                            {profile.events ? (
+                            {profile.events?.length > 0 ? (
                                 profile.events.map((event) => (
                                     <>
                                         <EventItem>
