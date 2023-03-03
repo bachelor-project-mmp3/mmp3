@@ -214,15 +214,22 @@ const EventDetail: React.FC<EventDetailProps> = () => {
 
             {event.info && <Card variant={'description'}>{event.info}</Card>}
 
-            {event.requests.length > 0 && (
+            {event.requests.filter(
+                (request) => request.status == RequestStatus.ACCEPTED
+            ).length > 0 && (
                 <Card variant={'description'}>
-                    {event.requests.map((request, index) => (
-                        <GuestListItem
-                            key={index}
-                            guest={request.User}
-                            userIsHost={userIsHost}
-                        />
-                    ))}
+                    {event.requests
+                        .filter(
+                            (request) =>
+                                request.status == RequestStatus.ACCEPTED
+                        )
+                        .map((request, index) => (
+                            <GuestListItem
+                                key={index}
+                                guest={request.User}
+                                userIsHost={userIsHost}
+                            />
+                        ))}
                 </Card>
             )}
             {userIsHost ? (
