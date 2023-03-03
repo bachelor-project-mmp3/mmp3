@@ -152,6 +152,7 @@ const CardWithDateTime = styled.div`
     width: 100%;
     margin-left: auto;
     margin-right: auto;
+    cursor: pointer;
 
     @media ${(props) => props.theme.breakpoint.tablet} {
         flex: 0 0 45%;
