@@ -122,7 +122,6 @@ const ExtendedEventPreview: React.FC<{
                         {userHasJoined ? (
                             <Button
                                 variant="primary"
-                                card
                                 disabled
                                 onClick={() => alert('todo')}>
                                 Pending
@@ -130,7 +129,6 @@ const ExtendedEventPreview: React.FC<{
                         ) : (
                             <Button
                                 variant="primary"
-                                card
                                 onClick={() =>
                                     onSubmitJoin(
                                         event.id,
@@ -154,6 +152,7 @@ const CardWithDateTime = styled.div`
     width: 100%;
     margin-left: auto;
     margin-right: auto;
+    cursor: pointer;
 
     @media ${(props) => props.theme.breakpoint.tablet} {
         flex: 0 0 45%;

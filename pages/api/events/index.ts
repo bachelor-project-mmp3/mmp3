@@ -43,7 +43,7 @@ export default async function handler(
                         menu: {
                             create: dishes,
                         },
-                        image: 'default image',
+                        image: 'https://firebasestorage.googleapis.com/v0/b/studentenfutter-dba6a.appspot.com/o/profile%2Fpexels-cats-coming-920220.jpg?alt=media&token=fde91666-3d24-471b-9bd3-8a1825edde79',
                     },
                 });
                 res.status(200).json(event.id);

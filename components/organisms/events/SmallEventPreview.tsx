@@ -26,7 +26,7 @@ export const SmallEventPreview: React.FC<SmallEventProps> = ({
 }: SmallEventProps) => {
     return (
         <SmallEventWrapper onClick={onClick}>
-            <Card variant={'no-padding'}>
+            <Card variant={'small-event'}>
                 <StyledImageEvent
                     src={imageEvent}
                     alt="Image"
@@ -56,6 +56,7 @@ export const SmallEventPreview: React.FC<SmallEventProps> = ({
 
 const SmallEventWrapper = styled.div`
     cursor: pointer;
+    width: 22 0px;
 `;
 
 const ColumnWrapper = styled.div`
@@ -65,6 +66,7 @@ const ColumnWrapper = styled.div`
     align-items: center;
     &.col-1 {
         width: 70%;
+        padding-left: 10px;
     }
     &.col-2 {
         width: 30%;
@@ -98,16 +100,16 @@ const StyledImageEvent = styled(Image)`
 
 const StyledImageHost = styled(Image)`
     border-radius: 50%;
-    width: 45px;
-    height: 45px;
+    width: 38px;
+    height: 38px;
     @media ${(props) => props.theme.breakpoint.tablet} {
-        width: 64px;
-        height: 64px;
+        width: 52px;
+        height: 52px;
     }
 `;
 
 const StyledDate = styled.p`
-    margin-top: 15px;
+    margin-top: 0;
     margin-bottom: 0;
     width: 100%;
     font-size: ${({ theme }) => theme.fonts.mobile.info};
@@ -124,7 +126,7 @@ const StyledTitle = styled.p`
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-top: 5px;
-    margin-bottom: 25px;
+    margin-bottom: 5px;
     width: 100%;
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
