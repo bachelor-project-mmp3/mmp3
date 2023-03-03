@@ -18,6 +18,7 @@ import AddDishIcon from '../../public/icons/addDish.svg';
 import DiscardIcon from '../../public/icons/discard.svg';
 import LinkIcon from '../../public/icons/link.svg';
 import { formatDateForDateInput } from '../../helper/helperFunctions';
+import { Header } from '../../components/organisms/Header';
 
 const CreateEvent: React.FC = () => {
     const { data: session } = useSession();
@@ -135,7 +136,7 @@ const CreateEvent: React.FC = () => {
     if (isLoading) return <p>Loading...</p>;
     return (
         <Layout>
-            <h1>Create a new Event</h1>
+            <Header>Create a new Event</Header>
             <EventForm onSubmit={handleSubmit(onSubmit)}>
                 <StyledInputWithError>
                     <InputText
