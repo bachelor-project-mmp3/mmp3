@@ -32,7 +32,7 @@ import {
     userHasJoinedHelper,
     userIsHostHelper,
 } from '../../../helper/EventsAndUserHelper';
-import Link from 'next/Link';
+import Link from 'next/link';
 
 type EventProps = {
     id: string;
