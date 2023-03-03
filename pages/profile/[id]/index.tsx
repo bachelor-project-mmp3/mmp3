@@ -51,9 +51,12 @@ const Profile: React.FC = () => {
     return (
         <Layout>
             <div>
-                <StyledBurger
-                    onClick={() => setIsMenuOpen(isMenuOpen ? false : true)}
-                />
+                {session?.user.userId == profile.id && (
+                    <StyledBurger
+                        onClick={() => setIsMenuOpen(isMenuOpen ? false : true)}
+                    />
+                )}
+
                 {isMenuOpen && (
                     <>
                         <FakeBlur onClick={() => setIsMenuOpen(false)} />
