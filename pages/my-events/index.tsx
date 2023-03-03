@@ -174,6 +174,7 @@ const EventsWrapper = styled.div`
     flex-wrap: wrap;
     gap: 20px;
     width: 100%;
+    row-gap: 50px;
 `;
 
 const EventItem = styled.div`
