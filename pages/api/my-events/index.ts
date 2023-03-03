@@ -33,11 +33,12 @@ export default async function handler(
                         requests: true,
                     },
                     where: {
-                        AND: [
-                            { date: { gte: today } },
+                        OR: [
                             { host: { id: userId } },
+                            { requests: { some: { userId: userId } } },
                         ],
-                        //OR: { requests: { some: { userId: userId } } },
+
+                        AND: [{ date: { gte: today } }],
                     },
                 });
 
@@ -55,10 +56,12 @@ export default async function handler(
                         requests: true,
                     },
                     where: {
-                        AND: [
-                            { date: { lte: today } },
+                        OR: [
                             { host: { id: userId } },
+                            { requests: { some: { userId: userId } } },
                         ],
+
+                        AND: [{ date: { lte: today } }],
                     },
                 });
 
