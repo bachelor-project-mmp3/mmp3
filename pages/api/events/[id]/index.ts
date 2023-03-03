@@ -48,7 +48,10 @@ export default async function handler(
                         },
                         requests: {
                             where: {
-                                status: 'ACCEPTED',
+                                OR: [
+                                    { status: 'ACCEPTED' },
+                                    { status: 'PENDING' },
+                                ],
                             },
                             select: {
                                 User: {

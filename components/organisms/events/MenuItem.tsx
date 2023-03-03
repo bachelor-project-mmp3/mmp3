@@ -23,14 +23,13 @@ export const MenuItem: React.FC<MenuItemProps> = ({
         setToolTipState(!toolTipState);
     };
     //TODO: check why link and description are still shown when null
+
+    console.log(dishLink);
+
     return (
         <StyledMenuItem key={key}>
-            {{ dishLink } ? (
-                <a href={dishLink}>{dishTitle}</a>
-            ) : (
-                <p>{dishTitle}</p>
-            )}
-            {{ dishDescription } && (
+            {dishLink ? <a href={dishLink}>{dishTitle}</a> : <p>{dishTitle}</p>}
+            {dishDescription && (
                 <StyledToolTip onClick={toggleTipTool}>
                     <StyledInfoIcon />
                     <ToolTip open={toolTipState}>{dishDescription}</ToolTip>

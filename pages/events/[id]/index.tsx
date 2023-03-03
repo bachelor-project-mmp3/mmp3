@@ -24,6 +24,14 @@ import { Header } from '../../../components/organisms/Header';
 import { Card } from '../../../components/atoms/Card';
 import MenuItem from '../../../components/organisms/events/MenuItem';
 import GuestListItem from '../../../components/organisms/events/GuestListItem';
+import { RequestStatus } from '.prisma/client';
+import {
+    hasUserSendRequestHelper,
+    hostNameHelper,
+    isRequestAcceptedHelper,
+    userHasJoinedHelper,
+    userIsHostHelper,
+} from '../../../helper/EventsAndUserHelper';
 
 type EventProps = {
     id: string;
@@ -125,17 +133,17 @@ const EventDetail: React.FC<EventDetailProps> = () => {
     const timeLimit = getTimeLeftToJoin(event.timeLimit);
     const date = getFormattedDate(event.date);
     const time = getFormattedTime(event.date);
-    const userIsHost = session?.user?.userId === event.host.id ?? false;
-    const hostName =
-        event?.host.firstName && event?.host.lastName
-            ? event?.host.firstName + ' ' + event?.host.lastName
-            : 'Unknown host';
-
-    const userHasJoined = event.requests.some(
-        (request) => request.userId === session?.user?.userId
+    const userIsHost = userIsHostHelper(session?.user?.userId, event.host.id);
+    const hostName = hostNameHelper(
+        event?.host.firstName,
+        event?.host.lastName
     );
 
-    //TODO: check why image so far left when not host
+    const userHasJoined = userHasJoinedHelper(event, session);
+
+    const hasUserSendRequest = hasUserSendRequestHelper(event, session);
+
+    const isRequestAccepted = isRequestAcceptedHelper(hasUserSendRequest);
 
     // @ts-ignore
     return (
@@ -164,7 +172,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                 </StyledInfoEventDetailsBoxes>
                 <StyledInfoEventDetailsBoxes textAlign="right">
                     {event.host.image && (
-                        <>
+                        <StyledCrownAndImage>
                             <StyledCrown />
                             <HostImage userIsHost={userIsHost}>
                                 <StyledImage
@@ -174,7 +182,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                                     style={{ objectFit: 'cover' }}
                                 />
                             </HostImage>
-                        </>
+                        </StyledCrownAndImage>
                     )}
                     <div>by {hostName}</div>
                     <div>
@@ -216,14 +224,16 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                 <StyledButtons userIsHost={userIsHost}>
                     <Button
                         variant={'red'}
-                        onClick={() => deleteEvent(event.id)}
-                        form>
+                        // onClick={() => deleteEvent(event.id)}
+                        form
+                        disabled>
                         Cancel Event
                     </Button>
                     <Button
                         variant={'primary'}
-                        onClick={() => router.push(`/events/${event.id}/edit`)}
-                        form>
+                        // onClick={() => router.push(`/events/${event.id}/edit`)}
+                        form
+                        disabled>
                         Edit event
                     </Button>
                 </StyledButtons>
@@ -284,7 +294,7 @@ const StyledInfoEventDetailsBoxes = styled.div<StyledInfoEventDetailsBoxesProps>
     display: flex;
     flex-direction: column;
     gap: 10px;
-    text-align: ${(props) => (props.textAlign === 'right' ? 'right' : 'left')};
+    align-items: ${(props) => (props.textAlign === 'right' ? 'end' : 'start')};
 `;
 
 const HostImage = styled.div<HostImageProps>`
@@ -302,8 +312,8 @@ const StyledImage = styled(Image)`
 
 const StyledCrown = styled(Crown)`
     position: absolute;
-    right: 0;
-    top: 20px;
+    right: -20px;
+    top: -30px;
     height: 35px;
     width: 70px;
     transform: rotate(30deg);
@@ -319,4 +329,8 @@ const StyledButtons = styled.div<HostImageProps>`
     @media ${(props) => props.theme.breakpoint.tablet} {
         bottom: 40px;
     }
+`;
+
+const StyledCrownAndImage = styled.div`
+    position: relative;
 `;
