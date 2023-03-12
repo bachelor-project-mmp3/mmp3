@@ -69,6 +69,7 @@ export const authOptions: NextAuthOptions = {
             if (token) {
                 session.user.userId = user.id;
                 session.user.firstName = user.firstName;
+                session.user.roomNumber = user.roomNumber;
                 session.user.image = user.image;
             }
             return session;

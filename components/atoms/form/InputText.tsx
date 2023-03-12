@@ -13,6 +13,7 @@ interface InputTextProps {
     isInvalid?: string;
     variant?: 'center' | 'right';
     padding?: 'left' | 'right';
+    disabled?: boolean;
 }
 
 export const InputText = ({
@@ -26,6 +27,7 @@ export const InputText = ({
     children,
     variant,
     padding,
+    disabled,
 }: InputTextProps) => {
     return (
         <>
@@ -42,6 +44,7 @@ export const InputText = ({
                 isInvalid={isInvalid}
                 required={required}
                 onChange={onChange}
+                disabled={disabled}
             />
         </>
     );
