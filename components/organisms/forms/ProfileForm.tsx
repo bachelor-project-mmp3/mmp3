@@ -29,6 +29,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
     const [profile, setProfile] = useState(null);
     const [isLoading, setLoading] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const [image, setImage] = useState(null);
     const [firstName, setFirstName] = useState('');
@@ -88,10 +89,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
         register('lastName', { required: true, minLength: 3 });
         register('roomNumber', { required: true });
         register('privacy', { required: true });
-        register('image', {
-            required: true,
-            validate: { fileSize: (image) => image.size < 2100000 },
-        });
     }, [register, session, setValue]);
 
     if (isLoading) return <p>Loading...</p>;
@@ -101,7 +98,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
         try {
             let imageUrl;
 
-            if (image.size < 2100000) {
+            if (selectedImage) {
                 imageUrl = await uploadImage(image, 'profile');
             }
 
@@ -129,23 +126,27 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     };
     return (
         <StyledForm onSubmit={handleSubmit(onSubmit)}>
-            {image && (
-                <ProfileImage>
-                    <StyledImage
-                        src={image}
-                        alt="Image"
-                        layout={'fill'}
-                        style={{ objectFit: 'cover' }}
-                    />
-                </ProfileImage>
-            )}
-            <StyledDiv>
-                <InputFile
-                    id="image"
-                    onChange={(e) => {
-                        setValue('image', e.target.files[0]);
-                        setImage(e.target.files[0]);
-                    }}></InputFile>
+            <StyledDiv className="center">
+                {image && (
+                    <ProfileImage>
+                        <StyledImage
+                            src={selectedImage ? selectedImage : image}
+                            alt="Image"
+                            layout={'fill'}
+                            style={{ objectFit: 'cover' }}
+                        />
+                        <InputFile
+                            id="image"
+                            onChange={(e) => {
+                                setValue('image', e.target.files[0]);
+                                setImage(e.target.files[0]);
+                                setSelectedImage(
+                                    URL.createObjectURL(e.target.files[0])
+                                );
+                            }}></InputFile>
+                    </ProfileImage>
+                )}
+
                 {/*errors will return when field validation fails  */}
                 {errors.image && errors.image.type === 'required' && (
                     <ErrorMessage>Please upload a photo</ErrorMessage>
@@ -350,6 +351,9 @@ const StyledDiv = styled.div`
     flex-direction: column;
     width: 100%;
     margin-bottom: 1.5em;
+    &.center {
+        align-items: center;
+    }
     @media ${(props) => props.theme.breakpoint.tablet} {
         &.small {
             width: 45%;
@@ -384,6 +388,7 @@ const StyledDormitory = styled.div`
 const StyledWrapper = styled.div`
     display: flex;
     padding-bottom: 0;
+    margin-top: 20px;
 `;
 
 const StyledInstagram = styled(Instagram)`
@@ -424,12 +429,14 @@ const StyledInfo = styled.div`
 `;
 
 const StyledImage = styled(Image)`
+    opacity: 0.5;
     border-radius: 50%;
 `;
 
 const ProfileImage = styled.div`
     position: relative;
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
+    width: 300px;
+    height: 300px;
+    background: white;
 `;
