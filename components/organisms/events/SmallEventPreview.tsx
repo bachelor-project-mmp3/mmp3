@@ -102,6 +102,7 @@ const StyledImageHost = styled(Image)`
     border-radius: 50%;
     width: 38px;
     height: 38px;
+    object-fit: cover;
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 52px;
         height: 52px;

@@ -26,7 +26,7 @@ const LandingPage: React.FC = () => {
                     <Button
                         variant={'primary'}
                         onClick={() =>
-                            signIn('fhs', { callbackUrl: '/my-events' })
+                            signIn('fhs', { callbackUrl: '/api/auth/signin' })
                         }>
                         {"Let's get started"}
                     </Button>

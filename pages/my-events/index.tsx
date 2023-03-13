@@ -17,18 +17,6 @@ const MyEvents: React.FC = () => {
 
     const router = useRouter();
 
-    if (session) {
-        fetch(`/api/profile/${session.user.userId}`, {
-            method: 'GET',
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (!data.profile.roomNumber) {
-                    router.push(`/profile/${session.user.userId}/edit`);
-                }
-            });
-    }
-
     useEffect(() => {
         setLoading(true);
         fetch('/api/my-events', {

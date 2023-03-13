@@ -141,17 +141,23 @@ const Profile: React.FC = () => {
                         )}
 
                         {profile.id === session?.user?.userId && (
-                            <Button
-                                variant="primary"
-                                onClick={() =>
-                                    router.push(`/profile/${profile.id}/edit`)
-                                }>
-                                Edit profile
-                            </Button>
+                            <ButtonWrapper>
+                                <Button
+                                    variant="primary"
+                                    onClick={() =>
+                                        router.push(
+                                            `/profile/${profile.id}/edit`
+                                        )
+                                    }>
+                                    Edit profile
+                                </Button>
+                            </ButtonWrapper>
                         )}
                     </WrapperColumn>
                     <WrapperColumn className="top">
-                        <StyledH2>{profile.firstName}s hosted events</StyledH2>
+                        <StyledH2>
+                            {profile.firstName}&apos;s hosted events
+                        </StyledH2>
                         <EventsWrapper>
                             {profile.events?.length > 0 ? (
                                 profile.events.map((event) => (
@@ -371,4 +377,8 @@ const FakeBlur = styled.div`
     top: 0;
     width: 100vw;
     height: 100vh;
+`;
+
+const ButtonWrapper = styled.div`
+    margin-top: 30px;
 `;
