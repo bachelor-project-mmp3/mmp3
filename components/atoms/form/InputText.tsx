@@ -45,6 +45,7 @@ export const InputText = ({
                 required={required}
                 onChange={onChange}
                 disabled={disabled}
+                data-1p-ignore
             />
         </>
     );
