@@ -6,7 +6,7 @@ import { Header } from '../../../components/organisms/Header';
 const Profile: React.FC = () => {
     return (
         <Layout>
-            <Header>Edit profile</Header>
+            <Header backButton>Edit profile</Header>
             <ProfileForm cancelButton />
         </Layout>
     );

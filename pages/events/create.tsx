@@ -136,7 +136,7 @@ const CreateEvent: React.FC = () => {
     if (isLoading) return <p>Loading...</p>;
     return (
         <Layout>
-            <Header>Create a new Event</Header>
+            <Header backButton>Create a new Event</Header>
             <EventForm onSubmit={handleSubmit(onSubmit)}>
                 <StyledInputWithError>
                     <InputText
@@ -384,6 +384,11 @@ const StyledMenuInput = styled.div`
     background-color: ${({ theme }) => theme.backgroundLightestOrange};
     border-radius: 25px 25px 0 0;
     padding: 20px 20px 40px 20px;
+    margin-bottom: -80px;
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        margin-bottom: -30px;
+    }
 `;
 
 const StyledAddDish = styled(AddDishIcon)`
