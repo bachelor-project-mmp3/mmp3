@@ -6,7 +6,7 @@ interface ButtonProps {
     variant: 'primary' | 'secondary' | 'red';
     onClick?: (e: any) => void;
     children: ReactNode;
-    form?: boolean;
+    width?: number;
     disabled?: boolean;
 }
 
@@ -14,7 +14,7 @@ export const Button: React.FC<ButtonProps> = ({
     variant,
     children,
     onClick,
-    form,
+    width,
     disabled,
 }: ButtonProps) => {
     return (
@@ -22,7 +22,7 @@ export const Button: React.FC<ButtonProps> = ({
             onClick={onClick}
             disabled={disabled}
             variant={variant}
-            form={form}>
+            width={width}>
             {children}
         </StyledButton>
     );
@@ -31,7 +31,7 @@ export const Button: React.FC<ButtonProps> = ({
 interface ButtonStyleProps {
     variant: 'primary' | 'secondary' | 'red';
     disabled: boolean;
-    form: boolean;
+    width?: number;
 }
 
 const StyledButton = styled.button<ButtonStyleProps>`
@@ -39,7 +39,7 @@ const StyledButton = styled.button<ButtonStyleProps>`
     border-radius: 20px;
     font-weight: 600;
     box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
-    width: ${(props) => (props.form ? '45%' : 'auto')};
+    width: ${(props) => (props.width ? `${props.width}%` : 'auto')};
     ${(props) =>
         props.variant === 'primary' &&
         `

@@ -237,14 +237,14 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                     <Button
                         variant={'red'}
                         // onClick={() => deleteEvent(event.id)}
-                        form
+                        width={45}
                         disabled>
                         Cancel Event
                     </Button>
                     <Button
                         variant={'primary'}
                         // onClick={() => router.push(`/events/${event.id}/edit`)}
-                        form
+                        width={45}
                         disabled>
                         Edit event
                     </Button>
@@ -274,7 +274,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                             {event.currentParticipants < event.capacity && (
                                 <Button
                                     variant="primary"
-                                    form
+                                    width={45}
                                     onClick={() =>
                                         joinEvent(
                                             event.id,

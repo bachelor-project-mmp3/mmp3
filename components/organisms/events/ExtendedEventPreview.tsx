@@ -147,7 +147,6 @@ const ExtendedEventPreview: React.FC<{
                                 {event.currentParticipants < event.capacity && (
                                     <Button
                                         variant="primary"
-                                        form
                                         onClick={() =>
                                             onSubmitJoin(
                                                 event.id,
