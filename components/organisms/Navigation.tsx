@@ -8,6 +8,13 @@ import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 
+const hideNavigationOnPaths = [
+    '/profile/[id]/edit',
+    '/profile/create',
+    '/events/[id]/edit',
+    '/events/create',
+];
+
 const Navigation: React.FC = () => {
     const router = useRouter();
     const { data: session } = useSession();
@@ -85,32 +92,36 @@ const Navigation: React.FC = () => {
                             </DesktopLogout>
                         </DesktopFooter>
                     </DesktopNavigation>
-                    <MobileNavigation>
-                        <StyledMyEventsIcon
-                            isActive={
-                                router?.pathname === '/my-events' ||
-                                router?.pathname === '/requests'
-                            }
-                            onClick={() => router.push('/my-events')}
-                        />
-                        <StyledEventIcon
-                            isActive={
-                                router?.pathname === '/events' ||
-                                router?.pathname === '/events/[id]'
-                            }
-                            onClick={() => router.push('/events')}
-                        />
-                        <StyledCreateIcon
-                            isActive={router?.pathname === '/events/create'}
-                            onClick={() => router.push('/events/create')}
-                        />
-                        <StyledProfileIcon
-                            isActive={router?.pathname === '/profile/[id]'}
-                            onClick={() =>
-                                router.push(`/profile/${session?.user.userId}`)
-                            }
-                        />
-                    </MobileNavigation>
+                    {!hideNavigationOnPaths.includes(router?.pathname) && (
+                        <MobileNavigation>
+                            <StyledMyEventsIcon
+                                isActive={
+                                    router?.pathname === '/my-events' ||
+                                    router?.pathname === '/requests'
+                                }
+                                onClick={() => router.push('/my-events')}
+                            />
+                            <StyledEventIcon
+                                isActive={
+                                    router?.pathname === '/events' ||
+                                    router?.pathname === '/events/[id]'
+                                }
+                                onClick={() => router.push('/events')}
+                            />
+                            <StyledCreateIcon
+                                isActive={router?.pathname === '/events/create'}
+                                onClick={() => router.push('/events/create')}
+                            />
+                            <StyledProfileIcon
+                                isActive={router?.pathname === '/profile/[id]'}
+                                onClick={() =>
+                                    router.push(
+                                        `/profile/${session?.user.userId}`
+                                    )
+                                }
+                            />
+                        </MobileNavigation>
+                    )}
                 </>
             )}
         </>
