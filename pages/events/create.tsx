@@ -329,7 +329,7 @@ const CreateEvent: React.FC = () => {
                         <Button
                             variant="red"
                             onClick={() => router.replace(`/events`)}
-                            form>
+                            width={45}>
                             Cancel
                         </Button>
                         <SubmitButton value="Create event"></SubmitButton>

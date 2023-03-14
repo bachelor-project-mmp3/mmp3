@@ -7,6 +7,7 @@ import MyEventsIcon from '../../public/icons/fork-knife.svg';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { Button } from '../atoms/Button';
 
 const hideNavigationOnPaths = [
     '/profile/[id]/edit',
@@ -29,6 +30,7 @@ const Navigation: React.FC = () => {
                         <LogoText>
                             <Link href="/">Studentenfutter</Link>
                         </LogoText>
+
                         <DesktopNavigationItems>
                             <DesktopNavigationItem
                                 isActive={
@@ -82,14 +84,20 @@ const Navigation: React.FC = () => {
                                 />
                                 <NavText>Profile</NavText>
                             </DesktopNavigationItem>
+                            <DesktopSignOutButton>
+                                <Button
+                                    variant="secondary"
+                                    width={100}
+                                    onClick={() =>
+                                        signOut({ callbackUrl: '/' })
+                                    }>
+                                    Logout
+                                </Button>
+                            </DesktopSignOutButton>
                         </DesktopNavigationItems>
                         <DesktopFooter>
                             <Link href="/imprint">Imprint</Link>
                             <Link href="/privacy">Data Privacy</Link>
-                            <DesktopLogout
-                                onClick={() => signOut({ callbackUrl: '/' })}>
-                                Logout
-                            </DesktopLogout>
                         </DesktopFooter>
                     </DesktopNavigation>
                     {!hideNavigationOnPaths.includes(router?.pathname) && (
@@ -219,6 +227,10 @@ const DesktopNavigationItems = styled.div`
     bottom: 150px;
 `;
 
+const DesktopSignOutButton = styled.div`
+    width: 200px;
+`;
+
 const DesktopNavigationItem = styled.div<NavProps>`
     display: flex;
     gap: 20px;
@@ -249,23 +261,14 @@ const NavText = styled.div``;
 const DesktopFooter = styled.div`
     font-size: ${({ theme }) => theme.fonts.normal.info};
     display: flex;
-    gap: 20px;
+    justify-content: space-around;
     padding: 0 20px;
     position: absolute;
     width: 100%;
-    bottom: 30px;
+    bottom: 20px;
 
     * {
         text-decoration: none;
-    }
-`;
-
-const DesktopLogout = styled.div`
-    margin-left: auto;
-    cursor: pointer;
-
-    :hover {
-        color: ${({ theme }) => theme.primary};
     }
 `;
 

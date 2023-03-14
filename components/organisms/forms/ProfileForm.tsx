@@ -333,7 +333,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     <Button
                         variant="red"
                         onClick={() => router.replace(`/profile/${profile.id}`)}
-                        form>
+                        width={45}>
                         Cancel
                     </Button>
                 )}
