@@ -105,7 +105,7 @@ const InvitationWrapper = styled.div`
     cursor: pointer;
     justify-content: space-between;
     @media ${(props) => props.theme.breakpoint.tablet} {
-        width: 500px;
+        width: 400px;
     }
 `;
 
@@ -140,7 +140,7 @@ const WrapperColumn = styled.div`
     width: 100%;
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 45%;
-        min-width: 500px;
+        min-width: 400px;
     }
     &.top {
         align-self: flex-start;
@@ -150,6 +150,7 @@ const WrapperColumn = styled.div`
 const WrapperRow = styled.div`
     display: flex;
     flex-direction: row;
+    gap: 10px;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;

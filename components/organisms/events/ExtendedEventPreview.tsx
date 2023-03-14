@@ -194,7 +194,7 @@ const CardWithDateTime = styled.div`
         flex: 0 0 45%;
         width: 45%;
         max-width: 45%;
-        min-width: 500px;
+        min-width: 400px;
         margin-left: 0;
         margin-right: 0;
     }
@@ -355,7 +355,10 @@ const DishEntry = styled.div`
     display: inline-block;
     text-overflow: ellipsis;
     white-space: nowrap;
-    flex-basis: 30%;
+
+    :first-child {
+        flex-shrink: 0;
+    }
 `;
 
 const Dishes = styled.div`
