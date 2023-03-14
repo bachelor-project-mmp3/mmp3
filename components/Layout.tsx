@@ -25,6 +25,6 @@ const StyledLayout = styled.div`
 
 const LayoutWrapper = styled.div`
     @media ${({ theme }) => theme.breakpoint.tablet} {
-        margin-left: 350px;
+        margin-left: 320px;
     }
 `;
