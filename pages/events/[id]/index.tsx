@@ -154,7 +154,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
             <Header backButton>{event.title}</Header>
             <StyledInfoEventDetails>
                 <StyledInfoEventDetailsBoxes>
-                    <TimeLimitAndSeatsWrapper>
+                    <TimeLimitAndSeatsWrapper bold>
                         <TimeLimitAndSeatsRow>
                             <StyledClock />
                             <div>{timeLimit}</div>
@@ -187,7 +187,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                             </HostImage>
                         </StyledCrownAndImage>
                     )}
-                    <div>by {hostName}</div>
+                    <div style={{ textAlign: 'right' }}>by {hostName}</div>
                     <div>
                         {/*<StyledPhoneIcon />*/}
                         <Link href={`mailto:${event.host.email}`}>

@@ -255,6 +255,7 @@ export const StyledCrown = styled(Crown)`
 `;
 
 export const StyledClock = styled(Clock)`
+    //TODO: sollen die Icons auch fett werden?
     height: 16px;
     width: 16px;
 `;
@@ -325,8 +326,13 @@ const TitleAndCostsWrapper = styled.div`
     width: 90%;
 `;
 
-export const TimeLimitAndSeatsWrapper = styled.div`
-    color: ${({ theme }) => theme.midGrey};
+export interface TimeLimitAndSeatsWrapperProps {
+    bold: boolean;
+}
+export const TimeLimitAndSeatsWrapper = styled.div<TimeLimitAndSeatsWrapperProps>`
+    color: ${(props) =>
+        props.bold ? ({ theme }) => theme.text : ({ theme }) => theme.midGrey};
+    font-weight: ${(props) => (props.bold ? '600' : '0')};
 `;
 
 export const TimeLimitAndSeatsRow = styled.div`

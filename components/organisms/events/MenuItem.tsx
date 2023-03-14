@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import React from 'react';
 import { ToolTip } from '../../atoms/ToolTip';
 import InfoIcon from '../../../public/icons/info.svg';
+import LinkIcon from '../../../public/icons/link.svg';
 
 interface MenuItemProps {
     key: string;
@@ -22,13 +23,15 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     const toggleTipTool = () => {
         setToolTipState(!toolTipState);
     };
-    //TODO: check why link and description are still shown when null
-
-    console.log(dishLink);
 
     return (
         <StyledMenuItem key={key}>
             {dishLink ? <a href={dishLink}>{dishTitle}</a> : <p>{dishTitle}</p>}
+            {dishLink && (
+                <a href={dishLink}>
+                    <StyledLinkIcon />
+                </a>
+            )}
             {dishDescription && (
                 <StyledToolTip onClick={toggleTipTool}>
                     <StyledInfoIcon />
@@ -58,4 +61,12 @@ const StyledToolTip = styled.div`
 const StyledInfoIcon = styled(InfoIcon)`
     width: 18px;
     height: 18px;
+`;
+
+const StyledLinkIcon = styled(LinkIcon)`
+    height: 16px;
+    width: 16px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        top: 154px;
+    }
 `;
