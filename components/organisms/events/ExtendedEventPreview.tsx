@@ -143,17 +143,21 @@ const ExtendedEventPreview: React.FC<{
                                 )}
                             </>
                         ) : (
-                            <Button
-                                variant="primary"
-                                form
-                                onClick={() =>
-                                    onSubmitJoin(
-                                        event.id,
-                                        session?.user?.userId
-                                    )
-                                }>
-                                Ask to join
-                            </Button>
+                            <>
+                                {event.currentParticipants < event.capacity && (
+                                    <Button
+                                        variant="primary"
+                                        form
+                                        onClick={() =>
+                                            onSubmitJoin(
+                                                event.id,
+                                                session?.user?.userId
+                                            )
+                                        }>
+                                        Ask to join
+                                    </Button>
+                                )}
+                            </>
                         )}
                     </ButtonWrapper>
                 )}

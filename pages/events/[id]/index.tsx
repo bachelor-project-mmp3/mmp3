@@ -270,14 +270,21 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                             )}
                         </>
                     ) : (
-                        <Button
-                            variant="primary"
-                            form
-                            onClick={() =>
-                                joinEvent(event.id, session?.user?.userId)
-                            }>
-                            Ask to join
-                        </Button>
+                        <>
+                            {event.currentParticipants < event.capacity && (
+                                <Button
+                                    variant="primary"
+                                    form
+                                    onClick={() =>
+                                        joinEvent(
+                                            event.id,
+                                            session?.user?.userId
+                                        )
+                                    }>
+                                    Ask to join
+                                </Button>
+                            )}
+                        </>
                     )}
                 </StyledButtons>
             )}
