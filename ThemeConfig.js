@@ -81,7 +81,12 @@ export const GlobalStyles = createGlobalStyle`
   }
     color: ${({ theme }) => theme.text};
     font-family: HankenGrotesk, Arial, Roboto, sans-serif;
-    background: linear-gradient(173deg, rgba(219,255,183,1) 0%, rgba(241,255,226,1) 35%, rgba(255,255,255,1) 65%, rgba(255,250,205,1) 86%, rgba(255,246,169,1) 100%) fixed;
+    background-image: url("images/background_mobile.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+      background-image: url("images/background_desktop.png");
+  }
   }
   a {
     color: ${({ theme }) => theme.text};
