@@ -130,14 +130,26 @@ const ExtendedEventPreview: React.FC<{
                                     <Button
                                         variant="primary"
                                         disabled
-                                        onClick={() => alert('todo')}>
+                                        onClick={(e) => {
+                                            alert('todo');
+                                            {
+                                                /* to prevent navigation to eventdetail */
+                                            }
+                                            e.stopPropagation();
+                                        }}>
                                         Leave Event
                                     </Button>
                                 ) : (
                                     <Button
                                         variant="primary"
                                         disabled
-                                        onClick={() => alert('todo')}>
+                                        onClick={(e) => {
+                                            alert('todo');
+                                            {
+                                                /* to prevent navigation to eventdetail */
+                                            }
+                                            e.stopPropagation();
+                                        }}>
                                         Pending
                                     </Button>
                                 )}
@@ -147,12 +159,16 @@ const ExtendedEventPreview: React.FC<{
                                 {event.currentParticipants < event.capacity && (
                                     <Button
                                         variant="primary"
-                                        onClick={() =>
+                                        onClick={(e) => {
                                             onSubmitJoin(
                                                 event.id,
                                                 session?.user?.userId
-                                            )
-                                        }>
+                                            );
+                                            {
+                                                /* to prevent navigation to eventdetail */
+                                            }
+                                            e.stopPropagation();
+                                        }}>
                                         Ask to join
                                     </Button>
                                 )}
