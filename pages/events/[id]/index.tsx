@@ -29,10 +29,10 @@ import {
     hasUserSendRequestHelper,
     hostNameHelper,
     isRequestAcceptedHelper,
-    userHasJoinedHelper,
     userIsHostHelper,
 } from '../../../helper/EventsAndUserHelper';
 import Link from 'next/link';
+import { Loading } from '../../../components/organisms/Loading';
 
 type EventProps = {
     id: string;
@@ -73,10 +73,6 @@ type EventProps = {
     }> | null;
 };
 
-interface EventDetailProps {
-    event: EventProps;
-}
-
 async function deleteEvent(id: string): Promise<void> {
     await fetch(`/api/events/${id}`, {
         method: 'DELETE',
@@ -105,17 +101,16 @@ async function joinEvent(eventId: string, userId: string): Promise<void> {
     }
 }
 
-const EventDetail: React.FC<EventDetailProps> = () => {
+const EventDetail = () => {
     const { data: session } = useSession();
     const router = useRouter();
-
+    // TODO add type definition
     const [event, setEvent] = useState(null);
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
         if (router.isReady) {
-            setLoading(true);
             fetch(`/api/events/${router.query.id}`, {
                 method: 'GET',
             })
@@ -127,7 +122,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
         }
     }, [router.isReady, router.query.id]);
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <Loading />;
     if (!event) return <div>No event detail </div>;
 
     const timeLimit = getTimeLeftToJoin(event.timeLimit);

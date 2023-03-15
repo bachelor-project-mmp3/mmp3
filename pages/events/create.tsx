@@ -19,8 +19,9 @@ import DiscardIcon from '../../public/icons/discard.svg';
 import LinkIcon from '../../public/icons/link.svg';
 import { formatDateForDateInput } from '../../helper/helperFunctions';
 import { Header } from '../../components/organisms/Header';
+import { Loading } from '../../components/organisms/Loading';
 
-const CreateEvent: React.FC = () => {
+const CreateEvent = () => {
     const { data: session } = useSession();
     const router = useRouter();
     let currentDate = new Date();
@@ -34,7 +35,7 @@ const CreateEvent: React.FC = () => {
     let dateTimeNow =
         cYear + '-' + cMonth + '-' + cDay + 'T' + cHour + ':' + cMinutes;
 
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const [dormitory, setDormitory] = useState('');
     const [roomnumber, setRoomnumber] = useState('');
     const [title, setTitle] = useState('');
@@ -59,8 +60,6 @@ const CreateEvent: React.FC = () => {
     } = useForm();
 
     React.useEffect(() => {
-        setLoading(true);
-
         register('title', { required: true, minLength: 3 });
         register('date', { required: true });
         register('timelimit', { required: true });
@@ -133,7 +132,7 @@ const CreateEvent: React.FC = () => {
         }
     };
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Loading />;
     return (
         <Layout>
             <Header backButton>Create a new Event</Header>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '../../components/Layout';
 
-const Privacy: React.FC = () => {
+const Privacy = () => {
     return (
         <Layout>
             <div className="page">

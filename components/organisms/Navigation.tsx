@@ -74,7 +74,10 @@ const Navigation: React.FC = () => {
                                 <NavText>Requests</NavText>
                             </DesktopNavigationItem>
                             <DesktopNavigationItem
-                                isActive={router?.pathname === '/profile/[id]'}
+                                isActive={
+                                    router?.pathname === '/profile/[id]' ||
+                                    router?.pathname === '/profile/[id]/edit'
+                                }
                                 onClick={() =>
                                     router.push(
                                         `/profile/${session?.user.userId}`
@@ -82,7 +85,9 @@ const Navigation: React.FC = () => {
                                 }>
                                 <StyledProfileIcon
                                     isActive={
-                                        router?.pathname === '/profile/[id]'
+                                        router?.pathname === '/profile/[id]' ||
+                                        router?.pathname ===
+                                            '/profile/[id]/edit'
                                     }
                                 />
                                 <NavText>Profile</NavText>
@@ -125,7 +130,10 @@ const Navigation: React.FC = () => {
                                 onClick={() => router.push('/requests')}
                             />
                             <StyledProfileIcon
-                                isActive={router?.pathname === '/profile/[id]'}
+                                isActive={
+                                    router?.pathname === '/profile/[id]' ||
+                                    router?.pathname === '/profile/[id]/edit'
+                                }
                                 onClick={() =>
                                     router.push(
                                         `/profile/${session?.user.userId}`
