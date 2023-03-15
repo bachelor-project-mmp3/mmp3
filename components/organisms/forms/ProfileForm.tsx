@@ -19,6 +19,7 @@ import styled from 'styled-components';
 import Instagram from '../../../public/icons/insta.svg';
 import Phone from '../../../public/icons/phone.svg';
 import Image from 'next/image';
+import { Loading } from '../Loading';
 
 interface ProfileFormProps {
     cancelButton?: boolean;
@@ -28,7 +29,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     const { data: session } = useSession();
 
     const [profile, setProfile] = useState(null);
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
 
     const [image, setImage] = useState(null);
@@ -63,7 +64,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
         if (session) {
-            setLoading(true);
             fetch(`/api/profile/${session.user.userId}`, {
                 method: 'GET',
             })
@@ -91,7 +91,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
         register('privacy', { required: true });
     }, [register, session, setValue]);
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Loading withoutLayout />;
     if (!profile) return <p>No profile</p>;
 
     const onSubmit = async () => {

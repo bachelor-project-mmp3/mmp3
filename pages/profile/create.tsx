@@ -3,7 +3,7 @@ import Layout from '../../components/Layout';
 import { Header } from '../../components/organisms/Header';
 import { ProfileForm } from '../../components/organisms/forms/ProfileForm';
 
-const CreateProfile: React.FC = () => {
+const CreateProfile = () => {
     return (
         <Layout>
             <Header>Complete your profile</Header>

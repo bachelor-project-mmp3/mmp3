@@ -7,17 +7,17 @@ import { useRouter } from 'next/router';
 import { Header } from '../../components/organisms/Header';
 import { SmallEventPreview } from '../../components/organisms/events/SmallEventPreview';
 import { useSession } from 'next-auth/react';
+import { Loading } from '../../components/organisms/Loading';
 
-const MyEvents: React.FC = () => {
+const MyEvents = () => {
     const [upcomingEvents, setUpcomingEvents] = useState(null);
     const [pastEvents, setPastEvents] = useState(null);
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const { data: session } = useSession();
 
     const router = useRouter();
 
     useEffect(() => {
-        setLoading(true);
         fetch('/api/my-events', {
             method: 'GET',
         })
@@ -29,9 +29,7 @@ const MyEvents: React.FC = () => {
             });
     }, []);
 
-    if (isLoading) return <p>Loading...</p>;
-    console.log(upcomingEvents);
-    console.log(pastEvents);
+    if (isLoading) return <Loading />;
 
     return (
         <Layout>
