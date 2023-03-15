@@ -13,16 +13,14 @@ const Layout: React.FC<Props> = (props) => (
         <StyledLayout>
             <BackgroundImageWrapper>
                 <MobileImage
-                    src={'/images/background_mobile.png'}
+                    src={'/images/background_mobile.svg'}
                     alt="Image"
-                    layout={'fill'}
                     fill
                     style={{ objectFit: 'cover' }}
                 />
                 <DesktopImage
-                    src={'/images/background_desktop.png'}
+                    src={'/images/background_desktop.svg'}
                     alt="Image"
-                    layout={'fill'}
                     fill
                     style={{ objectFit: 'cover' }}
                 />
