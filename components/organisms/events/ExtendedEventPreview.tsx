@@ -280,7 +280,7 @@ const DateAndTime = styled.div`
     justify-content: space-between;
     padding: 8px 16px;
     gap: 24px;
-    background-color: ${({ theme }) => theme.orange};
+    background-color: ${({ theme }) => theme.green};
     border-top-right-radius: 16px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 32px;
