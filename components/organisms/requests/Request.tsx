@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import React from 'react';
 import styled from 'styled-components';
-import Crown from '../../../public/icons/krone.svg';
+import ChefHood from '../../../public/icons/chefmuetze.svg';
 import { Button } from '../../../components/atoms/Button';
 import Image from 'next/image';
 import Check from '../../../public/icons/hakerl.svg';
@@ -105,8 +105,8 @@ const Request: React.FC<{
         <Card>
             <Content>
                 <ImageAndLinkWrapper>
-                    <ImageAndCrown>
-                        <StyledCrown showCrown={!userIsHost} />
+                    <ImageAndChefHood>
+                        <StyledChefHood showChefHood={!userIsHost} />
                         <HostImage>
                             <StyledImage
                                 src={
@@ -119,7 +119,7 @@ const Request: React.FC<{
                                 style={{ objectFit: 'cover' }}
                             />
                         </HostImage>
-                    </ImageAndCrown>
+                    </ImageAndChefHood>
                     <Link
                         href={`/profile/${
                             userIsHost ? request.User.id : request.Event.host.id
@@ -204,14 +204,14 @@ const Content = styled.div`
     gap: 20px;
 `;
 
-const StyledCrown = styled(Crown)<HostImageProps>`
+const StyledChefHood = styled(ChefHood)<HostImageProps>`
     height: 17px;
     width: 17px;
     position: absolute;
     right: 0;
     top: -11px;
     transform: rotate(36deg);
-    display: ${(props) => (props.showCrown ? 'block' : 'none')};
+    display: ${(props) => (props.showChefHood ? 'block' : 'none')};
 `;
 
 const StyledCheck = styled(Check)`
@@ -261,7 +261,7 @@ const DeclineButton = styled.div`
 `;
 
 interface HostImageProps {
-    showCrown: boolean;
+    showChefHood: boolean;
 }
 
 const HostImage = styled.div`
@@ -282,7 +282,7 @@ const ImageAndLinkWrapper = styled.div`
     flex-shrink: 0;
 `;
 
-const ImageAndCrown = styled.div`
+const ImageAndChefHood = styled.div`
     position: relative;
     margin-bottom: 10px;
 `;
