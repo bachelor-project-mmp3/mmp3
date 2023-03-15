@@ -11,7 +11,7 @@ import {
     TimeLimitAndSeatsWrapper,
 } from '../../../components/organisms/events/ExtendedEventPreview';
 import styled from 'styled-components';
-import Crown from '../../../public/icons/krone.svg';
+import ChefHood from '../../../public/icons/chefmuetze.svg';
 import PhoneIcon from '../../../public/icons/phone.svg';
 import EmailIcon from '../../../public/icons/email.svg';
 import Image from 'next/image';
@@ -175,8 +175,8 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                 </StyledInfoEventDetailsBoxes>
                 <StyledInfoEventDetailsBoxes textAlign="right">
                     {event.host.image && (
-                        <StyledCrownAndImage>
-                            <StyledCrown />
+                        <StyledChefHoodAndImage>
+                            <StyledChefHood />
                             <HostImage userIsHost={userIsHost}>
                                 <StyledImage
                                     src={event.host.image}
@@ -185,7 +185,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                                     style={{ objectFit: 'cover' }}
                                 />
                             </HostImage>
-                        </StyledCrownAndImage>
+                        </StyledChefHoodAndImage>
                     )}
                     <div>by {hostName}</div>
                     <div>
@@ -339,7 +339,7 @@ const StyledImage = styled(Image)`
     border-radius: 50%;
 `;
 
-const StyledCrown = styled(Crown)`
+const StyledChefHood = styled(ChefHood)`
     position: absolute;
     right: -20px;
     top: -30px;
@@ -360,6 +360,6 @@ const StyledButtons = styled.div<HostImageProps>`
     }
 `;
 
-const StyledCrownAndImage = styled.div`
+const StyledChefHoodAndImage = styled.div`
     position: relative;
 `;

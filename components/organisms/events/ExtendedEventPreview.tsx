@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
-import Crown from '../../../public/icons/krone.svg';
+import ChefHood from '../../../public/icons/chefmuetze.svg';
 import Clock from '../../../public/icons/uhr.svg';
 import Seat from '../../../public/icons/sessel.svg';
 import Location from '../../../public/icons/location.svg';
@@ -103,7 +103,7 @@ const ExtendedEventPreview: React.FC<{
 
                 {event?.host?.image && (
                     <>
-                        <StyledCrown />
+                        <StyledChefHood />
                         <HostImage userIsHost={userIsHost}>
                             <StyledImage
                                 src={event.host.image}
@@ -245,7 +245,7 @@ export const StyledImage = styled(Image)`
     border-radius: 50%;
 `;
 
-export const StyledCrown = styled(Crown)`
+export const StyledChefHood = styled(ChefHood)`
     position: absolute;
     right: 32px;
     top: -35px;
