@@ -332,7 +332,7 @@ const HostImage = styled.div<HostImageProps>`
     width: 120px;
     height: 120px;
     border: ${(props) =>
-        props.userIsHost ? '7px solid ' + props.theme.green : 'none'};
+        props.userIsHost ? '7px solid ' + props.theme.secondary : 'none'};
 `;
 
 const StyledImage = styled(Image)`
