@@ -12,7 +12,7 @@ export const theme = {
     primary: '#52A174',
     hoverPrimary: '#40845e',
     secondary: '#B3F0A8',
-    orange: '#FCC372',
+    green: '#a7dbbc',
     backgroundLightGreen: '#c5f7bc',
     darkGrey: '#707070',
     midGrey: '#A2A2A2',
