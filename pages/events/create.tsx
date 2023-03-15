@@ -381,7 +381,7 @@ const StyledMenuInputItem = styled.div`
 `;
 
 const StyledMenuInput = styled.div`
-    background-color: ${({ theme }) => theme.backgroundLightestOrange};
+    background-color: ${({ theme }) => theme.backgroundLightGreen};
     border-radius: 25px 25px 0 0;
     padding: 20px 20px 40px 20px;
     margin-bottom: -80px;

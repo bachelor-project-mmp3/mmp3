@@ -238,7 +238,7 @@ export const HostImage = styled.div<HostImageProps>`
     width: 64px;
     height: 64px;
     border: ${(props) =>
-        props.userIsHost ? '5px solid ' + props.theme.green : 'none'};
+        props.userIsHost ? '5px solid ' + props.theme.secondary : 'none'};
 `;
 
 export const StyledImage = styled(Image)`

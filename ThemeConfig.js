@@ -9,15 +9,11 @@ export const theme = {
     text: '#343434',
     red: '#EF4B4B',
     hoverRed: '#8a0606',
-    primary: '#F3B151',
-    hoverPrimary: '#e68a05',
-    green: '#A9E6A6',
+    primary: '#52A174',
+    hoverPrimary: '#40845e',
+    secondary: '#B3F0A8',
     orange: '#FCC372',
-    backgroundLightGreen: '#DBFFB7',
-    backgroundLighterGreen: '#F1FFE2',
-    backgroundLightOrange: '#FDD192',
-    backgroundLighterOrange: '#FEE6C4',
-    backgroundLightestOrange: '#FEF8EE',
+    backgroundLightGreen: '#c5f7bc',
     darkGrey: '#707070',
     midGrey: '#A2A2A2',
     lightGrey: '#DDDDDD',
@@ -81,7 +77,6 @@ export const GlobalStyles = createGlobalStyle`
   }
     color: ${({ theme }) => theme.text};
     font-family: HankenGrotesk, Arial, Roboto, sans-serif;
-    background: linear-gradient(173deg, rgba(219,255,183,1) 0%, rgba(241,255,226,1) 35%, rgba(255,255,255,1) 65%, rgba(255,250,205,1) 86%, rgba(255,246,169,1) 100%) fixed;
   }
   a {
     color: ${({ theme }) => theme.text};
