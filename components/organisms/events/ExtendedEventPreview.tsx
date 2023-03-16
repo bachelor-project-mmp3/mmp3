@@ -98,7 +98,7 @@ const ExtendedEventPreview: React.FC<{
                 </Place>
                 <TitleAndCostsWrapper>
                     <EventTitle>{event.title}</EventTitle>
-                    <Costs>{event.costs} &#8364;</Costs>
+                    <Costs>{event.costs} &#8364; p. p.</Costs>
                 </TitleAndCostsWrapper>
 
                 {event?.host?.image && (

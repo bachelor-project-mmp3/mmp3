@@ -33,6 +33,7 @@ import {
     userIsHostHelper,
 } from '../../../helper/EventsAndUserHelper';
 import Link from 'next/link';
+import { CrownAndImage } from '../../../components/organisms/CrownAndImage';
 
 type EventProps = {
     id: string;
@@ -64,6 +65,7 @@ type EventProps = {
         eventId: string;
         userId: string;
         User: {
+            id: string;
             firstName: string;
             lastName: string;
             image: string;
@@ -171,36 +173,36 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                     <div>{time}</div>
                     <div>{event.host?.dormitory}</div>
                     <div>Room No. {event.host?.roomNumber}</div>
-                    <div>Costs: {event.costs} &#8364;</div>
+                    <div>Costs: {event.costs} &#8364; per person</div>
                 </StyledInfoEventDetailsBoxes>
                 <StyledInfoEventDetailsBoxes textAlign="right">
                     {event.host.image && (
-                        <StyledCrownAndImage>
-                            <StyledCrown />
-                            <HostImage userIsHost={userIsHost}>
-                                <StyledImage
-                                    src={event.host.image}
-                                    alt="Image"
-                                    layout={'fill'}
-                                    style={{ objectFit: 'cover' }}
-                                />
-                            </HostImage>
-                        </StyledCrownAndImage>
+                        <CrownAndImage
+                            onClick={() =>
+                                router.push(`/profile/${event.host.id}`)
+                            }
+                            userIsHost={userIsHost}
+                            source={event.host.image}
+                            hostName={hostName}></CrownAndImage>
                     )}
-                    <div style={{ textAlign: 'right' }}>by {hostName}</div>
-                    <div>
-                        {/*<StyledPhoneIcon />*/}
-                        <Link href={`mailto:${event.host.email}`}>
-                            <StyledEmailIcon />
-                        </Link>
-                    </div>
+
+                    {event.requests.filter(
+                        (request) =>
+                            request.status == RequestStatus.ACCEPTED &&
+                            request.userId == session?.user?.userId
+                    ).length > 0 && (
+                        <div>
+                            <StyledPhoneIcon />
+                            <Link href={`mailto:${event.host.email}`}>
+                                <StyledEmailIcon />
+                            </Link>
+                        </div>
+                    )}
                 </StyledInfoEventDetailsBoxes>
             </StyledInfoEventDetails>
-            {/*{userIsHost && <div>*/}
-            {/*    <Button variant={'primary'} onClick={() => router.push(`/events/${event.id}/edit`)}>Edit event</Button>*/}
-            {/*</div>}*/}
             {event.menu.length > 0 && (
                 <Card variant={'center'}>
+                    <StyledHeadings>Menu</StyledHeadings>
                     {event.menu.map((dish, index) => (
                         <MenuItem
                             key={index}
@@ -212,12 +214,22 @@ const EventDetail: React.FC<EventDetailProps> = () => {
                 </Card>
             )}
 
-            {event.info && <Card variant={'description'}>{event.info}</Card>}
+            {event.info && (
+                <Card variant={'description'}>
+                    <StyledHeadings style={{ marginTop: 0 }}>
+                        About the event
+                    </StyledHeadings>
+                    {event.info}
+                </Card>
+            )}
 
             {event.requests.filter(
                 (request) => request.status == RequestStatus.ACCEPTED
             ).length > 0 && (
                 <Card variant={'description'}>
+                    <StyledHeadings style={{ marginTop: 0 }}>
+                        Guestlist
+                    </StyledHeadings>
                     {event.requests
                         .filter(
                             (request) =>
@@ -326,27 +338,6 @@ const StyledInfoEventDetailsBoxes = styled.div<StyledInfoEventDetailsBoxesProps>
     align-items: ${(props) => (props.textAlign === 'right' ? 'end' : 'start')};
 `;
 
-const HostImage = styled.div<HostImageProps>`
-    position: relative;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    border: ${(props) =>
-        props.userIsHost ? '7px solid ' + props.theme.green : 'none'};
-`;
-
-const StyledImage = styled(Image)`
-    border-radius: 50%;
-`;
-
-const StyledCrown = styled(Crown)`
-    position: absolute;
-    right: -20px;
-    top: -30px;
-    height: 35px;
-    width: 70px;
-    transform: rotate(30deg);
-`;
 const StyledButtons = styled.div<HostImageProps>`
     display: flex;
     flex-direction: row;
@@ -360,6 +351,11 @@ const StyledButtons = styled.div<HostImageProps>`
     }
 `;
 
-const StyledCrownAndImage = styled.div`
-    position: relative;
+const StyledHeadings = styled.p`
+    font-weight: 600;
+    font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        width: 100%;
+        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
+    }
 `;

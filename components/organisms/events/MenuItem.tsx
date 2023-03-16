@@ -27,17 +27,19 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     return (
         <StyledMenuItem key={key}>
             {dishLink ? <a href={dishLink}>{dishTitle}</a> : <p>{dishTitle}</p>}
-            {dishLink && (
-                <a href={dishLink}>
-                    <StyledLinkIcon />
-                </a>
-            )}
-            {dishDescription && (
-                <StyledToolTip onClick={toggleTipTool}>
-                    <StyledInfoIcon />
-                    <ToolTip open={toolTipState}>{dishDescription}</ToolTip>
-                </StyledToolTip>
-            )}
+            <div>
+                {dishLink && (
+                    <a href={dishLink}>
+                        <StyledLinkIcon />
+                    </a>
+                )}
+                {dishDescription && (
+                    <StyledToolTip onClick={toggleTipTool}>
+                        <StyledInfoIcon />
+                        <ToolTip open={toolTipState}>{dishDescription}</ToolTip>
+                    </StyledToolTip>
+                )}
+            </div>
         </StyledMenuItem>
     );
 };
@@ -47,10 +49,9 @@ export default MenuItem;
 const StyledMenuItem = styled.div`
     display: flex;
     flex-direction: row;
-    margin: 20px;
-    justify-content: center;
+    margin: 20px 25%;
+    justify-content: space-between;
     align-items: center;
-    gap: 20px;
 `;
 
 const StyledToolTip = styled.div`
@@ -61,11 +62,13 @@ const StyledToolTip = styled.div`
 const StyledInfoIcon = styled(InfoIcon)`
     width: 18px;
     height: 18px;
+    margin: 0 10px;
 `;
 
 const StyledLinkIcon = styled(LinkIcon)`
     height: 16px;
     width: 16px;
+    margin: 0 10px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         top: 154px;
     }
