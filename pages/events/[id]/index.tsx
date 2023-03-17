@@ -11,7 +11,6 @@ import {
     TimeLimitAndSeatsWrapper,
 } from '../../../components/organisms/events/ExtendedEventPreview';
 import styled from 'styled-components';
-import ChefHood from '../../../public/icons/chefmuetze.svg';
 import PhoneIcon from '../../../public/icons/phone.svg';
 import EmailIcon from '../../../public/icons/email.svg';
 import Image from 'next/image';
@@ -32,6 +31,7 @@ import {
     userIsHostHelper,
 } from '../../../helper/EventsAndUserHelper';
 import Link from 'next/link';
+import { ChefAndImage } from '../../../components/organisms/ChefAndImage';
 import { Loading } from '../../../components/organisms/Loading';
 
 type EventProps = {
@@ -64,6 +64,7 @@ type EventProps = {
         eventId: string;
         userId: string;
         User: {
+            id: string;
             firstName: string;
             lastName: string;
             image: string;
@@ -149,7 +150,7 @@ const EventDetail = () => {
             <Header backButton>{event.title}</Header>
             <StyledInfoEventDetails>
                 <StyledInfoEventDetailsBoxes>
-                    <TimeLimitAndSeatsWrapper>
+                    <TimeLimitAndSeatsWrapper bold>
                         <TimeLimitAndSeatsRow>
                             <StyledClock />
                             <div>{timeLimit}</div>
@@ -166,36 +167,36 @@ const EventDetail = () => {
                     <div>{time}</div>
                     <div>{event.host?.dormitory}</div>
                     <div>Room No. {event.host?.roomNumber}</div>
-                    <div>Costs: {event.costs} &#8364;</div>
+                    <div>Costs: {event.costs} &#8364; per person</div>
                 </StyledInfoEventDetailsBoxes>
                 <StyledInfoEventDetailsBoxes textAlign="right">
                     {event.host.image && (
-                        <StyledChefHoodAndImage>
-                            <StyledChefHood />
-                            <HostImage userIsHost={userIsHost}>
-                                <StyledImage
-                                    src={event.host.image}
-                                    alt="Image"
-                                    layout={'fill'}
-                                    style={{ objectFit: 'cover' }}
-                                />
-                            </HostImage>
-                        </StyledChefHoodAndImage>
+                        <ChefAndImage
+                            onClick={() =>
+                                router.push(`/profile/${event.host.id}`)
+                            }
+                            userIsHost={userIsHost}
+                            source={event.host.image}
+                            hostName={hostName}></ChefAndImage>
                     )}
-                    <div>by {hostName}</div>
-                    <div>
-                        {/*<StyledPhoneIcon />*/}
-                        <Link href={`mailto:${event.host.email}`}>
-                            <StyledEmailIcon />
-                        </Link>
-                    </div>
+
+                    {event.requests.filter(
+                        (request) =>
+                            request.status == RequestStatus.ACCEPTED &&
+                            request.userId == session?.user?.userId
+                    ).length > 0 && (
+                        <div>
+                            <StyledPhoneIcon />
+                            <Link href={`mailto:${event.host.email}`}>
+                                <StyledEmailIcon />
+                            </Link>
+                        </div>
+                    )}
                 </StyledInfoEventDetailsBoxes>
             </StyledInfoEventDetails>
-            {/*{userIsHost && <div>*/}
-            {/*    <Button variant={'primary'} onClick={() => router.push(`/events/${event.id}/edit`)}>Edit event</Button>*/}
-            {/*</div>}*/}
             {event.menu.length > 0 && (
                 <Card variant={'center'}>
+                    <StyledHeadings>Menu</StyledHeadings>
                     {event.menu.map((dish, index) => (
                         <MenuItem
                             key={index}
@@ -207,12 +208,22 @@ const EventDetail = () => {
                 </Card>
             )}
 
-            {event.info && <Card variant={'description'}>{event.info}</Card>}
+            {event.info && (
+                <Card variant={'description'}>
+                    <StyledHeadings style={{ marginTop: 0 }}>
+                        About the event
+                    </StyledHeadings>
+                    {event.info}
+                </Card>
+            )}
 
             {event.requests.filter(
                 (request) => request.status == RequestStatus.ACCEPTED
             ).length > 0 && (
                 <Card variant={'description'}>
+                    <StyledHeadings style={{ marginTop: 0 }}>
+                        Guestlist
+                    </StyledHeadings>
                     {event.requests
                         .filter(
                             (request) =>
@@ -321,27 +332,6 @@ const StyledInfoEventDetailsBoxes = styled.div<StyledInfoEventDetailsBoxesProps>
     align-items: ${(props) => (props.textAlign === 'right' ? 'end' : 'start')};
 `;
 
-const HostImage = styled.div<HostImageProps>`
-    position: relative;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    border: ${(props) =>
-        props.userIsHost ? '7px solid ' + props.theme.secondary : 'none'};
-`;
-
-const StyledImage = styled(Image)`
-    border-radius: 50%;
-`;
-
-const StyledChefHood = styled(ChefHood)`
-    position: absolute;
-    right: -20px;
-    top: -30px;
-    height: 35px;
-    width: 70px;
-    transform: rotate(30deg);
-`;
 const StyledButtons = styled.div<HostImageProps>`
     display: flex;
     flex-direction: row;
@@ -355,6 +345,11 @@ const StyledButtons = styled.div<HostImageProps>`
     }
 `;
 
-const StyledChefHoodAndImage = styled.div`
-    position: relative;
+const StyledHeadings = styled.p`
+    font-weight: 600;
+    font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        width: 100%;
+        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
+    }
 `;
