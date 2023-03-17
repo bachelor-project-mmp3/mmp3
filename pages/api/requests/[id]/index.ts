@@ -21,7 +21,7 @@ export default async function handler(
 
                 if (status === RequestStatus.ACCEPTED) {
                     data = {
-                        status: status,
+                        status,
                         Event: {
                             update: { currentParticipants: { increment: 1 } },
                         },
@@ -29,7 +29,7 @@ export default async function handler(
                 }
                 if (status === RequestStatus.DECLINED) {
                     data = {
-                        status: status,
+                        status,
                     };
                 }
 
@@ -38,16 +38,24 @@ export default async function handler(
                         id: String(req.query.id),
                     },
                     include: {
-                        Event: {
+                        User: {
                             select: {
-                                currentParticipants: true,
+                                firstName: true,
+                                lastName: true,
+                                image: true,
                                 id: true,
-                                title: true,
-                                host: { select: { firstName: true, id: true } },
+                                email: true,
                             },
                         },
-                        User: {
-                            select: { firstName: true, id: true, email: true },
+                        Event: {
+                            select: {
+                                title: true,
+                                id: true,
+                                host: true,
+                                timeLimit: true,
+                                currentParticipants: true,
+                                capacity: true,
+                            },
                         },
                     },
                     data,
@@ -114,7 +122,7 @@ export default async function handler(
                     });
                 }
 
-                res.status(200).json({ request });
+                res.status(200).json(request);
             }
         } catch (err) {
             res.status(500).json({ message: err.message });
