@@ -20,6 +20,7 @@ import LinkIcon from '../../public/icons/link.svg';
 import { formatDateForDateInput } from '../../helper/helperFunctions';
 import { Header } from '../../components/organisms/Header';
 import { Loading } from '../../components/organisms/Loading';
+import { Info } from '../../components/atoms/Info';
 
 const CreateEvent = () => {
     const { data: session } = useSession();
@@ -62,7 +63,6 @@ const CreateEvent = () => {
     } = useForm();
 
     React.useEffect(() => {
-
         register('title', {
             onChange: (e) => {},
             required: true,

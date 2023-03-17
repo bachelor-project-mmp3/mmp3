@@ -1,25 +1,25 @@
 import styled from 'styled-components';
 import React from 'react';
 import Image from 'next/image';
-import Crown from '../../public/icons/krone.svg';
+import ChefHood from '../../public/icons/chefmuetze.svg';
 import { HostImageProps } from './events/ExtendedEventPreview';
 
-interface CrownAndImageProps {
+interface ChefAndImageProps {
     userIsHost?: boolean;
     hostName: string;
     source: string;
     onClick?: (e: any) => void;
 }
-export const CrownAndImage: React.FC<CrownAndImageProps> = ({
+export const ChefAndImage: React.FC<ChefAndImageProps> = ({
     onClick,
     userIsHost,
     hostName,
     source,
-}: CrownAndImageProps) => {
+}: ChefAndImageProps) => {
     return (
         <>
-            <StyledCrownAndImage onClick={onClick}>
-                <StyledCrown />
+            <StyledChefAndImage onClick={onClick}>
+                <StyledChefHat />
                 <HostImage userIsHost={userIsHost}>
                     <StyledImage
                         src={source}
@@ -28,7 +28,7 @@ export const CrownAndImage: React.FC<CrownAndImageProps> = ({
                         style={{ objectFit: 'cover' }}
                     />
                 </HostImage>
-            </StyledCrownAndImage>
+            </StyledChefAndImage>
             <div
                 style={{ textAlign: 'right', cursor: 'pointer' }}
                 onClick={onClick}>
@@ -37,7 +37,7 @@ export const CrownAndImage: React.FC<CrownAndImageProps> = ({
         </>
     );
 };
-const StyledCrownAndImage = styled.div`
+const StyledChefAndImage = styled.div`
     position: relative;
     cursor: pointer;
 `;
@@ -46,7 +46,7 @@ const StyledImage = styled(Image)`
     border-radius: 50%;
 `;
 
-const StyledCrown = styled(Crown)`
+const StyledChefHat = styled(ChefHood)`
     position: absolute;
     right: -20px;
     top: -30px;

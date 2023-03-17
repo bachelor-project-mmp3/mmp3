@@ -11,7 +11,6 @@ import {
     TimeLimitAndSeatsWrapper,
 } from '../../../components/organisms/events/ExtendedEventPreview';
 import styled from 'styled-components';
-import ChefHood from '../../../public/icons/chefmuetze.svg';
 import PhoneIcon from '../../../public/icons/phone.svg';
 import EmailIcon from '../../../public/icons/email.svg';
 import Image from 'next/image';
@@ -32,7 +31,7 @@ import {
     userIsHostHelper,
 } from '../../../helper/EventsAndUserHelper';
 import Link from 'next/link';
-import { CrownAndImage } from '../../../components/organisms/CrownAndImage';
+import { ChefAndImage } from '../../../components/organisms/ChefAndImage';
 import { Loading } from '../../../components/organisms/Loading';
 
 type EventProps = {
@@ -172,13 +171,13 @@ const EventDetail = () => {
                 </StyledInfoEventDetailsBoxes>
                 <StyledInfoEventDetailsBoxes textAlign="right">
                     {event.host.image && (
-                        <CrownAndImage
+                        <ChefAndImage
                             onClick={() =>
                                 router.push(`/profile/${event.host.id}`)
                             }
                             userIsHost={userIsHost}
                             source={event.host.image}
-                            hostName={hostName}></CrownAndImage>
+                            hostName={hostName}></ChefAndImage>
                     )}
 
                     {event.requests.filter(
