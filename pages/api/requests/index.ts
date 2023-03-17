@@ -28,7 +28,18 @@ export default async function handler(
                 const event = await prisma.event.findUnique({
                     where: { id: eventId },
                     include: {
-                        host: { select: { firstName: true, email: true } },
+                        host: {
+                            select: {
+                                firstName: true,
+                                lastName: true,
+                                image: true,
+                                email: true,
+                                dormitory: true,
+                                id: true,
+                            },
+                        },
+                        menu: true,
+                        requests: true,
                     },
                 });
 
@@ -68,7 +79,7 @@ export default async function handler(
                     }
                 });
 
-                res.status(200).json({ requestId: request.id });
+                res.status(200).json(event);
             }
             if (req.method === 'GET') {
                 const session = await getSession({ req });

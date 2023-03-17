@@ -13,6 +13,7 @@ const Events = () => {
     const router = useRouter();
 
     const onSubmitJoin = async (eventId: string, userId: string) => {
+        setLoading(true);
         const data = {
             eventId: eventId,
             userId: userId,
@@ -25,9 +26,15 @@ const Events = () => {
         });
 
         if (res.status < 300) {
-            setLoading(true);
-            router.replace(router.asPath);
-            router.reload();
+            res.json().then((joinedEvent) => {
+                let updatedEvents = events.map((event) =>
+                    event.id === joinedEvent.id ? joinedEvent : event
+                );
+
+                setEvents(updatedEvents);
+            });
+            setLoading(false);
+            //TODO show dialog
         } else {
             router.push('/404');
         }
