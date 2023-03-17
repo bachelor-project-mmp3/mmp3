@@ -19,6 +19,7 @@ import DiscardIcon from '../../public/icons/discard.svg';
 import LinkIcon from '../../public/icons/link.svg';
 import { formatDateForDateInput } from '../../helper/helperFunctions';
 import { Header } from '../../components/organisms/Header';
+import { Info } from '../../components/atoms/Info';
 
 const CreateEvent: React.FC = () => {
     const { data: session } = useSession();
@@ -215,15 +216,31 @@ const CreateEvent: React.FC = () => {
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
-                <StyledLabel>Location</StyledLabel>
-                <StyledInformation>
-                    <StyledInformationRight>
-                        The exact location will only be shared with guests
-                    </StyledInformationRight>
-
-                    {dormitory && <div>{dormitory}</div>}
-                    {roomnumber && <div>Room number: {roomnumber}</div>}
-                </StyledInformation>
+                <StyledDiv>
+                    <InputText
+                        id=""
+                        placeholder="000"
+                        value={dormitory}
+                        disabled={true}>
+                        Dormitory
+                    </InputText>
+                </StyledDiv>
+                <StyledDiv>
+                    <InputText
+                        id=""
+                        placeholder="000"
+                        value={roomnumber}
+                        disabled={true}>
+                        Roomnumber
+                    </InputText>
+                </StyledDiv>
+                <StyledInfo>
+                    <StyledInfo>
+                        <Info>
+                            The exact location will only be shared with guests
+                        </Info>
+                    </StyledInfo>
+                </StyledInfo>
                 <StyledFormComponentsInRow>
                     <StyledInputWithError className="small">
                         <InputNumber
@@ -448,4 +465,25 @@ const StyledH1 = styled.h1`
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline4};
     }
+`;
+
+const StyledDiv = styled.div`
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 1.5em;
+    &.center {
+        align-items: center;
+    }
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        &.small {
+            width: 45%;
+        }
+    }
+`;
+
+const StyledInfo = styled.div`
+    padding-left: 18px;
+    margin-top: 10px;
 `;
