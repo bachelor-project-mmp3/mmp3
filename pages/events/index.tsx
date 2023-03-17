@@ -5,10 +5,15 @@ import ExtendedEventPreview from '../../components/organisms/events/ExtendedEven
 import { useRouter } from 'next/router';
 import { Header } from '../../components/organisms/Header';
 import { Loading } from '../../components/organisms/Loading';
+import InfoPopUp from '../../components/organisms/popups/InfoPopUp';
+import Link from 'next/link';
 
 const Events = () => {
     const [events, setEvents] = useState(null);
     const [isLoading, setLoading] = useState(true);
+    const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState<
+        undefined | string
+    >();
 
     const router = useRouter();
 
@@ -32,9 +37,9 @@ const Events = () => {
                 );
 
                 setEvents(updatedEvents);
+                setLoading(false);
+                setShowInfoPopOpOnJoin(joinedEvent.title);
             });
-            setLoading(false);
-            //TODO show dialog
         } else {
             router.push('/404');
         }
@@ -55,19 +60,32 @@ const Events = () => {
     if (!events) return <p>No events </p>;
 
     return (
-        <Layout>
-            <Header>Find an event to join</Header>
-            <EventsList>
-                {events &&
-                    events.map((event) => (
-                        <ExtendedEventPreview
-                            key={event.id}
-                            event={event}
-                            onSubmitJoin={onSubmitJoin}
-                        />
-                    ))}
-            </EventsList>
-        </Layout>
+        <>
+            {showInfoPopOpOnJoin && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnJoin(undefined)}>
+                    Your Request to join <strong>{showInfoPopOpOnJoin}</strong>{' '}
+                    was successfully sent. Check your{' '}
+                    <strong>
+                        <Link href="/requests">requests</Link>
+                    </strong>{' '}
+                    or FH mails to stay up to date!
+                </InfoPopUp>
+            )}
+
+            <Layout>
+                <Header>Find an event to join</Header>
+                <EventsList>
+                    {events &&
+                        events.map((event) => (
+                            <ExtendedEventPreview
+                                key={event.id}
+                                event={event}
+                                onSubmitJoin={onSubmitJoin}
+                            />
+                        ))}
+                </EventsList>
+            </Layout>
+        </>
     );
 };
 
