@@ -19,9 +19,9 @@ import DiscardIcon from '../../public/icons/discard.svg';
 import LinkIcon from '../../public/icons/link.svg';
 import { formatDateForDateInput } from '../../helper/helperFunctions';
 import { Header } from '../../components/organisms/Header';
-import { Info } from '../../components/atoms/Info';
+import { Loading } from '../../components/organisms/Loading';
 
-const CreateEvent: React.FC = () => {
+const CreateEvent = () => {
     const { data: session } = useSession();
     const router = useRouter();
     let currentDate = new Date();
@@ -37,7 +37,7 @@ const CreateEvent: React.FC = () => {
     let dateTimePlusOneHour =
         cYear + '-' + cMonth + '-' + cDay + 'T' + (cHour + 1) + ':' + cMinutes;
 
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const [dormitory, setDormitory] = useState('');
     const [roomnumber, setRoomnumber] = useState('');
     const [title, setTitle] = useState('');
@@ -62,7 +62,6 @@ const CreateEvent: React.FC = () => {
     } = useForm();
 
     React.useEffect(() => {
-        setLoading(true);
 
         register('title', {
             onChange: (e) => {},
@@ -152,7 +151,7 @@ const CreateEvent: React.FC = () => {
         }
     };
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Loading />;
     return (
         <Layout>
             <Header backButton>Create a new Event</Header>
@@ -410,7 +409,7 @@ const StyledMenuInputItem = styled.div`
 `;
 
 const StyledMenuInput = styled.div`
-    background-color: ${({ theme }) => theme.backgroundLightestOrange};
+    background-color: ${({ theme }) => theme.backgroundLightGreen};
     border-radius: 25px 25px 0 0;
     padding: 20px 20px 40px 20px;
     margin-bottom: -80px;

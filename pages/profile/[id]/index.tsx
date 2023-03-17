@@ -12,26 +12,19 @@ import Study from '../../../public/icons/major.svg';
 import Instagram from '../../../public/icons/insta.svg';
 import Burger from '../../../public/icons/burger_menu.svg';
 import Link from 'next/link';
+import { Loading } from '../../../components/organisms/Loading';
 
-// TODO: maybe load some data before page gets rendered, like session maybe?
-/*export const getServerSideProps: GetServerSideProps = async () => {
-    return {
-        props: { },
-    };
-};*/
-
-const Profile: React.FC = () => {
+const Profile = () => {
     const { data: session } = useSession();
     const router = useRouter();
 
     const [profile, setProfile] = useState(null);
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
         if (router.isReady) {
-            setLoading(true);
             fetch(`/api/profile/${router.query.id}`, {
                 method: 'GET',
             })
@@ -43,9 +36,7 @@ const Profile: React.FC = () => {
         }
     }, [router.isReady, router.query.id]);
 
-    console.log(profile);
-
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Loading />;
     if (!profile) return <p>No profile</p>;
 
     return (

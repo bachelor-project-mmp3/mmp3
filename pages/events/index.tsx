@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
-import ExtendedEventPreview, {
-    EventProps,
-} from '../../components/organisms/events/ExtendedEventPreview';
+import ExtendedEventPreview from '../../components/organisms/events/ExtendedEventPreview';
 import { useRouter } from 'next/router';
 import { Header } from '../../components/organisms/Header';
+import { Loading } from '../../components/organisms/Loading';
 
-type Props = {
-    events: EventProps[];
-};
-
-const Events: React.FC<Props> = () => {
+const Events = () => {
     const [events, setEvents] = useState(null);
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
 
     const router = useRouter();
 
@@ -39,7 +34,6 @@ const Events: React.FC<Props> = () => {
     };
 
     useEffect(() => {
-        setLoading(true);
         fetch('/api/events', {
             method: 'GET',
         })
@@ -50,7 +44,7 @@ const Events: React.FC<Props> = () => {
             });
     }, []);
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Loading />;
     if (!events) return <p>No events </p>;
 
     return (

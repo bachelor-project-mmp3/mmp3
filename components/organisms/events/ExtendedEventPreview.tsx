@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
-import Crown from '../../../public/icons/krone.svg';
+import ChefHood from '../../../public/icons/chefmuetze.svg';
 import Clock from '../../../public/icons/uhr.svg';
 import Seat from '../../../public/icons/sessel.svg';
 import Location from '../../../public/icons/location.svg';
@@ -103,7 +103,7 @@ const ExtendedEventPreview: React.FC<{
 
                 {event?.host?.image && (
                     <>
-                        <StyledCrown />
+                        <StyledChefHood />
                         <HostImage userIsHost={userIsHost}>
                             <StyledImage
                                 src={event.host.image}
@@ -238,14 +238,14 @@ export const HostImage = styled.div<HostImageProps>`
     width: 64px;
     height: 64px;
     border: ${(props) =>
-        props.userIsHost ? '5px solid ' + props.theme.green : 'none'};
+        props.userIsHost ? '5px solid ' + props.theme.secondary : 'none'};
 `;
 
 export const StyledImage = styled(Image)`
     border-radius: 50%;
 `;
 
-export const StyledCrown = styled(Crown)`
+export const StyledChefHood = styled(ChefHood)`
     position: absolute;
     right: 32px;
     top: -35px;
@@ -281,7 +281,7 @@ const DateAndTime = styled.div`
     justify-content: space-between;
     padding: 8px 16px;
     gap: 24px;
-    background-color: ${({ theme }) => theme.orange};
+    background-color: ${({ theme }) => theme.green};
     border-top-right-radius: 16px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 32px;

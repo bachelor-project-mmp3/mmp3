@@ -3,25 +3,23 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import Layout from '../../components/Layout';
 import { Header } from '../../components/organisms/Header';
+import { Loading } from '../../components/organisms/Loading';
 import Request from '../../components/organisms/requests/Request';
 
-const Requests: React.FC = () => {
+const Requests = () => {
     const [requests, setRequests] = React.useState(null);
-    const [isLoading, setLoading] = React.useState<boolean>(false);
+    const [isLoading, setLoading] = React.useState<boolean>(true);
 
     // TODO after accept a refresh is needed! maybe a better solution?
     const router = useRouter();
 
     useEffect(() => {
-        setLoading(true);
         fetch('/api/requests', {
             method: 'GET',
         })
             .then((res) => res.json())
             .then((data) => {
                 setRequests(data.requests);
-                console.log(data.requests);
-
                 setLoading(false);
             });
     }, []);
@@ -30,8 +28,6 @@ const Requests: React.FC = () => {
         const data = {
             status,
         };
-
-        // TODO: guest receices email
 
         const res = await fetch(`/api/requests/${requestId}`, {
             method: 'PATCH',
@@ -47,7 +43,7 @@ const Requests: React.FC = () => {
         }
     };
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Loading />;
     if (!requests) return <p>No requests </p>;
     return (
         <Layout>

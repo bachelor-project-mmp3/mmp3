@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import Navigation from './organisms/Navigation';
+import Image from 'next/image';
 
 type Props = {
     children: ReactNode;
@@ -9,7 +10,23 @@ type Props = {
 const Layout: React.FC<Props> = (props) => (
     <LayoutWrapper>
         <Navigation />
-        <StyledLayout>{props.children}</StyledLayout>
+        <StyledLayout>
+            <BackgroundImageWrapper>
+                <MobileImage
+                    src={'/images/background_mobile.svg'}
+                    alt="Image"
+                    fill
+                    style={{ objectFit: 'cover' }}
+                />
+                <DesktopImage
+                    src={'/images/background_desktop.svg'}
+                    alt="Image"
+                    fill
+                    style={{ objectFit: 'cover' }}
+                />
+            </BackgroundImageWrapper>
+            {props.children}
+        </StyledLayout>
     </LayoutWrapper>
 );
 
@@ -26,5 +43,25 @@ const StyledLayout = styled.div`
 const LayoutWrapper = styled.div`
     @media ${({ theme }) => theme.breakpoint.tablet} {
         margin-left: 320px;
+    }
+`;
+
+const BackgroundImageWrapper = styled.div`
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+`;
+
+const MobileImage = styled(Image)`
+    display: block;
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        display: none;
+    }
+`;
+
+const DesktopImage = styled(Image)`
+    display: none;
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        display: block;
     }
 `;
