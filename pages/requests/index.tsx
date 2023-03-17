@@ -25,6 +25,7 @@ const Requests = () => {
     }, []);
 
     const onSubmit = async (requestId: string, status: RequestStatus) => {
+        setLoading(true);
         const data = {
             status,
         };
@@ -36,8 +37,15 @@ const Requests = () => {
         });
 
         if (res.status < 300) {
-            setLoading(true);
-            router.reload();
+            res.json().then((updatedRequest) => {
+                let updatedRequests = requests.map((request) =>
+                    request.id === updatedRequest.id ? updatedRequest : request
+                );
+
+                setRequests(updatedRequests);
+            });
+            setLoading(false);
+            //TODO show dialog
         } else {
             router.push('/404');
         }
