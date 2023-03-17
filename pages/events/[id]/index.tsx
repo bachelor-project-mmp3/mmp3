@@ -82,32 +82,37 @@ async function deleteEvent(id: string): Promise<void> {
     Router.push('/events');
 }
 
-async function joinEvent(eventId: string, userId: string): Promise<void> {
-    const data = {
-        eventId: eventId,
-        userId: userId,
-    };
-
-    const res = await fetch('/api/requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-    });
-
-    if (res.status < 300) {
-        Router.replace(Router.asPath);
-        Router.reload();
-    } else {
-        Router.push('/events/${event.id}/edit');
-    }
-}
-
 const EventDetail = () => {
     const { data: session } = useSession();
     const router = useRouter();
     // TODO add type definition
     const [event, setEvent] = useState(null);
     const [isLoading, setLoading] = useState(true);
+
+    async function joinEvent(eventId: string, userId: string): Promise<void> {
+        setLoading(true);
+
+        const data = {
+            eventId: eventId,
+            userId: userId,
+        };
+
+        const res = await fetch('/api/requests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (res.status < 300) {
+            res.json().then((joinedEvent) => {
+                setEvent(joinedEvent);
+            });
+            setLoading(false);
+            //TODO show dialog
+        } else {
+            router.push('/404');
+        }
+    }
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
