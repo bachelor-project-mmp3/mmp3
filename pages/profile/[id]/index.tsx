@@ -250,7 +250,7 @@ const StyledImage = styled(Image)`
 `;
 
 const StyledLocation = styled(Location)`
-    height: 25px;
+    height: 22px;
     width: 25px;
 `;
 
