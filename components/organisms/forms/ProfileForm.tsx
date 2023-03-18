@@ -95,6 +95,8 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     if (!profile) return <p>No profile</p>;
 
     const onSubmit = async () => {
+        setLoading(true);
+
         try {
             let imageUrl;
 
