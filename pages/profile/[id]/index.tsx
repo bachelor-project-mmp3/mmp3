@@ -88,12 +88,14 @@ const Profile = () => {
                 <WrapperRow>
                     <WrapperColumn>
                         {profile.image && (
-                            <StyledImage
-                                src={profile.image}
-                                alt="Image"
-                                width="300"
-                                height="300"
-                            />
+                            <ProfileImage>
+                                <StyledImage
+                                    src={profile.image}
+                                    alt="Image"
+                                    width="300"
+                                    height="300"
+                                />
+                            </ProfileImage>
                         )}
                         <WrapperName>
                             {profile.instagram && (
@@ -213,6 +215,7 @@ const WrapperColumn = styled.div`
 `;
 
 const WrapperRow = styled.div`
+    margin-top: 50px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -240,7 +243,6 @@ const DormitoryAndStudyRow = styled.div`
 `;
 
 const StyledImage = styled(Image)`
-    margin-top: 50px;
     border-radius: 100%;
     height: 200;
     widht: 300;
@@ -372,4 +374,12 @@ const FakeBlur = styled.div`
 
 const ButtonWrapper = styled.div`
     margin-top: 30px;
+`;
+
+const ProfileImage = styled.div`
+    position: relative;
+    border-radius: 50%;
+    width: 300px;
+    height: 300px;
+    background: white;
 `;
