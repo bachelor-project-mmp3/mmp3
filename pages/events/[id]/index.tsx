@@ -165,159 +165,168 @@ const EventDetail = () => {
                 </InfoPopUp>
             )}
             <Layout>
-                <Header backButton>{event.title}</Header>
-                <StyledInfoEventDetails>
-                    <StyledInfoEventDetailsBoxes>
-                        <TimeLimitAndSeatsWrapper bold>
-                            <TimeLimitAndSeatsRow>
-                                <StyledClock />
-                                <div>{timeLimit}</div>
-                            </TimeLimitAndSeatsRow>
-                            <TimeLimitAndSeatsRow>
-                                <StyledSeat />
-                                <div>
-                                    {event.currentParticipants}/{event.capacity}{' '}
-                                    seats taken
-                                </div>
-                            </TimeLimitAndSeatsRow>
-                        </TimeLimitAndSeatsWrapper>
-                        <div>{date}</div>
-                        <div>{time}</div>
-                        <div>{event.host?.dormitory}</div>
-                        <div>Room No. {event.host?.roomNumber}</div>
-                        <div>Costs: {event.costs} &#8364; per person</div>
-                    </StyledInfoEventDetailsBoxes>
-                    <StyledInfoEventDetailsBoxes textAlign="right">
-                        {event.host.image && (
-                            <ChefAndImage
-                                onClick={() =>
-                                    router.push(`/profile/${event.host.id}`)
-                                }
-                                userIsHost={userIsHost}
-                                source={event.host.image}
-                                hostName={hostName}></ChefAndImage>
-                        )}
-
-                        {event.requests.filter(
-                            (request) =>
-                                request.status == RequestStatus.ACCEPTED &&
-                                request.userId == session?.user?.userId
-                        ).length > 0 && (
-                            <div>
-                                <StyledPhoneIcon />
-                                <Link href={`mailto:${event.host.email}`}>
-                                    <StyledEmailIcon />
-                                </Link>
-                            </div>
-                        )}
-                    </StyledInfoEventDetailsBoxes>
-                </StyledInfoEventDetails>
-                {event.menu.length > 0 && (
-                    <Card variant={'center'}>
-                        <StyledHeadings>Menu</StyledHeadings>
-                        {event.menu.map((dish, index) => (
-                            <MenuItem
-                                key={index}
-                                dishTitle={dish.title}
-                                dishLink={dish.link}
-                                dishDescription={dish.description}
-                            />
-                        ))}
-                    </Card>
-                )}
-
-                {event.info && (
-                    <Card variant={'description'}>
-                        <StyledHeadings style={{ marginTop: 0 }}>
-                            About the event
-                        </StyledHeadings>
-                        {event.info}
-                    </Card>
-                )}
-
-                {event.requests.filter(
-                    (request) => request.status == RequestStatus.ACCEPTED
-                ).length > 0 && (
-                    <Card variant={'description'}>
-                        <StyledHeadings style={{ marginTop: 0 }}>
-                            Guestlist
-                        </StyledHeadings>
-                        {event.requests
-                            .filter(
-                                (request) =>
-                                    request.status == RequestStatus.ACCEPTED
-                            )
-                            .map((request, index) => (
-                                <GuestListItem
-                                    key={index}
-                                    guest={request.User}
+                <StyledDetailsWrapper>
+                    <Header backButton>{event.title}</Header>
+                    <StyledInfoEventDetails>
+                        <StyledInfoEventDetailsBoxes>
+                            <TimeLimitAndSeatsWrapper bold>
+                                <TimeLimitAndSeatsRow>
+                                    <StyledClock />
+                                    <div>{timeLimit}</div>
+                                </TimeLimitAndSeatsRow>
+                                <TimeLimitAndSeatsRow>
+                                    <StyledSeat />
+                                    <div>
+                                        {event.currentParticipants}/
+                                        {event.capacity} seats taken
+                                    </div>
+                                </TimeLimitAndSeatsRow>
+                            </TimeLimitAndSeatsWrapper>
+                            <div>{date}</div>
+                            <div>{time}</div>
+                            <div>{event.host?.dormitory}</div>
+                            <div>Room No. {event.host?.roomNumber}</div>
+                            <div>Costs: {event.costs} &#8364; per person</div>
+                        </StyledInfoEventDetailsBoxes>
+                        <StyledInfoEventDetailsBoxes textAlign="right">
+                            {event.host.image && (
+                                <ChefAndImage
+                                    onClick={() =>
+                                        router.push(`/profile/${event.host.id}`)
+                                    }
                                     userIsHost={userIsHost}
+                                    source={event.host.image}
+                                    hostName={hostName}></ChefAndImage>
+                            )}
+
+                            {event.requests.filter(
+                                (request) =>
+                                    request.status == RequestStatus.ACCEPTED &&
+                                    request.userId == session?.user?.userId
+                            ).length > 0 && (
+                                <div>
+                                    <StyledPhoneIcon />
+                                    <Link href={`mailto:${event.host.email}`}>
+                                        <StyledEmailIcon />
+                                    </Link>
+                                </div>
+                            )}
+                        </StyledInfoEventDetailsBoxes>
+                    </StyledInfoEventDetails>
+                    {event.menu.length > 0 && (
+                        <Card variant={'center'}>
+                            <StyledHeadings>Menu</StyledHeadings>
+                            {event.menu.map((dish, index) => (
+                                <MenuItem
+                                    key={index}
+                                    dishTitle={dish.title}
+                                    dishLink={dish.link}
+                                    dishDescription={dish.description}
                                 />
                             ))}
-                    </Card>
-                )}
-                {userIsHost ? (
-                    <StyledButtons userIsHost={userIsHost}>
-                        <Button
-                            variant={'red'}
-                            // onClick={() => deleteEvent(event.id)}
-                            width={45}
-                            disabled>
-                            Cancel Event
-                        </Button>
-                        <Button
-                            variant={'primary'}
-                            // onClick={() => router.push(`/events/${event.id}/edit`)}
-                            width={45}
-                            disabled>
-                            Edit event
-                        </Button>
-                    </StyledButtons>
-                ) : (
-                    <StyledButtons>
-                        {hasUserSendRequest ? (
-                            <>
-                                {isRequestAccepted ? (
-                                    <Button
-                                        variant="primary"
-                                        disabled
-                                        onClick={() => alert('todo')}>
-                                        Leave Event
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant="primary"
-                                        disabled
-                                        onClick={() => alert('todo')}>
-                                        Pending
-                                    </Button>
-                                )}
-                            </>
-                        ) : (
-                            <>
-                                {event.currentParticipants < event.capacity && (
-                                    <Button
-                                        variant="primary"
-                                        width={45}
-                                        onClick={() =>
-                                            joinEvent(
-                                                event.id,
-                                                session?.user?.userId
-                                            )
-                                        }>
-                                        Ask to join
-                                    </Button>
-                                )}
-                            </>
-                        )}
-                    </StyledButtons>
-                )}
+                        </Card>
+                    )}
+
+                    {event.info && (
+                        <Card variant={'description'}>
+                            <StyledHeadings style={{ marginTop: 0 }}>
+                                About the event
+                            </StyledHeadings>
+                            {event.info}
+                        </Card>
+                    )}
+
+                    {event.requests.filter(
+                        (request) => request.status == RequestStatus.ACCEPTED
+                    ).length > 0 && (
+                        <Card variant={'description'}>
+                            <StyledHeadings style={{ marginTop: 0 }}>
+                                Guestlist
+                            </StyledHeadings>
+                            {event.requests
+                                .filter(
+                                    (request) =>
+                                        request.status == RequestStatus.ACCEPTED
+                                )
+                                .map((request, index) => (
+                                    <GuestListItem
+                                        key={index}
+                                        guest={request.User}
+                                        userIsHost={userIsHost}
+                                    />
+                                ))}
+                        </Card>
+                    )}
+                    {userIsHost ? (
+                        <StyledButtons userIsHost={userIsHost}>
+                            <Button
+                                variant={'red'}
+                                // onClick={() => deleteEvent(event.id)}
+                                width={45}
+                                disabled>
+                                Cancel Event
+                            </Button>
+                            <Button
+                                variant={'primary'}
+                                // onClick={() => router.push(`/events/${event.id}/edit`)}
+                                width={45}
+                                disabled>
+                                Edit event
+                            </Button>
+                        </StyledButtons>
+                    ) : (
+                        <StyledButtons>
+                            {hasUserSendRequest ? (
+                                <>
+                                    {isRequestAccepted ? (
+                                        <Button
+                                            variant="primary"
+                                            disabled
+                                            onClick={() => alert('todo')}>
+                                            Leave Event
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="primary"
+                                            disabled
+                                            onClick={() => alert('todo')}>
+                                            Pending
+                                        </Button>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    {event.currentParticipants <
+                                        event.capacity && (
+                                        <Button
+                                            variant="primary"
+                                            width={45}
+                                            onClick={() =>
+                                                joinEvent(
+                                                    event.id,
+                                                    session?.user?.userId
+                                                )
+                                            }>
+                                            Ask to join
+                                        </Button>
+                                    )}
+                                </>
+                            )}
+                        </StyledButtons>
+                    )}
+                </StyledDetailsWrapper>
             </Layout>
         </>
     );
 };
 
 export default EventDetail;
+
+const StyledDetailsWrapper = styled.div`
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        padding: 0 10%;
+    }
+`;
 
 const StyledInfoEventDetails = styled.div`
     position: relative;

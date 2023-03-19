@@ -55,6 +55,7 @@ export interface InputStyleProps {
     isInvalid: boolean;
     variant: 'center' | 'right';
     padding: 'left' | 'right';
+    disabled: boolean;
 }
 
 export const StyledInput = styled.input<InputStyleProps>`
@@ -71,6 +72,8 @@ export const StyledInput = styled.input<InputStyleProps>`
     padding-bottom: 13px;
     padding-left: ${(props) => (props.padding === 'left' ? '45px' : '20px')};
     padding-right: ${(props) => (props.padding === 'right' ? '45px' : '20px')};
+    background-color: ${(props) =>
+        props.disabled ? theme.lightGrey : theme.body};
 
     border-radius: 40px;
     border: none;

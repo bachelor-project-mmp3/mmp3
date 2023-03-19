@@ -16,6 +16,7 @@ import { EventForm } from '../../components/organisms/forms/EventForm';
 import { Button } from '../../components/atoms/Button';
 import AddDishIcon from '../../public/icons/addDish.svg';
 import DiscardIcon from '../../public/icons/discard.svg';
+import MoneyIcon from '../../public/icons/chefmuetze.svg';
 import LinkIcon from '../../public/icons/link.svg';
 import { formatDateForDateInput } from '../../helper/helperFunctions';
 import { Header } from '../../components/organisms/Header';
@@ -215,24 +216,27 @@ const CreateEvent = () => {
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
-                <StyledDiv>
-                    <InputText
-                        id=""
-                        placeholder="000"
-                        value={dormitory}
-                        disabled={true}>
-                        Dormitory
-                    </InputText>
-                </StyledDiv>
-                <StyledDiv>
-                    <InputText
-                        id=""
-                        placeholder="000"
-                        value={roomnumber}
-                        disabled={true}>
-                        Roomnumber
-                    </InputText>
-                </StyledDiv>
+                <StyledFormComponentsInRow>
+                    <StyledInputWithError className="small">
+                        <InputText
+                            id=""
+                            placeholder="000"
+                            value={dormitory}
+                            disabled={true}>
+                            Dormitory
+                        </InputText>
+                    </StyledInputWithError>
+                    <StyledInputWithError className="small">
+                        <InputText
+                            id=""
+                            placeholder="000"
+                            value={roomnumber}
+                            disabled={true}>
+                            Roomnumber
+                        </InputText>
+                    </StyledInputWithError>
+                </StyledFormComponentsInRow>
+
                 <StyledInfo>
                     <StyledInfo>
                         <Info>
@@ -252,13 +256,15 @@ const CreateEvent = () => {
                                 setValue('costs', e.target.value);
                                 setCosts(e.target.value);
                             }}
-                            isInvalid={errors.title ? 'true' : 'false'}>
+                            isInvalid={errors.title ? 'true' : 'false'}
+                            padding="left">
                             Costs per person
                         </InputNumber>
                         {errors.costs && errors.costs.type === 'max' && (
                             <ErrorMessage>Must be maximum 99</ErrorMessage>
                         )}
                     </StyledInputWithError>
+                    <StyledMoneyIcon />
                     <StyledInputWithError className="small">
                         <InputNumber
                             id="guests"
@@ -382,25 +388,10 @@ const StyledInputWithError = styled.div.attrs((/* props */) => ({
     }
 `;
 
-const StyledInformation = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin: 0 0 27px 32px;
-`;
-
-const StyledInformationRight = styled.div`
-    text-align: right;
-    color: ${({ theme }) => theme.darkGrey};
-    padding-bottom: 10px;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        font-size: ${({ theme }) => theme.fonts.normal.info};
-    }
-    font-size: ${({ theme }) => theme.fonts.mobile.info};
-`;
-
 const StyledFormComponentsInRow = styled.div`
     display: flex;
     flex-direction: row;
+    position: relative;
     justify-content: space-between;
 `;
 
@@ -466,23 +457,18 @@ const StyledH1 = styled.h1`
     }
 `;
 
-const StyledDiv = styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-bottom: 1.5em;
-    &.center {
-        align-items: center;
-    }
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        &.small {
-            width: 45%;
-        }
-    }
-`;
-
 const StyledInfo = styled.div`
     padding-left: 18px;
-    margin-top: 10px;
+    margin: -10px 0 15px 0;
+`;
+
+const StyledMoneyIcon = styled(MoneyIcon)`
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 20px;
+    top: 42px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        top: 47px;
+    }
 `;
