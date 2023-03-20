@@ -20,10 +20,26 @@ import Instagram from '../../../public/icons/insta.svg';
 import Phone from '../../../public/icons/phone.svg';
 import Image from 'next/image';
 import { Loading } from '../Loading';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 interface ProfileFormProps {
     cancelButton?: boolean;
 }
+
+const schema = yup.object({
+    image: yup.string().notRequired(),
+    firstName: yup.string().min(2).required(),
+    lastName: yup.string().min(2).required(),
+    roomNumber: yup.string().required(),
+    aboutYou: yup.string().notRequired(),
+    instagram: yup.string().notRequired(),
+    phone: yup.string().notRequired(),
+    dormitory: yup.string().notRequired(),
+    privacy: yup.string().oneOf(['on']),
+});
+
+type FormData = yup.InferType<typeof schema>;
 
 export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     const { data: session } = useSession();
@@ -40,14 +56,18 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     const [instagram, setInstagram] = useState('');
     const [phone, setPhone] = useState('');
     const [dormitory, setDormitory] = useState('');
+    const [privacy, setPrivacy] = useState('');
 
     const dormitories = ['Campus Urstein', 'Campus Kuchl', 'Campus Schwarzach'];
     const {
         register,
         handleSubmit,
         setValue,
+        setError,
+        clearErrors,
         formState: { errors },
-    } = useForm({
+    } = useForm<FormData>({
+        resolver: yupResolver(schema),
         defaultValues: {
             image: image,
             firstName: firstName,
@@ -57,7 +77,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
             dormitory: dormitory,
             instagram: instagram,
             phone: phone,
-            privacy: false,
+            privacy: privacy,
         },
     });
 
@@ -85,16 +105,16 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 });
         }
 
-        register('firstName', { required: true, minLength: 3 });
-        register('lastName', { required: true, minLength: 3 });
-        register('roomNumber', { required: true });
-        register('privacy', { required: true });
+        register('firstName');
+        register('lastName');
+        register('roomNumber');
+        register('privacy');
     }, [register, session, setValue]);
 
     if (isLoading) return <Loading withoutLayout />;
     if (!profile) return <p>No profile</p>;
 
-    const onSubmit = async () => {
+    const onSubmit = async (data: FormData) => {
         setLoading(true);
 
         try {
@@ -148,16 +168,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                             }}></InputFile>
                     </ProfileImage>
                 )}
-
-                {/*errors will return when field validation fails  */}
-                {errors.image && errors.image.type === 'required' && (
-                    <ErrorMessage>Please upload a photo</ErrorMessage>
-                )}
-                {errors.image && errors.image.type === 'fileSize' && (
-                    <ErrorMessage>
-                        Please upload a photo with max. 2MB
-                    </ErrorMessage>
-                )}
             </StyledDiv>
 
             <TextRequired>* Required</TextRequired>
@@ -167,10 +177,18 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     onChange={(e) => {
                         setValue('firstName', e.target.value);
                         setFirstName(e.target.value);
+                        if (e.target.value.length === 0) {
+                            setError('firstName', { type: 'required' });
+                        } else if (e.target.value.length < 2) {
+                            setError('firstName', { type: 'min' });
+                        } else {
+                            clearErrors('firstName');
+                        }
                     }}
                     id="firstName"
                     placeholder="firstName"
                     value={firstName}
+                    required={true}
                     isInvalid={errors.firstName ? 'true' : 'false'}>
                     Firstname*
                 </InputText>
@@ -179,9 +197,9 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 {errors.firstName && errors.firstName.type === 'required' && (
                     <ErrorMessage>Please enter a firstname</ErrorMessage>
                 )}
-                {errors.firstName && errors.firstName.type === 'minLength' && (
+                {errors.firstName && errors.firstName.type === 'min' && (
                     <ErrorMessage>
-                        Please enter a firstname of at least 3 characters
+                        Please enter a firstname of at least 2 characters
                     </ErrorMessage>
                 )}
             </StyledDiv>
@@ -191,10 +209,18 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     onChange={(e) => {
                         setValue('lastName', e.target.value);
                         setLastName(e.target.value);
+                        if (e.target.value.length === 0) {
+                            setError('lastName', { type: 'required' });
+                        } else if (e.target.value.length < 2) {
+                            setError('lastName', { type: 'min' });
+                        } else {
+                            clearErrors('lastName');
+                        }
                     }}
                     id="lastName"
                     placeholder="lastName"
                     value={lastName}
+                    required={true}
                     isInvalid={errors.lastName ? 'true' : 'false'}>
                     Lastname*
                 </InputText>
@@ -202,9 +228,9 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 {errors.lastName && errors.lastName.type === 'required' && (
                     <ErrorMessage>Please enter a lastname</ErrorMessage>
                 )}
-                {errors.lastName && errors.lastName.type === 'minLength' && (
+                {errors.lastName && errors.lastName.type === 'min' && (
                     <ErrorMessage>
-                        Please enter a lastname of at least 3 characters
+                        Please enter a lastname of at least 2 characters
                     </ErrorMessage>
                 )}
             </StyledDiv>
@@ -249,10 +275,16 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                         onChange={(e) => {
                             setValue('roomNumber', e.target.value);
                             setRoomNumber(e.target.value);
+                            if (e.target.value.length === 0) {
+                                setError('roomNumber', { type: 'required' });
+                            } else {
+                                clearErrors('roomNumber');
+                            }
                         }}
                         id="roomNumber"
                         placeholder="000"
                         value={roomNumber}
+                        required={true}
                         isInvalid={errors.roomNumber ? 'true' : 'false'}>
                         Room number*
                     </InputText>
@@ -318,15 +350,23 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 <StyledWrapper>
                     <Checkbox
                         id="privacy"
+                        required={true}
                         onChange={(e) => {
                             setValue('privacy', e.target.value);
+                            setPrivacy(e.target.value);
+                            console.log(e.target.value);
+                            if (e.target.value === false) {
+                                setError('privacy', { type: 'oneOf' });
+                            } else {
+                                clearErrors('privacy');
+                            }
                         }}>
                         I have read and agree to the{' '}
                         <Link href="/privacy">privacy policy</Link>
                     </Checkbox>
                 </StyledWrapper>
                 {/*errors will return when field validation fails */}
-                {errors.privacy && errors.privacy.type === 'required' && (
+                {errors.privacy && errors.privacy.type === 'oneOf' && (
                     <ErrorMessage>Please accept privacy</ErrorMessage>
                 )}
             </StyledDiv>
