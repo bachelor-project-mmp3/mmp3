@@ -11,6 +11,7 @@ interface InputNumberProps {
     children: ReactNode;
     isInvalid?: string;
     padding?: 'left' | 'right';
+    required?: boolean;
 }
 
 export const InputNumber = ({
@@ -23,6 +24,7 @@ export const InputNumber = ({
     children,
     isInvalid,
     padding,
+    required,
 }: InputNumberProps) => {
     return (
         <>
@@ -38,6 +40,7 @@ export const InputNumber = ({
                 padding={padding}
                 isInvalid={isInvalid}
                 onChange={onChange}
+                required={required}
             />
         </>
     );

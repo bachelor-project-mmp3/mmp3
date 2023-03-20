@@ -7,7 +7,7 @@ import { InputNumber } from '../../components/atoms/form/InputNumber';
 import { InputTextarea } from '../../components/atoms/form/InputTextarea';
 import { SubmitButton } from '../../components/atoms/form/SubmitButton';
 import { InputUrl } from '../../components/atoms/form/InputUrl';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { ErrorMessage } from '../../components/atoms/form/ErrorMessage';
 import { useSession } from 'next-auth/react';
@@ -22,6 +22,27 @@ import { formatDateForDateInput } from '../../helper/helperFunctions';
 import { Header } from '../../components/organisms/Header';
 import { Loading } from '../../components/organisms/Loading';
 import { Info } from '../../components/atoms/Info';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+const schema = yup
+    .object({
+        title: yup.string().min(3).required(),
+        date: yup.string().required(),
+        timelimit: yup.string().required(),
+        costs: yup.number().positive().max(99).required(),
+        guests: yup.number().positive().integer().min(1).max(99).required(),
+    })
+    .required();
+type FormData = yup.InferType<typeof schema>;
+
+// interface IFormInput {
+//     title: string;
+//     date: string;
+//     timelimit: string;
+//     costs: number;
+//     guests: number;
+// }
 
 const CreateEvent = () => {
     const { data: session } = useSession();
@@ -61,30 +82,17 @@ const CreateEvent = () => {
         handleSubmit,
         setValue,
         formState: { errors },
-    } = useForm();
+    } = useForm<FormData>({
+        mode: 'all',
+        resolver: yupResolver(schema),
+    });
 
     React.useEffect(() => {
-        register('title', {
-            onChange: (e) => {},
-            required: true,
-            minLength: 3,
-            pattern: /[A-Za-z]{3}/,
-        });
-        register('date', {
-            required: true,
-            onChange: (e) => {},
-        });
-        register('timelimit', { required: true });
-        register('costs', {
-            valueAsNumber: true,
-            max: 99,
-        });
-        register('guests', {
-            required: true,
-            valueAsNumber: true,
-            min: 1,
-            max: 99,
-        });
+        register('title');
+        register('date');
+        register('timelimit');
+        register('costs');
+        register('guests');
         //TODO: check for correct validation
 
         if (session) {
@@ -127,7 +135,7 @@ const CreateEvent = () => {
             },
         ]);
     };
-    const onSubmit = async () => {
+    const onSubmit = async (data: FormData) => {
         try {
             const body = {
                 title,
@@ -162,11 +170,19 @@ const CreateEvent = () => {
                         onChange={(e) => {
                             setValue('title', e.target.value);
                             setTitle(e.target.value);
+                            console.log(e.target.value);
+                            if (
+                                e.target.value.length > 0 &&
+                                e.target.value.length < 4
+                            ) {
+                                errors.title.type = 'min';
+                            }
                         }}
                         id="title"
                         placeholder="Title"
                         value={title}
-                        isInvalid={errors.title ? 'true' : 'false'}>
+                        isInvalid={errors.title ? 'true' : 'false'}
+                        required>
                         Title*
                     </InputText>
                     {/*errors will return when field validation fails  */}
@@ -175,7 +191,7 @@ const CreateEvent = () => {
                             Please enter a title of the event
                         </ErrorMessage>
                     )}
-                    {errors.title && errors.title.type === 'minLength' && (
+                    {errors.title && errors.title.type === 'min' && (
                         <ErrorMessage>
                             Please enter a title of at least 3 characters
                         </ErrorMessage>
@@ -183,14 +199,15 @@ const CreateEvent = () => {
                 </StyledInputWithError>
                 <StyledInputWithError>
                     <InputDateTime
-                        id="date*"
+                        id="date"
                         value={date}
-                        min={date}
+                        min={dateTimeNow}
                         onChange={(e) => {
                             setValue('date', e.target.value);
                             setDate(e.target.value);
                         }}
-                        isInvalid={errors.title ? 'true' : 'false'}>
+                        isInvalid={errors.title ? 'true' : 'false'}
+                        required>
                         Date and time*
                     </InputDateTime>
                     {errors.date && (
@@ -201,13 +218,14 @@ const CreateEvent = () => {
                     <InputDateTime
                         id="timelimit"
                         value={timeLimit}
-                        min={timeLimit}
+                        min={dateTimePlusOneHour}
                         max={date}
                         onChange={(e) => {
                             setValue('timelimit', e.target.value);
                             setTimeLimit(e.target.value);
                         }}
-                        isInvalid={errors.title ? 'true' : 'false'}>
+                        isInvalid={errors.title ? 'true' : 'false'}
+                        required>
                         Time limit to receive join requests until*
                     </InputDateTime>
                     {errors.date && (
@@ -275,7 +293,8 @@ const CreateEvent = () => {
                                 setValue('guests', e.target.value);
                                 setCapacity(e.target.value);
                             }}
-                            isInvalid={errors.title ? 'true' : 'false'}>
+                            isInvalid={errors.title ? 'true' : 'false'}
+                            required>
                             Guests*
                         </InputNumber>
                         {errors.guests && errors.guests.type === 'required' && (
