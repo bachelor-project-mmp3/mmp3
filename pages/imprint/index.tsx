@@ -9,7 +9,8 @@ const Imprint = () => {
             <div className="page">
                 <h1>Imprint</h1>
                 <p>
-                    Studentenfutter is made during our 6th semester at the{' '}
+                    Studentenfutter is created during our bachelors degree
+                    programm (MultiMediaTechnology) at the{' '}
                     <a
                         href="https://www.fh-salzburg.ac.at/"
                         target="_blank"
