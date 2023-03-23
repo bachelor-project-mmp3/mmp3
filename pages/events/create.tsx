@@ -288,7 +288,7 @@ const CreateEvent = () => {
                         )}
                         {errors.costs && errors.costs.type === 'min' && (
                             <ErrorMessage>
-                                Can't be a negative amount
+                                Cannot be a negative amount
                             </ErrorMessage>
                         )}
                     </StyledInputWithError>
