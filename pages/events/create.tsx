@@ -7,11 +7,10 @@ import { InputNumber } from '../../components/atoms/form/InputNumber';
 import { InputTextarea } from '../../components/atoms/form/InputTextarea';
 import { SubmitButton } from '../../components/atoms/form/SubmitButton';
 import { InputUrl } from '../../components/atoms/form/InputUrl';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { ErrorMessage } from '../../components/atoms/form/ErrorMessage';
 import { useSession } from 'next-auth/react';
-import { StyledLabel } from '../../components/atoms/form/InputText';
 import { EventForm } from '../../components/organisms/forms/EventForm';
 import { Button } from '../../components/atoms/Button';
 import AddDishIcon from '../../public/icons/addDish.svg';
@@ -30,19 +29,11 @@ const schema = yup
         title: yup.string().min(3).required(),
         date: yup.string().required(),
         timelimit: yup.string().required(),
-        costs: yup.number().positive().max(99).required(),
+        costs: yup.number().positive().min(0).max(99).required(),
         guests: yup.number().positive().integer().min(1).max(99).required(),
     })
     .required();
 type FormData = yup.InferType<typeof schema>;
-
-// interface IFormInput {
-//     title: string;
-//     date: string;
-//     timelimit: string;
-//     costs: number;
-//     guests: number;
-// }
 
 const CreateEvent = () => {
     const { data: session } = useSession();
@@ -81,9 +72,10 @@ const CreateEvent = () => {
         register,
         handleSubmit,
         setValue,
+        setError,
+        clearErrors,
         formState: { errors },
     } = useForm<FormData>({
-        mode: 'all',
         resolver: yupResolver(schema),
     });
 
@@ -172,10 +164,14 @@ const CreateEvent = () => {
                             setTitle(e.target.value);
                             console.log(e.target.value);
                             if (
-                                e.target.value.length > 0 &&
+                                e.target.value.length >= 0 &&
                                 e.target.value.length < 4
                             ) {
-                                errors.title.type = 'min';
+                                setError('title', { type: 'min' });
+                            } else {
+                                if (errors.title) {
+                                    clearErrors('title');
+                                }
                             }
                         }}
                         id="title"
@@ -193,7 +189,7 @@ const CreateEvent = () => {
                     )}
                     {errors.title && errors.title.type === 'min' && (
                         <ErrorMessage>
-                            Please enter a title of at least 3 characters
+                            Please enter a title of at least 4 characters
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
@@ -203,8 +199,8 @@ const CreateEvent = () => {
                         value={date}
                         min={dateTimeNow}
                         onChange={(e) => {
-                            setValue('date', e.target.value);
-                            setDate(e.target.value);
+                            setValue('date', e?.target?.value);
+                            setDate(e?.target?.value);
                         }}
                         isInvalid={errors.title ? 'true' : 'false'}
                         required>
@@ -273,6 +269,15 @@ const CreateEvent = () => {
                             onChange={(e) => {
                                 setValue('costs', e.target.value);
                                 setCosts(e.target.value);
+                                if (e.target.value < 0) {
+                                    setError('costs', { type: 'min' });
+                                } else if (e.target.value > 99) {
+                                    setError('costs', { type: 'max' });
+                                } else {
+                                    if (errors.costs) {
+                                        clearErrors('costs');
+                                    }
+                                }
                             }}
                             isInvalid={errors.title ? 'true' : 'false'}
                             padding="left">
@@ -280,6 +285,11 @@ const CreateEvent = () => {
                         </InputNumber>
                         {errors.costs && errors.costs.type === 'max' && (
                             <ErrorMessage>Must be maximum 99</ErrorMessage>
+                        )}
+                        {errors.costs && errors.costs.type === 'min' && (
+                            <ErrorMessage>
+                                Can't be a negative amount
+                            </ErrorMessage>
                         )}
                     </StyledInputWithError>
                     <StyledMoneyIcon />
@@ -292,6 +302,15 @@ const CreateEvent = () => {
                             onChange={(e) => {
                                 setValue('guests', e.target.value);
                                 setCapacity(e.target.value);
+                                if (e.target.value < 0) {
+                                    setError('guests', { type: 'min' });
+                                } else if (e.target.value > 99) {
+                                    setError('guests', { type: 'max' });
+                                } else {
+                                    if (errors.guests) {
+                                        clearErrors('guests');
+                                    }
+                                }
                             }}
                             isInvalid={errors.title ? 'true' : 'false'}
                             required>
