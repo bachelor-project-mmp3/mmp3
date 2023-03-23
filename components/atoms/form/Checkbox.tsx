@@ -5,14 +5,21 @@ interface CheckboxProps {
     id: string;
     onChange?: (e: any) => void;
     children: ReactNode;
+    required?: boolean;
 }
 
-export const Checkbox = ({ id, onChange, children }: CheckboxProps) => {
+export const Checkbox = ({
+    id,
+    onChange,
+    required,
+    children,
+}: CheckboxProps) => {
     return (
         <>
             <StyledInput
                 id={id}
                 name={id}
+                required={required}
                 type="checkbox"
                 onChange={onChange}
             />
