@@ -35,6 +35,29 @@ const schema = yup
     .required();
 type FormData = yup.InferType<typeof schema>;
 
+function CheckDate(today, chosenEventDate, chosenTimelimit) {
+    if (
+        Number(today) != null &&
+        Number(chosenEventDate) != null &&
+        Number(today) <= Number(chosenEventDate)
+    ) {
+        if (chosenTimelimit != null) {
+            return Number(chosenTimelimit) <= Number(chosenEventDate);
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function SplitTimeInputString(inputString) {
+    // Error handeling wenn ein feld des datums gelöscht wird
+    const array = inputString.split('T'); //split into date and time
+    const date = array[0].split('-');
+    const time = array[1].split(':');
+
+    return date.concat(time);
+}
 const CreateEvent = () => {
     const { data: session } = useSession();
     const router = useRouter();
@@ -127,6 +150,45 @@ const CreateEvent = () => {
             },
         ]);
     };
+
+    const CheckDateInputTime = (e) => {
+        let isError = false;
+        const dateAndTimeArray = SplitTimeInputString(e);
+        if (!CheckDate(cYear, dateAndTimeArray[0], null)) isError = true;
+        if (!CheckDate(cMonth, dateAndTimeArray[1], null)) isError = true;
+        if (!CheckDate(cDay, dateAndTimeArray[2], null)) isError = true;
+        if (!CheckDate(cHour, dateAndTimeArray[3], null)) isError = true;
+        if (!CheckDate(cMinutes, dateAndTimeArray[4], null)) isError = true;
+
+        if (isError) {
+            setError('date', { type: 'min' });
+        } else {
+            clearErrors('date');
+        }
+    };
+
+    const CheckTimelimitInputTime = (e) => {
+        let isError = false;
+        const dateAndTimeArray = SplitTimeInputString(e);
+        const dateAndTimeEventArray = SplitTimeInputString(date);
+        if (!CheckDate(cYear, dateAndTimeEventArray[0], dateAndTimeArray[0]))
+            isError = true;
+        if (!CheckDate(cMonth, dateAndTimeEventArray[1], dateAndTimeArray[1]))
+            isError = true;
+        if (!CheckDate(cDay, dateAndTimeEventArray[2], dateAndTimeArray[2]))
+            isError = true;
+        if (!CheckDate(cHour, dateAndTimeEventArray[3], dateAndTimeArray[3]))
+            isError = true;
+        if (!CheckDate(cMinutes, dateAndTimeEventArray[4], dateAndTimeArray[4]))
+            isError = true;
+
+        if (isError) {
+            setError('timelimit', { type: 'min' });
+        } else {
+            clearErrors('timelimit');
+        }
+    };
+
     const onSubmit = async (data: FormData) => {
         try {
             const body = {
@@ -162,7 +224,6 @@ const CreateEvent = () => {
                         onChange={(e) => {
                             setValue('title', e.target.value);
                             setTitle(e.target.value);
-                            console.log(e.target.value);
                             if (
                                 e.target.value.length >= 0 &&
                                 e.target.value.length < 4
@@ -201,13 +262,16 @@ const CreateEvent = () => {
                         onChange={(e) => {
                             setValue('date', e?.target?.value);
                             setDate(e?.target?.value);
+                            CheckDateInputTime(e?.target?.value);
                         }}
                         isInvalid={errors.title ? 'true' : 'false'}
                         required>
                         Date and time*
                     </InputDateTime>
-                    {errors.date && (
-                        <ErrorMessage>Please enter a date</ErrorMessage>
+                    {errors.date && errors.date.type === 'min' && (
+                        <ErrorMessage>
+                            Please enter a date in the future
+                        </ErrorMessage>
                     )}
                 </StyledInputWithError>
                 <StyledInputWithError>
@@ -218,15 +282,17 @@ const CreateEvent = () => {
                         max={date}
                         onChange={(e) => {
                             setValue('timelimit', e.target.value);
-                            setTimeLimit(e.target.value);
+                            setTimeLimit(e?.target?.value);
+                            CheckTimelimitInputTime(e?.target?.value);
                         }}
                         isInvalid={errors.title ? 'true' : 'false'}
                         required>
                         Time limit to receive join requests until*
                     </InputDateTime>
-                    {errors.date && (
+                    {errors.timelimit && errors.timelimit.type === 'min' && (
                         <ErrorMessage>
-                            Please enter a date and time when to close to join
+                            Please enter a date and time between today and the
+                            event
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
