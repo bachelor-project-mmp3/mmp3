@@ -34,10 +34,19 @@ export const MenuItem: React.FC<MenuItemProps> = ({
                     </a>
                 )}
                 {dishDescription && (
-                    <StyledToolTip onClick={toggleTipTool}>
-                        <StyledInfoIcon />
-                        <ToolTip open={toolTipState}>{dishDescription}</ToolTip>
-                    </StyledToolTip>
+                    <>
+                        {toolTipState && (
+                            <ToolTipBox
+                                onClick={() => setToolTipState(false)}
+                            />
+                        )}
+                        <StyledToolTip onClick={toggleTipTool}>
+                            <StyledInfoIcon />
+                            <ToolTip open={toolTipState}>
+                                {dishDescription}
+                            </ToolTip>
+                        </StyledToolTip>
+                    </>
                 )}
             </div>
         </StyledMenuItem>
@@ -72,4 +81,13 @@ const StyledLinkIcon = styled(LinkIcon)`
     @media ${(props) => props.theme.breakpoint.tablet} {
         top: 154px;
     }
+`;
+
+const ToolTipBox = styled.div`
+    z-index: 100;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
 `;

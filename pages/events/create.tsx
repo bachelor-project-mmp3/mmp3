@@ -11,17 +11,53 @@ import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { ErrorMessage } from '../../components/atoms/form/ErrorMessage';
 import { useSession } from 'next-auth/react';
-import { StyledLabel } from '../../components/atoms/form/InputText';
 import { EventForm } from '../../components/organisms/forms/EventForm';
 import { Button } from '../../components/atoms/Button';
 import AddDishIcon from '../../public/icons/addDish.svg';
 import DiscardIcon from '../../public/icons/discard.svg';
+import MoneyIcon from '../../public/icons/chefmuetze.svg';
 import LinkIcon from '../../public/icons/link.svg';
 import { formatDateForDateInput } from '../../helper/helperFunctions';
 import { Header } from '../../components/organisms/Header';
 import { Loading } from '../../components/organisms/Loading';
 import { Info } from '../../components/atoms/Info';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
+const schema = yup
+    .object({
+        title: yup.string().min(3).required(),
+        date: yup.string().required(),
+        timelimit: yup.string().required(),
+        costs: yup.number().positive().min(0).max(99).required(),
+        guests: yup.number().positive().integer().min(1).max(99).required(),
+    })
+    .required();
+type FormData = yup.InferType<typeof schema>;
+
+function CheckDate(today, chosenEventDate, chosenTimelimit) {
+    if (
+        Number(today) != null &&
+        Number(chosenEventDate) != null &&
+        Number(today) <= Number(chosenEventDate)
+    ) {
+        if (chosenTimelimit != null) {
+            return Number(chosenTimelimit) <= Number(chosenEventDate);
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function SplitTimeInputString(inputString) {
+    // Error handeling wenn ein feld des datums gelöscht wird
+    const array = inputString.split('T'); //split into date and time
+    const date = array[0].split('-');
+    const time = array[1].split(':');
+
+    return date.concat(time);
+}
 const CreateEvent = () => {
     const { data: session } = useSession();
     const router = useRouter();
@@ -59,31 +95,19 @@ const CreateEvent = () => {
         register,
         handleSubmit,
         setValue,
+        setError,
+        clearErrors,
         formState: { errors },
-    } = useForm();
+    } = useForm<FormData>({
+        resolver: yupResolver(schema),
+    });
 
     React.useEffect(() => {
-        register('title', {
-            onChange: (e) => {},
-            required: true,
-            minLength: 3,
-            pattern: /[A-Za-z]{3}/,
-        });
-        register('date', {
-            required: true,
-            onChange: (e) => {},
-        });
-        register('timelimit', { required: true });
-        register('costs', {
-            valueAsNumber: true,
-            max: 99,
-        });
-        register('guests', {
-            required: true,
-            valueAsNumber: true,
-            min: 1,
-            max: 99,
-        });
+        register('title');
+        register('date');
+        register('timelimit');
+        register('costs');
+        register('guests');
         //TODO: check for correct validation
 
         if (session) {
@@ -126,7 +150,46 @@ const CreateEvent = () => {
             },
         ]);
     };
-    const onSubmit = async () => {
+
+    const CheckDateInputTime = (e) => {
+        let isError = false;
+        const dateAndTimeArray = SplitTimeInputString(e);
+        if (!CheckDate(cYear, dateAndTimeArray[0], null)) isError = true;
+        if (!CheckDate(cMonth, dateAndTimeArray[1], null)) isError = true;
+        if (!CheckDate(cDay, dateAndTimeArray[2], null)) isError = true;
+        if (!CheckDate(cHour, dateAndTimeArray[3], null)) isError = true;
+        if (!CheckDate(cMinutes, dateAndTimeArray[4], null)) isError = true;
+
+        if (isError) {
+            setError('date', { type: 'min' });
+        } else {
+            clearErrors('date');
+        }
+    };
+
+    const CheckTimelimitInputTime = (e) => {
+        let isError = false;
+        const dateAndTimeArray = SplitTimeInputString(e);
+        const dateAndTimeEventArray = SplitTimeInputString(date);
+        if (!CheckDate(cYear, dateAndTimeEventArray[0], dateAndTimeArray[0]))
+            isError = true;
+        if (!CheckDate(cMonth, dateAndTimeEventArray[1], dateAndTimeArray[1]))
+            isError = true;
+        if (!CheckDate(cDay, dateAndTimeEventArray[2], dateAndTimeArray[2]))
+            isError = true;
+        if (!CheckDate(cHour, dateAndTimeEventArray[3], dateAndTimeArray[3]))
+            isError = true;
+        if (!CheckDate(cMinutes, dateAndTimeEventArray[4], dateAndTimeArray[4]))
+            isError = true;
+
+        if (isError) {
+            setError('timelimit', { type: 'min' });
+        } else {
+            clearErrors('timelimit');
+        }
+    };
+
+    const onSubmit = async (data: FormData) => {
         try {
             const body = {
                 title,
@@ -161,11 +224,22 @@ const CreateEvent = () => {
                         onChange={(e) => {
                             setValue('title', e.target.value);
                             setTitle(e.target.value);
+                            if (
+                                e.target.value.length >= 0 &&
+                                e.target.value.length < 4
+                            ) {
+                                setError('title', { type: 'min' });
+                            } else {
+                                if (errors.title) {
+                                    clearErrors('title');
+                                }
+                            }
                         }}
                         id="title"
                         placeholder="Title"
                         value={title}
-                        isInvalid={errors.title ? 'true' : 'false'}>
+                        isInvalid={errors.title ? 'true' : 'false'}
+                        required>
                         Title*
                     </InputText>
                     {/*errors will return when field validation fails  */}
@@ -174,65 +248,75 @@ const CreateEvent = () => {
                             Please enter a title of the event
                         </ErrorMessage>
                     )}
-                    {errors.title && errors.title.type === 'minLength' && (
+                    {errors.title && errors.title.type === 'min' && (
                         <ErrorMessage>
-                            Please enter a title of at least 3 characters
+                            Please enter a title of at least 4 characters
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
                 <StyledInputWithError>
                     <InputDateTime
-                        id="date*"
+                        id="date"
                         value={date}
-                        min={date}
+                        min={dateTimeNow}
                         onChange={(e) => {
-                            setValue('date', e.target.value);
-                            setDate(e.target.value);
+                            setValue('date', e?.target?.value);
+                            setDate(e?.target?.value);
+                            CheckDateInputTime(e?.target?.value);
                         }}
-                        isInvalid={errors.title ? 'true' : 'false'}>
+                        isInvalid={errors.title ? 'true' : 'false'}
+                        required>
                         Date and time*
                     </InputDateTime>
-                    {errors.date && (
-                        <ErrorMessage>Please enter a date</ErrorMessage>
+                    {errors.date && errors.date.type === 'min' && (
+                        <ErrorMessage>
+                            Please enter a date in the future
+                        </ErrorMessage>
                     )}
                 </StyledInputWithError>
                 <StyledInputWithError>
                     <InputDateTime
                         id="timelimit"
                         value={timeLimit}
-                        min={timeLimit}
+                        min={dateTimePlusOneHour}
                         max={date}
                         onChange={(e) => {
                             setValue('timelimit', e.target.value);
-                            setTimeLimit(e.target.value);
+                            setTimeLimit(e?.target?.value);
+                            CheckTimelimitInputTime(e?.target?.value);
                         }}
-                        isInvalid={errors.title ? 'true' : 'false'}>
+                        isInvalid={errors.title ? 'true' : 'false'}
+                        required>
                         Time limit to receive join requests until*
                     </InputDateTime>
-                    {errors.date && (
+                    {errors.timelimit && errors.timelimit.type === 'min' && (
                         <ErrorMessage>
-                            Please enter a date and time when to close to join
+                            Please enter a date and time between today and the
+                            event
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
-                <StyledDiv>
-                    <InputText
-                        id=""
-                        placeholder="000"
-                        value={dormitory}
-                        disabled={true}>
-                        Dormitory
-                    </InputText>
-                </StyledDiv>
-                <StyledDiv>
-                    <InputText
-                        id=""
-                        placeholder="000"
-                        value={roomnumber}
-                        disabled={true}>
-                        Roomnumber
-                    </InputText>
-                </StyledDiv>
+                <StyledFormComponentsInRow>
+                    <StyledInputWithError className="small">
+                        <InputText
+                            id=""
+                            placeholder="000"
+                            value={dormitory}
+                            disabled={true}>
+                            Dormitory
+                        </InputText>
+                    </StyledInputWithError>
+                    <StyledInputWithError className="small">
+                        <InputText
+                            id=""
+                            placeholder="000"
+                            value={roomnumber}
+                            disabled={true}>
+                            Roomnumber
+                        </InputText>
+                    </StyledInputWithError>
+                </StyledFormComponentsInRow>
+
                 <StyledInfo>
                     <StyledInfo>
                         <Info>
@@ -251,14 +335,30 @@ const CreateEvent = () => {
                             onChange={(e) => {
                                 setValue('costs', e.target.value);
                                 setCosts(e.target.value);
+                                if (e.target.value < 0) {
+                                    setError('costs', { type: 'min' });
+                                } else if (e.target.value > 99) {
+                                    setError('costs', { type: 'max' });
+                                } else {
+                                    if (errors.costs) {
+                                        clearErrors('costs');
+                                    }
+                                }
                             }}
-                            isInvalid={errors.title ? 'true' : 'false'}>
+                            isInvalid={errors.title ? 'true' : 'false'}
+                            padding="left">
                             Costs per person
                         </InputNumber>
                         {errors.costs && errors.costs.type === 'max' && (
                             <ErrorMessage>Must be maximum 99</ErrorMessage>
                         )}
+                        {errors.costs && errors.costs.type === 'min' && (
+                            <ErrorMessage>
+                                Cannot be a negative amount
+                            </ErrorMessage>
+                        )}
                     </StyledInputWithError>
+                    <StyledMoneyIcon />
                     <StyledInputWithError className="small">
                         <InputNumber
                             id="guests"
@@ -268,8 +368,18 @@ const CreateEvent = () => {
                             onChange={(e) => {
                                 setValue('guests', e.target.value);
                                 setCapacity(e.target.value);
+                                if (e.target.value < 0) {
+                                    setError('guests', { type: 'min' });
+                                } else if (e.target.value > 99) {
+                                    setError('guests', { type: 'max' });
+                                } else {
+                                    if (errors.guests) {
+                                        clearErrors('guests');
+                                    }
+                                }
                             }}
-                            isInvalid={errors.title ? 'true' : 'false'}>
+                            isInvalid={errors.title ? 'true' : 'false'}
+                            required>
                             Guests*
                         </InputNumber>
                         {errors.guests && errors.guests.type === 'required' && (
@@ -382,25 +492,10 @@ const StyledInputWithError = styled.div.attrs((/* props */) => ({
     }
 `;
 
-const StyledInformation = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin: 0 0 27px 32px;
-`;
-
-const StyledInformationRight = styled.div`
-    text-align: right;
-    color: ${({ theme }) => theme.darkGrey};
-    padding-bottom: 10px;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        font-size: ${({ theme }) => theme.fonts.normal.info};
-    }
-    font-size: ${({ theme }) => theme.fonts.mobile.info};
-`;
-
 const StyledFormComponentsInRow = styled.div`
     display: flex;
     flex-direction: row;
+    position: relative;
     justify-content: space-between;
 `;
 
@@ -466,23 +561,18 @@ const StyledH1 = styled.h1`
     }
 `;
 
-const StyledDiv = styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-bottom: 1.5em;
-    &.center {
-        align-items: center;
-    }
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        &.small {
-            width: 45%;
-        }
-    }
-`;
-
 const StyledInfo = styled.div`
     padding-left: 18px;
-    margin-top: 10px;
+    margin: -10px 0 15px 0;
+`;
+
+const StyledMoneyIcon = styled(MoneyIcon)`
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 20px;
+    top: 42px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        top: 47px;
+    }
 `;

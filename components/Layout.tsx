@@ -5,6 +5,7 @@ import Image from 'next/image';
 
 type Props = {
     children: ReactNode;
+    paddingLeftRight?: boolean;
 };
 
 const Layout: React.FC<Props> = (props) => (

@@ -10,7 +10,8 @@ interface InputNumberProps {
     onChange?: (e: any) => void;
     children: ReactNode;
     isInvalid?: string;
-    variant?: 'center' | 'right';
+    padding?: 'left' | 'right';
+    required?: boolean;
 }
 
 export const InputNumber = ({
@@ -22,7 +23,8 @@ export const InputNumber = ({
     onChange,
     children,
     isInvalid,
-    variant,
+    padding,
+    required,
 }: InputNumberProps) => {
     return (
         <>
@@ -35,9 +37,10 @@ export const InputNumber = ({
                 min={min}
                 placeholder={placeholder}
                 value={value}
-                variant={variant}
+                padding={padding}
                 isInvalid={isInvalid}
                 onChange={onChange}
+                required={required}
             />
         </>
     );
