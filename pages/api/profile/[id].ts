@@ -25,7 +25,6 @@ export default async function handler(
                         instagram,
                         phone,
                     } = req.body;
-                    console.log(req.body);
 
                     const session = await getSession({ req });
                     const userId = session?.user?.userId;
