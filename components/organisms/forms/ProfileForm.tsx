@@ -354,7 +354,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                         onChange={(e) => {
                             setValue('privacy', e.target.value);
                             setPrivacy(e.target.value);
-                            console.log(e.target.value);
                             if (e.target.value === false) {
                                 setError('privacy', { type: 'oneOf' });
                             } else {

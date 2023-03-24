@@ -311,6 +311,7 @@ const EventTitle = styled.div`
 const Costs = styled.div`
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     flex-basis: 50px;
+    white-space: nowrap;
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 50%;
         font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
