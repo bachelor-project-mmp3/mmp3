@@ -214,7 +214,7 @@ const EventDetail = () => {
                         </StyledInfoEventDetailsBoxes>
                     </StyledInfoEventDetails>
                     {event.menu.length > 0 && (
-                        <Card variant={'center'}>
+                        <Card variant={'description'}>
                             <StyledHeadings>Menu</StyledHeadings>
                             {event.menu.map((dish, index) => (
                                 <MenuItem
@@ -323,9 +323,7 @@ const EventDetail = () => {
 export default EventDetail;
 
 const StyledDetailsWrapper = styled.div`
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        padding: 0 10%;
-    }
+    max-width: 600px;
 `;
 
 const StyledInfoEventDetails = styled.div`

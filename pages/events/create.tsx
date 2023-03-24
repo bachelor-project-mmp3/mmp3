@@ -35,29 +35,6 @@ const schema = yup
     .required();
 type FormData = yup.InferType<typeof schema>;
 
-function CheckDate(today, chosenEventDate, chosenTimelimit) {
-    if (
-        Number(today) != null &&
-        Number(chosenEventDate) != null &&
-        Number(today) <= Number(chosenEventDate)
-    ) {
-        if (chosenTimelimit != null) {
-            return Number(chosenTimelimit) <= Number(chosenEventDate);
-        }
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function SplitTimeInputString(inputString) {
-    // Error handeling wenn ein feld des datums gelöscht wird
-    const array = inputString.split('T'); //split into date and time
-    const date = array[0].split('-');
-    const time = array[1].split(':');
-
-    return date.concat(time);
-}
 const CreateEvent = () => {
     const { data: session } = useSession();
     const router = useRouter();
@@ -68,11 +45,11 @@ const CreateEvent = () => {
     let cYear = currentDate.getFullYear();
     let cHour = formatDateForDateInput(currentDate.getHours());
     let cMinutes = formatDateForDateInput(currentDate.getMinutes());
-
+    let cHourPlusOne = formatDateForDateInput(currentDate.getHours() + 1);
     let dateTimeNow =
         cYear + '-' + cMonth + '-' + cDay + 'T' + cHour + ':' + cMinutes;
     let dateTimePlusOneHour =
-        cYear + '-' + cMonth + '-' + cDay + 'T' + (cHour + 1) + ':' + cMinutes;
+        cYear + '-' + cMonth + '-' + cDay + 'T' + cHourPlusOne + ':' + cMinutes;
 
     const [isLoading, setLoading] = useState(true);
     const [dormitory, setDormitory] = useState('');
@@ -108,7 +85,6 @@ const CreateEvent = () => {
         register('timelimit');
         register('costs');
         register('guests');
-        //TODO: check for correct validation
 
         if (session) {
             fetch(`/api/profile/${session?.user?.userId}`, {
@@ -123,7 +99,6 @@ const CreateEvent = () => {
         }
     }, [register, session]);
 
-    // handle input change
     const handleChange = (event, index) => {
         const values = [...dishes];
         values[index][event.target.name] = event.target.value;
@@ -152,44 +127,31 @@ const CreateEvent = () => {
     };
 
     const CheckDateInputTime = (e) => {
-        let isError = false;
-        const dateAndTimeArray = SplitTimeInputString(e);
-        if (!CheckDate(cYear, dateAndTimeArray[0], null)) isError = true;
-        if (!CheckDate(cMonth, dateAndTimeArray[1], null)) isError = true;
-        if (!CheckDate(cDay, dateAndTimeArray[2], null)) isError = true;
-        if (!CheckDate(cHour, dateAndTimeArray[3], null)) isError = true;
-        if (!CheckDate(cMinutes, dateAndTimeArray[4], null)) isError = true;
+        const inputDate = new Date(e);
 
-        if (isError) {
+        if (inputDate <= currentDate) {
             setError('date', { type: 'min' });
         } else {
-            clearErrors('date');
+            if (errors.date) {
+                clearErrors('date');
+            }
         }
     };
 
     const CheckTimelimitInputTime = (e) => {
-        let isError = false;
-        const dateAndTimeArray = SplitTimeInputString(e);
-        const dateAndTimeEventArray = SplitTimeInputString(date);
-        if (!CheckDate(cYear, dateAndTimeEventArray[0], dateAndTimeArray[0]))
-            isError = true;
-        if (!CheckDate(cMonth, dateAndTimeEventArray[1], dateAndTimeArray[1]))
-            isError = true;
-        if (!CheckDate(cDay, dateAndTimeEventArray[2], dateAndTimeArray[2]))
-            isError = true;
-        if (!CheckDate(cHour, dateAndTimeEventArray[3], dateAndTimeArray[3]))
-            isError = true;
-        if (!CheckDate(cMinutes, dateAndTimeEventArray[4], dateAndTimeArray[4]))
-            isError = true;
+        const inputTimelimit = new Date(e);
+        const eventDate = new Date(date);
 
-        if (isError) {
+        if (inputTimelimit <= currentDate || inputTimelimit >= eventDate) {
             setError('timelimit', { type: 'min' });
         } else {
-            clearErrors('timelimit');
+            if (errors.timelimit) {
+                clearErrors('timelimit');
+            }
         }
     };
 
-    const onSubmit = async (data: FormData) => {
+    const onSubmit = async () => {
         try {
             const body = {
                 title,
@@ -242,7 +204,6 @@ const CreateEvent = () => {
                         required>
                         Title*
                     </InputText>
-                    {/*errors will return when field validation fails  */}
                     {errors.title && errors.title.type === 'required' && (
                         <ErrorMessage>
                             Please enter a title of the event
@@ -335,7 +296,9 @@ const CreateEvent = () => {
                             onChange={(e) => {
                                 setValue('costs', e.target.value);
                                 setCosts(e.target.value);
-                                if (e.target.value < 0) {
+                                if (isNaN(e.target.value)) {
+                                    setError('costs', { type: 'notnumber' });
+                                } else if (e.target.value < 0) {
                                     setError('costs', { type: 'min' });
                                 } else if (e.target.value > 99) {
                                     setError('costs', { type: 'max' });
@@ -349,6 +312,9 @@ const CreateEvent = () => {
                             padding="left">
                             Costs per person
                         </InputNumber>
+                        {errors.costs && errors.costs.type === 'notnumber' && (
+                            <ErrorMessage>You must enter a number</ErrorMessage>
+                        )}
                         {errors.costs && errors.costs.type === 'max' && (
                             <ErrorMessage>Must be maximum 99</ErrorMessage>
                         )}
@@ -368,7 +334,9 @@ const CreateEvent = () => {
                             onChange={(e) => {
                                 setValue('guests', e.target.value);
                                 setCapacity(e.target.value);
-                                if (e.target.value < 0) {
+                                if (isNaN(e.target.value)) {
+                                    setError('guests', { type: 'notnumber' });
+                                } else if (e.target.value < 0) {
                                     setError('guests', { type: 'min' });
                                 } else if (e.target.value > 99) {
                                     setError('guests', { type: 'max' });
@@ -387,6 +355,12 @@ const CreateEvent = () => {
                                 Please enter the number of guests
                             </ErrorMessage>
                         )}
+                        {errors.guests &&
+                            errors.guests.type === 'notnumber' && (
+                                <ErrorMessage>
+                                    You must enter a number
+                                </ErrorMessage>
+                            )}
                         {errors.guests && errors.guests.type === 'min' && (
                             <ErrorMessage>Must be at least 1</ErrorMessage>
                         )}
@@ -407,7 +381,7 @@ const CreateEvent = () => {
                     </InputTextarea>
                 </StyledInputWithError>
                 <StyledMenuInput>
-                    <StyledH1>Add your menu</StyledH1>
+                    <StyledH2>Add your menu</StyledH2>
                     {dishes.map((currentDish, i) => {
                         return (
                             <StyledMenuInputItem key={i}>
@@ -470,7 +444,13 @@ const CreateEvent = () => {
                             width={45}>
                             Cancel
                         </Button>
-                        <SubmitButton value="Create event"></SubmitButton>
+                        {Object.keys(errors).length !== 0 ? (
+                            <Button variant={'primary'} width={45} disabled>
+                                Create event
+                            </Button>
+                        ) : (
+                            <SubmitButton value="Create event"></SubmitButton>
+                        )}
                     </StyledFormComponentsInRow>
                 </StyledMenuInput>
             </EventForm>
@@ -553,7 +533,7 @@ const StyledHR = styled.hr`
     width: 90%;
     margin-bottom: 20px;
 `;
-const StyledH1 = styled.h1`
+const StyledH2 = styled.h2`
     margin: 25px 20px;
     font-size: ${({ theme }) => theme.fonts.mobile.headline4};
     @media ${(props) => props.theme.breakpoint.tablet} {

@@ -35,6 +35,10 @@ const Imprint = () => {
                     </li>
                     <li>Lisa Rader: lrader.mmt-b2020@fh-salzburg.ac.at</li>
                     <li>Tanja Santner: tsantner.mmt-b2020@fh-salzburg.ac.at</li>
+                    <li>
+                        Alexandra Buchecker:
+                        abuchecker.mma-b2020@fh-salzburg.ac.at
+                    </li>
                 </ul>
             </div>
         </Layout>
