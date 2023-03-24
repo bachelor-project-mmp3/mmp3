@@ -45,19 +45,18 @@ export const StyledGuestListItem = styled.div`
     flex-direction: row;
     align-items: center;
     padding: 15px 0;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        padding: 15px 80px;
-    }
     justify-content: space-between;
 `;
 
 export const StyledImage = styled(Image)`
     border-radius: 50%;
+    flex-shrink: 0;
 `;
 const StyledDeleteButton = styled(DiscardIcon)`
     height: 16px;
     width: 16px;
     cursor: pointer;
+    flex-shrink: 0;
 `;
 
 const StyledImageAndName = styled.div`

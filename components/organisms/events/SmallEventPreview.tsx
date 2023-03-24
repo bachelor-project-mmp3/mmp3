@@ -103,6 +103,7 @@ const StyledImageHost = styled(Image)`
     width: 38px;
     height: 38px;
     object-fit: cover;
+    flex-shrink: 0;
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 52px;
         height: 52px;
