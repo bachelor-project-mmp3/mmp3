@@ -58,9 +58,13 @@ export default MenuItem;
 const StyledMenuItem = styled.div`
     display: flex;
     flex-direction: row;
-    margin: 20px 25%;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        width: 250px;
+    }
+
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
 `;
 
 const StyledToolTip = styled.div`

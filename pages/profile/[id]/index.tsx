@@ -13,6 +13,7 @@ import Instagram from '../../../public/icons/insta.svg';
 import Burger from '../../../public/icons/burger_menu.svg';
 import Link from 'next/link';
 import { Loading } from '../../../components/organisms/Loading';
+import { Header } from '../../../components/organisms/Header';
 
 const Profile = () => {
     const { data: session } = useSession();
@@ -46,6 +47,9 @@ const Profile = () => {
                     <StyledBurger
                         onClick={() => setIsMenuOpen(isMenuOpen ? false : true)}
                     />
+                )}
+                {session?.user.userId !== profile.id && (
+                    <Header backButton>Go back</Header>
                 )}
 
                 {isMenuOpen && (
