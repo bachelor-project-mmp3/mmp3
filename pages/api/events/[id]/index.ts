@@ -73,7 +73,6 @@ export default async function handler(
                 res.status(405).end('Method Not Allowed');
             }
         } catch (err) {
-            console.log('KERSTIN UND Lisa TEST2');
             res.status(500).json({ message: err.message });
         }
     } else {
