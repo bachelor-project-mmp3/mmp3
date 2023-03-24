@@ -11,7 +11,6 @@ import {
     TimeLimitAndSeatsWrapper,
 } from '../../../components/organisms/events/ExtendedEventPreview';
 import styled from 'styled-components';
-import Crown from '../../../public/icons/krone.svg';
 import PhoneIcon from '../../../public/icons/phone.svg';
 import EmailIcon from '../../../public/icons/email.svg';
 import Image from 'next/image';
@@ -29,10 +28,12 @@ import {
     hasUserSendRequestHelper,
     hostNameHelper,
     isRequestAcceptedHelper,
-    userHasJoinedHelper,
     userIsHostHelper,
 } from '../../../helper/EventsAndUserHelper';
 import Link from 'next/link';
+import { ChefAndImage } from '../../../components/organisms/ChefAndImage';
+import { Loading } from '../../../components/organisms/Loading';
+import InfoPopUp from '../../../components/organisms/popups/InfoPopUp';
 
 type EventProps = {
     id: string;
@@ -64,6 +65,7 @@ type EventProps = {
         eventId: string;
         userId: string;
         User: {
+            id: string;
             firstName: string;
             lastName: string;
             image: string;
@@ -73,10 +75,6 @@ type EventProps = {
     }> | null;
 };
 
-interface EventDetailProps {
-    event: EventProps;
-}
-
 async function deleteEvent(id: string): Promise<void> {
     await fetch(`/api/events/${id}`, {
         method: 'DELETE',
@@ -85,37 +83,42 @@ async function deleteEvent(id: string): Promise<void> {
     Router.push('/events');
 }
 
-async function joinEvent(eventId: string, userId: string): Promise<void> {
-    const data = {
-        eventId: eventId,
-        userId: userId,
-    };
-
-    const res = await fetch('/api/requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-    });
-
-    if (res.status < 300) {
-        Router.replace(Router.asPath);
-        Router.reload();
-    } else {
-        Router.push('/events/${event.id}/edit');
-    }
-}
-
-const EventDetail: React.FC<EventDetailProps> = () => {
+const EventDetail = () => {
     const { data: session } = useSession();
     const router = useRouter();
-
+    // TODO add type definition
     const [event, setEvent] = useState(null);
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
+    const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState(false);
+
+    async function joinEvent(eventId: string, userId: string): Promise<void> {
+        setLoading(true);
+
+        const data = {
+            eventId: eventId,
+            userId: userId,
+        };
+
+        const res = await fetch('/api/requests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (res.status < 300) {
+            res.json().then((joinedEvent) => {
+                setEvent(joinedEvent);
+            });
+            setLoading(false);
+            setShowInfoPopOpOnJoin(true);
+        } else {
+            router.push('/404');
+        }
+    }
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
         if (router.isReady) {
-            setLoading(true);
             fetch(`/api/events/${router.query.id}`, {
                 method: 'GET',
             })
@@ -127,7 +130,7 @@ const EventDetail: React.FC<EventDetailProps> = () => {
         }
     }, [router.isReady, router.query.id]);
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <Loading />;
     if (!event) return <div>No event detail </div>;
 
     const timeLimit = getTimeLeftToJoin(event.timeLimit);
@@ -150,142 +153,180 @@ const EventDetail: React.FC<EventDetailProps> = () => {
 
     // @ts-ignore
     return (
-        <Layout>
-            <Header backButton>{event.title}</Header>
-            <StyledInfoEventDetails>
-                <StyledInfoEventDetailsBoxes>
-                    <TimeLimitAndSeatsWrapper>
-                        <TimeLimitAndSeatsRow>
-                            <StyledClock />
-                            <div>{timeLimit}</div>
-                        </TimeLimitAndSeatsRow>
-                        <TimeLimitAndSeatsRow>
-                            <StyledSeat />
-                            <div>
-                                {event.currentParticipants}/{event.capacity}{' '}
-                                seats taken
-                            </div>
-                        </TimeLimitAndSeatsRow>
-                    </TimeLimitAndSeatsWrapper>
-                    <div>{date}</div>
-                    <div>{time}</div>
-                    <div>{event.host?.dormitory}</div>
-                    <div>Room No. {event.host?.roomNumber}</div>
-                    <div>Costs: {event.costs} &#8364;</div>
-                </StyledInfoEventDetailsBoxes>
-                <StyledInfoEventDetailsBoxes textAlign="right">
-                    {event.host.image && (
-                        <StyledCrownAndImage>
-                            <StyledCrown />
-                            <HostImage userIsHost={userIsHost}>
-                                <StyledImage
-                                    src={event.host.image}
-                                    alt="Image"
-                                    layout={'fill'}
-                                    style={{ objectFit: 'cover' }}
-                                />
-                            </HostImage>
-                        </StyledCrownAndImage>
-                    )}
-                    <div>by {hostName}</div>
-                    <div>
-                        {/*<StyledPhoneIcon />*/}
-                        <Link href={`mailto:${event.host.email}`}>
-                            <StyledEmailIcon />
-                        </Link>
-                    </div>
-                </StyledInfoEventDetailsBoxes>
-            </StyledInfoEventDetails>
-            {/*{userIsHost && <div>*/}
-            {/*    <Button variant={'primary'} onClick={() => router.push(`/events/${event.id}/edit`)}>Edit event</Button>*/}
-            {/*</div>}*/}
-            {event.menu.length > 0 && (
-                <Card variant={'center'}>
-                    {event.menu.map((dish, index) => (
-                        <MenuItem
-                            key={index}
-                            dishTitle={dish.title}
-                            dishLink={dish.link}
-                            dishDescription={dish.description}
-                        />
-                    ))}
-                </Card>
+        <>
+            {showInfoPopOpOnJoin && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnJoin(false)}>
+                    Your Request to join <strong>{event.title}</strong> was
+                    successfully sent. Check your{' '}
+                    <strong>
+                        <Link href="/requests">requests</Link>
+                    </strong>{' '}
+                    or FH mails to stay up to date!
+                </InfoPopUp>
             )}
-
-            {event.info && <Card variant={'description'}>{event.info}</Card>}
-
-            {event.requests.filter(
-                (request) => request.status == RequestStatus.ACCEPTED
-            ).length > 0 && (
-                <Card variant={'description'}>
-                    {event.requests
-                        .filter(
-                            (request) =>
-                                request.status == RequestStatus.ACCEPTED
-                        )
-                        .map((request, index) => (
-                            <GuestListItem
-                                key={index}
-                                guest={request.User}
-                                userIsHost={userIsHost}
-                            />
-                        ))}
-                </Card>
-            )}
-            {userIsHost ? (
-                <StyledButtons userIsHost={userIsHost}>
-                    <Button
-                        variant={'red'}
-                        // onClick={() => deleteEvent(event.id)}
-                        form
-                        disabled>
-                        Cancel Event
-                    </Button>
-                    <Button
-                        variant={'primary'}
-                        // onClick={() => router.push(`/events/${event.id}/edit`)}
-                        form
-                        disabled>
-                        Edit event
-                    </Button>
-                </StyledButtons>
-            ) : (
-                <StyledButtons>
-                    {hasUserSendRequest ? (
-                        <>
-                            {isRequestAccepted ? (
-                                <Button
-                                    variant="primary"
-                                    disabled
-                                    onClick={() => alert('todo')}>
-                                    Leave Event
-                                </Button>
-                            ) : (
-                                <Button
-                                    variant="primary"
-                                    disabled
-                                    onClick={() => alert('todo')}>
-                                    Pending
-                                </Button>
+            <Layout>
+                <StyledDetailsWrapper>
+                    <Header backButton>{event.title}</Header>
+                    <StyledInfoEventDetails>
+                        <StyledInfoEventDetailsBoxes>
+                            <TimeLimitAndSeatsWrapper bold>
+                                <TimeLimitAndSeatsRow>
+                                    <StyledClock />
+                                    <div>{timeLimit}</div>
+                                </TimeLimitAndSeatsRow>
+                                <TimeLimitAndSeatsRow>
+                                    <StyledSeat />
+                                    <div>
+                                        {event.currentParticipants}/
+                                        {event.capacity} seats taken
+                                    </div>
+                                </TimeLimitAndSeatsRow>
+                            </TimeLimitAndSeatsWrapper>
+                            <div>{date}</div>
+                            <div>{time}</div>
+                            <div>{event.host?.dormitory}</div>
+                            <div>Room No. {event.host?.roomNumber}</div>
+                            <div>Costs: {event.costs} &#8364; per person</div>
+                        </StyledInfoEventDetailsBoxes>
+                        <StyledInfoEventDetailsBoxes textAlign="right">
+                            {event.host.image && (
+                                <ChefAndImage
+                                    onClick={() =>
+                                        router.push(`/profile/${event.host.id}`)
+                                    }
+                                    userIsHost={userIsHost}
+                                    source={event.host.image}
+                                    hostName={hostName}></ChefAndImage>
                             )}
-                        </>
-                    ) : (
-                        <Button
-                            variant="primary"
-                            form
-                            onClick={() =>
-                                joinEvent(event.id, session?.user?.userId)
-                            }>
-                            Ask to join
-                        </Button>
+
+                            {event.requests.filter(
+                                (request) =>
+                                    request.status == RequestStatus.ACCEPTED &&
+                                    request.userId == session?.user?.userId
+                            ).length > 0 && (
+                                <div>
+                                    <StyledPhoneIcon />
+                                    <Link href={`mailto:${event.host.email}`}>
+                                        <StyledEmailIcon />
+                                    </Link>
+                                </div>
+                            )}
+                        </StyledInfoEventDetailsBoxes>
+                    </StyledInfoEventDetails>
+                    {event.menu.length > 0 && (
+                        <Card variant={'center'}>
+                            <StyledHeadings>Menu</StyledHeadings>
+                            {event.menu.map((dish, index) => (
+                                <MenuItem
+                                    key={index}
+                                    dishTitle={dish.title}
+                                    dishLink={dish.link}
+                                    dishDescription={dish.description}
+                                />
+                            ))}
+                        </Card>
                     )}
-                </StyledButtons>
-            )}
-        </Layout>
+
+                    {event.info && (
+                        <Card variant={'description'}>
+                            <StyledHeadings style={{ marginTop: 0 }}>
+                                About the event
+                            </StyledHeadings>
+                            {event.info}
+                        </Card>
+                    )}
+
+                    {event.requests.filter(
+                        (request) => request.status == RequestStatus.ACCEPTED
+                    ).length > 0 && (
+                        <Card variant={'description'}>
+                            <StyledHeadings style={{ marginTop: 0 }}>
+                                Guestlist
+                            </StyledHeadings>
+                            {event.requests
+                                .filter(
+                                    (request) =>
+                                        request.status == RequestStatus.ACCEPTED
+                                )
+                                .map((request, index) => (
+                                    <GuestListItem
+                                        key={index}
+                                        guest={request.User}
+                                        userIsHost={userIsHost}
+                                    />
+                                ))}
+                        </Card>
+                    )}
+                    {userIsHost ? (
+                        <StyledButtons userIsHost={userIsHost}>
+                            <Button
+                                variant={'red'}
+                                // onClick={() => deleteEvent(event.id)}
+                                width={45}
+                                disabled>
+                                Cancel Event
+                            </Button>
+                            <Button
+                                variant={'primary'}
+                                // onClick={() => router.push(`/events/${event.id}/edit`)}
+                                width={45}
+                                disabled>
+                                Edit event
+                            </Button>
+                        </StyledButtons>
+                    ) : (
+                        <StyledButtons>
+                            {hasUserSendRequest ? (
+                                <>
+                                    {isRequestAccepted ? (
+                                        <Button
+                                            variant="primary"
+                                            disabled
+                                            onClick={() => alert('todo')}>
+                                            Leave Event
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="primary"
+                                            disabled
+                                            onClick={() => alert('todo')}>
+                                            Pending
+                                        </Button>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    {event.currentParticipants <
+                                        event.capacity && (
+                                        <Button
+                                            variant="primary"
+                                            width={45}
+                                            onClick={() =>
+                                                joinEvent(
+                                                    event.id,
+                                                    session?.user?.userId
+                                                )
+                                            }>
+                                            Ask to join
+                                        </Button>
+                                    )}
+                                </>
+                            )}
+                        </StyledButtons>
+                    )}
+                </StyledDetailsWrapper>
+            </Layout>
+        </>
     );
 };
 
 export default EventDetail;
+
+const StyledDetailsWrapper = styled.div`
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        padding: 0 10%;
+    }
+`;
 
 const StyledInfoEventDetails = styled.div`
     position: relative;
@@ -319,27 +360,6 @@ const StyledInfoEventDetailsBoxes = styled.div<StyledInfoEventDetailsBoxesProps>
     align-items: ${(props) => (props.textAlign === 'right' ? 'end' : 'start')};
 `;
 
-const HostImage = styled.div<HostImageProps>`
-    position: relative;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    border: ${(props) =>
-        props.userIsHost ? '7px solid ' + props.theme.green : 'none'};
-`;
-
-const StyledImage = styled(Image)`
-    border-radius: 50%;
-`;
-
-const StyledCrown = styled(Crown)`
-    position: absolute;
-    right: -20px;
-    top: -30px;
-    height: 35px;
-    width: 70px;
-    transform: rotate(30deg);
-`;
 const StyledButtons = styled.div<HostImageProps>`
     display: flex;
     flex-direction: row;
@@ -353,6 +373,11 @@ const StyledButtons = styled.div<HostImageProps>`
     }
 `;
 
-const StyledCrownAndImage = styled.div`
-    position: relative;
+const StyledHeadings = styled.p`
+    font-weight: 600;
+    font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        width: 100%;
+        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
+    }
 `;

@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import styled from 'styled-components';
-import Crown from '../../../public/icons/krone.svg';
+import ChefHood from '../../../public/icons/chefmuetze.svg';
 import Clock from '../../../public/icons/uhr.svg';
 import Seat from '../../../public/icons/sessel.svg';
 import Location from '../../../public/icons/location.svg';
@@ -98,12 +98,12 @@ const ExtendedEventPreview: React.FC<{
                 </Place>
                 <TitleAndCostsWrapper>
                     <EventTitle>{event.title}</EventTitle>
-                    <Costs>{event.costs} &#8364;</Costs>
+                    <Costs>{event.costs} &#8364; p. p.</Costs>
                 </TitleAndCostsWrapper>
 
                 {event?.host?.image && (
                     <>
-                        <StyledCrown />
+                        <StyledChefHood />
                         <HostImage userIsHost={userIsHost}>
                             <StyledImage
                                 src={event.host.image}
@@ -130,30 +130,49 @@ const ExtendedEventPreview: React.FC<{
                                     <Button
                                         variant="primary"
                                         disabled
-                                        onClick={() => alert('todo')}>
+                                        onClick={(e) => {
+                                            alert('todo');
+                                            {
+                                                /* to prevent navigation to eventdetail */
+                                            }
+                                            e.stopPropagation();
+                                        }}>
                                         Leave Event
                                     </Button>
                                 ) : (
                                     <Button
                                         variant="primary"
                                         disabled
-                                        onClick={() => alert('todo')}>
+                                        onClick={(e) => {
+                                            alert('todo');
+                                            {
+                                                /* to prevent navigation to eventdetail */
+                                            }
+                                            e.stopPropagation();
+                                        }}>
                                         Pending
                                     </Button>
                                 )}
                             </>
                         ) : (
-                            <Button
-                                variant="primary"
-                                form
-                                onClick={() =>
-                                    onSubmitJoin(
-                                        event.id,
-                                        session?.user?.userId
-                                    )
-                                }>
-                                Ask to join
-                            </Button>
+                            <>
+                                {event.currentParticipants < event.capacity && (
+                                    <Button
+                                        variant="primary"
+                                        onClick={(e) => {
+                                            onSubmitJoin(
+                                                event.id,
+                                                session?.user?.userId
+                                            );
+                                            {
+                                                /* to prevent navigation to eventdetail */
+                                            }
+                                            e.stopPropagation();
+                                        }}>
+                                        Ask to join
+                                    </Button>
+                                )}
+                            </>
                         )}
                     </ButtonWrapper>
                 )}
@@ -175,7 +194,7 @@ const CardWithDateTime = styled.div`
         flex: 0 0 45%;
         width: 45%;
         max-width: 45%;
-        min-width: 500px;
+        min-width: 400px;
         margin-left: 0;
         margin-right: 0;
     }
@@ -219,14 +238,14 @@ export const HostImage = styled.div<HostImageProps>`
     width: 64px;
     height: 64px;
     border: ${(props) =>
-        props.userIsHost ? '5px solid ' + props.theme.green : 'none'};
+        props.userIsHost ? '5px solid ' + props.theme.secondary : 'none'};
 `;
 
 export const StyledImage = styled(Image)`
     border-radius: 50%;
 `;
 
-export const StyledCrown = styled(Crown)`
+export const StyledChefHood = styled(ChefHood)`
     position: absolute;
     right: 32px;
     top: -35px;
@@ -236,6 +255,7 @@ export const StyledCrown = styled(Crown)`
 `;
 
 export const StyledClock = styled(Clock)`
+    //TODO: sollen die Icons auch fett werden?
     height: 16px;
     width: 16px;
 `;
@@ -261,7 +281,7 @@ const DateAndTime = styled.div`
     justify-content: space-between;
     padding: 8px 16px;
     gap: 24px;
-    background-color: ${({ theme }) => theme.orange};
+    background-color: ${({ theme }) => theme.green};
     border-top-right-radius: 16px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 32px;
@@ -306,8 +326,13 @@ const TitleAndCostsWrapper = styled.div`
     width: 90%;
 `;
 
-export const TimeLimitAndSeatsWrapper = styled.div`
-    color: ${({ theme }) => theme.midGrey};
+export interface TimeLimitAndSeatsWrapperProps {
+    bold: boolean;
+}
+export const TimeLimitAndSeatsWrapper = styled.div<TimeLimitAndSeatsWrapperProps>`
+    color: ${(props) =>
+        props.bold ? ({ theme }) => theme.text : ({ theme }) => theme.midGrey};
+    font-weight: ${(props) => (props.bold ? '600' : '0')};
 `;
 
 export const TimeLimitAndSeatsRow = styled.div`
@@ -336,7 +361,10 @@ const DishEntry = styled.div`
     display: inline-block;
     text-overflow: ellipsis;
     white-space: nowrap;
-    flex-basis: 30%;
+
+    :first-child {
+        flex-shrink: 0;
+    }
 `;
 
 const Dishes = styled.div`

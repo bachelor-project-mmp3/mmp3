@@ -24,8 +24,10 @@ const StyledToolTipText = styled.span<ToolTipStyleProps>`
     text-align: center;
     padding: 5px 0;
     border-radius: 6px;
+    left: -100%;
+    bottom: 30px;
 
     /* Position the tooltip text - see examples below! */
     position: absolute;
-    z-index: 1;
+    z-index: 101;
 `;

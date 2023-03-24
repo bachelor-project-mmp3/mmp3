@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import styled from 'styled-components';
@@ -8,29 +7,17 @@ import { useRouter } from 'next/router';
 import { Header } from '../../components/organisms/Header';
 import { SmallEventPreview } from '../../components/organisms/events/SmallEventPreview';
 import { useSession } from 'next-auth/react';
+import { Loading } from '../../components/organisms/Loading';
 
-const MyEvents: React.FC = () => {
+const MyEvents = () => {
     const [upcomingEvents, setUpcomingEvents] = useState(null);
     const [pastEvents, setPastEvents] = useState(null);
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const { data: session } = useSession();
 
     const router = useRouter();
 
-    if (session) {
-        fetch(`/api/profile/${session.user.userId}`, {
-            method: 'GET',
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (!data.profile.roomNumber) {
-                    router.push(`/profile/${session.user.userId}/edit`);
-                }
-            });
-    }
-
     useEffect(() => {
-        setLoading(true);
         fetch('/api/my-events', {
             method: 'GET',
         })
@@ -42,17 +29,11 @@ const MyEvents: React.FC = () => {
             });
     }, []);
 
-    if (isLoading) return <p>Loading...</p>;
-    console.log(upcomingEvents);
-    console.log(pastEvents);
+    if (isLoading) return <Loading />;
 
     return (
         <Layout>
             <Header>Hello {session?.user?.firstName}! 👋</Header>
-            <InvitationWrapper onClick={() => router.push('/requests')}>
-                <TextInvitation>Go to Invitation Updates</TextInvitation>
-                <StyledIcon />
-            </InvitationWrapper>
 
             <WrapperRow>
                 <WrapperColumn>
@@ -104,25 +85,9 @@ const MyEvents: React.FC = () => {
 
 export default MyEvents;
 
-const InvitationWrapper = styled.div`
-    width: 100%;
-    margin: 20px 0;
-    background: white;
-    box-shadow: 17px 17px 35px -11px #707070;
-    border-radius: 30px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 30px;
-    cursor: pointer;
-    justify-content: space-between;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        width: 500px;
-    }
-`;
-
 const StyledHeadline = styled.p`
     width: 100%;
+    margin-bottom: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.headline5};
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline5};
@@ -152,7 +117,7 @@ const WrapperColumn = styled.div`
     width: 100%;
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 45%;
-        min-width: 500px;
+        min-width: 400px;
     }
     &.top {
         align-self: flex-start;
@@ -162,6 +127,7 @@ const WrapperColumn = styled.div`
 const WrapperRow = styled.div`
     display: flex;
     flex-direction: row;
+    gap: 10px;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;

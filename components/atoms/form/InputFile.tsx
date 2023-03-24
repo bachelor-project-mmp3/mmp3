@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Camera from '../../../public/icons/kamera.svg';
 
 interface InputFileProps {
     id: string;
@@ -8,32 +9,34 @@ interface InputFileProps {
 export const InputFile = ({ id, onChange }: InputFileProps) => {
     return (
         <>
-            <StyledInputFile
-                id={id}
-                name={id}
-                type="file"
-                accept="image/*"
-                onChange={onChange}></StyledInputFile>
+            <StyledUpload>
+                <StyledCamera></StyledCamera>
+                <StyledInputFile
+                    id={id}
+                    name={id}
+                    type="file"
+                    accept="image/*"
+                    onChange={onChange}></StyledInputFile>
+            </StyledUpload>
         </>
     );
 };
 
 export const StyledInputFile = styled.input`
-    padding: 10px;
+    display: none;
 `;
 
-export const StyledImage = styled.input`
+export const StyledUpload = styled.label`
+    display: block;
+    cursor: pointer;
     width: 100%;
-    padding: 0.8em 1em;
-    border-radius: 2.5em;
-    border-style: solid;
-    font-size: ${({ theme }) => theme.fonts.mobile.info};
-    @media ${(props) => props.theme.breakpoint.tablet}} {
-        font-size: ${({ theme }) => theme.fonts.normal.info};
-        width: 50%;
-    }
+    height: 100%;
+    position: relative;
 `;
 
-export const StyledLabel = styled.label`
-    margin: 0 0 0.5em 1em;
+export const StyledCamera = styled(Camera)`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
 `;

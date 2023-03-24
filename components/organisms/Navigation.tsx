@@ -1,12 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
-import EventsIcon from '../../public/icons/menu_events.svg';
+import EventsIcon from '../../public/icons/events_feed.svg';
 import CreateIcon from '../../public/icons/menu_create.svg';
 import ProfileIcon from '../../public/icons/menu_pro.svg';
-import MyEventsIcon from '../../public/icons/fork-knife.svg';
+import MyEventsIcon from '../../public/icons/my_events.svg';
+import RequestsIcon from '../../public/icons/requests.svg';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { Button } from '../atoms/Button';
+
+const hideNavigationOnPaths = [
+    '/profile/[id]/edit',
+    '/profile/create',
+    '/events/[id]/edit',
+    '/events/create',
+];
 
 const Navigation: React.FC = () => {
     const router = useRouter();
@@ -22,18 +31,13 @@ const Navigation: React.FC = () => {
                         <LogoText>
                             <Link href="/">Studentenfutter</Link>
                         </LogoText>
+
                         <DesktopNavigationItems>
                             <DesktopNavigationItem
-                                isActive={
-                                    router?.pathname === '/my-events' ||
-                                    router?.pathname === '/requests'
-                                }
+                                isActive={router?.pathname === '/my-events'}
                                 onClick={() => router.push('/my-events')}>
                                 <StyledMyEventsIcon
-                                    isActive={
-                                        router?.pathname === '/my-events' ||
-                                        router?.pathname === '/requests'
-                                    }
+                                    isActive={router?.pathname === '/my-events'}
                                 />
                                 <NavText>My Events</NavText>
                             </DesktopNavigationItem>
@@ -62,7 +66,18 @@ const Navigation: React.FC = () => {
                                 <NavText>Create Event</NavText>
                             </DesktopNavigationItem>
                             <DesktopNavigationItem
-                                isActive={router?.pathname === '/profile/[id]'}
+                                isActive={router?.pathname === '/requests'}
+                                onClick={() => router.push('/requests')}>
+                                <StyledRequestsIcon
+                                    isActive={router?.pathname === '/requests'}
+                                />
+                                <NavText>Requests</NavText>
+                            </DesktopNavigationItem>
+                            <DesktopNavigationItem
+                                isActive={
+                                    router?.pathname === '/profile/[id]' ||
+                                    router?.pathname === '/profile/[id]/edit'
+                                }
                                 onClick={() =>
                                     router.push(
                                         `/profile/${session?.user.userId}`
@@ -70,47 +85,63 @@ const Navigation: React.FC = () => {
                                 }>
                                 <StyledProfileIcon
                                     isActive={
-                                        router?.pathname === '/profile/[id]'
+                                        router?.pathname === '/profile/[id]' ||
+                                        router?.pathname ===
+                                            '/profile/[id]/edit'
                                     }
                                 />
                                 <NavText>Profile</NavText>
                             </DesktopNavigationItem>
+                            <DesktopSignOutButton>
+                                <Button
+                                    variant="secondary"
+                                    width={100}
+                                    onClick={() =>
+                                        signOut({ callbackUrl: '/' })
+                                    }>
+                                    Logout
+                                </Button>
+                            </DesktopSignOutButton>
                         </DesktopNavigationItems>
                         <DesktopFooter>
                             <Link href="/imprint">Imprint</Link>
                             <Link href="/privacy">Data Privacy</Link>
-                            <DesktopLogout
-                                onClick={() => signOut({ callbackUrl: '/' })}>
-                                Logout
-                            </DesktopLogout>
                         </DesktopFooter>
                     </DesktopNavigation>
-                    <MobileNavigation>
-                        <StyledMyEventsIcon
-                            isActive={
-                                router?.pathname === '/my-events' ||
-                                router?.pathname === '/requests'
-                            }
-                            onClick={() => router.push('/my-events')}
-                        />
-                        <StyledEventIcon
-                            isActive={
-                                router?.pathname === '/events' ||
-                                router?.pathname === '/events/[id]'
-                            }
-                            onClick={() => router.push('/events')}
-                        />
-                        <StyledCreateIcon
-                            isActive={router?.pathname === '/events/create'}
-                            onClick={() => router.push('/events/create')}
-                        />
-                        <StyledProfileIcon
-                            isActive={router?.pathname === '/profile/[id]'}
-                            onClick={() =>
-                                router.push(`/profile/${session?.user.userId}`)
-                            }
-                        />
-                    </MobileNavigation>
+                    {!hideNavigationOnPaths.includes(router?.pathname) && (
+                        <MobileNavigation>
+                            <StyledMyEventsIcon
+                                isActive={router?.pathname === '/my-events'}
+                                onClick={() => router.push('/my-events')}
+                            />
+                            <StyledEventIcon
+                                isActive={
+                                    router?.pathname === '/events' ||
+                                    router?.pathname === '/events/[id]'
+                                }
+                                onClick={() => router.push('/events')}
+                            />
+                            <StyledCreateIcon
+                                isActive={router?.pathname === '/events/create'}
+                                onClick={() => router.push('/events/create')}
+                            />
+                            <StyledRequestsIcon
+                                isActive={router?.pathname === '/requests'}
+                                onClick={() => router.push('/requests')}
+                            />
+                            <StyledProfileIcon
+                                isActive={
+                                    router?.pathname === '/profile/[id]' ||
+                                    router?.pathname === '/profile/[id]/edit'
+                                }
+                                onClick={() =>
+                                    router.push(
+                                        `/profile/${session?.user.userId}`
+                                    )
+                                }
+                            />
+                        </MobileNavigation>
+                    )}
                 </>
             )}
         </>
@@ -184,6 +215,16 @@ const StyledMyEventsIcon = styled(MyEventsIcon)<NavProps>`
     }
 `;
 
+const StyledRequestsIcon = styled(RequestsIcon)<NavProps>`
+    height: 32px;
+    width: 32px;
+    color: ${(props) =>
+        props.isActive ? props.theme.primary : props.theme.text};
+    :hover {
+        color: ${({ theme }) => theme.primary};
+    }
+`;
+
 const DesktopNavigation = styled.div`
     display: none;
 
@@ -206,6 +247,10 @@ const DesktopNavigationItems = styled.div`
     position: absolute;
     width: 100%;
     bottom: 150px;
+`;
+
+const DesktopSignOutButton = styled.div`
+    width: 200px;
 `;
 
 const DesktopNavigationItem = styled.div<NavProps>`
@@ -238,23 +283,14 @@ const NavText = styled.div``;
 const DesktopFooter = styled.div`
     font-size: ${({ theme }) => theme.fonts.normal.info};
     display: flex;
-    gap: 20px;
+    justify-content: space-around;
     padding: 0 20px;
     position: absolute;
     width: 100%;
-    bottom: 30px;
+    bottom: 20px;
 
     * {
         text-decoration: none;
-    }
-`;
-
-const DesktopLogout = styled.div`
-    margin-left: auto;
-    cursor: pointer;
-
-    :hover {
-        color: ${({ theme }) => theme.primary};
     }
 `;
 

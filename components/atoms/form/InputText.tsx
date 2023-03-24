@@ -13,6 +13,7 @@ interface InputTextProps {
     isInvalid?: string;
     variant?: 'center' | 'right';
     padding?: 'left' | 'right';
+    disabled?: boolean;
 }
 
 export const InputText = ({
@@ -26,6 +27,7 @@ export const InputText = ({
     children,
     variant,
     padding,
+    disabled,
 }: InputTextProps) => {
     return (
         <>
@@ -42,6 +44,8 @@ export const InputText = ({
                 isInvalid={isInvalid}
                 required={required}
                 onChange={onChange}
+                disabled={disabled}
+                data-1p-ignore
             />
         </>
     );
@@ -51,6 +55,7 @@ export interface InputStyleProps {
     isInvalid: boolean;
     variant: 'center' | 'right';
     padding: 'left' | 'right';
+    disabled: boolean;
 }
 
 export const StyledInput = styled.input<InputStyleProps>`
@@ -67,6 +72,8 @@ export const StyledInput = styled.input<InputStyleProps>`
     padding-bottom: 13px;
     padding-left: ${(props) => (props.padding === 'left' ? '45px' : '20px')};
     padding-right: ${(props) => (props.padding === 'right' ? '45px' : '20px')};
+    background-color: ${(props) =>
+        props.disabled ? theme.lightGrey : theme.body};
 
     border-radius: 40px;
     border: none;

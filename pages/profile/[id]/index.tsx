@@ -12,26 +12,19 @@ import Study from '../../../public/icons/major.svg';
 import Instagram from '../../../public/icons/insta.svg';
 import Burger from '../../../public/icons/burger_menu.svg';
 import Link from 'next/link';
+import { Loading } from '../../../components/organisms/Loading';
 
-// TODO: maybe load some data before page gets rendered, like session maybe?
-/*export const getServerSideProps: GetServerSideProps = async () => {
-    return {
-        props: { },
-    };
-};*/
-
-const Profile: React.FC = () => {
+const Profile = () => {
     const { data: session } = useSession();
     const router = useRouter();
 
     const [profile, setProfile] = useState(null);
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
         if (router.isReady) {
-            setLoading(true);
             fetch(`/api/profile/${router.query.id}`, {
                 method: 'GET',
             })
@@ -43,9 +36,7 @@ const Profile: React.FC = () => {
         }
     }, [router.isReady, router.query.id]);
 
-    console.log(profile);
-
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Loading />;
     if (!profile) return <p>No profile</p>;
 
     return (
@@ -97,12 +88,14 @@ const Profile: React.FC = () => {
                 <WrapperRow>
                     <WrapperColumn>
                         {profile.image && (
-                            <StyledImage
-                                src={profile.image}
-                                alt="Image"
-                                width="300"
-                                height="300"
-                            />
+                            <ProfileImage>
+                                <StyledImage
+                                    src={profile.image}
+                                    alt="Image"
+                                    width="300"
+                                    height="300"
+                                />
+                            </ProfileImage>
                         )}
                         <WrapperName>
                             {profile.instagram && (
@@ -141,17 +134,23 @@ const Profile: React.FC = () => {
                         )}
 
                         {profile.id === session?.user?.userId && (
-                            <Button
-                                variant="primary"
-                                onClick={() =>
-                                    router.push(`/profile/${profile.id}/edit`)
-                                }>
-                                Edit profile
-                            </Button>
+                            <ButtonWrapper>
+                                <Button
+                                    variant="primary"
+                                    onClick={() =>
+                                        router.push(
+                                            `/profile/${profile.id}/edit`
+                                        )
+                                    }>
+                                    Edit profile
+                                </Button>
+                            </ButtonWrapper>
                         )}
                     </WrapperColumn>
                     <WrapperColumn className="top">
-                        <StyledH2>{profile.firstName}s hosted events</StyledH2>
+                        <StyledH2>
+                            {profile.firstName}&apos;s hosted events
+                        </StyledH2>
                         <EventsWrapper>
                             {profile.events?.length > 0 ? (
                                 profile.events.map((event) => (
@@ -216,6 +215,7 @@ const WrapperColumn = styled.div`
 `;
 
 const WrapperRow = styled.div`
+    margin-top: 50px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -243,7 +243,6 @@ const DormitoryAndStudyRow = styled.div`
 `;
 
 const StyledImage = styled(Image)`
-    margin-top: 50px;
     border-radius: 100%;
     height: 200;
     widht: 300;
@@ -251,7 +250,7 @@ const StyledImage = styled(Image)`
 `;
 
 const StyledLocation = styled(Location)`
-    height: 25px;
+    height: 22px;
     width: 25px;
 `;
 
@@ -371,4 +370,16 @@ const FakeBlur = styled.div`
     top: 0;
     width: 100vw;
     height: 100vh;
+`;
+
+const ButtonWrapper = styled.div`
+    margin-top: 30px;
+`;
+
+const ProfileImage = styled.div`
+    position: relative;
+    border-radius: 50%;
+    width: 300px;
+    height: 300px;
+    background: white;
 `;

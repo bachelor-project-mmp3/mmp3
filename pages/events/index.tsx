@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
-import ExtendedEventPreview, {
-    EventProps,
-} from '../../components/organisms/events/ExtendedEventPreview';
+import ExtendedEventPreview from '../../components/organisms/events/ExtendedEventPreview';
 import { useRouter } from 'next/router';
 import { Header } from '../../components/organisms/Header';
+import { Loading } from '../../components/organisms/Loading';
+import InfoPopUp from '../../components/organisms/popups/InfoPopUp';
+import Link from 'next/link';
 
-type Props = {
-    events: EventProps[];
-};
-
-const Events: React.FC<Props> = () => {
+const Events = () => {
     const [events, setEvents] = useState(null);
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
+    const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState<
+        undefined | string
+    >();
 
     const router = useRouter();
 
     const onSubmitJoin = async (eventId: string, userId: string) => {
+        setLoading(true);
         const data = {
             eventId: eventId,
             userId: userId,
@@ -30,16 +31,21 @@ const Events: React.FC<Props> = () => {
         });
 
         if (res.status < 300) {
-            setLoading(true);
-            router.replace(router.asPath);
-            router.reload();
+            res.json().then((joinedEvent) => {
+                let updatedEvents = events.map((event) =>
+                    event.id === joinedEvent.id ? joinedEvent : event
+                );
+
+                setEvents(updatedEvents);
+                setLoading(false);
+                setShowInfoPopOpOnJoin(joinedEvent.title);
+            });
         } else {
             router.push('/404');
         }
     };
 
     useEffect(() => {
-        setLoading(true);
         fetch('/api/events', {
             method: 'GET',
         })
@@ -50,23 +56,36 @@ const Events: React.FC<Props> = () => {
             });
     }, []);
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Loading />;
     if (!events) return <p>No events </p>;
 
     return (
-        <Layout>
-            <Header>Find an event to join</Header>
-            <EventsList>
-                {events &&
-                    events.map((event) => (
-                        <ExtendedEventPreview
-                            key={event.id}
-                            event={event}
-                            onSubmitJoin={onSubmitJoin}
-                        />
-                    ))}
-            </EventsList>
-        </Layout>
+        <>
+            {showInfoPopOpOnJoin && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnJoin(undefined)}>
+                    Your Request to join <strong>{showInfoPopOpOnJoin}</strong>{' '}
+                    was successfully sent. Check your{' '}
+                    <strong>
+                        <Link href="/requests">requests</Link>
+                    </strong>{' '}
+                    or FH mails to stay up to date!
+                </InfoPopUp>
+            )}
+
+            <Layout>
+                <Header>Find an event to join</Header>
+                <EventsList>
+                    {events &&
+                        events.map((event) => (
+                            <ExtendedEventPreview
+                                key={event.id}
+                                event={event}
+                                onSubmitJoin={onSubmitJoin}
+                            />
+                        ))}
+                </EventsList>
+            </Layout>
+        </>
     );
 };
 

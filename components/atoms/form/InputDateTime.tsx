@@ -9,6 +9,7 @@ interface InputDateTimeProps {
     max?: string;
     children: ReactNode;
     isInvalid?: string;
+    required?: boolean;
 }
 export const InputDateTime = ({
     id,
@@ -17,6 +18,7 @@ export const InputDateTime = ({
     min,
     max,
     isInvalid,
+    required,
     children,
 }: InputDateTimeProps) => {
     return (
@@ -31,6 +33,7 @@ export const InputDateTime = ({
                 max={max}
                 isInvalid={isInvalid}
                 onChange={onChange}
+                required={required}
             />
         </>
     );

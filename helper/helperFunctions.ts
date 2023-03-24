@@ -26,9 +26,17 @@ export const getTimeLeftToJoin = (timeLimit: string) => {
             return '<1 hour left to apply';
         }
 
-        return Math.floor(differenceInHours) + ' hours left to apply';
+        return (
+            Math.floor(differenceInHours) +
+            (Math.floor(differenceInHours) === 1
+                ? ' hour left to apply'
+                : ' hours left to apply')
+        );
     }
-    return differenceInDays + ' days left to apply';
+    return (
+        differenceInDays +
+        (differenceInDays === 1 ? ' day left to apply' : ' days left to apply')
+    );
 };
 
 export const formatDateForDateInput = (input: number) => {

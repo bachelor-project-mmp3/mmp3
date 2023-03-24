@@ -11,16 +11,54 @@ import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { ErrorMessage } from '../../components/atoms/form/ErrorMessage';
 import { useSession } from 'next-auth/react';
-import { StyledLabel } from '../../components/atoms/form/InputText';
 import { EventForm } from '../../components/organisms/forms/EventForm';
 import { Button } from '../../components/atoms/Button';
 import AddDishIcon from '../../public/icons/addDish.svg';
 import DiscardIcon from '../../public/icons/discard.svg';
+import MoneyIcon from '../../public/icons/chefmuetze.svg';
 import LinkIcon from '../../public/icons/link.svg';
 import { formatDateForDateInput } from '../../helper/helperFunctions';
 import { Header } from '../../components/organisms/Header';
+import { Loading } from '../../components/organisms/Loading';
+import { Info } from '../../components/atoms/Info';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-const CreateEvent: React.FC = () => {
+const schema = yup
+    .object({
+        title: yup.string().min(3).required(),
+        date: yup.string().required(),
+        timelimit: yup.string().required(),
+        costs: yup.number().positive().min(0).max(99).required(),
+        guests: yup.number().positive().integer().min(1).max(99).required(),
+    })
+    .required();
+type FormData = yup.InferType<typeof schema>;
+
+function CheckDate(today, chosenEventDate, chosenTimelimit) {
+    if (
+        Number(today) != null &&
+        Number(chosenEventDate) != null &&
+        Number(today) <= Number(chosenEventDate)
+    ) {
+        if (chosenTimelimit != null) {
+            return Number(chosenTimelimit) <= Number(chosenEventDate);
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function SplitTimeInputString(inputString) {
+    // Error handeling wenn ein feld des datums gelöscht wird
+    const array = inputString.split('T'); //split into date and time
+    const date = array[0].split('-');
+    const time = array[1].split(':');
+
+    return date.concat(time);
+}
+const CreateEvent = () => {
     const { data: session } = useSession();
     const router = useRouter();
     let currentDate = new Date();
@@ -33,14 +71,16 @@ const CreateEvent: React.FC = () => {
 
     let dateTimeNow =
         cYear + '-' + cMonth + '-' + cDay + 'T' + cHour + ':' + cMinutes;
+    let dateTimePlusOneHour =
+        cYear + '-' + cMonth + '-' + cDay + 'T' + (cHour + 1) + ':' + cMinutes;
 
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const [dormitory, setDormitory] = useState('');
     const [roomnumber, setRoomnumber] = useState('');
     const [title, setTitle] = useState('');
     const [info, setInfo] = useState('');
     const [date, setDate] = useState(dateTimeNow);
-    const [timeLimit, setTimeLimit] = useState(dateTimeNow);
+    const [timeLimit, setTimeLimit] = useState(dateTimePlusOneHour);
     const [costs, setCosts] = useState('');
     const [capacity, setCapacity] = useState('');
     const [dishes, setDishes] = useState([
@@ -55,17 +95,19 @@ const CreateEvent: React.FC = () => {
         register,
         handleSubmit,
         setValue,
+        setError,
+        clearErrors,
         formState: { errors },
-    } = useForm();
+    } = useForm<FormData>({
+        resolver: yupResolver(schema),
+    });
 
     React.useEffect(() => {
-        setLoading(true);
-
-        register('title', { required: true, minLength: 3 });
-        register('date', { required: true });
-        register('timelimit', { required: true });
-        register('costs', { required: true, min: 0, max: 99 });
-        register('guests', { required: true, min: 1 });
+        register('title');
+        register('date');
+        register('timelimit');
+        register('costs');
+        register('guests');
         //TODO: check for correct validation
 
         if (session) {
@@ -108,7 +150,46 @@ const CreateEvent: React.FC = () => {
             },
         ]);
     };
-    const onSubmit = async () => {
+
+    const CheckDateInputTime = (e) => {
+        let isError = false;
+        const dateAndTimeArray = SplitTimeInputString(e);
+        if (!CheckDate(cYear, dateAndTimeArray[0], null)) isError = true;
+        if (!CheckDate(cMonth, dateAndTimeArray[1], null)) isError = true;
+        if (!CheckDate(cDay, dateAndTimeArray[2], null)) isError = true;
+        if (!CheckDate(cHour, dateAndTimeArray[3], null)) isError = true;
+        if (!CheckDate(cMinutes, dateAndTimeArray[4], null)) isError = true;
+
+        if (isError) {
+            setError('date', { type: 'min' });
+        } else {
+            clearErrors('date');
+        }
+    };
+
+    const CheckTimelimitInputTime = (e) => {
+        let isError = false;
+        const dateAndTimeArray = SplitTimeInputString(e);
+        const dateAndTimeEventArray = SplitTimeInputString(date);
+        if (!CheckDate(cYear, dateAndTimeEventArray[0], dateAndTimeArray[0]))
+            isError = true;
+        if (!CheckDate(cMonth, dateAndTimeEventArray[1], dateAndTimeArray[1]))
+            isError = true;
+        if (!CheckDate(cDay, dateAndTimeEventArray[2], dateAndTimeArray[2]))
+            isError = true;
+        if (!CheckDate(cHour, dateAndTimeEventArray[3], dateAndTimeArray[3]))
+            isError = true;
+        if (!CheckDate(cMinutes, dateAndTimeEventArray[4], dateAndTimeArray[4]))
+            isError = true;
+
+        if (isError) {
+            setError('timelimit', { type: 'min' });
+        } else {
+            clearErrors('timelimit');
+        }
+    };
+
+    const onSubmit = async (data: FormData) => {
         try {
             const body = {
                 title,
@@ -133,22 +214,33 @@ const CreateEvent: React.FC = () => {
         }
     };
 
-    if (isLoading) return <p>Loading...</p>;
+    if (isLoading) return <Loading />;
     return (
         <Layout>
-            <Header>Create a new Event</Header>
+            <Header backButton>Create a new Event</Header>
             <EventForm onSubmit={handleSubmit(onSubmit)}>
                 <StyledInputWithError>
                     <InputText
                         onChange={(e) => {
                             setValue('title', e.target.value);
                             setTitle(e.target.value);
+                            if (
+                                e.target.value.length >= 0 &&
+                                e.target.value.length < 4
+                            ) {
+                                setError('title', { type: 'min' });
+                            } else {
+                                if (errors.title) {
+                                    clearErrors('title');
+                                }
+                            }
                         }}
                         id="title"
                         placeholder="Title"
                         value={title}
-                        isInvalid={errors.title ? 'true' : 'false'}>
-                        Titel
+                        isInvalid={errors.title ? 'true' : 'false'}
+                        required>
+                        Title*
                     </InputText>
                     {/*errors will return when field validation fails  */}
                     {errors.title && errors.title.type === 'required' && (
@@ -156,9 +248,9 @@ const CreateEvent: React.FC = () => {
                             Please enter a title of the event
                         </ErrorMessage>
                     )}
-                    {errors.title && errors.title.type === 'minLength' && (
+                    {errors.title && errors.title.type === 'min' && (
                         <ErrorMessage>
-                            Please enter a title of at least 3 characters
+                            Please enter a title of at least 4 characters
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
@@ -166,27 +258,72 @@ const CreateEvent: React.FC = () => {
                     <InputDateTime
                         id="date"
                         value={date}
-                        min={date}
+                        min={dateTimeNow}
                         onChange={(e) => {
-                            setValue('date', e.target.value);
-                            setDate(e.target.value);
+                            setValue('date', e?.target?.value);
+                            setDate(e?.target?.value);
+                            CheckDateInputTime(e?.target?.value);
                         }}
-                        isInvalid={errors.title ? 'true' : 'false'}>
-                        Date and time
+                        isInvalid={errors.title ? 'true' : 'false'}
+                        required>
+                        Date and time*
                     </InputDateTime>
-                    {errors.date && (
-                        <ErrorMessage>Please enter a date</ErrorMessage>
+                    {errors.date && errors.date.type === 'min' && (
+                        <ErrorMessage>
+                            Please enter a date in the future
+                        </ErrorMessage>
                     )}
                 </StyledInputWithError>
-                <StyledLabel>Location</StyledLabel>
-                <StyledInformation>
-                    <StyledInformationRight>
-                        The exact location will only be shared with guests
-                    </StyledInformationRight>
+                <StyledInputWithError>
+                    <InputDateTime
+                        id="timelimit"
+                        value={timeLimit}
+                        min={dateTimePlusOneHour}
+                        max={date}
+                        onChange={(e) => {
+                            setValue('timelimit', e.target.value);
+                            setTimeLimit(e?.target?.value);
+                            CheckTimelimitInputTime(e?.target?.value);
+                        }}
+                        isInvalid={errors.title ? 'true' : 'false'}
+                        required>
+                        Time limit to receive join requests until*
+                    </InputDateTime>
+                    {errors.timelimit && errors.timelimit.type === 'min' && (
+                        <ErrorMessage>
+                            Please enter a date and time between today and the
+                            event
+                        </ErrorMessage>
+                    )}
+                </StyledInputWithError>
+                <StyledFormComponentsInRow>
+                    <StyledInputWithError className="small">
+                        <InputText
+                            id=""
+                            placeholder="000"
+                            value={dormitory}
+                            disabled={true}>
+                            Dormitory
+                        </InputText>
+                    </StyledInputWithError>
+                    <StyledInputWithError className="small">
+                        <InputText
+                            id=""
+                            placeholder="000"
+                            value={roomnumber}
+                            disabled={true}>
+                            Roomnumber
+                        </InputText>
+                    </StyledInputWithError>
+                </StyledFormComponentsInRow>
 
-                    {dormitory && <div>{dormitory}</div>}
-                    {roomnumber && <div>Room number: {roomnumber}</div>}
-                </StyledInformation>
+                <StyledInfo>
+                    <StyledInfo>
+                        <Info>
+                            The exact location will only be shared with guests
+                        </Info>
+                    </StyledInfo>
+                </StyledInfo>
                 <StyledFormComponentsInRow>
                     <StyledInputWithError className="small">
                         <InputNumber
@@ -198,23 +335,30 @@ const CreateEvent: React.FC = () => {
                             onChange={(e) => {
                                 setValue('costs', e.target.value);
                                 setCosts(e.target.value);
+                                if (e.target.value < 0) {
+                                    setError('costs', { type: 'min' });
+                                } else if (e.target.value > 99) {
+                                    setError('costs', { type: 'max' });
+                                } else {
+                                    if (errors.costs) {
+                                        clearErrors('costs');
+                                    }
+                                }
                             }}
                             isInvalid={errors.title ? 'true' : 'false'}
-                            variant={'right'}>
-                            Costs
+                            padding="left">
+                            Costs per person
                         </InputNumber>
-                        {errors.costs && errors.costs.type === 'required' && (
-                            <ErrorMessage>
-                                Please enter the costs for your event
-                            </ErrorMessage>
-                        )}
                         {errors.costs && errors.costs.type === 'max' && (
                             <ErrorMessage>Must be maximum 99</ErrorMessage>
                         )}
                         {errors.costs && errors.costs.type === 'min' && (
-                            <ErrorMessage>Must be at least 0</ErrorMessage>
+                            <ErrorMessage>
+                                Cannot be a negative amount
+                            </ErrorMessage>
                         )}
                     </StyledInputWithError>
+                    <StyledMoneyIcon />
                     <StyledInputWithError className="small">
                         <InputNumber
                             id="guests"
@@ -224,10 +368,19 @@ const CreateEvent: React.FC = () => {
                             onChange={(e) => {
                                 setValue('guests', e.target.value);
                                 setCapacity(e.target.value);
+                                if (e.target.value < 0) {
+                                    setError('guests', { type: 'min' });
+                                } else if (e.target.value > 99) {
+                                    setError('guests', { type: 'max' });
+                                } else {
+                                    if (errors.guests) {
+                                        clearErrors('guests');
+                                    }
+                                }
                             }}
                             isInvalid={errors.title ? 'true' : 'false'}
-                            variant="center">
-                            Guests
+                            required>
+                            Guests*
                         </InputNumber>
                         {errors.guests && errors.guests.type === 'required' && (
                             <ErrorMessage>
@@ -235,29 +388,13 @@ const CreateEvent: React.FC = () => {
                             </ErrorMessage>
                         )}
                         {errors.guests && errors.guests.type === 'min' && (
-                            <ErrorMessage>Must be at least 0</ErrorMessage>
+                            <ErrorMessage>Must be at least 1</ErrorMessage>
+                        )}
+                        {errors.guests && errors.guests.type === 'max' && (
+                            <ErrorMessage>Must be maximum 99</ErrorMessage>
                         )}
                     </StyledInputWithError>
                 </StyledFormComponentsInRow>
-                <StyledInputWithError>
-                    <InputDateTime
-                        id="timelimit"
-                        value={timeLimit}
-                        min={timeLimit}
-                        max={date}
-                        onChange={(e) => {
-                            setValue('timelimit', e.target.value);
-                            setTimeLimit(e.target.value);
-                        }}
-                        isInvalid={errors.title ? 'true' : 'false'}>
-                        Receive requests until
-                    </InputDateTime>
-                    {errors.date && (
-                        <ErrorMessage>
-                            Please enter a date and time when to close to join
-                        </ErrorMessage>
-                    )}
-                </StyledInputWithError>
                 <StyledInputWithError>
                     <InputTextarea
                         id="information"
@@ -270,6 +407,7 @@ const CreateEvent: React.FC = () => {
                     </InputTextarea>
                 </StyledInputWithError>
                 <StyledMenuInput>
+                    <StyledH1>Add your menu</StyledH1>
                     {dishes.map((currentDish, i) => {
                         return (
                             <StyledMenuInputItem key={i}>
@@ -282,7 +420,7 @@ const CreateEvent: React.FC = () => {
                                         value={currentDish.title}
                                         padding="right"
                                         required={true}>
-                                        Name of the dish
+                                        Name of the dish*
                                     </InputText>
                                 </StyledInputWithError>
                                 <StyledInputWithError>
@@ -329,7 +467,7 @@ const CreateEvent: React.FC = () => {
                         <Button
                             variant="red"
                             onClick={() => router.replace(`/events`)}
-                            form>
+                            width={45}>
                             Cancel
                         </Button>
                         <SubmitButton value="Create event"></SubmitButton>
@@ -354,25 +492,10 @@ const StyledInputWithError = styled.div.attrs((/* props */) => ({
     }
 `;
 
-const StyledInformation = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin: 0 0 27px 32px;
-`;
-
-const StyledInformationRight = styled.div`
-    text-align: right;
-    color: ${({ theme }) => theme.darkGrey};
-    padding-bottom: 10px;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        font-size: ${({ theme }) => theme.fonts.normal.info};
-    }
-    font-size: ${({ theme }) => theme.fonts.mobile.info};
-`;
-
 const StyledFormComponentsInRow = styled.div`
     display: flex;
     flex-direction: row;
+    position: relative;
     justify-content: space-between;
 `;
 
@@ -381,9 +504,14 @@ const StyledMenuInputItem = styled.div`
 `;
 
 const StyledMenuInput = styled.div`
-    background-color: ${({ theme }) => theme.backgroundLightestOrange};
+    background-color: ${({ theme }) => theme.backgroundLightGreen};
     border-radius: 25px 25px 0 0;
     padding: 20px 20px 40px 20px;
+    margin-bottom: -80px;
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        margin-bottom: -30px;
+    }
 `;
 
 const StyledAddDish = styled(AddDishIcon)`
@@ -405,10 +533,7 @@ const StyledDeleteButton = styled(DiscardIcon)`
     width: 16px;
     cursor: pointer;
     right: 20px;
-    top: 45px;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        top: 47px;
-    }
+    top: 0px;
 `;
 
 const StyledLinkIcon = styled(LinkIcon)`
@@ -427,4 +552,27 @@ const StyledHR = styled.hr`
     border-radius: 4px;
     width: 90%;
     margin-bottom: 20px;
+`;
+const StyledH1 = styled.h1`
+    margin: 25px 20px;
+    font-size: ${({ theme }) => theme.fonts.mobile.headline4};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline4};
+    }
+`;
+
+const StyledInfo = styled.div`
+    padding-left: 18px;
+    margin: -10px 0 15px 0;
+`;
+
+const StyledMoneyIcon = styled(MoneyIcon)`
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    left: 20px;
+    top: 42px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        top: 47px;
+    }
 `;
