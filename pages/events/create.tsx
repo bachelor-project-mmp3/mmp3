@@ -324,7 +324,7 @@ const CreateEvent = () => {
                             </ErrorMessage>
                         )}
                     </StyledInputWithError>
-                    <StyledMoneyIcon />
+                    <StyledMoneyIcon> &#8364;</StyledMoneyIcon>
                     <StyledInputWithError className="small">
                         <InputNumber
                             id="guests"
@@ -546,13 +546,11 @@ const StyledInfo = styled.div`
     margin: -10px 0 15px 0;
 `;
 
-const StyledMoneyIcon = styled(MoneyIcon)`
+const StyledMoneyIcon = styled.div`
     position: absolute;
-    height: 16px;
-    width: 16px;
     left: 20px;
     top: 42px;
     @media ${(props) => props.theme.breakpoint.tablet} {
-        top: 47px;
+        top: 44px;
     }
 `;

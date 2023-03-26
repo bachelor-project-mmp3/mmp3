@@ -9,7 +9,7 @@ export function getEmailTemplate(data: {
     if (data.type === 'join') {
         return {
             subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.guestName} wants to join`,
-            text: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.guestName} wants to join`,
+            text: `${data.guestName} wants to join`,
             html: `<div>Hi ${
                 data.hostFirstName
             },</div><p>Somebody wants to join your event <strong>${
@@ -23,7 +23,7 @@ export function getEmailTemplate(data: {
     if (data.type === 'accepted') {
         return {
             subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} accepts join request`,
-            text: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} accepts join request`,
+            text: `${data.hostFirstName} accepts join request`,
             html: `<div>Hi ${data.guestName},<br></div><p>${
                 data.hostFirstName
             }  just accepted your join request for <strong>${
@@ -38,7 +38,7 @@ export function getEmailTemplate(data: {
     if (data.type === 'declined') {
         return {
             subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} declined join request`,
-            text: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} declined join request`,
+            text: `${data.hostFirstName} declined join request`,
             html: `<div>Hi ${data.guestName},<br></div><p>We're sorry, ${data.hostFirstName}  just declined your join request for <strong>${data.eventTitle}</strong>!<br>
             But we are sure you can find another event to join. Keep your head up and get ready to join another event!
         `,
