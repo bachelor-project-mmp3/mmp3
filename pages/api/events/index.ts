@@ -51,29 +51,66 @@ export default async function handler(
             // GET events /api/events
             else if (req.method === 'GET') {
                 const today = new Date();
-                const events = await prisma.event.findMany({
-                    orderBy: [
-                        {
-                            date: 'asc',
-                        },
-                    ],
-                    include: {
-                        host: {
-                            select: {
-                                firstName: true,
-                                lastName: true,
-                                image: true,
-                                dormitory: true,
-                                id: true,
+
+                const { dormitoryFilter } = req.query;
+                let events;
+
+                if (dormitoryFilter && dormitoryFilter !== 'undefined') {
+                    events = await prisma.event.findMany({
+                        orderBy: [
+                            {
+                                date: 'asc',
                             },
+                        ],
+                        include: {
+                            host: {
+                                select: {
+                                    firstName: true,
+                                    lastName: true,
+                                    image: true,
+                                    dormitory: true,
+                                    id: true,
+                                },
+                            },
+                            menu: true,
+                            requests: true,
                         },
-                        menu: true,
-                        requests: true,
-                    },
-                    where: {
-                        timeLimit: { gte: today },
-                    },
-                });
+                        where: {
+                            AND: [
+                                { timeLimit: { gte: today } },
+                                {
+                                    host: {
+                                        dormitory: dormitoryFilter as string,
+                                    },
+                                },
+                            ],
+                        },
+                    });
+                } else {
+                    events = await prisma.event.findMany({
+                        orderBy: [
+                            {
+                                date: 'asc',
+                            },
+                        ],
+                        include: {
+                            host: {
+                                select: {
+                                    firstName: true,
+                                    lastName: true,
+                                    image: true,
+                                    dormitory: true,
+                                    id: true,
+                                },
+                            },
+                            menu: true,
+                            requests: true,
+                        },
+                        where: {
+                            timeLimit: { gte: today },
+                        },
+                    });
+                }
 
                 res.status(200).json({ events: events });
             } else {
