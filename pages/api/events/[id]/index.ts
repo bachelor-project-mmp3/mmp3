@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../../lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]';
+import { addHoursToDateTime } from '../../../../helper/helperFunctions';
 
 export default async function handler(
     req: NextApiRequest,
@@ -70,6 +71,52 @@ export default async function handler(
                     },
                 });
                 res.status(200).json({ event: event });
+            } else if (req.method === 'PATCH') {
+                const eventId = req.query.id.toString();
+                const {
+                    title,
+                    info,
+                    date,
+                    timeLimit,
+                    costs,
+                    capacity,
+                    dishes,
+                } = req.body;
+
+                const dateTimeDate = addHoursToDateTime(new Date(date), 2);
+                const dateTimeTimeLimit = addHoursToDateTime(
+                    new Date(timeLimit),
+                    2
+                );
+                const floatCosts = parseFloat(costs);
+                const intCapacity = parseInt(capacity);
+
+                await prisma.dish.deleteMany({
+                    where: {
+                        eventId: eventId,
+                    },
+                });
+
+                const result = await prisma.event.update({
+                    where: {
+                        id: eventId,
+                    },
+                    include: {
+                        menu: true,
+                    },
+                    data: {
+                        title: title,
+                        info: info,
+                        date: dateTimeDate,
+                        timeLimit: dateTimeTimeLimit,
+                        costs: floatCosts,
+                        capacity: intCapacity,
+                        menu: {
+                            create: dishes,
+                        },
+                    },
+                });
+                res.json(result);
             } else {
                 res.status(405).end('Method Not Allowed');
             }

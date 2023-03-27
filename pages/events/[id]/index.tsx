@@ -296,9 +296,10 @@ const EventDetail = () => {
                             </Button>
                             <Button
                                 variant={'primary'}
-                                // onClick={() => router.push(`/events/${event.id}/edit`)}
-                                width={45}
-                                disabled>
+                                onClick={() =>
+                                    router.push(`/events/${event.id}/edit`)
+                                }
+                                width={45}>
                                 Edit event
                             </Button>
                         </StyledButtons>
