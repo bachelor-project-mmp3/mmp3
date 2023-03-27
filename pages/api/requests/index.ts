@@ -117,7 +117,7 @@ export default async function handler(
                             { Event: { host: { id: userId } } },
                             { userId: userId },
                         ],
-                        AND: [{ Event: {date: { gte: today } }}],
+                        AND: [{ Event: { date: { gte: today } } }],
                     },
                 });
 

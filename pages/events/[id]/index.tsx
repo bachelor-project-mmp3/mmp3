@@ -117,7 +117,7 @@ const EventDetail = () => {
         }
     }
 
-    const onSubmitLeave =  async (requestId: string) => {
+    const onSubmitLeave = async (requestId: string) => {
         setLoading(true);
 
         const res = await fetch(`/api/requests/${requestId}`, {
@@ -129,13 +129,13 @@ const EventDetail = () => {
             res.json().then((event) => {
                 setEvent(event);
             });
-                
+
             setLoading(false);
             setShowInfoPopOpOnLeave(true);
         } else {
             router.push('/404');
         }
-    }
+    };
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
@@ -185,7 +185,8 @@ const EventDetail = () => {
                     or FH mails to stay up to date!
                 </InfoPopUp>
             )}
-             {showInfoPopOpOnLeave && (
+
+            {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
                     Your Request was deleted successfully.
                 </InfoPopUp>
@@ -308,9 +309,11 @@ const EventDetail = () => {
                                     {isRequestAccepted ? (
                                         <Button
                                             variant="primary"
-                                            onClick={() => onSubmitLeave(
-                                                hasUserSendRequest.id
-                                            )}>
+                                            onClick={() =>
+                                                onSubmitLeave(
+                                                    hasUserSendRequest.id
+                                                )
+                                            }>
                                             Leave Event
                                         </Button>
                                     ) : (

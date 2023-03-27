@@ -51,7 +51,7 @@ export type EventProps = {
 const ExtendedEventPreview: React.FC<{
     event: EventProps;
     onSubmitJoin: (eventId: string, userId: string) => void;
-    onSubmitLeave: (requestId: string , eventId: string) => void;
+    onSubmitLeave: (requestId: string, eventId: string) => void;
 }> = ({ event, onSubmitJoin, onSubmitLeave }) => {
     const router = useRouter();
     const { data: session } = useSession();

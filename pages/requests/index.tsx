@@ -14,7 +14,8 @@ const Requests = () => {
         React.useState<
             undefined | { status: string; name: string; title: string }
         >();
-    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = React.useState<boolean>(false);
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] =
+        React.useState<boolean>(false);
 
     const router = useRouter();
 
@@ -69,8 +70,8 @@ const Requests = () => {
         });
 
         if (res.status === 200) {
-            let updatedRequests = requests.filter((request) =>
-                request.id !== requestId
+            let updatedRequests = requests.filter(
+                (request) => request.id !== requestId
             );
 
             setRequests(updatedRequests);
@@ -79,8 +80,7 @@ const Requests = () => {
         } else {
             router.push('/404');
         }
-
-    }
+    };
 
     if (isLoading) return <Loading />;
     if (!requests) return <p>No requests </p>;
@@ -100,7 +100,7 @@ const Requests = () => {
 
             {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
-                  Your Request was deleted successfully.
+                    Your Request was deleted successfully.
                 </InfoPopUp>
             )}
 
@@ -118,7 +118,9 @@ const Requests = () => {
                                 onSubmitDecline={() =>
                                     onSubmit(request.id, RequestStatus.DECLINED)
                                 }
-                                onSubmitWithdraw={() => onSubmitWithdraw(request.id)}
+                                onSubmitWithdraw={() =>
+                                    onSubmitWithdraw(request.id)
+                                }
                             />
                         ))}
                 </div>

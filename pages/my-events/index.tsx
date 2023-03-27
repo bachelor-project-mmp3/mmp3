@@ -15,7 +15,8 @@ const MyEvents = () => {
     const [upcomingEvents, setUpcomingEvents] = useState(null);
     const [pastEvents, setPastEvents] = useState(null);
     const [isLoading, setLoading] = useState(true);
-    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<boolean>(false);
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] =
+        useState<boolean>(false);
     const { data: session } = useSession();
 
     const router = useRouter();
@@ -32,7 +33,7 @@ const MyEvents = () => {
             });
     }, []);
 
-    const onSubmitLeave =  async (requestId: string, eventId: string) => {
+    const onSubmitLeave = async (requestId: string, eventId: string) => {
         setLoading(true);
 
         const res = await fetch(`/api/requests/${requestId}`, {
@@ -41,28 +42,28 @@ const MyEvents = () => {
         });
 
         if (res.status === 200) {
-                let updatedEvents = upcomingEvents.filter((event) =>
-                    event.id !== eventId
-                );
+            let updatedEvents = upcomingEvents.filter(
+                (event) => event.id !== eventId
+            );
 
-                setUpcomingEvents(updatedEvents);
-                setLoading(false);
-                setShowInfoPopOpOnLeave(true);
+            setUpcomingEvents(updatedEvents);
+            setLoading(false);
+            setShowInfoPopOpOnLeave(true);
         } else {
             router.push('/404');
         }
-    }
+    };
 
     if (isLoading) return <Loading />;
-    
+
     return (
         <>
-           {showInfoPopOpOnLeave && (
+            {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
                     Your Request was deleted successfully.
                 </InfoPopUp>
             )}
-        
+
             <Layout>
                 <Header>Hello {session?.user?.firstName}! 👋</Header>
 
@@ -71,17 +72,23 @@ const MyEvents = () => {
                         <StyledHeadline>Upcoming Events</StyledHeadline>
 
                         {upcomingEvents?.length > 0 ? (
-                            upcomingEvents.map((event) => { 
-                                const request = hasUserSendRequestHelper(event.requests ,session)
-                                
-                                return(
+                            upcomingEvents.map((event) => {
+                                const request = hasUserSendRequestHelper(
+                                    event.requests,
+                                    session
+                                );
+
+                                return (
                                     <ExtendedEventPreview
                                         key={event.id}
                                         event={event}
                                         onSubmitJoin={() => alert('hi')}
-                                        onSubmitLeave={() => onSubmitLeave(request.id, event.id)}
+                                        onSubmitLeave={() =>
+                                            onSubmitLeave(request.id, event.id)
+                                        }
                                     />
-                            )})
+                                );
+                            })
                         ) : (
                             <p>No upcoming events...</p>
                         )}

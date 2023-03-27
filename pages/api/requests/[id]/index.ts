@@ -123,24 +123,22 @@ export default async function handler(
                 }
 
                 res.status(200).json(request);
-            }
-            else if(req.method === 'DELETE'){
-
+            } else if (req.method === 'DELETE') {
                 // decrement event's currentParticipants
                 const request = await prisma.request.findUnique({
                     where: { id: String(req.query.id) },
-                    include: { Event: {include: {host: true}}, User: true} 
-                })
+                    include: { Event: { include: { host: true } }, User: true },
+                });
 
                 let event;
                 // Leave event
-                if(request.status === 'ACCEPTED'){
+                if (request.status === 'ACCEPTED') {
                     event = await prisma.event.update({
                         where: {
                             id: request.Event.id,
                         },
                         data: {
-                            currentParticipants: { decrement: 1 } 
+                            currentParticipants: { decrement: 1 },
                         },
                         include: {
                             host: true,
@@ -152,19 +150,19 @@ export default async function handler(
                                         { status: 'ACCEPTED' },
                                         { status: 'PENDING' },
                                     ],
-                                    NOT: {id: String(req.query.id)}
+                                    NOT: { id: String(req.query.id) },
                                 },
-                                include: {User: true}
-                            }
-                        }
+                                include: { User: true },
+                            },
+                        },
                     });
 
                     // delete the request
                     const deleteRequest = await prisma.request.delete({
                         where: {
-                        id: String(req.query.id)
+                            id: String(req.query.id),
                         },
-                    })
+                    });
 
                     // send mail to host
                     const transporter = getNodeMailerTransporter();
@@ -197,8 +195,8 @@ export default async function handler(
                     });
                 }
 
-                  // Withdraw event
-                if(request.status === 'PENDING'){
+                // Withdraw event
+                if (request.status === 'PENDING') {
                     event = await prisma.event.findUnique({
                         where: {
                             id: request.Event.id,
@@ -213,19 +211,19 @@ export default async function handler(
                                         { status: 'ACCEPTED' },
                                         { status: 'PENDING' },
                                     ],
-                                    NOT: {id: String(req.query.id)}
+                                    NOT: { id: String(req.query.id) },
                                 },
-                                include: {User: true}
-                            }
-                        }
+                                include: { User: true },
+                            },
+                        },
                     });
 
                     // delete the request
                     const deleteRequest = await prisma.request.delete({
                         where: {
-                        id: String(req.query.id)
+                            id: String(req.query.id),
                         },
-                    })
+                    });
                 }
 
                 res.status(200).json(event);
