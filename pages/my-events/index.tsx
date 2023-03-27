@@ -8,11 +8,14 @@ import { Header } from '../../components/organisms/Header';
 import { SmallEventPreview } from '../../components/organisms/events/SmallEventPreview';
 import { useSession } from 'next-auth/react';
 import { Loading } from '../../components/organisms/Loading';
+import InfoPopUp from '../../components/organisms/popups/InfoPopUp';
+import { hasUserSendRequestHelper } from '../../helper/EventsAndUserHelper';
 
 const MyEvents = () => {
     const [upcomingEvents, setUpcomingEvents] = useState(null);
     const [pastEvents, setPastEvents] = useState(null);
     const [isLoading, setLoading] = useState(true);
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<boolean>(false);
     const { data: session } = useSession();
 
     const router = useRouter();
@@ -29,57 +32,90 @@ const MyEvents = () => {
             });
     }, []);
 
+    const onSubmitLeave =  async (requestId: string, eventId: string) => {
+        setLoading(true);
+
+        const res = await fetch(`/api/requests/${requestId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (res.status === 200) {
+                let updatedEvents = upcomingEvents.filter((event) =>
+                    event.id !== eventId
+                );
+
+                setUpcomingEvents(updatedEvents);
+                setLoading(false);
+                setShowInfoPopOpOnLeave(true);
+        } else {
+            router.push('/404');
+        }
+    }
+
     if (isLoading) return <Loading />;
-
+    
     return (
-        <Layout>
-            <Header>Hello {session?.user?.firstName}! 👋</Header>
+        <>
+           {showInfoPopOpOnLeave && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
+                    Your Request was deleted successfully.
+                </InfoPopUp>
+            )}
+        
+            <Layout>
+                <Header>Hello {session?.user?.firstName}! 👋</Header>
 
-            <WrapperRow>
-                <WrapperColumn>
-                    <StyledHeadline>Upcoming Events</StyledHeadline>
+                <WrapperRow>
+                    <WrapperColumn>
+                        <StyledHeadline>Upcoming Events</StyledHeadline>
 
-                    {upcomingEvents?.length > 0 ? (
-                        upcomingEvents.map((event) => (
-                            <ExtendedEventPreview
-                                key={event.id}
-                                event={event}
-                                onSubmitJoin={() => alert('hi')}
-                            />
-                        ))
-                    ) : (
-                        <p>No upcoming events...</p>
-                    )}
-                </WrapperColumn>
-                <WrapperColumn className="top">
-                    <StyledHeadline>Past Events</StyledHeadline>
-                    <EventsWrapper>
-                        {pastEvents?.length > 0 ? (
-                            pastEvents.map((event) => (
-                                <>
-                                    <EventItem>
-                                        <SmallEventPreview
-                                            title={event.title}
-                                            imageEvent={event.image}
-                                            imageHost={event.host.image}
-                                            onClick={() =>
-                                                router.push(
-                                                    `/events/${event.id}`
-                                                )
-                                            }
-                                            date={
-                                                event.date
-                                            }></SmallEventPreview>
-                                    </EventItem>
-                                </>
-                            ))
+                        {upcomingEvents?.length > 0 ? (
+                            upcomingEvents.map((event) => { 
+                                const request = hasUserSendRequestHelper(event.requests ,session)
+                                
+                                return(
+                                    <ExtendedEventPreview
+                                        key={event.id}
+                                        event={event}
+                                        onSubmitJoin={() => alert('hi')}
+                                        onSubmitLeave={() => onSubmitLeave(request.id, event.id)}
+                                    />
+                            )})
                         ) : (
-                            <p>No past events...</p>
+                            <p>No upcoming events...</p>
                         )}
-                    </EventsWrapper>
-                </WrapperColumn>
-            </WrapperRow>
-        </Layout>
+                    </WrapperColumn>
+                    <WrapperColumn className="top">
+                        <StyledHeadline>Past Events</StyledHeadline>
+                        <EventsWrapper>
+                            {pastEvents?.length > 0 ? (
+                                pastEvents.map((event) => (
+                                    <>
+                                        <EventItem>
+                                            <SmallEventPreview
+                                                title={event.title}
+                                                imageEvent={event.image}
+                                                imageHost={event.host.image}
+                                                onClick={() =>
+                                                    router.push(
+                                                        `/events/${event.id}`
+                                                    )
+                                                }
+                                                date={
+                                                    event.date
+                                                }></SmallEventPreview>
+                                        </EventItem>
+                                    </>
+                                ))
+                            ) : (
+                                <p>No past events...</p>
+                            )}
+                        </EventsWrapper>
+                    </WrapperColumn>
+                </WrapperRow>
+            </Layout>
+        </>
     );
 };
 
