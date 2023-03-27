@@ -23,6 +23,12 @@ import { Loading } from '../Loading';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
+export const dormitories = [
+    'Campus Urstein',
+    'Campus Kuchl',
+    'Campus Schwarzach',
+];
+
 interface ProfileFormProps {
     cancelButton?: boolean;
 }
@@ -58,7 +64,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     const [dormitory, setDormitory] = useState('');
     const [privacy, setPrivacy] = useState('');
 
-    const dormitories = ['Campus Urstein', 'Campus Kuchl', 'Campus Schwarzach'];
     const {
         register,
         handleSubmit,
