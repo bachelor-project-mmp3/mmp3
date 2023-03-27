@@ -51,7 +51,8 @@ export type EventProps = {
 const ExtendedEventPreview: React.FC<{
     event: EventProps;
     onSubmitJoin: (eventId: string, userId: string) => void;
-}> = ({ event, onSubmitJoin }) => {
+    onSubmitLeave: (requestId: string, eventId: string) => void;
+}> = ({ event, onSubmitJoin, onSubmitLeave }) => {
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -129,9 +130,11 @@ const ExtendedEventPreview: React.FC<{
                                 {isRequestAccepted ? (
                                     <Button
                                         variant="primary"
-                                        disabled
                                         onClick={(e) => {
-                                            alert('todo');
+                                            onSubmitLeave(
+                                                hasUserSendRequest.id,
+                                                event.id
+                                            );
                                             {
                                                 /* to prevent navigation to eventdetail */
                                             }
@@ -142,15 +145,17 @@ const ExtendedEventPreview: React.FC<{
                                 ) : (
                                     <Button
                                         variant="primary"
-                                        disabled
                                         onClick={(e) => {
-                                            alert('todo');
+                                            onSubmitLeave(
+                                                hasUserSendRequest.id,
+                                                event.id
+                                            );
                                             {
                                                 /* to prevent navigation to eventdetail */
                                             }
                                             e.stopPropagation();
                                         }}>
-                                        Pending
+                                        Withdraw
                                     </Button>
                                 )}
                             </>

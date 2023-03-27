@@ -123,6 +123,110 @@ export default async function handler(
                 }
 
                 res.status(200).json(request);
+            } else if (req.method === 'DELETE') {
+                // decrement event's currentParticipants
+                const request = await prisma.request.findUnique({
+                    where: { id: String(req.query.id) },
+                    include: { Event: { include: { host: true } }, User: true },
+                });
+
+                let event;
+                // Leave event
+                if (request.status === 'ACCEPTED') {
+                    event = await prisma.event.update({
+                        where: {
+                            id: request.Event.id,
+                        },
+                        data: {
+                            currentParticipants: { decrement: 1 },
+                        },
+                        include: {
+                            host: true,
+                            menu: true,
+                            // for response in eventdetail
+                            requests: {
+                                where: {
+                                    OR: [
+                                        { status: 'ACCEPTED' },
+                                        { status: 'PENDING' },
+                                    ],
+                                    NOT: { id: String(req.query.id) },
+                                },
+                                include: { User: true },
+                            },
+                        },
+                    });
+
+                    // delete the request
+                    const deleteRequest = await prisma.request.delete({
+                        where: {
+                            id: String(req.query.id),
+                        },
+                    });
+
+                    // send mail to host
+                    const transporter = getNodeMailerTransporter();
+
+                    const mailData = getEmailTemplate({
+                        hostFirstName: request.Event.host.firstName,
+                        eventTitle: request.Event.title,
+                        guestName: request.User.firstName,
+                        type: 'leave',
+                    });
+
+                    const mail = {
+                        from: 'studentenfuttermmp3@gmail.com',
+                        to: request.Event.host.email,
+                        ...mailData,
+                    };
+
+                    transporter.sendMail(mail, function (err, info) {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).json({
+                                statusCode: 500,
+                                success: false,
+                                message: err,
+                            });
+                        } else {
+                            console.log(info);
+                            res.status(200).json({ request });
+                        }
+                    });
+                }
+
+                // Withdraw event
+                if (request.status === 'PENDING') {
+                    event = await prisma.event.findUnique({
+                        where: {
+                            id: request.Event.id,
+                        },
+                        include: {
+                            host: true,
+                            menu: true,
+                            // for response in eventdetail
+                            requests: {
+                                where: {
+                                    OR: [
+                                        { status: 'ACCEPTED' },
+                                        { status: 'PENDING' },
+                                    ],
+                                    NOT: { id: String(req.query.id) },
+                                },
+                                include: { User: true },
+                            },
+                        },
+                    });
+
+                    // delete the request
+                    const deleteRequest = await prisma.request.delete({
+                        where: {
+                            id: String(req.query.id),
+                        },
+                    });
+                }
+
+                res.status(200).json(event);
             }
         } catch (err) {
             res.status(500).json({ message: err.message });
