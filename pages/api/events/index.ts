@@ -3,6 +3,7 @@ import prisma from '../../../lib/prisma';
 import { getSession } from 'next-auth/react';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
+import { addHoursToDateTime } from '../../../helper/helperFunctions';
 
 export default async function handler(
     req: NextApiRequest,
@@ -24,8 +25,11 @@ export default async function handler(
                     dishes,
                 } = req.body;
 
-                const dateTimeDate = new Date(date);
-                const dateTimeTimeLimit = new Date(timeLimit);
+                const dateTimeDate = addHoursToDateTime(new Date(date), 2);
+                const dateTimeTimeLimit = addHoursToDateTime(
+                    new Date(timeLimit),
+                    2
+                );
                 const floatCosts = parseFloat(costs);
                 const intCapacity = parseInt(capacity);
                 const session = await getSession({ req });
