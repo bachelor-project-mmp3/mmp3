@@ -84,6 +84,7 @@ export default async function handler(
             if (req.method === 'GET') {
                 const session = await getSession({ req });
                 const userId = session?.user?.userId;
+                const today = new Date();
 
                 const requests = await prisma.request.findMany({
                     orderBy: [
@@ -116,6 +117,7 @@ export default async function handler(
                             { Event: { host: { id: userId } } },
                             { userId: userId },
                         ],
+                        AND: [{ Event: { date: { gte: today } } }],
                     },
                 });
 

@@ -115,6 +115,12 @@ const Events = () => {
                 </InfoPopUp>
             )}
 
+            {showInfoPopOpOnLeave && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
+                    Your Request was deleted successfully.
+                </InfoPopUp>
+            )}
+
             <Layout>
                 <Header>Find an event to join</Header>
                 <FilterBar>
@@ -131,6 +137,7 @@ const Events = () => {
                                 key={event.id}
                                 event={event}
                                 onSubmitJoin={onSubmitJoin}
+                                onSubmitLeave={onSubmitLeave}
                             />
                         ))}
                     {events?.length === 0 && (

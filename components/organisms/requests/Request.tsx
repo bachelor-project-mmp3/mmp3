@@ -63,7 +63,8 @@ const Request: React.FC<{
     request: RequestProps;
     onSubmitAccept: () => void;
     onSubmitDecline: () => void;
-}> = ({ request, onSubmitAccept, onSubmitDecline }) => {
+    onSubmitWithdraw: () => void;
+}> = ({ request, onSubmitAccept, onSubmitDecline, onSubmitWithdraw }) => {
     const { data: session } = useSession();
     const router = useRouter();
 
@@ -171,6 +172,15 @@ const Request: React.FC<{
                     </Button>
                 </ButtonWrapper>
             )}
+            {request.status === 'PENDING' &&
+                !userIsHost &&
+                isRegistrationTimeinFuture && (
+                    <ButtonWrapper>
+                        <WithdrawButton onClick={() => onSubmitWithdraw()}>
+                            <StyledDiscard />
+                        </WithdrawButton>
+                    </ButtonWrapper>
+                )}
         </Card>
     );
 };
@@ -258,6 +268,10 @@ const DeclineButton = styled.div`
         color: ${({ theme }) => theme.hoverRed};
         border: 1px solid ${({ theme }) => theme.hoverRed};
     }
+`;
+
+const WithdrawButton = styled(DeclineButton)`
+    right: 10px;
 `;
 
 interface HostImageProps {
