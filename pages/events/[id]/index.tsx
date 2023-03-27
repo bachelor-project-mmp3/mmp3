@@ -90,6 +90,7 @@ const EventDetail = () => {
     const [event, setEvent] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState(false);
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState(false);
 
     async function joinEvent(eventId: string, userId: string): Promise<void> {
         setLoading(true);
@@ -116,6 +117,26 @@ const EventDetail = () => {
         }
     }
 
+    const onSubmitLeave = async (requestId: string) => {
+        setLoading(true);
+
+        const res = await fetch(`/api/requests/${requestId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (res.status === 200) {
+            res.json().then((event) => {
+                setEvent(event);
+            });
+
+            setLoading(false);
+            setShowInfoPopOpOnLeave(true);
+        } else {
+            router.push('/404');
+        }
+    };
+
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
         if (router.isReady) {
@@ -136,14 +157,14 @@ const EventDetail = () => {
     const timeLimit = getTimeLeftToJoin(event.timeLimit);
     const date = getFormattedDate(event.date);
     const time = getFormattedTime(event.date);
-    const userIsHost = userIsHostHelper(session?.user?.userId, event.host.id);
+    const userIsHost = userIsHostHelper(session?.user?.userId, event?.host?.id);
     const hostName = hostNameHelper(
         event?.host.firstName,
         event?.host.lastName
     );
 
     const hasUserSendRequest = hasUserSendRequestHelper(
-        event.requests,
+        event?.requests,
         session
     );
 
@@ -164,6 +185,13 @@ const EventDetail = () => {
                     or FH mails to stay up to date!
                 </InfoPopUp>
             )}
+
+            {showInfoPopOpOnLeave && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
+                    Your Request was deleted successfully.
+                </InfoPopUp>
+            )}
+
             <Layout>
                 <StyledDetailsWrapper>
                     <Header backButton>{event.title}</Header>
@@ -282,8 +310,11 @@ const EventDetail = () => {
                                     {isRequestAccepted ? (
                                         <Button
                                             variant="primary"
-                                            disabled
-                                            onClick={() => alert('todo')}>
+                                            onClick={() =>
+                                                onSubmitLeave(
+                                                    hasUserSendRequest.id
+                                                )
+                                            }>
                                             Leave Event
                                         </Button>
                                     ) : (

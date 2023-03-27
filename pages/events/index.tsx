@@ -14,7 +14,8 @@ const Events = () => {
     const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState<
         undefined | string
     >();
-
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<boolean>(false);
+    
     const router = useRouter();
 
     const onSubmitJoin = async (eventId: string, userId: string) => {
@@ -45,6 +46,27 @@ const Events = () => {
         }
     };
 
+    const onSubmitLeave =  async (requestId: string, eventId: string) => {
+        setLoading(true);
+
+        const res = await fetch(`/api/requests/${requestId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (res.status === 200) {
+                let updatedEvents = events.filter((event) =>
+                    event.id !== eventId
+                );
+
+                setEvents(updatedEvents);
+                setLoading(false);
+                setShowInfoPopOpOnLeave(true);
+        } else {
+            router.push('/404');
+        }
+    }
+
     useEffect(() => {
         fetch('/api/events', {
             method: 'GET',
@@ -71,6 +93,12 @@ const Events = () => {
                     or FH mails to stay up to date!
                 </InfoPopUp>
             )}
+            
+            {showInfoPopOpOnLeave && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
+                    Your Request was deleted successfully.
+                </InfoPopUp>
+            )}
 
             <Layout>
                 <Header>Find an event to join</Header>
@@ -81,6 +109,7 @@ const Events = () => {
                                 key={event.id}
                                 event={event}
                                 onSubmitJoin={onSubmitJoin}
+                                onSubmitLeave={onSubmitLeave}
                             />
                         ))}
                 </EventsList>

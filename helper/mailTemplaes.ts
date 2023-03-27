@@ -3,7 +3,7 @@ export function getEmailTemplate(data: {
     eventTitle: string;
     guestName: string;
     guestId?: string;
-    type: 'join' | 'accepted' | 'declined';
+    type: 'join' | 'accepted' | 'declined' | 'leave';
     eventId?: string;
 }) {
     if (data.type === 'join') {
@@ -41,6 +41,16 @@ export function getEmailTemplate(data: {
             text: `${data.hostFirstName} declined join request`,
             html: `<div>Hi ${data.guestName},<br></div><p>We're sorry, ${data.hostFirstName}  just declined your join request for <strong>${data.eventTitle}</strong>!<br>
             But we are sure you can find another event to join. Keep your head up and get ready to join another event!
+        `,
+        };
+    }
+    if (data.type === 'leave') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.guestName} left event`,
+            text: `${data.guestName} left event`,
+            html: `<div>Hi ${data.hostFirstName},<br></div><p><a href=${
+                'https://mmp3.vercel.app/profile/' + data.guestId
+            }>${data.guestName}</a> just left your event <strong>${data.eventTitle}</strong>!<br>
         `,
         };
     }
