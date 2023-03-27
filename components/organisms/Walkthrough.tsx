@@ -128,6 +128,9 @@ const StyledBackground = styled.div`
     left: 0;
     top: 0;
     z-index: 1;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        display: none;
+    }
 `;
 
 const ButtonWrapper = styled.div`
