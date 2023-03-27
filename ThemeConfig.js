@@ -87,4 +87,15 @@ export const GlobalStyles = createGlobalStyle`
   textarea, input{
     font-family: HankenGrotesk, Arial, Roboto, sans-serif;
   }
+
+  .swiper-pagination-bullet-active{
+    background-color: ${({ theme }) => theme.primary};
+  }
+  .swiper-pagination-fraction,
+  .swiper-pagination-custom,
+  .swiper-horizontal > .swiper-pagination-bullets,
+  .swiper-pagination-bullets.swiper-pagination-horizontal {
+    position: unset;
+    margin: 20px 0px;
+}
 `;
