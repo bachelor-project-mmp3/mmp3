@@ -145,15 +145,17 @@ const ExtendedEventPreview: React.FC<{
                                 ) : (
                                     <Button
                                         variant="primary"
-                                        disabled
                                         onClick={(e) => {
-                                            alert('todo');
+                                            onSubmitLeave(
+                                                hasUserSendRequest.id,
+                                                event.id
+                                            );
                                             {
                                                 /* to prevent navigation to eventdetail */
                                             }
                                             e.stopPropagation();
                                         }}>
-                                        Pending
+                                        Withdraw
                                     </Button>
                                 )}
                             </>

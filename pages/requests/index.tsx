@@ -14,6 +14,7 @@ const Requests = () => {
         React.useState<
             undefined | { status: string; name: string; title: string }
         >();
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = React.useState<boolean>(false);
 
     const router = useRouter();
 
@@ -59,6 +60,28 @@ const Requests = () => {
         }
     };
 
+    const onSubmitWithdraw = async (requestId: string) => {
+        setLoading(true);
+
+        const res = await fetch(`/api/requests/${requestId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (res.status === 200) {
+            let updatedRequests = requests.filter((request) =>
+                request.id !== requestId
+            );
+
+            setRequests(updatedRequests);
+            setLoading(false);
+            setShowInfoPopOpOnLeave(true);
+        } else {
+            router.push('/404');
+        }
+
+    }
+
     if (isLoading) return <Loading />;
     if (!requests) return <p>No requests </p>;
     return (
@@ -75,8 +98,14 @@ const Requests = () => {
                 </InfoPopUp>
             )}
 
+            {showInfoPopOpOnLeave && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
+                  Your Request was deleted successfully.
+                </InfoPopUp>
+            )}
+
             <Layout>
-                <Header backButton>Invitations</Header>
+                <Header backButton>Requests</Header>
                 <div>
                     {requests &&
                         requests.map((request) => (
@@ -89,6 +118,7 @@ const Requests = () => {
                                 onSubmitDecline={() =>
                                     onSubmit(request.id, RequestStatus.DECLINED)
                                 }
+                                onSubmitWithdraw={() => onSubmitWithdraw(request.id)}
                             />
                         ))}
                 </div>
