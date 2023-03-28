@@ -33,7 +33,7 @@ export const StyledHeader = styled.div<HeaderStyleProps>`
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline3};
     }
-    font-weight: bold;
+    font-weight: 800;
 `;
 
 const StyledBackButton = styled(GoBackIcon)<HeaderStyleProps>`

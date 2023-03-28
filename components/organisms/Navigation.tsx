@@ -284,7 +284,7 @@ const DesktopNavigationItem = styled.div<NavProps>`
     ${(props) =>
         props.isActive &&
         `
-            font-weight: 600;
+            font-weight: 800;
         `}
 `;
 
@@ -306,7 +306,7 @@ const DesktopFooter = styled.div`
 
 const LogoText = styled.div`
     font-size: ${({ theme }) => theme.fonts.normal.headline4};
-    font-weight: 600;
+    font-weight: 800;
     text-align: center;
     padding-top: 20px;
 

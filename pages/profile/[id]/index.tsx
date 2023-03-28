@@ -291,7 +291,7 @@ const StyledMember = styled.p`
 `;
 
 const StyledAboutMe = styled.p`
-    font-weight: 600;
+    font-weight: 800;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 100%;

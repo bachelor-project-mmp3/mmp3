@@ -209,7 +209,7 @@ const FilterItem = styled.div<FilterItemProps>`
     ${(props) =>
         props.selected &&
         `
-        font-weight: bold;
+        font-weight: 800;
     `}
 `;
 

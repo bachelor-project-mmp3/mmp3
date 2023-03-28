@@ -404,7 +404,7 @@ const StyledButtons = styled.div<HostImageProps>`
 `;
 
 const StyledHeadings = styled.p`
-    font-weight: 600;
+    font-weight: 800;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 100%;
