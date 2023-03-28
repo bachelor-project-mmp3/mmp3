@@ -16,10 +16,7 @@ import { Button } from '../../../components/atoms/Button';
 import AddDishIcon from '../../../public/icons/addDish.svg';
 import DiscardIcon from '../../../public/icons/discard.svg';
 import LinkIcon from '../../../public/icons/link.svg';
-import {
-    formatDateForDateInput,
-    getFormattedDate,
-} from '../../../helper/helperFunctions';
+import { formatDateForDateInput } from '../../../helper/helperFunctions';
 import { Header } from '../../../components/organisms/Header';
 import { Loading } from '../../../components/organisms/Loading';
 import { Info } from '../../../components/atoms/Info';
@@ -71,7 +68,7 @@ const schema = yup
         title: yup.string().min(3).required(),
         date: yup.string().required(),
         timelimit: yup.string().required(),
-        costs: yup.number().positive().min(0).max(99).required(),
+        costs: yup.number().positive().min(0).max(99),
         guests: yup.number().positive().integer().min(1).max(99).required(),
     })
     .required();

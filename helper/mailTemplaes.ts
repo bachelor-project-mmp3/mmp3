@@ -3,7 +3,7 @@ export function getEmailTemplate(data: {
     eventTitle: string;
     guestName: string;
     guestId?: string;
-    type: 'join' | 'accepted' | 'declined' | 'leave';
+    type: 'join' | 'accepted' | 'declined' | 'leave' | 'edit';
     eventId?: string;
 }) {
     if (data.type === 'join') {
@@ -50,7 +50,22 @@ export function getEmailTemplate(data: {
             text: `${data.guestName} left event`,
             html: `<div>Hi ${data.hostFirstName},<br></div><p><a href=${
                 'https://mmp3.vercel.app/profile/' + data.guestId
-            }>${data.guestName}</a> just left your event <strong>${data.eventTitle}</strong>!<br>
+            }>${data.guestName}</a> just left your event <strong>${
+                data.eventTitle
+            }</strong>!<br>
+        `,
+        };
+    }
+    if (data.type === 'edit') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} edited event`,
+            text: `${data.hostFirstName} edited event`,
+            html: `<div>Hi ${data.guestName},<br></div>
+<p>${data.hostFirstName} just edited <strong>${
+                data.eventTitle
+            }</strong> you will be joining! <br>Check out what changed: <a href=${
+                'https://mmp3.vercel.app/events/' + data.eventId
+            }>${data.eventTitle}</a></p>
         `,
         };
     }

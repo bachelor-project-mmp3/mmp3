@@ -3,6 +3,8 @@ import prisma from '../../../../lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]';
 import { addHoursToDateTime } from '../../../../helper/helperFunctions';
+import { getNodeMailerTransporter } from '../../../../helper/nodemailer';
+import { getEmailTemplate } from '../../../../helper/mailTemplaes';
 
 export default async function handler(
     req: NextApiRequest,
@@ -65,7 +67,7 @@ export default async function handler(
                                 },
                                 status: true,
                                 userId: true,
-                                id: true
+                                id: true,
                             },
                         },
                     },
@@ -101,9 +103,6 @@ export default async function handler(
                     where: {
                         id: eventId,
                     },
-                    include: {
-                        menu: true,
-                    },
                     data: {
                         title: title,
                         info: info,
@@ -116,6 +115,69 @@ export default async function handler(
                         },
                     },
                 });
+
+                const event = await prisma.event.findUnique({
+                    where: {
+                        id: eventId,
+                    },
+                    include: {
+                        host: {
+                            select: {
+                                firstName: true,
+                                email: true,
+                            },
+                        },
+                        requests: {
+                            where: {
+                                OR: [{ status: 'ACCEPTED' }],
+                            },
+                            select: {
+                                User: {
+                                    select: {
+                                        firstName: true,
+                                        lastName: true,
+                                        email: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                });
+
+                const transporter = getNodeMailerTransporter();
+
+                event.requests.forEach((guest) => {
+                    const mailData = getEmailTemplate({
+                        hostFirstName: event.host.firstName,
+                        eventTitle: event.title,
+                        guestName: guest.User.firstName,
+                        type: 'edit',
+                    });
+
+                    const mail = {
+                        from: 'studentenfuttermmp3@gmail.com',
+                        to: guest.User.email,
+                        ...mailData,
+                    };
+
+                    transporter.sendMail(mail, function (err, info) {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).json({
+                                statusCode: 500,
+                                success: false,
+                                message: err,
+                            });
+                        } else {
+                            console.log(info);
+                            res.status(200).json({
+                                eventId: event.id,
+                                acceptedRequests: event.requests,
+                            });
+                        }
+                    });
+                });
+
                 res.json(result);
             } else {
                 res.status(405).end('Method Not Allowed');
