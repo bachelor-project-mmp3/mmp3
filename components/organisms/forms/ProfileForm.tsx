@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyledForm } from './EventForm';
-import Router from 'next/router';
-import router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { InputFile } from '../../../components/atoms/form/InputFile';
 import { SubmitButton } from '../../../components/atoms/form/SubmitButton';
 import { InputText } from '../../../components/atoms/form/InputText';
@@ -42,13 +41,26 @@ const schema = yup.object({
     instagram: yup.string().notRequired(),
     phone: yup.string().notRequired(),
     dormitory: yup.string().notRequired(),
-    privacy: yup.string().oneOf(['on']),
+    privacy: yup.lazy((value) => {
+        if (
+            value &&
+            Object.values(value).some(
+                (v) => !(v === null) || v === undefined || v === ''
+            )
+        ) {
+            return yup.string().oneOf(['on']);
+        } else {
+            return yup.mixed().notRequired();
+        }
+    }),
 });
 
 type FormData = yup.InferType<typeof schema>;
 
 export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     const { data: session } = useSession();
+    const router = useRouter();
+    const firstLogin = router.pathname.includes('create');
 
     const [profile, setProfile] = useState(null);
     const [isLoading, setLoading] = useState(true);
@@ -351,29 +363,31 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 <Info>The phone number will only be shared with guests</Info>
             </StyledInfo>
 
-            <StyledDiv>
-                <StyledWrapper>
-                    <Checkbox
-                        id="privacy"
-                        required={true}
-                        onChange={(e) => {
-                            setValue('privacy', e.target.value);
-                            setPrivacy(e.target.value);
-                            if (e.target.value === false) {
-                                setError('privacy', { type: 'oneOf' });
-                            } else {
-                                clearErrors('privacy');
-                            }
-                        }}>
-                        I have read and agree to the{' '}
-                        <Link href="/privacy">privacy policy</Link>
-                    </Checkbox>
-                </StyledWrapper>
-                {/*errors will return when field validation fails */}
-                {errors.privacy && errors.privacy.type === 'oneOf' && (
-                    <ErrorMessage>Please accept privacy</ErrorMessage>
-                )}
-            </StyledDiv>
+            {firstLogin && (
+                <StyledDiv>
+                    <StyledWrapper>
+                        <Checkbox
+                            id="privacy"
+                            required={true}
+                            onChange={(e) => {
+                                setValue('privacy', e.target.value);
+                                setPrivacy(e.target.value);
+                                if (e.target.value === false) {
+                                    setError('privacy', { type: 'oneOf' });
+                                } else {
+                                    clearErrors('privacy');
+                                }
+                            }}>
+                            I have read and agree to the{' '}
+                            <Link href="/privacy">privacy policy</Link>
+                        </Checkbox>
+                    </StyledWrapper>
+                    {/*errors will return when field validation fails */}
+                    {errors.privacy && errors.privacy.type === 'oneOf' && (
+                        <ErrorMessage>Please accept privacy</ErrorMessage>
+                    )}
+                </StyledDiv>
+            )}
             <ButtonWrapper>
                 {cancelButton && (
                     <Button
