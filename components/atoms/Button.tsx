@@ -37,7 +37,7 @@ interface ButtonStyleProps {
 const StyledButton = styled.button<ButtonStyleProps>`
     padding: 8px 20px;
     border-radius: 20px;
-    font-weight: 600;
+    font-weight: 800;
     box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
     width: ${(props) => (props.width ? `${props.width}%` : 'auto')};
     ${(props) =>
