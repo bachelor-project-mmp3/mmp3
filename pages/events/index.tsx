@@ -19,8 +19,9 @@ const Events = () => {
     const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState<
         undefined | string
     >();
-    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] =
-        useState<boolean>(false);
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<
+        string | undefined
+    >();
 
     const router = useRouter();
 
@@ -52,7 +53,11 @@ const Events = () => {
         }
     };
 
-    const onSubmitLeave = async (requestId: string, eventId: string) => {
+    const onSubmitLeave = async (
+        requestId: string,
+        eventId: string,
+        type: 'leave' | 'withdraw'
+    ) => {
         setLoading(true);
 
         const res = await fetch(`/api/requests/${requestId}`, {
@@ -61,11 +66,21 @@ const Events = () => {
         });
 
         if (res.status === 200) {
-            let updatedEvents = events.filter((event) => event.id !== eventId);
+            res.json().then((updatedEvent) => {
+                let updatedEvents = events.map((event) =>
+                    event.id === updatedEvent.id ? updatedEvent : event
+                );
 
-            setEvents(updatedEvents);
-            setLoading(false);
-            setShowInfoPopOpOnLeave(true);
+                setEvents(updatedEvents);
+                setLoading(false);
+                if (type === 'leave') {
+                    setShowInfoPopOpOnLeave('You left the event.');
+                } else {
+                    setShowInfoPopOpOnLeave(
+                        'Your Request was deleted successfully.'
+                    );
+                }
+            });
         } else {
             router.push('/404');
         }
@@ -139,14 +154,8 @@ const Events = () => {
             )}
 
             {showInfoPopOpOnLeave && (
-                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
-                    Your Request was deleted successfully.
-                </InfoPopUp>
-            )}
-
-            {showInfoPopOpOnLeave && (
-                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
-                    Your Request was deleted successfully.
+                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(undefined)}>
+                    {showInfoPopOpOnLeave}
                 </InfoPopUp>
             )}
 

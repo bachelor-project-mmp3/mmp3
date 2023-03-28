@@ -90,7 +90,10 @@ const EventDetail = () => {
     const [event, setEvent] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState(false);
-    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState(false);
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<
+        string | undefined
+    >();
+    const [showQuestion, setShowQuestion] = useState(false);
 
     async function joinEvent(eventId: string, userId: string): Promise<void> {
         setLoading(true);
@@ -117,7 +120,10 @@ const EventDetail = () => {
         }
     }
 
-    const onSubmitLeave = async (requestId: string) => {
+    const onSubmitLeave = async (
+        requestId: string,
+        type: 'leave' | 'withdraw'
+    ) => {
         setLoading(true);
 
         const res = await fetch(`/api/requests/${requestId}`, {
@@ -131,7 +137,13 @@ const EventDetail = () => {
             });
 
             setLoading(false);
-            setShowInfoPopOpOnLeave(true);
+            if (type === 'leave') {
+                setShowInfoPopOpOnLeave('You left the event.');
+            } else {
+                setShowInfoPopOpOnLeave(
+                    'Your Request was deleted successfully.'
+                );
+            }
         } else {
             router.push('/404');
         }
@@ -187,8 +199,36 @@ const EventDetail = () => {
             )}
 
             {showInfoPopOpOnLeave && (
-                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
+                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(undefined)}>
                     Your Request was deleted successfully.
+                </InfoPopUp>
+            )}
+
+            {showQuestion && (
+                <InfoPopUp onClose={() => setShowQuestion(undefined)}>
+                    <div>
+                        Do you really want to leave{' '}
+                        <strong>{event.title}</strong>?
+                        <ButtonsWrapper>
+                            <Button
+                                onClick={() => {
+                                    setShowQuestion(false);
+                                }}
+                                variant="red">
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    onSubmitLeave(
+                                        hasUserSendRequest.id,
+                                        'leave'
+                                    );
+                                }}
+                                variant="primary">
+                                Leave
+                            </Button>
+                        </ButtonsWrapper>
+                    </div>
                 </InfoPopUp>
             )}
 
@@ -311,18 +351,20 @@ const EventDetail = () => {
                                         <Button
                                             variant="primary"
                                             onClick={() =>
-                                                onSubmitLeave(
-                                                    hasUserSendRequest.id
-                                                )
+                                                setShowQuestion(true)
                                             }>
                                             Leave Event
                                         </Button>
                                     ) : (
                                         <Button
                                             variant="primary"
-                                            disabled
-                                            onClick={() => alert('todo')}>
-                                            Pending
+                                            onClick={() =>
+                                                onSubmitLeave(
+                                                    hasUserSendRequest.id,
+                                                    'withdraw'
+                                                )
+                                            }>
+                                            Withdraw
                                         </Button>
                                     )}
                                 </>
@@ -410,4 +452,11 @@ const StyledHeadings = styled.p`
         width: 100%;
         font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
     }
+`;
+
+const ButtonsWrapper = styled.div`
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin: 20px 0px 0px;
 `;

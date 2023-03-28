@@ -56,8 +56,6 @@ export default async function handler(
                 const today = new Date();
 
                 const { dormitoryFilter, dateFilter } = req.query;
-                console.log(dormitoryFilter, 'dormitoryfilter');
-                console.log(dateFilter, 'dateFilter');
 
                 const dataQuery = {
                     host: {

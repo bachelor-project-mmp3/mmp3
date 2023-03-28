@@ -60,7 +60,7 @@ const MyEvents = () => {
         <>
             {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
-                    Your Request was deleted successfully.
+                    You left the event.
                 </InfoPopUp>
             )}
 

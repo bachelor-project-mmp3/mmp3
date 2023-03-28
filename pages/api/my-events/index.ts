@@ -38,7 +38,19 @@ export default async function handler(
                             { requests: { some: { userId: userId } } },
                         ],
 
-                        AND: [{ date: { gte: today } }],
+                        AND: [
+                            { date: { gte: today } },
+                            {
+                                requests: {
+                                    some: {
+                                        OR: [
+                                            { status: 'ACCEPTED' },
+                                            { status: 'CANCELLED' },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
                     },
                 });
 
@@ -61,7 +73,19 @@ export default async function handler(
                             { requests: { some: { userId: userId } } },
                         ],
 
-                        AND: [{ date: { lte: today } }],
+                        AND: [
+                            { date: { lte: today } },
+                            {
+                                requests: {
+                                    some: {
+                                        OR: [
+                                            { status: 'ACCEPTED' },
+                                            { status: 'CANCELLED' },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
                     },
                 });
 
