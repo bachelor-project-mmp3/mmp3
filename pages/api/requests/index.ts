@@ -30,16 +30,38 @@ export default async function handler(
                     include: {
                         host: {
                             select: {
+                                id: true,
                                 firstName: true,
                                 lastName: true,
-                                image: true,
                                 email: true,
                                 dormitory: true,
-                                id: true,
+                                roomNumber: true,
+                                image: true,
+                                phone: true,
                             },
                         },
                         menu: true,
-                        requests: true,
+                        requests: {
+                            where: {
+                                OR: [
+                                    { status: 'ACCEPTED' },
+                                    { status: 'PENDING' },
+                                ],
+                            },
+                            select: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        firstName: true,
+                                        lastName: true,
+                                        image: true,
+                                    },
+                                },
+                                status: true,
+                                userId: true,
+                                id: true,
+                            },
+                        },
                     },
                 });
 
