@@ -71,6 +71,7 @@ export const GlobalStyles = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
+    background: ${({ theme }) => theme.backgroundLightGreen};
     font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
     @media ${({ theme }) => theme.breakpoint.tablet} {
       font-size: ${({ theme }) => theme.fonts.normal.paragraph};
