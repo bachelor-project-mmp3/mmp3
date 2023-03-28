@@ -9,10 +9,12 @@ import InfoPopUp from '../../components/organisms/popups/InfoPopUp';
 import Link from 'next/link';
 import FilterCampus from '../../components/organisms/filter/FilterCampus';
 import NoEventsImage from '../../public/images/no-events.svg';
+import FilterDate from '../../components/organisms/filter/FilterDate';
 
 const Events = () => {
     const [events, setEvents] = useState(null);
     const [filterCampus, setFilterCampus] = useState<string | undefined>();
+    const [filterDate, setFilterDate] = useState<string | undefined>();
     const [isLoading, setLoading] = useState(true);
     const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState<
         undefined | string
@@ -83,14 +85,41 @@ const Events = () => {
     const onFilterEvents = async (filter: string) => {
         setLoading(true);
         setFilterCampus(filter);
-        fetch(`/api/events?dormitoryFilter=${filter}`, {
-            method: 'GET',
-        })
-            .then((res) => res.json())
-            .then((data) => {
+
+        const res = await fetch(
+            `/api/events?dormitoryFilter=${filter}&dateFilter=${filterDate}`,
+            {
+                method: 'GET',
+            }
+        );
+        if (res.status < 300) {
+            res.json().then((data) => {
                 setEvents(data.events);
                 setLoading(false);
             });
+        } else {
+            router.push('/404');
+        }
+    };
+
+    const onFilterDate = async (filter: string) => {
+        setLoading(true);
+        setFilterDate(filter);
+        const res = await fetch(
+            `/api/events?dateFilter=${filter}&dormitoryFilter=${filterCampus}`,
+            {
+                method: 'GET',
+            }
+        );
+
+        if (res.status < 300) {
+            res.json().then((data) => {
+                setEvents(data.events);
+                setLoading(false);
+            });
+        } else {
+            router.push('/404');
+        }
     };
 
     if (isLoading) return <Loading />;
@@ -129,6 +158,11 @@ const Events = () => {
                         currentFilter={filterCampus}>
                         {filterCampus ?? 'Any campus'}
                     </FilterCampus>
+                    <FilterDate
+                        onSubmit={onFilterDate}
+                        currentFilter={filterDate}>
+                        {filterDate ?? 'Any date'}
+                    </FilterDate>
                 </FilterBar>
                 <EventsList>
                     {events &&
@@ -180,6 +214,8 @@ const EmptyEventsList = styled.div`
 
 const FilterBar = styled.div`
     margin-bottom: 40px;
+    display: flex;
+    gap: 20px;
 `;
 
 const StyledNoEventsImage = styled(NoEventsImage)``;
