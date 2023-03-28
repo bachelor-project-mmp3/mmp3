@@ -34,6 +34,7 @@ import Link from 'next/link';
 import { ChefAndImage } from '../../../components/organisms/ChefAndImage';
 import { Loading } from '../../../components/organisms/Loading';
 import InfoPopUp from '../../../components/organisms/popups/InfoPopUp';
+import ActionPopUp from '../../../components/organisms/popups/ActionPopUp';
 
 type EventProps = {
     id: string;
@@ -44,6 +45,7 @@ type EventProps = {
     costs: number;
     currentParticipants: number;
     capacity: number;
+    cancelled: boolean;
     host: {
         id: string;
         firstName: string;
@@ -75,22 +77,29 @@ type EventProps = {
     }> | null;
 };
 
-async function deleteEvent(id: string): Promise<void> {
-    await fetch(`/api/events/${id}`, {
-        method: 'DELETE',
-    });
-    // replace url, because event doesn't exist anymore
-    Router.push('/events');
-}
-
 const EventDetail = () => {
     const { data: session } = useSession();
     const router = useRouter();
     // TODO add type definition
     const [event, setEvent] = useState(null);
     const [isLoading, setLoading] = useState(true);
-    const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState(false);
-    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState(false);
+    const [showInfoPopUpOnJoin, setShowInfoPopUpOnJoin] = useState(false);
+    const [showInfoPopUpOnLeave, setShowInfoPopUpOnLeave] = useState(false);
+    const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
+
+    useEffect(() => {
+        // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
+        if (router.isReady) {
+            fetch(`/api/events/${router.query.id}`, {
+                method: 'GET',
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    setEvent(data.event);
+                    setLoading(false);
+                });
+        }
+    }, [router.isReady, router.query.id, isLoading]);
 
     async function joinEvent(eventId: string, userId: string): Promise<void> {
         setLoading(true);
@@ -111,7 +120,7 @@ const EventDetail = () => {
                 setEvent(joinedEvent);
             });
             setLoading(false);
-            setShowInfoPopOpOnJoin(true);
+            setShowInfoPopUpOnJoin(true);
         } else {
             router.push('/404');
         }
@@ -131,10 +140,23 @@ const EventDetail = () => {
             });
 
             setLoading(false);
-            setShowInfoPopOpOnLeave(true);
+            setShowInfoPopUpOnLeave(true);
         } else {
             router.push('/404');
         }
+    };
+
+    const cancelEvent = async (eventId: string) => {
+        const cancelHeaders = new Headers();
+        cancelHeaders.append('Content-Type', 'application/json');
+        cancelHeaders.append('Cancel', 'true');
+        await fetch(`/api/events/${eventId}`, {
+            method: 'PATCH',
+            headers: cancelHeaders,
+        });
+
+        // replace url, because event doesn't exist anymore
+        router.push(`/events/${eventId}`);
     };
 
     useEffect(() => {
@@ -175,8 +197,8 @@ const EventDetail = () => {
     // @ts-ignore
     return (
         <>
-            {showInfoPopOpOnJoin && (
-                <InfoPopUp onClose={() => setShowInfoPopOpOnJoin(false)}>
+            {showInfoPopUpOnJoin && (
+                <InfoPopUp onClose={() => setShowInfoPopUpOnJoin(false)}>
                     Your Request to join <strong>{event.title}</strong> was
                     successfully sent. Check your{' '}
                     <strong>
@@ -186,15 +208,29 @@ const EventDetail = () => {
                 </InfoPopUp>
             )}
 
-            {showInfoPopOpOnLeave && (
-                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
+            {showInfoPopUpOnLeave && (
+                <InfoPopUp onClose={() => setShowInfoPopUpOnLeave(false)}>
                     Your Request was deleted successfully.
                 </InfoPopUp>
+            )}
+
+            {showInfoPopUpOnCancel && (
+                <ActionPopUp
+                    onClose={() => setshowInfoPopUpOnCancel(false)}
+                    onCancelEvent={() => {
+                        cancelEvent(event.id).then(() => {
+                            setLoading(true);
+                            setshowInfoPopUpOnCancel(false);
+                        });
+                    }}>
+                    Are your sure you want to cancel this event?
+                </ActionPopUp>
             )}
 
             <Layout>
                 <StyledDetailsWrapper>
                     <Header backButton>{event.title}</Header>
+                    {event.cancelled && <p>CANCELED</p>}
                     <StyledInfoEventDetails>
                         <StyledInfoEventDetailsBoxes>
                             <TimeLimitAndSeatsWrapper bold>
@@ -285,67 +321,70 @@ const EventDetail = () => {
                                 ))}
                         </Card>
                     )}
-                    {userIsHost ? (
-                        <StyledButtons userIsHost={userIsHost}>
-                            <Button
-                                variant={'red'}
-                                // onClick={() => deleteEvent(event.id)}
-                                width={45}
-                                disabled>
-                                Cancel Event
-                            </Button>
-                            <Button
-                                variant={'primary'}
-                                onClick={() =>
-                                    router.push(`/events/${event.id}/edit`)
-                                }
-                                width={45}>
-                                Edit event
-                            </Button>
-                        </StyledButtons>
-                    ) : (
-                        <StyledButtons>
-                            {hasUserSendRequest ? (
-                                <>
-                                    {isRequestAccepted ? (
-                                        <Button
-                                            variant="primary"
-                                            onClick={() =>
-                                                onSubmitLeave(
-                                                    hasUserSendRequest.id
-                                                )
-                                            }>
-                                            Leave Event
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            variant="primary"
-                                            disabled
-                                            onClick={() => alert('todo')}>
-                                            Pending
-                                        </Button>
-                                    )}
-                                </>
-                            ) : (
-                                <>
-                                    {event.currentParticipants <
-                                        event.capacity && (
-                                        <Button
-                                            variant="primary"
-                                            width={45}
-                                            onClick={() =>
-                                                joinEvent(
-                                                    event.id,
-                                                    session?.user?.userId
-                                                )
-                                            }>
-                                            Ask to join
-                                        </Button>
-                                    )}
-                                </>
-                            )}
-                        </StyledButtons>
-                    )}
+                    {!event.cancelled &&
+                        (userIsHost ? (
+                            <StyledButtons userIsHost={userIsHost}>
+                                <Button
+                                    variant={'red'}
+                                    onClick={() =>
+                                        setshowInfoPopUpOnCancel(true)
+                                    }
+                                    width={45}>
+                                    Cancel Event
+                                </Button>
+                                <Button
+                                    variant={'primary'}
+                                    onClick={() =>
+                                        router.push(`/events/${event.id}/edit`)
+                                    }
+                                    width={45}>
+                                    Edit event
+                                </Button>
+                            </StyledButtons>
+                        ) : (
+                            <StyledButtons>
+                                {hasUserSendRequest ? (
+                                    <>
+                                        {isRequestAccepted ? (
+                                            <Button
+                                                variant="primary"
+                                                onClick={() =>
+                                                    onSubmitLeave(
+                                                        hasUserSendRequest.id
+                                                    )
+                                                }>
+                                                Leave Event
+                                            </Button>
+                                        ) : (
+                                            //TODO: change to withdraw
+                                            <Button
+                                                variant="primary"
+                                                disabled
+                                                onClick={() => alert('todo')}>
+                                                Pending
+                                            </Button>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        {event.currentParticipants <
+                                            event.capacity && (
+                                            <Button
+                                                variant="primary"
+                                                width={45}
+                                                onClick={() =>
+                                                    joinEvent(
+                                                        event.id,
+                                                        session?.user?.userId
+                                                    )
+                                                }>
+                                                Ask to join
+                                            </Button>
+                                        )}
+                                    </>
+                                )}
+                            </StyledButtons>
+                        ))}
                 </StyledDetailsWrapper>
             </Layout>
         </>

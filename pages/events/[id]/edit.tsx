@@ -218,9 +218,12 @@ const EditEvent = () => {
                 dishes,
             };
 
+            const header = new Headers();
+            header.append('Content-Type', 'application/json');
+            header.append('Cancel', 'false');
             await fetch(`/api/events/${event.id}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: header,
                 body: JSON.stringify(body),
             });
 

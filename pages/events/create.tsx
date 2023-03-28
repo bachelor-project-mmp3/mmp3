@@ -36,24 +36,6 @@ const schema = yup
     .required();
 type FormData = yup.InferType<typeof schema>;
 
-const addHours = (dateString: string, hours: number) => {
-    const date = new Date(dateString);
-    const dateAdjusted = new Date(
-        date.setTime(date.getTime() + hours * 60 * 60 * 1000)
-    );
-    return (
-        dateAdjusted.getFullYear() +
-        '-' +
-        formatDateForDateInput(dateAdjusted.getMonth() + 1) +
-        '-' +
-        formatDateForDateInput(dateAdjusted.getDate()) +
-        'T' +
-        formatDateForDateInput(dateAdjusted.getHours()) +
-        ':' +
-        formatDateForDateInput(dateAdjusted.getMinutes())
-    );
-};
-
 const CreateEvent = () => {
     const { data: session } = useSession();
     const router = useRouter();

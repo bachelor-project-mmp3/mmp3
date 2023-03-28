@@ -9,10 +9,7 @@ export const getFormattedDate = (date: string) => {
 };
 
 export const getFormattedTime = (date: string) => {
-    console.log(new Date(date).getUTCHours());
-    console.log(new Date(date).getHours());
     const time = date.split('T')[1];
-    console.log(time);
     const timeArray = time.split(':');
     const amPm = Number(timeArray[0]) <= 12 ? ' AM' : ' PM';
     const hours =
@@ -36,7 +33,6 @@ export const getTimeLeftToJoin = (timeLimit: string) => {
     const differenceInDays = Math.floor(leftTimeToJoin / (1000 * 3600 * 24));
     if (differenceInDays < 1) {
         const differenceInHours = leftTimeToJoin / (1000 * 3600);
-        console.log(differenceInHours);
         if (differenceInHours < 1) {
             return '<1 hour left to apply';
         }

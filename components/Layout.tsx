@@ -33,6 +33,8 @@ const Layout: React.FC<Props> = (props) => (
 
 export default Layout;
 
+interface StyledLayoutProps {}
+
 const StyledLayout = styled.div`
     padding: 30px 20px 80px 20px;
 

@@ -3,7 +3,7 @@ export function getEmailTemplate(data: {
     eventTitle: string;
     guestName: string;
     guestId?: string;
-    type: 'join' | 'accepted' | 'declined' | 'leave' | 'edit';
+    type: 'join' | 'accepted' | 'declined' | 'leave' | 'edit' | 'cancel';
     eventId?: string;
 }) {
     if (data.type === 'join') {
@@ -66,6 +66,20 @@ export function getEmailTemplate(data: {
             }</strong> you will be joining! <br>Check out what changed: <a href=${
                 'https://mmp3.vercel.app/events/' + data.eventId
             }>${data.eventTitle}</a></p>
+        `,
+        };
+    }
+    if (data.type === 'cancel') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} cancelled event`,
+            text: `${data.hostFirstName} cancelled event`,
+            html: `<div>Hi ${data.guestName},<br></div>
+<p>Unfortunately ${data.hostFirstName} decided to cancel the event <strong>${
+                data.eventTitle
+            }</strong> you wanted to attend!<br>Maybe ${
+                data.hostFirstName
+            } will host different events you can join in the future.<br>
+ In the meantime check out other <a href=${'https://mmp3.vercel.app/events/'}>events</a></p>
         `,
         };
     }
