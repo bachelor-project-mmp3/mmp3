@@ -122,7 +122,7 @@ const StyledDate = styled.p`
 
 const StyledTitle = styled.p`
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
-    font-weight: bold;
+    font-weight: 800;
     overflow: hidden;
     display: inline-block;
     text-overflow: ellipsis;

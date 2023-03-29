@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { dormitories } from '../forms/ProfileForm';
 import { Button } from '../../atoms/Button';
 import Check from '../../../public/icons/hakerl.svg';
-import FilterIcon from '../../../public/icons/goBack.svg';
+import FilterButton from '../../atoms/FilterButton';
 
 interface FilterProps {
     onSubmit?: (filter: string) => void;
@@ -66,30 +66,16 @@ const FilterCampus: React.FC<FilterProps> = ({
                 </>
             )}
 
-            <FilterButton onClick={() => setShowCampusFilterList(true)}>
-                {children} <StyledFilterIcon isOpen={showCampusFilterList} />
+            <FilterButton
+                onClick={() => setShowCampusFilterList(true)}
+                isOpen={showCampusFilterList}>
+                {children}
             </FilterButton>
         </>
     );
 };
 
 export default FilterCampus;
-
-const FilterButton = styled.div`
-    position: relative;
-    background-color: white;
-    padding: 7px 10px;
-    width: fit-content;
-    border-radius: 20px;
-    box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
-
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 7px 15px;
-    }
-`;
 
 const CampusList = styled.div`
     position: absolute;
@@ -123,6 +109,7 @@ const FilterListWrapper = styled.ul`
     padding: 0;
     max-height: 300px;
     overflow: scroll;
+    display: initial;
 `;
 
 interface FilterItemProps {
@@ -131,6 +118,8 @@ interface FilterItemProps {
 
 const FilterItemWrapper = styled.li`
     position: relative;
+    cursor: pointer;
+    list-style: none;
 `;
 
 const FilterItem = styled.div<FilterItemProps>`
@@ -138,14 +127,14 @@ const FilterItem = styled.div<FilterItemProps>`
     font-size: ${({ theme }) => theme.fonts.mobile.headline5};
     padding: 10px 50px;
     @media ${(props) => props.theme.breakpoint.tablet} {
-        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
+        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
         border: none;
     }
 
     ${(props) =>
         props.selected &&
         `
-        font-weight: bold;
+        font-weight: 800;
     `}
 `;
 
@@ -173,18 +162,6 @@ const StyledCheck = styled(Check)`
 interface FilterItemProps {
     isOpen: boolean;
 }
-
-const StyledFilterIcon = styled(FilterIcon)<FilterItemProps>`
-    display: none;
-
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        display: block;
-        height: 16px;
-        width: 16px;
-        transform: ${(props) =>
-            props.isOpen ? 'rotate(90deg)' : 'rotate(270deg)'};
-    }
-`;
 
 const FakeBlur = styled.div`
     z-index: 110;

@@ -51,70 +51,102 @@ export default async function handler(
                 });
                 res.status(200).json(event.id);
             }
-            // TODO extend with query parameters for filtering later
             // GET events /api/events
             else if (req.method === 'GET') {
                 const today = new Date();
 
-                const { dormitoryFilter } = req.query;
-                let events;
+                const { dormitoryFilter, dateFilter } = req.query;
+
+                const dataQuery = {
+                    host: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            image: true,
+                            dormitory: true,
+                            id: true,
+                        },
+                    },
+                    menu: true,
+                    requests: true,
+                };
+
+                const timeLimitCondition = { timeLimit: { gte: today } };
+                const filter = [];
+                filter.push(timeLimitCondition);
 
                 if (dormitoryFilter && dormitoryFilter !== 'undefined') {
-                    events = await prisma.event.findMany({
-                        orderBy: [
-                            {
-                                date: 'asc',
-                            },
-                        ],
-                        include: {
-                            host: {
-                                select: {
-                                    firstName: true,
-                                    lastName: true,
-                                    image: true,
-                                    dormitory: true,
-                                    id: true,
-                                },
-                            },
-                            menu: true,
-                            requests: true,
+                    const dormitoryCondition = {
+                        host: {
+                            dormitory: dormitoryFilter as string,
                         },
-                        where: {
-                            AND: [
-                                { timeLimit: { gte: today } },
-                                {
-                                    host: {
-                                        dormitory: dormitoryFilter as string,
-                                    },
-                                },
-                            ],
-                        },
-                    });
-                } else {
-                    events = await prisma.event.findMany({
-                        orderBy: [
-                            {
-                                date: 'asc',
-                            },
-                        ],
-                        include: {
-                            host: {
-                                select: {
-                                    firstName: true,
-                                    lastName: true,
-                                    image: true,
-                                    dormitory: true,
-                                    id: true,
-                                },
-                            },
-                            menu: true,
-                            requests: true,
-                        },
-                        where: {
-                            timeLimit: { gte: today },
-                        },
-                    });
+                    };
+                    filter.push(dormitoryCondition);
                 }
+
+                if (dateFilter && dateFilter !== 'undefined') {
+                    let from = new Date();
+                    from.setHours(today.getHours() + 2);
+                    let until;
+                    if (dateFilter === 'Today') {
+                        until = new Date();
+                        until.setHours(2, 0, 0, 0);
+                        until.setDate(until.getDate() + 1);
+                    } else if (dateFilter === 'Tomorrow') {
+                        from = new Date();
+                        from.setHours(2, 0, 0, 0);
+                        from.setDate(from.getDate() + 1);
+                        until = new Date();
+                        until.setHours(2, 0, 0, 0);
+                        until.setDate(until.getDate() + 2);
+                    } else if (dateFilter === 'This week') {
+                        const date = new Date();
+                        const day = date.getDay(); // get day of week
+
+                        // day of month - day of week (-6 if Sunday), otherwise +1
+                        const diff =
+                            date.getDate() - day + (day === 0 ? -6 : 1);
+
+                        let firstDay = new Date(date.setDate(diff));
+                        until = new Date(firstDay);
+                        until.setDate(until.getDate() + 7);
+                        until.setHours(2, 0, 0, 0);
+                    } else if (dateFilter === 'This month') {
+                        until = new Date(
+                            from.getFullYear(),
+                            from.getMonth() + 1,
+                            0
+                        );
+                        until.setHours(2, 0, 0, 0);
+                    } else {
+                        if (isNaN(Date.parse(dateFilter as string))) {
+                            res.status(500);
+                        }
+                        from = new Date(dateFilter as string);
+                        until = new Date(dateFilter as string);
+                        until.setDate(from.getDate() + 1);
+                    }
+
+                    const dateCondition = {
+                        date: {
+                            gte: from,
+                            lt: until,
+                        },
+                    };
+                    filter.push(dateCondition);
+                }
+
+                const events = await prisma.event.findMany({
+                    orderBy: [
+                        {
+                            date: 'asc',
+                        },
+                    ],
+                    include: dataQuery,
+                    where: {
+                        AND: filter,
+                    },
+                });
 
                 res.status(200).json({ events: events });
             } else {

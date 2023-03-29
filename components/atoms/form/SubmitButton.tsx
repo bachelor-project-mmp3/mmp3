@@ -11,7 +11,7 @@ export const SubmitButton = ({ value }: InputUrlProps) => {
 const StyledInput = styled.input`
     padding: 8px 20px;
     border-radius: 20px;
-    font-weight: 600;
+    font-weight: 800;
     background-color: ${({ theme }) => theme.primary};
     border: 2px solid ${({ theme }) => theme.primary};
     color: white;

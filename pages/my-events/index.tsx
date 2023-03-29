@@ -60,7 +60,7 @@ const MyEvents = () => {
         <>
             {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
-                    Your Request was deleted successfully.
+                    You left the event.
                 </InfoPopUp>
             )}
 
@@ -135,7 +135,7 @@ const StyledHeadline = styled.p`
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline5};
     }
-    font-weight: bold;
+    font-weight: 800;
 `;
 
 const StyledIcon = styled(Arrow)`
@@ -149,7 +149,7 @@ const TextInvitation = styled.p`
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
     }
-    font-weight: bold;
+    font-weight: 800;
 `;
 
 const WrapperColumn = styled.div`

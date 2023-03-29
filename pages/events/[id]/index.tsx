@@ -84,8 +84,10 @@ const EventDetail = () => {
     const [event, setEvent] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const [showInfoPopUpOnJoin, setShowInfoPopUpOnJoin] = useState(false);
-    const [showInfoPopUpOnLeave, setShowInfoPopUpOnLeave] = useState(false);
-    const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<
+        string | undefined
+    >();
+    const [showQuestion, setShowQuestion] = useState(false);    const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
@@ -126,7 +128,10 @@ const EventDetail = () => {
         }
     }
 
-    const onSubmitLeave = async (requestId: string) => {
+    const onSubmitLeave = async (
+        requestId: string,
+        type: 'leave' | 'withdraw'
+    ) => {
         setLoading(true);
 
         const res = await fetch(`/api/requests/${requestId}`, {
@@ -140,7 +145,13 @@ const EventDetail = () => {
             });
 
             setLoading(false);
-            setShowInfoPopUpOnLeave(true);
+            if (type === 'leave') {
+                setShowInfoPopOpOnLeave('You left the event.');
+            } else {
+                setShowInfoPopOpOnLeave(
+                    'Your Request was deleted successfully.'
+                );
+            }
         } else {
             router.push('/404');
         }
@@ -208,9 +219,37 @@ const EventDetail = () => {
                 </InfoPopUp>
             )}
 
-            {showInfoPopUpOnLeave && (
-                <InfoPopUp onClose={() => setShowInfoPopUpOnLeave(false)}>
+            {showInfoPopOpOnLeave && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(undefined)}>
                     Your Request was deleted successfully.
+                </InfoPopUp>
+            )}
+
+            {showQuestion && (
+                <InfoPopUp onClose={() => setShowQuestion(undefined)}>
+                    <div>
+                        Do you really want to leave{' '}
+                        <strong>{event.title}</strong>?
+                        <ButtonsWrapper>
+                            <Button
+                                onClick={() => {
+                                    setShowQuestion(false);
+                                }}
+                                variant="red">
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    onSubmitLeave(
+                                        hasUserSendRequest.id,
+                                        'leave'
+                                    );
+                                }}
+                                variant="primary">
+                                Leave
+                            </Button>
+                        </ButtonsWrapper>
+                    </div>
                 </InfoPopUp>
             )}
 
@@ -349,19 +388,20 @@ const EventDetail = () => {
                                             <Button
                                                 variant="primary"
                                                 onClick={() =>
-                                                    onSubmitLeave(
-                                                        hasUserSendRequest.id
-                                                    )
+                                                    setShowQuestion(true)
                                                 }>
                                                 Leave Event
                                             </Button>
                                         ) : (
-                                            //TODO: change to withdraw
                                             <Button
-                                                variant="primary"
-                                                disabled
-                                                onClick={() => alert('todo')}>
-                                                Pending
+                                            variant="primary"
+                                            onClick={() =>
+                                            onSubmitLeave(
+                                            hasUserSendRequest.id,
+                                            'withdraw'
+                                            )
+                                        }>
+                                            Withdraw
                                             </Button>
                                         )}
                                     </>
@@ -443,10 +483,17 @@ const StyledButtons = styled.div<HostImageProps>`
 `;
 
 const StyledHeadings = styled.p`
-    font-weight: 600;
+    font-weight: 800;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 100%;
         font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
     }
+`;
+
+const ButtonsWrapper = styled.div`
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin: 20px 0px 0px;
 `;
