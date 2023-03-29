@@ -214,7 +214,6 @@ const CreateEvent = () => {
                         value={date}
                         min={dateTimeNow}
                         onChange={(e) => {
-                            console.log(e.target.value);
                             setValue('date', e?.target?.value);
                             setDate(e?.target?.value);
                             CheckDateInputTime(e?.target?.value);
