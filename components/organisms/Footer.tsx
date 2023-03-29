@@ -43,7 +43,11 @@ const LinksWrapper = styled.div`
 
 const StyledText = styled.p`
     color: ${({ theme }) => theme.darkGrey};
+    cursor: pointer;
     font-size: ${({ theme }) => theme.fonts.mobile.info};
+    :first-child {
+        cursor: initial;
+    }
     @media ${({ theme }) => theme.breakpoint.tablet} {
       font-size: ${({ theme }) => theme.fonts.normal.info};
 `;
