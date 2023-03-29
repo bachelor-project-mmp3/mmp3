@@ -14,7 +14,7 @@ export default async function handler(
 
     if (session) {
         try {
-            // POST Create event /api/requests
+            // POST Create request /api/requests
             if (req.method === 'POST') {
                 const { userId, eventId } = req.body;
 
@@ -90,14 +90,8 @@ export default async function handler(
                 transporter.sendMail(mail, function (err, info) {
                     if (err) {
                         console.log(err);
-                        res.status(500).json({
-                            statusCode: 500,
-                            success: false,
-                            message: err,
-                        });
                     } else {
                         console.log(info);
-                        res.status(200).json({ requestId: request.id });
                     }
                 });
 
