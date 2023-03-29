@@ -9,10 +9,9 @@ export const getFormattedDate = (date: string) => {
 };
 
 export const getFormattedTime = (date: string) => {
-    console.log(new Date(date).getUTCHours());
-    console.log(new Date(date).getHours());
-    const time = date.split('T')[1];
-    console.log(time);
+    const convertedDate = new Date(date);
+    const time = convertedDate.toLocaleTimeString();
+
     const timeArray = time.split(':');
     const amPm = Number(timeArray[0]) <= 12 ? ' AM' : ' PM';
     const hours =
@@ -24,19 +23,13 @@ export const getFormattedTime = (date: string) => {
 export const getTimeLeftToJoin = (timeLimit: string) => {
     const today = new Date();
     const timeLimitDate = new Date(timeLimit);
-    const UTCTimeLimit = new Date(
-        timeLimitDate.getUTCFullYear(),
-        timeLimitDate.getUTCMonth(),
-        timeLimitDate.getUTCDate(),
-        timeLimitDate.getUTCHours(),
-        timeLimitDate.getUTCMinutes(),
-        timeLimitDate.getUTCSeconds()
-    );
-    const leftTimeToJoin = UTCTimeLimit.getTime() - today.getTime();
+
+    const leftTimeToJoin = timeLimitDate.getTime() - today.getTime();
     const differenceInDays = Math.floor(leftTimeToJoin / (1000 * 3600 * 24));
+
     if (differenceInDays < 1) {
         const differenceInHours = leftTimeToJoin / (1000 * 3600);
-        console.log(differenceInHours);
+
         if (differenceInHours < 1) {
             return '<1 hour left to apply';
         }
@@ -64,8 +57,14 @@ export const formatDateForDateInput = (input: number) => {
     return output;
 };
 
-export const addHoursToDateTime = (input: Date, hours: number) => {
-    const dateToMilliseconds = input.getTime();
-    const addedHours = dateToMilliseconds + 3600000 * hours;
-    return new Date(addedHours);
+export const formatDateForForm = (date: Date) => {
+    return (
+        date.getFullYear() +
+        '-' +
+        formatDateForDateInput(date.getMonth() + 1) +
+        '-' +
+        formatDateForDateInput(date.getDate()) +
+        'T' +
+        date.toLocaleTimeString().substring(0, 5)
+    );
 };

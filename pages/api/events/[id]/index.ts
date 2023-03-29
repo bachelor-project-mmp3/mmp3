@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../../lib/prisma';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]';
-import { addHoursToDateTime } from '../../../../helper/helperFunctions';
 import { getNodeMailerTransporter } from '../../../../helper/nodemailer';
 import { getEmailTemplate } from '../../../../helper/mailTemplaes';
 
@@ -85,11 +84,8 @@ export default async function handler(
                     dishes,
                 } = req.body;
 
-                const dateTimeDate = addHoursToDateTime(new Date(date), 2);
-                const dateTimeTimeLimit = addHoursToDateTime(
-                    new Date(timeLimit),
-                    2
-                );
+                const dateTimeDate = new Date(date);
+                const dateTimeTimeLimit = new Date(timeLimit);
                 const floatCosts = parseFloat(costs);
                 const intCapacity = parseInt(capacity);
 
