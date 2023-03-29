@@ -38,6 +38,7 @@ export default Layout;
 
 interface StyledLayoutProps {
     noPadding?: boolean;
+    cancelled?: boolean;
 }
 const StyledLayout = styled.div<StyledLayoutProps>`
     padding: ${(props) => (props.noPadding ? '0 px' : '30px 20px 80px 20px')};

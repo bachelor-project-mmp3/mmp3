@@ -7,6 +7,7 @@ interface ButtonProps {
     onClick?: (e: any) => void;
     children: ReactNode;
     width?: number;
+    smallFont?: boolean;
     disabled?: boolean;
 }
 
@@ -16,12 +17,14 @@ export const Button: React.FC<ButtonProps> = ({
     onClick,
     width,
     disabled,
+    smallFont,
 }: ButtonProps) => {
     return (
         <StyledButton
             onClick={onClick}
             disabled={disabled}
             variant={variant}
+            smallFont={smallFont}
             width={width}>
             {children}
         </StyledButton>
@@ -31,6 +34,7 @@ export const Button: React.FC<ButtonProps> = ({
 interface ButtonStyleProps {
     variant: 'primary' | 'secondary' | 'red';
     disabled: boolean;
+    smallFont?: boolean;
     width?: number;
 }
 
@@ -96,7 +100,10 @@ const StyledButton = styled.button<ButtonStyleProps>`
     opacity: 0.5;
     cursor: not-allowed;
     `}
-    font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
+    font-size: ${(props) =>
+        props.smallFont
+            ? '13px'
+            : ({ theme }) => theme.fonts.mobile.smallParagraph};
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.info};
         padding: 10px 30px;

@@ -90,9 +90,13 @@ const Navigation: React.FC = () => {
                                 }>
                                 <StyledProfileIcon
                                     isActive={
-                                        router?.pathname === '/profile/[id]' ||
-                                        router?.pathname ===
-                                            '/profile/[id]/edit'
+                                        (router?.pathname === `/profile/[id]` &&
+                                            router?.query.id ===
+                                                session?.user.userId) ||
+                                        (router?.pathname ===
+                                            `/profile/[id]/edit` &&
+                                            router?.query.id ===
+                                                session?.user.userId)
                                     }
                                 />
                                 <NavText>Profile</NavText>

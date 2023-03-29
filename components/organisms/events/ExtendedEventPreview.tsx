@@ -14,8 +14,8 @@ import {
     getFormattedTime,
     getTimeLeftToJoin,
 } from '../../../helper/helperFunctions';
-import { RequestStatus } from '.prisma/client';
-import InfoPopUp from '../popups/InfoPopUp';
+import { EventStatus, RequestStatus } from '.prisma/client';
+import ActionPopUp from '../popups/ActionPopUp';
 
 export type EventProps = {
     id: string;
@@ -26,6 +26,7 @@ export type EventProps = {
     costs: number;
     currentParticipants: number;
     capacity: number;
+    status: EventStatus;
     host: {
         id: string;
         firstName: string;
@@ -81,57 +82,49 @@ const ExtendedEventPreview: React.FC<{
     return (
         <>
             {showQuestion && (
-                <InfoPopUp onClose={() => setShowQuestion(undefined)}>
-                    <div>
-                        Do you really want to leave{' '}
-                        <strong>{event.title}</strong>?
-                        <ButtonsWrapper>
-                            <Button
-                                onClick={(e) => {
-                                    setShowQuestion(false);
-                                }}
-                                variant="red">
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={(e) => {
-                                    onSubmitLeave(
-                                        hasUserSendRequest.id,
-                                        event.id,
-                                        'leave'
-                                    );
-                                    {
-                                        /* to prevent navigation to eventdetail */
-                                    }
-                                    e.stopPropagation();
-                                }}
-                                variant="primary">
-                                Leave
-                            </Button>
-                        </ButtonsWrapper>
-                    </div>
-                </InfoPopUp>
+                <ActionPopUp
+                    onClose={() => setShowQuestion(false)}
+                    onAction={(e) => {
+                        onSubmitLeave(hasUserSendRequest.id, event.id, 'leave');
+                        /* to prevent navigation to eventdetail */
+                        e.stopPropagation();
+                    }}
+                    textButtonAction={'Leave'}
+                    textButtonClose={'Cancel'}>
+                    Do you really want to leave <strong>{event.title}</strong>?
+                </ActionPopUp>
             )}
 
             <CardWithDateTime>
-                <DateAndTime>
-                    <span>{date}</span>
-                    <span>{time}</span>
-                </DateAndTime>
+                {event.status === EventStatus.CANCELLED ? (
+                    <DateAndTime cancelled>
+                        <span>{date}</span>
+                        <span>{time}</span>
+                    </DateAndTime>
+                ) : (
+                    <DateAndTime>
+                        <span>{date}</span>
+                        <span>{time}</span>
+                    </DateAndTime>
+                )}
                 <Card onClick={() => router.push(`/events/${event.id}`)}>
-                    <TimeLimitAndSeatsWrapper>
-                        <TimeLimitAndSeatsRow>
-                            <StyledClock />
-                            <div>{timeLimit}</div>
-                        </TimeLimitAndSeatsRow>
-                        <TimeLimitAndSeatsRow>
-                            <StyledSeat />
-                            <div>
-                                {event.currentParticipants}/{event.capacity}{' '}
-                                seats taken
-                            </div>
-                        </TimeLimitAndSeatsRow>
-                    </TimeLimitAndSeatsWrapper>
+                    {event.status === EventStatus.CANCELLED ? (
+                        <StyledCancelNote>CANCELLED</StyledCancelNote>
+                    ) : (
+                        <TimeLimitAndSeatsWrapper>
+                            <TimeLimitAndSeatsRow>
+                                <StyledClock />
+                                <div>{timeLimit}</div>
+                            </TimeLimitAndSeatsRow>
+                            <TimeLimitAndSeatsRow>
+                                <StyledSeat />
+                                <div>
+                                    {event.currentParticipants}/{event.capacity}{' '}
+                                    seats taken
+                                </div>
+                            </TimeLimitAndSeatsRow>
+                        </TimeLimitAndSeatsWrapper>
+                    )}
                     <Host>{hostName}</Host>
                     <Place>
                         <StyledLocation />
@@ -163,7 +156,7 @@ const ExtendedEventPreview: React.FC<{
                             </DishEntry>
                         ))}
                     </Dishes>
-                    {!userIsHost && (
+                    {event.status !== EventStatus.CANCELLED && !userIsHost && (
                         <ButtonWrapper>
                             {hasUserSendRequest ? (
                                 <>
@@ -318,12 +311,18 @@ const StyledMenuStar = styled(MenuStar)`
     margin-right: 10px;
 `;
 
-const DateAndTime = styled.div`
+interface DateAndTimeProps {
+    cancelled?: boolean;
+}
+const DateAndTime = styled.div<DateAndTimeProps>`
     display: flex;
     justify-content: space-between;
     padding: 8px 16px;
     gap: 24px;
-    background-color: ${({ theme }) => theme.green};
+    background-color: ${(props) =>
+        props.cancelled
+            ? ({ theme }) => theme.lightGrey
+            : ({ theme }) => theme.green};
     border-top-right-radius: 16px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 32px;
@@ -419,9 +418,7 @@ const ButtonWrapper = styled.div`
     text-align: end;
 `;
 
-const ButtonsWrapper = styled.div`
-    display: flex;
-    gap: 20px;
-    justify-content: space-between;
-    margin: 20px 0px 0px;
+const StyledCancelNote = styled.p`
+    color: red;
+    font-weight: 800;
 `;
