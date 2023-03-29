@@ -3,19 +3,22 @@
 
 import React from 'react';
 import DiscardIcon from '../../../public/icons/discard.svg';
-import { resolveAny } from 'dns';
 import styled from 'styled-components';
 import { Button } from '../../atoms/Button';
 
 interface ActionPopUpProps {
     children: React.ReactNode;
-    onClose?: (e: any) => void;
-    onCancelEvent?: (e: any) => void;
+    textButtonClose: string;
+    textButtonAction: string;
+    onClose: (e: any) => void;
+    onAction: (e: any) => void;
 }
 const ActionPopUp: React.FC<ActionPopUpProps> = ({
     children,
     onClose,
-    onCancelEvent,
+    onAction,
+    textButtonClose,
+    textButtonAction,
 }: ActionPopUpProps) => {
     return (
         <>
@@ -29,14 +32,14 @@ const ActionPopUp: React.FC<ActionPopUpProps> = ({
                         onClick={onClose}
                         width={45}
                         smallFont>
-                        Close
+                        {textButtonClose}
                     </Button>
                     <Button
                         variant={'primary'}
-                        onClick={onCancelEvent}
+                        onClick={onAction}
                         width={45}
                         smallFont>
-                        Cancel Event
+                        {textButtonAction}
                     </Button>
                 </StyledButtonsInRow>
             </Dialog>

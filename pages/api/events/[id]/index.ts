@@ -16,7 +16,7 @@ export default async function handler(
             // DELETE api/events/{id}
             if (req.method === 'DELETE') {
                 const eventId = req.query.id.toString();
-                const event = await prisma.event.delete({
+                await prisma.event.delete({
                     where: { id: eventId },
                 });
                 res.status(200).json({ message: 'Deleted event successfully' });
@@ -169,23 +169,18 @@ export default async function handler(
                                     success: false,
                                     message: err,
                                 });
-                            } else {
-                                res.status(200).json({
-                                    eventId: event.id,
-                                    acceptedRequests: event.requests,
-                                });
                             }
                         });
                     });
 
                     res.json(result);
                 } else {
-                    const result = await prisma.event.update({
+                    await prisma.event.update({
                         where: {
                             id: eventId,
                         },
                         data: {
-                            cancelled: true,
+                            status: 'CANCELLED',
                         },
                     });
 
@@ -196,8 +191,22 @@ export default async function handler(
                         include: {
                             host: {
                                 select: {
+                                    id: true,
                                     firstName: true,
+                                    lastName: true,
                                     email: true,
+                                    dormitory: true,
+                                    roomNumber: true,
+                                    image: true,
+                                    phone: true,
+                                },
+                            },
+                            menu: {
+                                select: {
+                                    id: true,
+                                    title: true,
+                                    description: true,
+                                    link: true,
                                 },
                             },
                             requests: {
@@ -210,17 +219,22 @@ export default async function handler(
                                 select: {
                                     User: {
                                         select: {
+                                            id: true,
                                             firstName: true,
                                             lastName: true,
                                             email: true,
+                                            image: true,
                                         },
                                     },
+                                    status: true,
+                                    userId: true,
+                                    id: true,
                                 },
                             },
                         },
                     });
 
-                    const requests = await prisma.request.updateMany({
+                    await prisma.request.updateMany({
                         where: {
                             eventId: eventId,
                         },
@@ -249,16 +263,11 @@ export default async function handler(
                                     success: false,
                                     message: err,
                                 });
-                            } else {
-                                res.status(200).json({
-                                    eventId: event.id,
-                                    acceptedRequests: event.requests,
-                                });
                             }
                         });
                     });
 
-                    res.status(200).json({ event: result, requests: requests });
+                    res.status(200).json(event);
                 }
             } else {
                 res.status(405).end('Method Not Allowed');

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
 import { Button } from '../../../components/atoms/Button';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import {
     HostImageProps,
@@ -13,7 +13,6 @@ import {
 import styled from 'styled-components';
 import PhoneIcon from '../../../public/icons/phone.svg';
 import EmailIcon from '../../../public/icons/email.svg';
-import Image from 'next/image';
 import {
     getFormattedDate,
     getFormattedTime,
@@ -23,7 +22,7 @@ import { Header } from '../../../components/organisms/Header';
 import { Card } from '../../../components/atoms/Card';
 import MenuItem from '../../../components/organisms/events/MenuItem';
 import GuestListItem from '../../../components/organisms/events/GuestListItem';
-import { RequestStatus } from '.prisma/client';
+import { EventStatus, RequestStatus } from '.prisma/client';
 import {
     hasUserSendRequestHelper,
     hostNameHelper,
@@ -45,7 +44,7 @@ type EventProps = {
     costs: number;
     currentParticipants: number;
     capacity: number;
-    cancelled: boolean;
+    status: EventStatus;
     host: {
         id: string;
         firstName: string;
@@ -87,7 +86,8 @@ const EventDetail = () => {
     const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<
         string | undefined
     >();
-    const [showQuestion, setShowQuestion] = useState(false);    const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
+    const [showQuestion, setShowQuestion] = useState(false);
+    const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
@@ -101,7 +101,7 @@ const EventDetail = () => {
                     setLoading(false);
                 });
         }
-    }, [router.isReady, router.query.id, isLoading]);
+    }, [router.isReady, router.query.id]);
 
     async function joinEvent(eventId: string, userId: string): Promise<void> {
         setLoading(true);
@@ -143,8 +143,8 @@ const EventDetail = () => {
             res.json().then((event) => {
                 setEvent(event);
             });
+            setShowQuestion(false);
 
-            setLoading(false);
             if (type === 'leave') {
                 setShowInfoPopOpOnLeave('You left the event.');
             } else {
@@ -152,22 +152,32 @@ const EventDetail = () => {
                     'Your Request was deleted successfully.'
                 );
             }
+            setLoading(false);
         } else {
             router.push('/404');
         }
     };
 
     const cancelEvent = async (eventId: string) => {
+        setLoading(true);
         const cancelHeaders = new Headers();
         cancelHeaders.append('Content-Type', 'application/json');
         cancelHeaders.append('Cancel', 'true');
-        await fetch(`/api/events/${eventId}`, {
+
+        const res = await fetch(`/api/events/${eventId}`, {
             method: 'PATCH',
             headers: cancelHeaders,
         });
 
-        // replace url, because event doesn't exist anymore
-        router.push(`/events/${eventId}`);
+        if (res.status === 200) {
+            res.json().then((event) => {
+                setEvent(event);
+            });
+            setshowInfoPopUpOnCancel(false);
+            setLoading(false);
+        } else {
+            router.push('/404');
+        }
     };
 
     useEffect(() => {
@@ -221,47 +231,28 @@ const EventDetail = () => {
 
             {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(undefined)}>
-                    Your Request was deleted successfully.
+                    {showInfoPopOpOnLeave}
                 </InfoPopUp>
             )}
 
             {showQuestion && (
-                <InfoPopUp onClose={() => setShowQuestion(undefined)}>
-                    <div>
-                        Do you really want to leave{' '}
-                        <strong>{event.title}</strong>?
-                        <ButtonsWrapper>
-                            <Button
-                                onClick={() => {
-                                    setShowQuestion(false);
-                                }}
-                                variant="red">
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={() => {
-                                    onSubmitLeave(
-                                        hasUserSendRequest.id,
-                                        'leave'
-                                    );
-                                }}
-                                variant="primary">
-                                Leave
-                            </Button>
-                        </ButtonsWrapper>
-                    </div>
-                </InfoPopUp>
+                <ActionPopUp
+                    onClose={() => setShowQuestion(false)}
+                    onAction={() =>
+                        onSubmitLeave(hasUserSendRequest.id, 'leave')
+                    }
+                    textButtonAction={'Leave'}
+                    textButtonClose={'Cancel'}>
+                    Do you really want to leave <strong>{event.title}</strong>?
+                </ActionPopUp>
             )}
 
             {showInfoPopUpOnCancel && (
                 <ActionPopUp
                     onClose={() => setshowInfoPopUpOnCancel(false)}
-                    onCancelEvent={() => {
-                        cancelEvent(event.id).then(() => {
-                            setLoading(true);
-                            setshowInfoPopUpOnCancel(false);
-                        });
-                    }}>
+                    onAction={() => cancelEvent(event.id)}
+                    textButtonAction={'Cancel Event'}
+                    textButtonClose={'Close'}>
                     Are your sure you want to cancel this event?
                 </ActionPopUp>
             )}
@@ -269,22 +260,29 @@ const EventDetail = () => {
             <Layout>
                 <StyledDetailsWrapper>
                     <Header backButton>{event.title}</Header>
-                    {event.cancelled && <p>CANCELED</p>}
+
                     <StyledInfoEventDetails>
                         <StyledInfoEventDetailsBoxes>
-                            <TimeLimitAndSeatsWrapper bold>
-                                <TimeLimitAndSeatsRow>
-                                    <StyledClock />
-                                    <div>{timeLimit}</div>
-                                </TimeLimitAndSeatsRow>
-                                <TimeLimitAndSeatsRow>
-                                    <StyledSeat />
-                                    <div>
-                                        {event.currentParticipants}/
-                                        {event.capacity} seats taken
-                                    </div>
-                                </TimeLimitAndSeatsRow>
-                            </TimeLimitAndSeatsWrapper>
+                            {new Date() < new Date(event.date) &&
+                                (event.status === EventStatus.CANCELLED ? (
+                                    <StyledCancelNote>
+                                        CANCELLED
+                                    </StyledCancelNote>
+                                ) : (
+                                    <TimeLimitAndSeatsWrapper bold>
+                                        <TimeLimitAndSeatsRow>
+                                            <StyledClock />
+                                            <div>{timeLimit}</div>
+                                        </TimeLimitAndSeatsRow>
+                                        <TimeLimitAndSeatsRow>
+                                            <StyledSeat />
+                                            <div>
+                                                {event.currentParticipants}/
+                                                {event.capacity} seats taken
+                                            </div>
+                                        </TimeLimitAndSeatsRow>
+                                    </TimeLimitAndSeatsWrapper>
+                                ))}
                             <div>{date}</div>
                             <div>{time}</div>
                             <div>{event.host?.dormitory}</div>
@@ -360,7 +358,8 @@ const EventDetail = () => {
                                 ))}
                         </Card>
                     )}
-                    {!event.cancelled &&
+                    {event.status !== EventStatus.CANCELLED &&
+                        new Date() < new Date(event.date) &&
                         (userIsHost ? (
                             <StyledButtons userIsHost={userIsHost}>
                                 <Button
@@ -394,14 +393,14 @@ const EventDetail = () => {
                                             </Button>
                                         ) : (
                                             <Button
-                                            variant="primary"
-                                            onClick={() =>
-                                            onSubmitLeave(
-                                            hasUserSendRequest.id,
-                                            'withdraw'
-                                            )
-                                        }>
-                                            Withdraw
+                                                variant="primary"
+                                                onClick={() =>
+                                                    onSubmitLeave(
+                                                        hasUserSendRequest.id,
+                                                        'withdraw'
+                                                    )
+                                                }>
+                                                Withdraw
                                             </Button>
                                         )}
                                     </>
@@ -491,9 +490,7 @@ const StyledHeadings = styled.p`
     }
 `;
 
-const ButtonsWrapper = styled.div`
-    display: flex;
-    gap: 20px;
-    justify-content: space-between;
-    margin: 20px 0px 0px;
+const StyledCancelNote = styled.p`
+    color: red;
+    font-weight: 800;
 `;

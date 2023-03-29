@@ -25,7 +25,7 @@ model Event {
   ingredients         String?        @db.Text //TODO: delete
   image               String
   currentParticipants Int            @default(1)
-  cancelled           Boolean        @default(false)
+  cancelled           Boolean        @default(false) //TODO: delete
   requests            Request[]
   reviews             Review[]
   notifications       Notification[]
