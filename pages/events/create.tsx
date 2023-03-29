@@ -30,7 +30,7 @@ const schema = yup
         title: yup.string().min(3).required(),
         date: yup.string().required(),
         timelimit: yup.string().required(),
-        costs: yup.number().positive().min(0).max(99).required(),
+        costs: yup.number().positive().min(0).max(99),
         guests: yup.number().positive().integer().min(1).max(99).required(),
     })
     .required();

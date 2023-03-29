@@ -150,7 +150,7 @@ const EditEvent = () => {
                     setLoading(false);
                 });
         }
-    }, [register, session, setValue]);
+    }, [register, session, setValue, router?.query.id]);
 
     const handleChange = (event, index) => {
         const values = [...dishes];
