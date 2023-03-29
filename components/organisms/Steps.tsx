@@ -1,42 +1,30 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
-import Step1 from '../../public/images/step_1.png';
-import Step2 from '../../public/images/step_2.png';
-import Step3 from '../../public/images/step_3.png';
+import Bubble1 from '../../public/images/bubble-1.svg';
+import Bubble2 from '../../public/images/bubble-2.svg';
+import Bubble3 from '../../public/images/bubble-3.svg';
 
 export const Steps = () => {
     return (
         <>
             <Wrapper>
                 <WrapperItem>
-                    <StyledImage
-                        src={Step1}
-                        alt="Image"
-                        style={{ objectFit: 'cover' }}
-                    />
+                    <Bubble1 />
                     <StyledText>
                         Create your own events or join ones that suit your
                         preferences.
                     </StyledText>
                 </WrapperItem>
                 <WrapperItem>
-                    <StyledImage
-                        src={Step2}
-                        alt="Image"
-                        style={{ objectFit: 'cover' }}
-                    />
+                    <Bubble2 />
                     <StyledText>
                         Get to know to other students outside of your own degree
                         programm
                     </StyledText>
                 </WrapperItem>
                 <WrapperItem>
-                    <StyledImage
-                        src={Step3}
-                        alt="Image"
-                        style={{ objectFit: 'cover' }}
-                    />
+                    <Bubble3 />
                     <StyledText>
                         Enjoy meals with newfound friends and create lasting
                         connections
