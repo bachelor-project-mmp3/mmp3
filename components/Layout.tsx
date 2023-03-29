@@ -3,15 +3,18 @@ import styled from 'styled-components';
 import Navigation from './organisms/Navigation';
 import Image from 'next/image';
 
-type Props = {
+interface LayoutProps {
     children: ReactNode;
-    paddingLeftRight?: boolean;
-};
+    noPadding?: boolean;
+}
 
-const Layout: React.FC<Props> = (props) => (
+const Layout: React.FC<LayoutProps> = ({
+    children,
+    noPadding,
+}: LayoutProps) => (
     <LayoutWrapper>
         <Navigation />
-        <StyledLayout>
+        <StyledLayout noPadding={noPadding}>
             <BackgroundImageWrapper>
                 <MobileImage
                     src={'/images/background_mobile.svg'}
@@ -26,20 +29,21 @@ const Layout: React.FC<Props> = (props) => (
                     style={{ objectFit: 'cover' }}
                 />
             </BackgroundImageWrapper>
-            {props.children}
+            {children}
         </StyledLayout>
     </LayoutWrapper>
 );
 
 export default Layout;
 
-interface StyledLayoutProps {}
-
-const StyledLayout = styled.div`
-    padding: 30px 20px 80px 20px;
+interface StyledLayoutProps {
+    noPadding?: boolean;
+}
+const StyledLayout = styled.div<StyledLayoutProps>`
+    padding: ${(props) => (props.noPadding ? '0 px' : '30px 20px 80px 20px')};
 
     @media ${({ theme }) => theme.breakpoint.tablet} {
-        padding: 30px 20px;
+        padding: ${(props) => (props.noPadding ? '0 px' : '30px 20px')};
     }
 `;
 
