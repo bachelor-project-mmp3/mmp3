@@ -5,7 +5,15 @@ export function getEmailTemplate(data: {
     eventTitle: string;
     guestName?: string;
     guestId?: string;
-    type: 'join' | 'accepted' | 'declined' | 'leave' | 'edit' | 'cancel' | 'timelimit-host';
+    type:
+        | 'join'
+        | 'accepted'
+        | 'declined'
+        | 'leave'
+        | 'edit'
+        | 'cancel'
+        | 'timelimit-host'
+        | 'kickGuest';
     eventId?: string;
     eventDetail?: { amountOfGuests: number };
 }) {
@@ -98,6 +106,16 @@ export function getEmailTemplate(data: {
             Final amount of guests:  ${data.eventDetail.amountOfGuests}<br>
             Get ready, make your grocery run and show your cooking skills.<br>
             Enjoy your time at the event, make new friends and have fun!
+        `,
+        };
+    }
+    if (data.type === 'kickGuest') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= You will not attend ${data.eventTitle}`,
+            text: `Yout will not attend ${data.eventTitle}`,
+            html: `<div>Hi ${data.guestName},<br></div><p>Unfortunately, ${data.hostFirstName} decided you shouldn't join the event.<br>You should check out other <a href=
+                'https://mmp3.vercel.app/events/'
+            >events</a> you could join, tho!
         `,
         };
     }

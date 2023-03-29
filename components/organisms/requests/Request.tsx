@@ -172,6 +172,14 @@ const Request: React.FC<{
                     </Button>
                 </ButtonWrapper>
             )}
+
+            {request.status === 'ACCEPTED' && userIsHost && (
+                <>
+                    <WithdrawButton onClick={() => onSubmitWithdraw()}>
+                        <StyledDiscard />
+                    </WithdrawButton>
+                </>
+            )}
             {request.status === 'PENDING' &&
                 !userIsHost &&
                 isRegistrationTimeinFuture && (
@@ -271,7 +279,7 @@ const DeclineButton = styled.div`
 `;
 
 const WithdrawButton = styled(DeclineButton)`
-    right: 10px;
+    right: 40px;
 `;
 
 interface HostImageProps {
