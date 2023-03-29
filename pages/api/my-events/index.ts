@@ -35,22 +35,23 @@ export default async function handler(
                     where: {
                         OR: [
                             { host: { id: userId } },
-                            { requests: { some: { userId: userId } } },
-                        ],
-
-                        AND: [
-                            { date: { gte: today } },
                             {
                                 requests: {
                                     some: {
-                                        OR: [
-                                            { status: 'ACCEPTED' },
-                                            { status: 'CANCELLED' },
+                                        AND: [
+                                            { userId: userId },
+                                            {
+                                                OR: [
+                                                    { status: 'ACCEPTED' },
+                                                    { status: 'CANCELLED' },
+                                                ],
+                                            },
                                         ],
                                     },
                                 },
                             },
                         ],
+                        AND: [{ date: { gte: today } }],
                     },
                 });
 
@@ -70,22 +71,24 @@ export default async function handler(
                     where: {
                         OR: [
                             { host: { id: userId } },
-                            { requests: { some: { userId: userId } } },
-                        ],
-
-                        AND: [
-                            { date: { lte: today } },
                             {
                                 requests: {
                                     some: {
-                                        OR: [
-                                            { status: 'ACCEPTED' },
-                                            { status: 'CANCELLED' },
+                                        AND: [
+                                            { userId: userId },
+                                            {
+                                                OR: [
+                                                    { status: 'ACCEPTED' },
+                                                    { status: 'CANCELLED' },
+                                                ],
+                                            },
                                         ],
                                     },
                                 },
                             },
                         ],
+
+                        AND: [{ date: { lte: today } }],
                     },
                 });
 
