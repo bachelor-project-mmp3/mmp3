@@ -15,15 +15,13 @@ import { EventForm } from '../../components/organisms/forms/EventForm';
 import { Button } from '../../components/atoms/Button';
 import AddDishIcon from '../../public/icons/addDish.svg';
 import DiscardIcon from '../../public/icons/discard.svg';
-import MoneyIcon from '../../public/icons/chefmuetze.svg';
 import LinkIcon from '../../public/icons/link.svg';
-import { formatDateForDateInput } from '../../helper/helperFunctions';
+import { formatDateForForm } from '../../helper/helperFunctions';
 import { Header } from '../../components/organisms/Header';
 import { Loading } from '../../components/organisms/Loading';
 import { Info } from '../../components/atoms/Info';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { DateTime } from 'next-auth/providers/kakao';
 
 const schema = yup
     .object({
@@ -40,17 +38,11 @@ const CreateEvent = () => {
     const { data: session } = useSession();
     const router = useRouter();
     let currentDate = new Date();
+    let dateTimePlusOneHourDate = new Date(currentDate);
+    dateTimePlusOneHourDate.setHours(dateTimePlusOneHourDate.getHours() + 1);
 
-    let cDay = formatDateForDateInput(currentDate.getDate());
-    let cMonth = formatDateForDateInput(currentDate.getMonth() + 1);
-    let cYear = currentDate.getFullYear();
-    let cHour = formatDateForDateInput(currentDate.getHours());
-    let cMinutes = formatDateForDateInput(currentDate.getMinutes());
-    let cHourPlusOne = formatDateForDateInput(currentDate.getHours() + 1);
-    let dateTimeNow =
-        cYear + '-' + cMonth + '-' + cDay + 'T' + cHour + ':' + cMinutes;
-    let dateTimePlusOneHour =
-        cYear + '-' + cMonth + '-' + cDay + 'T' + cHourPlusOne + ':' + cMinutes;
+    let dateTimeNow = formatDateForForm(currentDate);
+    let dateTimePlusOneHour = formatDateForForm(dateTimePlusOneHourDate);
 
     const [isLoading, setLoading] = useState(true);
     const [dormitory, setDormitory] = useState('');
