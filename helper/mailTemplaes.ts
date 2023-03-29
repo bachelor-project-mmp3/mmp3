@@ -1,10 +1,13 @@
+import { getFormattedDate, getFormattedTime } from './helperFunctions';
+
 export function getEmailTemplate(data: {
     hostFirstName: string;
     eventTitle: string;
-    guestName: string;
+    guestName?: string;
     guestId?: string;
-    type: 'join' | 'accepted' | 'declined' | 'leave' | 'edit' | 'cancel';
+    type: 'join' | 'accepted' | 'declined' | 'leave' | 'edit' | 'cancel' | 'timelimit-host';
     eventId?: string;
+    eventDetail?: { amountOfGuests: number };
 }) {
     if (data.type === 'join') {
         return {
@@ -80,6 +83,21 @@ export function getEmailTemplate(data: {
                 data.hostFirstName
             } will host different events you can join in the future.<br>
  In the meantime check out other <a href=${'https://mmp3.vercel.app/events/'}>events</a></p>
+        `,
+        };
+    }
+    if (data.type === 'timelimit-host') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= Timelimit to join your event ${data.eventTitle} is over`,
+            text: `Timelimit to join your event ${data.eventTitle} is over`,
+            html: `<div>Hi ${
+                data.hostFirstName
+            },<br></div><p>the time to join your event <a href=${
+                'https://mmp3.vercel.app/events/' + data.eventId
+            }>${data.eventTitle}</a> is over!<br>
+            Final amount of guests:  ${data.eventDetail.amountOfGuests}<br>
+            Get ready, make your grocery run and show your cooking skills.<br>
+            Enjoy your time at the event, make new friends and have fun!
         `,
         };
     }
