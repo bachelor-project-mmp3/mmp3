@@ -30,29 +30,11 @@ const schema = yup
         title: yup.string().min(3).required(),
         date: yup.string().required(),
         timelimit: yup.string().required(),
-        costs: yup.number().positive().min(0).max(99).required(),
+        costs: yup.number().positive().min(0).max(99),
         guests: yup.number().positive().integer().min(1).max(99).required(),
     })
     .required();
 type FormData = yup.InferType<typeof schema>;
-
-const addHours = (dateString: string, hours: number) => {
-    const date = new Date(dateString);
-    const dateAdjusted = new Date(
-        date.setTime(date.getTime() + hours * 60 * 60 * 1000)
-    );
-    return (
-        dateAdjusted.getFullYear() +
-        '-' +
-        formatDateForDateInput(dateAdjusted.getMonth() + 1) +
-        '-' +
-        formatDateForDateInput(dateAdjusted.getDate()) +
-        'T' +
-        formatDateForDateInput(dateAdjusted.getHours()) +
-        ':' +
-        formatDateForDateInput(dateAdjusted.getMinutes())
-    );
-};
 
 const CreateEvent = () => {
     const { data: session } = useSession();

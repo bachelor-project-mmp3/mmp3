@@ -144,7 +144,7 @@ export default async function handler(
                     ],
                     include: dataQuery,
                     where: {
-                        AND: filter,
+                        AND: [...filter, { NOT: { status: 'CANCELLED' } }],
                     },
                 });
 
