@@ -11,11 +11,16 @@ import FilterCampus from '../../components/organisms/filter/FilterCampus';
 import NoEventsImage from '../../public/images/no-events.svg';
 import FilterDate from '../../components/organisms/filter/FilterDate';
 import FilterIcon from '../../public/icons/goBack.svg';
+import SortByDate, {
+    sortOptions,
+} from '../../components/organisms/filter/SortByDate';
 
 const Events = () => {
     const [events, setEvents] = useState(null);
     const [filterCampus, setFilterCampus] = useState<string | undefined>();
     const [filterDate, setFilterDate] = useState<string | undefined>();
+    const [sortByDate, setSortByDate] =
+        useState<(typeof sortOptions)[number]>('Sort by event date');
     const [isLoading, setLoading] = useState(true);
     const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState<
         undefined | string
@@ -92,7 +97,7 @@ const Events = () => {
     useEffect(() => {
         setLoading(true);
         fetch(
-            `/api/events?dormitoryFilter=${filterCampus}&dateFilter=${filterDate}&page=${pageIndex}`,
+            `/api/events?dormitoryFilter=${filterCampus}&dateFilter=${filterDate}&sortByDate=${sortByDate}&page=${pageIndex}`,
             {
                 method: 'GET',
             }
@@ -111,7 +116,7 @@ const Events = () => {
         setPageIndex(1);
 
         const res = await fetch(
-            `/api/events?dormitoryFilter=${filter}&dateFilter=${filterDate}&page=1`,
+            `/api/events?dormitoryFilter=${filter}&dateFilter=${filterDate}&sortByDate=${sortByDate}&page=1`,
             {
                 method: 'GET',
             }
@@ -132,7 +137,53 @@ const Events = () => {
         setFilterDate(filter);
         setPageIndex(1);
         const res = await fetch(
-            `/api/events?dateFilter=${filter}&dormitoryFilter=${filterCampus}&page=1`,
+            `/api/events?dateFilter=${filter}&dormitoryFilter=${filterCampus}&sortByDate=${sortByDate}&page=1`,
+            {
+                method: 'GET',
+            }
+        );
+
+        if (res.status < 300) {
+            res.json().then((data) => {
+                setEvents(data.events);
+                setPageCount(data.pageCount);
+                setLoading(false);
+            });
+        } else {
+            router.push('/404');
+        }
+    };
+
+    const onSortDate = async (sort: string) => {
+        setLoading(true);
+        setSortByDate(sort);
+        setPageIndex(1);
+        const res = await fetch(
+            `/api/events?dateFilter=${filterDate}&dormitoryFilter=${filterCampus}&sortByDate=${sort}&page=1`,
+            {
+                method: 'GET',
+            }
+        );
+
+        if (res.status < 300) {
+            res.json().then((data) => {
+                setEvents(data.events);
+                setPageCount(data.pageCount);
+                setLoading(false);
+            });
+        } else {
+            router.push('/404');
+        }
+    };
+
+    const onResetFilter = async () => {
+        setLoading(true);
+        setSortByDate('Sort by event date');
+        setFilterCampus(undefined);
+        setFilterDate(undefined);
+        setPageIndex(1);
+        const res = await fetch(
+            `/api/events?dateFilter=undefined&dormitoryFilter=undefined&sortByDate=Sort by event date&page=1`,
             {
                 method: 'GET',
             }
@@ -150,6 +201,12 @@ const Events = () => {
     };
 
     if (isLoading) return <Loading />;
+    const showResetFilter =
+        sortByDate !== 'Sort by event date' ||
+        filterCampus !== undefined ||
+        filterDate !== undefined;
+
+    console.log(filterDate, 'datefilter');
 
     return (
         <>
@@ -183,6 +240,12 @@ const Events = () => {
                         currentFilter={filterDate}>
                         {filterDate ?? 'Any date'}
                     </FilterDate>
+                    <SortByDate onSubmit={onSortDate} currentSort={sortByDate}>
+                        {sortByDate ?? 'Any date'}
+                    </SortByDate>
+                    {showResetFilter && (
+                        <Reset onClick={() => onResetFilter()}>Reset</Reset>
+                    )}
                 </FilterBar>
                 <EventsList>
                     {events &&
@@ -264,7 +327,16 @@ const EmptyEventsList = styled.div`
 const FilterBar = styled.div`
     margin-bottom: 40px;
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 20px;
+`;
+
+const Reset = styled.div`
+    cursor: pointer;
+    :hover {
+        color: ${({ theme }) => theme.hoverPrimary};
+    }
 `;
 
 const StyledNoEventsImage = styled(NoEventsImage)``;
