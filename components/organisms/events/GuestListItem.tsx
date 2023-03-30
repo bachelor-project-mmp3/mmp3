@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Image from 'next/image';
 import DiscardIcon from '../../../public/icons/discard.svg';
 import router from 'next/router';
+import { RequestStatus } from '@prisma/client';
 
 type GuestProps = {
     id: string;
@@ -15,7 +16,8 @@ const GuestListItem: React.FC<{
     guest: GuestProps;
     key: string;
     userIsHost: boolean;
-}> = ({ guest, key, userIsHost }) => {
+    onClick?: (e: any) => void;
+}> = ({ guest, key, userIsHost, onClick }) => {
     return (
         <StyledGuestListItem key={key}>
             <StyledImageAndName
@@ -31,9 +33,7 @@ const GuestListItem: React.FC<{
                     {guest.firstName} {guest.lastName}
                 </div>
             </StyledImageAndName>
-            {userIsHost && (
-                <StyledDeleteButton onClick={() => console.log('Jaaaaaa')} />
-            )}
+            {userIsHost && <StyledDeleteButton onClick={onClick} />}
         </StyledGuestListItem>
     );
 };

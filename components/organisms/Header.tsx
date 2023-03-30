@@ -12,10 +12,16 @@ export const Header = ({ backButton, children }: HeaderProps) => {
     const router = useRouter();
 
     return (
-        <StyledHeader>
-            <StyledBackButton backButton={backButton} onClick={router.back} />
-            {children}
-        </StyledHeader>
+        <>
+            {backButton ? (
+                <StyledHeader onClick={router.back} backButton={backButton}>
+                    <StyledBackButton onClick={router.back} />
+                    {children}
+                </StyledHeader>
+            ) : (
+                <StyledHeader>{children}</StyledHeader>
+            )}
+        </>
     );
 };
 
@@ -29,15 +35,16 @@ export const StyledHeader = styled.div<HeaderStyleProps>`
     align-items: center;
     gap: 30px;
     padding-bottom: 20px;
+    width: fit-content;
     font-size: ${({ theme }) => theme.fonts.mobile.headline3};
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline3};
     }
-    font-weight: bold;
+    font-weight: 800;
+    cursor: ${(props) => (props.backButton ? 'pointer' : 'auto')};
 `;
 
-const StyledBackButton = styled(GoBackIcon)<HeaderStyleProps>`
-    display: ${(props) => (props.backButton ? 'inline' : 'none')};
+const StyledBackButton = styled(GoBackIcon)`
     height: 16px;
     width: 16px;
     stroke-width: 20px;

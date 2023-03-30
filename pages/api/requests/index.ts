@@ -14,7 +14,7 @@ export default async function handler(
 
     if (session) {
         try {
-            // POST Create event /api/requests
+            // POST Create request /api/requests
             if (req.method === 'POST') {
                 const { userId, eventId } = req.body;
 
@@ -30,16 +30,38 @@ export default async function handler(
                     include: {
                         host: {
                             select: {
+                                id: true,
                                 firstName: true,
                                 lastName: true,
-                                image: true,
                                 email: true,
                                 dormitory: true,
-                                id: true,
+                                roomNumber: true,
+                                image: true,
+                                phone: true,
                             },
                         },
                         menu: true,
-                        requests: true,
+                        requests: {
+                            where: {
+                                OR: [
+                                    { status: 'ACCEPTED' },
+                                    { status: 'PENDING' },
+                                ],
+                            },
+                            select: {
+                                User: {
+                                    select: {
+                                        id: true,
+                                        firstName: true,
+                                        lastName: true,
+                                        image: true,
+                                    },
+                                },
+                                status: true,
+                                userId: true,
+                                id: true,
+                            },
+                        },
                     },
                 });
 
@@ -68,14 +90,8 @@ export default async function handler(
                 transporter.sendMail(mail, function (err, info) {
                     if (err) {
                         console.log(err);
-                        res.status(500).json({
-                            statusCode: 500,
-                            success: false,
-                            message: err,
-                        });
                     } else {
                         console.log(info);
-                        res.status(200).json({ requestId: request.id });
                     }
                 });
 
@@ -84,6 +100,7 @@ export default async function handler(
             if (req.method === 'GET') {
                 const session = await getSession({ req });
                 const userId = session?.user?.userId;
+                const today = new Date();
 
                 const requests = await prisma.request.findMany({
                     orderBy: [
@@ -115,6 +132,10 @@ export default async function handler(
                         OR: [
                             { Event: { host: { id: userId } } },
                             { userId: userId },
+                        ],
+                        AND: [
+                            { Event: { date: { gte: today } } },
+                            { NOT: { status: 'CANCELLED' } },
                         ],
                     },
                 });

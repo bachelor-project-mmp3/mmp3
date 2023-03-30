@@ -1,19 +1,29 @@
 import { RequestStatus } from '.prisma/client';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import { Header } from '../../components/organisms/Header';
 import { Loading } from '../../components/organisms/Loading';
 import InfoPopUp from '../../components/organisms/popups/InfoPopUp';
-import Request from '../../components/organisms/requests/Request';
+import Request, {
+    RequestProps,
+} from '../../components/organisms/requests/Request';
+import ActionPopUp from '../../components/organisms/popups/ActionPopUp';
+import { useSession } from 'next-auth/react';
 
 const Requests = () => {
-    const [requests, setRequests] = React.useState(null);
-    const [isLoading, setLoading] = React.useState<boolean>(true);
+    const { data: session } = useSession();
+    const [requests, setRequests] = useState(null);
+    const [isLoading, setLoading] = useState<boolean>(true);
     const [showInfoPopOpOnAcceptOrDecline, setShowInfoPopOpOnAcceptOrDecline] =
-        React.useState<
-            undefined | { status: string; name: string; title: string }
-        >();
+        useState<undefined | { status: string; name: string; title: string }>();
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<
+        undefined | string
+    >();
+    const [showInfoPopUpOnCancel, setShowInfoPopUpOnCancel] = useState(false);
+    const [cancelRequest, setCancelRequest] = useState<
+        undefined | RequestProps
+    >();
 
     const router = useRouter();
 
@@ -59,8 +69,39 @@ const Requests = () => {
         }
     };
 
+    const onSubmitWithdraw = async (requestId: string) => {
+        setLoading(true);
+
+        const res = await fetch(`/api/requests/${requestId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (res.status === 200) {
+            let updatedRequests = requests.filter(
+                (request) => request.id !== requestId
+            );
+
+            setRequests(updatedRequests);
+            setLoading(false);
+            if (cancelRequest.Event.host.id !== session?.user.userId)
+                setShowInfoPopOpOnLeave(
+                    'Your request was deleted successfully.'
+                );
+            else {
+                setShowInfoPopOpOnLeave(
+                    `${cancelRequest.User.firstName} got deleted from the event.`
+                );
+                setCancelRequest(undefined);
+            }
+        } else {
+            router.push('/404');
+        }
+    };
+
     if (isLoading) return <Loading />;
     if (!requests) return <p>No requests </p>;
+
     return (
         <>
             {showInfoPopOpOnAcceptOrDecline && (
@@ -75,8 +116,30 @@ const Requests = () => {
                 </InfoPopUp>
             )}
 
+            {showInfoPopOpOnLeave && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(undefined)}>
+                    {showInfoPopOpOnLeave}
+                </InfoPopUp>
+            )}
+
+            {showInfoPopUpOnCancel && (
+                <ActionPopUp
+                    onClose={() => setShowInfoPopUpOnCancel(false)}
+                    onAction={() => {
+                        onSubmitWithdraw(cancelRequest.id).then(() =>
+                            setShowInfoPopUpOnCancel(false)
+                        );
+                    }}
+                    textButtonAction={'Delete'}
+                    textButtonClose={'Cancel'}>
+                    Are your sure you want to delete{' '}
+                    {cancelRequest.User.firstName} from{' '}
+                    <strong>{cancelRequest.Event.title}</strong>?
+                </ActionPopUp>
+            )}
+
             <Layout>
-                <Header backButton>Invitations</Header>
+                <Header backButton>Requests</Header>
                 <div>
                     {requests &&
                         requests.map((request) => (
@@ -89,6 +152,17 @@ const Requests = () => {
                                 onSubmitDecline={() =>
                                     onSubmit(request.id, RequestStatus.DECLINED)
                                 }
+                                onSubmitWithdraw={() => {
+                                    if (
+                                        session?.user?.userId ===
+                                        request.Event.host.id
+                                    ) {
+                                        setShowInfoPopUpOnCancel(true);
+                                        setCancelRequest(request);
+                                    } else {
+                                        onSubmitWithdraw(request.id);
+                                    }
+                                }}
                             />
                         ))}
                 </div>

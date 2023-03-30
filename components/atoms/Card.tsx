@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import React from 'react';
 
 interface CardProps {
-    variant?: 'small-event' |'no-padding' | 'center' | 'description';
+    variant?: 'small-event' | 'no-padding' | 'center' | 'description';
     height?: string;
     width?: string;
     children: ReactNode;
@@ -23,12 +23,13 @@ export const Card: React.FC<CardProps> = ({
 };
 
 interface CardStyleProps {
-    variant: 'small-event' |'no-padding' | 'center' | 'description';
+    variant: 'small-event' | 'no-padding' | 'center' | 'description';
+    greenBackground: boolean;
 }
 
 const StyledCard = styled.div<CardStyleProps>`
     border-radius: 40px;
-    box-shadow: 17px 17px 35px -11px ${({ theme }) => theme.darkGrey};
+    box-shadow: 17px 17px 30px -20px ${({ theme }) => theme.darkGrey};
     margin: 40px 0;
     background: white;
     padding: ${(props) =>
@@ -37,9 +38,9 @@ const StyledCard = styled.div<CardStyleProps>`
             : props.variant === 'description'
             ? '40px'
             : '10px 20px 20px 20px'};
-  ${(props) =>
-          props.variant === 'small-event' &&
-          `
+    ${(props) =>
+        props.variant === 'small-event' &&
+        `
         padding: 0;
         margin: 0;
     `}

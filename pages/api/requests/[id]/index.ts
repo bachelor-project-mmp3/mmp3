@@ -5,6 +5,7 @@ import prisma from '../../../../lib/prisma';
 import { authOptions } from '../../auth/[...nextauth]';
 import { getEmailTemplate } from '../../../../helper/mailTemplaes';
 import { getNodeMailerTransporter } from '../../../../helper/nodemailer';
+import { getSession } from 'next-auth/react';
 
 export default async function handler(
     req: NextApiRequest,
@@ -81,14 +82,8 @@ export default async function handler(
                     transporter.sendMail(mail, function (err, info) {
                         if (err) {
                             console.log(err);
-                            res.status(500).json({
-                                statusCode: 500,
-                                success: false,
-                                message: err,
-                            });
                         } else {
                             console.log(info);
-                            res.status(200).json({ request });
                         }
                     });
                 }
@@ -110,19 +105,136 @@ export default async function handler(
                     transporter.sendMail(mail, function (err, info) {
                         if (err) {
                             console.log(err);
-                            res.status(500).json({
-                                statusCode: 500,
-                                success: false,
-                                message: err,
-                            });
                         } else {
                             console.log(info);
-                            res.status(200).json({ request });
                         }
                     });
                 }
 
                 res.status(200).json(request);
+            } else if (req.method === 'DELETE') {
+                // decrement event's currentParticipants
+                const request = await prisma.request.findUnique({
+                    where: { id: String(req.query.id) },
+                    include: { Event: { include: { host: true } }, User: true },
+                });
+
+                let event;
+                // Leave event & kick guest out of event
+                if (request.status === 'ACCEPTED') {
+                    event = await prisma.event.update({
+                        where: {
+                            id: request.Event.id,
+                        },
+                        data: {
+                            currentParticipants: { decrement: 1 },
+                        },
+                        include: {
+                            host: true,
+                            menu: true,
+                            // for response in eventdetail
+                            requests: {
+                                where: {
+                                    OR: [
+                                        { status: 'ACCEPTED' },
+                                        { status: 'PENDING' },
+                                    ],
+                                    NOT: { id: String(req.query.id) },
+                                },
+                                include: { User: true },
+                            },
+                        },
+                    });
+
+                    // delete the request
+                    await prisma.request.delete({
+                        where: {
+                            id: String(req.query.id),
+                        },
+                    });
+
+                    const transporter = getNodeMailerTransporter();
+                    if (event.host.id === session?.user.userId) {
+                        // send mail to guest who got kicked out of event
+                        const mailData = getEmailTemplate({
+                            hostFirstName: request.Event.host.firstName,
+                            eventTitle: request.Event.title,
+                            guestName: request.User.firstName,
+                            type: 'kickGuest',
+                        });
+
+                        const mail = {
+                            from: 'studentenfuttermmp3@gmail.com',
+                            to: request.User.email,
+                            ...mailData,
+                        };
+
+                        transporter.sendMail(mail, function (err, info) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(info);
+                            }
+                        });
+                    }
+                    // guests leaves event
+                    else {
+                        // send mail to host
+                        const mailData = getEmailTemplate({
+                            hostFirstName: request.Event.host.firstName,
+                            eventTitle: request.Event.title,
+                            guestName: request.User.firstName,
+                            type: 'leave',
+                        });
+
+                        const mail = {
+                            from: 'studentenfuttermmp3@gmail.com',
+                            to: request.Event.host.email,
+                            ...mailData,
+                        };
+
+                        transporter.sendMail(mail, function (err, info) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(info);
+                            }
+                        });
+                    }
+                }
+
+                // Withdraw event
+                if (request.status === 'PENDING') {
+                    event = await prisma.event.findUnique({
+                        where: {
+                            id: request.Event.id,
+                        },
+                        include: {
+                            host: true,
+                            menu: true,
+                            // for response in eventdetail
+                            requests: {
+                                where: {
+                                    OR: [
+                                        { status: 'ACCEPTED' },
+                                        { status: 'PENDING' },
+                                    ],
+                                    NOT: { id: String(req.query.id) },
+                                },
+                                include: { User: true },
+                            },
+                        },
+                    });
+
+                    // delete the request
+                    const deleteRequest = await prisma.request.delete({
+                        where: {
+                            id: String(req.query.id),
+                        },
+                    });
+                }
+
+                res.status(200).json(event);
             }
         } catch (err) {
             res.status(500).json({ message: err.message });

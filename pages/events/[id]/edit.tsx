@@ -1,27 +1,67 @@
-import React, { useState } from 'react';
-import Layout from '../../components/Layout';
+import React, { useEffect, useState } from 'react';
+import Layout from '../../../components/Layout';
 import { useRouter } from 'next/router';
-import { InputText } from '../../components/atoms/form/InputText';
-import { InputDateTime } from '../../components/atoms/form/InputDateTime';
-import { InputNumber } from '../../components/atoms/form/InputNumber';
-import { InputTextarea } from '../../components/atoms/form/InputTextarea';
-import { SubmitButton } from '../../components/atoms/form/SubmitButton';
-import { InputUrl } from '../../components/atoms/form/InputUrl';
+import { InputText } from '../../../components/atoms/form/InputText';
+import { InputDateTime } from '../../../components/atoms/form/InputDateTime';
+import { InputNumber } from '../../../components/atoms/form/InputNumber';
+import { InputTextarea } from '../../../components/atoms/form/InputTextarea';
+import { SubmitButton } from '../../../components/atoms/form/SubmitButton';
+import { InputUrl } from '../../../components/atoms/form/InputUrl';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import { ErrorMessage } from '../../components/atoms/form/ErrorMessage';
+import { ErrorMessage } from '../../../components/atoms/form/ErrorMessage';
 import { useSession } from 'next-auth/react';
-import { EventForm } from '../../components/organisms/forms/EventForm';
-import { Button } from '../../components/atoms/Button';
-import AddDishIcon from '../../public/icons/addDish.svg';
-import DiscardIcon from '../../public/icons/discard.svg';
-import LinkIcon from '../../public/icons/link.svg';
-import { formatDateForForm } from '../../helper/helperFunctions';
-import { Header } from '../../components/organisms/Header';
-import { Loading } from '../../components/organisms/Loading';
-import { Info } from '../../components/atoms/Info';
+import { EventForm } from '../../../components/organisms/forms/EventForm';
+import { Button } from '../../../components/atoms/Button';
+import AddDishIcon from '../../../public/icons/addDish.svg';
+import DiscardIcon from '../../../public/icons/discard.svg';
+import LinkIcon from '../../../public/icons/link.svg';
+import { formatDateForForm } from '../../../helper/helperFunctions';
+import { Header } from '../../../components/organisms/Header';
+import { Loading } from '../../../components/organisms/Loading';
+import { Info } from '../../../components/atoms/Info';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+
+type EventProps = {
+    id: string;
+    title: string;
+    info?: string;
+    timeLimit: string;
+    date: string;
+    costs: number;
+    currentParticipants: number;
+    capacity: number;
+    host: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        dormitory: string;
+        roomNumber: string;
+        image?: string;
+        phone?: string;
+    } | null;
+    menu: Array<{
+        title: string;
+        link: string;
+        description: string;
+        id: string;
+    }> | null;
+    requests: Array<{
+        info: string;
+        eventId: string;
+        userId: string;
+        User: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            image: string;
+        } | null;
+        id: string;
+        status: string;
+    }> | null;
+};
 
 const schema = yup
     .object({
@@ -34,7 +74,7 @@ const schema = yup
     .required();
 type FormData = yup.InferType<typeof schema>;
 
-const CreateEvent = () => {
+const EditEvent = () => {
     const { data: session } = useSession();
     const router = useRouter();
     let currentDate = new Date();
@@ -45,21 +85,17 @@ const CreateEvent = () => {
     let dateTimePlusOneHour = formatDateForForm(dateTimePlusOneHourDate);
 
     const [isLoading, setLoading] = useState(true);
-    const [dormitory, setDormitory] = useState('');
-    const [roomnumber, setRoomnumber] = useState('');
+
     const [title, setTitle] = useState('');
     const [info, setInfo] = useState('');
-    const [date, setDate] = useState(dateTimeNow);
-    const [timeLimit, setTimeLimit] = useState(dateTimePlusOneHour);
+    const [date, setDate] = useState('');
+    const [timeLimit, setTimeLimit] = useState('');
     const [costs, setCosts] = useState('');
     const [capacity, setCapacity] = useState('');
     const [dishes, setDishes] = useState([
-        {
-            title: '',
-            link: '',
-            description: '',
-        },
+        { title: '', link: '', description: '' },
     ]);
+    const [event, setEvent] = useState<EventProps>();
 
     const {
         register,
@@ -70,9 +106,16 @@ const CreateEvent = () => {
         formState: { errors },
     } = useForm<FormData>({
         resolver: yupResolver(schema),
+        defaultValues: {
+            title: title,
+            date: date,
+            timelimit: timeLimit,
+            costs: Number(costs),
+            guests: Number(capacity),
+        },
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
         register('title');
         register('date');
         register('timelimit');
@@ -80,17 +123,35 @@ const CreateEvent = () => {
         register('guests');
 
         if (session) {
-            fetch(`/api/profile/${session?.user?.userId}`, {
+            fetch(`/api/events/${router?.query.id}`, {
                 method: 'GET',
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    setDormitory(data.profile.dormitory);
-                    setRoomnumber(data.profile.roomNumber);
+                    const dateInput = new Date(data.event.date);
+                    const timeLimitInput = new Date(data.event.timeLimit);
+
+                    let dateInputString = formatDateForForm(dateInput);
+                    let timeLimitInputString =
+                        formatDateForForm(timeLimitInput);
+
+                    setEvent(data.event);
+                    setTitle(data.event.title);
+                    setInfo(data.event.info);
+                    setDate(dateInputString);
+                    setTimeLimit(timeLimitInputString);
+                    setCosts(data.event.costs);
+                    setCapacity(data.event.capacity);
+                    setDishes(data.event.menu);
+                    setValue('title', data.event.title);
+                    setValue('date', data.event.date);
+                    setValue('timelimit', data.event.timeLimit);
+                    setValue('costs', data.event.costs);
+                    setValue('guests', data.event.capacity);
                     setLoading(false);
                 });
         }
-    }, [register, session]);
+    }, [register, session, setValue, router?.query.id]);
 
     const handleChange = (event, index) => {
         const values = [...dishes];
@@ -145,6 +206,8 @@ const CreateEvent = () => {
     };
 
     const onSubmit = async () => {
+        setLoading(true);
+
         try {
             const body = {
                 title,
@@ -156,23 +219,25 @@ const CreateEvent = () => {
                 dishes,
             };
 
-            const res = await fetch('/api/events', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const header = new Headers();
+            header.append('Content-Type', 'application/json');
+            header.append('Cancel', 'false');
+            await fetch(`/api/events/${event.id}`, {
+                method: 'PATCH',
+                headers: header,
                 body: JSON.stringify(body),
             });
-            const eventId = await res.json();
 
-            router.replace(`/events/${eventId}`);
+            await router.replace(`/events/${event.id}`);
         } catch (error) {
-            console.error('Failed to create event:' + error);
+            console.error('Failed to edit event:' + error);
         }
     };
 
     if (isLoading) return <Loading />;
     return (
         <Layout>
-            <Header backButton>Create a new Event</Header>
+            <Header backButton>Edit {event.title}</Header>
             <EventForm onSubmit={handleSubmit(onSubmit)}>
                 <StyledInputWithError>
                     <InputText
@@ -191,7 +256,7 @@ const CreateEvent = () => {
                             }
                         }}
                         id="title"
-                        placeholder="Title"
+                        placeholder={event.title}
                         value={title}
                         isInvalid={errors.title ? 'true' : 'false'}
                         required>
@@ -254,8 +319,8 @@ const CreateEvent = () => {
                     <StyledInputWithError className="small">
                         <InputText
                             id=""
-                            placeholder="000"
-                            value={dormitory}
+                            placeholder={event.host.dormitory}
+                            value={event.host.dormitory}
                             disabled={true}>
                             Dormitory
                         </InputText>
@@ -263,8 +328,8 @@ const CreateEvent = () => {
                     <StyledInputWithError className="small">
                         <InputText
                             id=""
-                            placeholder="000"
-                            value={roomnumber}
+                            placeholder={event.host.roomNumber}
+                            value={event.host.roomNumber}
                             disabled={true}>
                             Roomnumber
                         </InputText>
@@ -282,7 +347,7 @@ const CreateEvent = () => {
                     <StyledInputWithError className="small">
                         <InputNumber
                             id="costs"
-                            placeholder="0"
+                            placeholder={event.costs.toString()}
                             step="0.01"
                             min="0"
                             value={costs}
@@ -321,7 +386,7 @@ const CreateEvent = () => {
                     <StyledInputWithError className="small">
                         <InputNumber
                             id="guests"
-                            placeholder="0"
+                            placeholder={event.capacity.toString()}
                             min="0"
                             value={capacity}
                             onChange={(e) => {
@@ -367,7 +432,11 @@ const CreateEvent = () => {
                         id="information"
                         cols={50}
                         rows={8}
-                        placeholder="Write a little bit about your event plans"
+                        placeholder={
+                            event.info
+                                ? event.info
+                                : 'Write a little bit about your event plans'
+                        }
                         value={info}
                         onChange={(e) => setInfo(e.target.value)}>
                         Short information
@@ -382,7 +451,7 @@ const CreateEvent = () => {
                                     <InputText
                                         onChange={(e) => handleChange(e, i)}
                                         id="title"
-                                        placeholder="Enter a title"
+                                        placeholder={currentDish.title}
                                         minLength={3}
                                         value={currentDish.title}
                                         padding="right"
@@ -394,7 +463,11 @@ const CreateEvent = () => {
                                     <InputUrl
                                         onChange={(e) => handleChange(e, i)}
                                         id="link"
-                                        placeholder="https://www.google.at"
+                                        placeholder={
+                                            currentDish.link
+                                                ? currentDish.link
+                                                : 'https://www.google.at'
+                                        }
                                         value={currentDish.link}
                                         padding="left">
                                         {"Link for the dish's recipe"}
@@ -406,7 +479,11 @@ const CreateEvent = () => {
                                         id="description"
                                         cols={50}
                                         rows={5}
-                                        placeholder="Add any information about the dish"
+                                        placeholder={
+                                            currentDish.description
+                                                ? currentDish.description
+                                                : 'Add any information about the dish'
+                                        }
                                         value={currentDish.description}
                                         onChange={(e) => handleChange(e, i)}>
                                         Short information
@@ -442,7 +519,7 @@ const CreateEvent = () => {
                                 Create event
                             </Button>
                         ) : (
-                            <SubmitButton value="Create event"></SubmitButton>
+                            <SubmitButton value="Save changes"></SubmitButton>
                         )}
                     </StyledFormComponentsInRow>
                 </StyledMenuInput>
@@ -451,7 +528,7 @@ const CreateEvent = () => {
     );
 };
 
-export default CreateEvent;
+export default EditEvent;
 
 const StyledInputWithError = styled.div.attrs((/* props */) => ({
     tabIndex: 0,

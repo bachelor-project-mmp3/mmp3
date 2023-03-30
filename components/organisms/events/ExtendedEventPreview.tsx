@@ -14,7 +14,8 @@ import {
     getFormattedTime,
     getTimeLeftToJoin,
 } from '../../../helper/helperFunctions';
-import { RequestStatus } from '.prisma/client';
+import { EventStatus, RequestStatus } from '.prisma/client';
+import ActionPopUp from '../popups/ActionPopUp';
 
 export type EventProps = {
     id: string;
@@ -25,6 +26,7 @@ export type EventProps = {
     costs: number;
     currentParticipants: number;
     capacity: number;
+    status: EventStatus;
     host: {
         id: string;
         firstName: string;
@@ -51,7 +53,12 @@ export type EventProps = {
 const ExtendedEventPreview: React.FC<{
     event: EventProps;
     onSubmitJoin: (eventId: string, userId: string) => void;
-}> = ({ event, onSubmitJoin }) => {
+    onSubmitLeave: (
+        requestId: string,
+        eventId: string,
+        type: 'leave' | 'withdraw'
+    ) => void;
+}> = ({ event, onSubmitJoin, onSubmitLeave }) => {
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -62,6 +69,7 @@ const ExtendedEventPreview: React.FC<{
     const hostName = event?.host?.firstName
         ? event?.host.firstName
         : 'Unknown host';
+    const [showQuestion, setShowQuestion] = React.useState(false);
 
     // TODO use from helper
     const hasUserSendRequest = event.requests.find(
@@ -72,112 +80,139 @@ const ExtendedEventPreview: React.FC<{
         : false;
 
     return (
-        <CardWithDateTime>
-            <DateAndTime>
-                <span>{date}</span>
-                <span>{time}</span>
-            </DateAndTime>
-            <Card onClick={() => router.push(`/events/${event.id}`)}>
-                <TimeLimitAndSeatsWrapper>
-                    <TimeLimitAndSeatsRow>
-                        <StyledClock />
-                        <div>{timeLimit}</div>
-                    </TimeLimitAndSeatsRow>
-                    <TimeLimitAndSeatsRow>
-                        <StyledSeat />
-                        <div>
-                            {event.currentParticipants}/{event.capacity} seats
-                            taken
-                        </div>
-                    </TimeLimitAndSeatsRow>
-                </TimeLimitAndSeatsWrapper>
-                <Host>{hostName}</Host>
-                <Place>
-                    <StyledLocation />
-                    <div>{event?.host?.dormitory}</div>
-                </Place>
-                <TitleAndCostsWrapper>
-                    <EventTitle>{event.title}</EventTitle>
-                    <Costs>{event.costs} &#8364; p. p.</Costs>
-                </TitleAndCostsWrapper>
+        <>
+            {showQuestion && (
+                <ActionPopUp
+                    onClose={() => setShowQuestion(false)}
+                    onAction={(e) => {
+                        onSubmitLeave(hasUserSendRequest.id, event.id, 'leave');
+                        /* to prevent navigation to eventdetail */
+                        e.stopPropagation();
+                    }}
+                    textButtonAction={'Leave'}
+                    textButtonClose={'Cancel'}>
+                    Do you really want to leave <strong>{event.title}</strong>?
+                </ActionPopUp>
+            )}
 
-                {event?.host?.image && (
-                    <>
-                        <StyledChefHood />
-                        <HostImage userIsHost={userIsHost}>
-                            <StyledImage
-                                src={event.host.image}
-                                alt="Image"
-                                layout={'fill'}
-                                style={{ objectFit: 'cover' }}
-                            />
-                        </HostImage>
-                    </>
+            <CardWithDateTime>
+                {event.status === EventStatus.CANCELLED ? (
+                    <DateAndTime cancelled>
+                        <span>{date}</span>
+                        <span>{time}</span>
+                    </DateAndTime>
+                ) : (
+                    <DateAndTime>
+                        <span>{date}</span>
+                        <span>{time}</span>
+                    </DateAndTime>
                 )}
-                <Dishes>
-                    {event.menu?.map((dish) => (
-                        <DishEntry key={dish.id} className="dish">
-                            <StyledMenuStar />
-                            {dish.title}
-                        </DishEntry>
-                    ))}
-                </Dishes>
-                {!userIsHost && (
-                    <ButtonWrapper>
-                        {hasUserSendRequest ? (
-                            <>
-                                {isRequestAccepted ? (
-                                    <Button
-                                        variant="primary"
-                                        disabled
-                                        onClick={(e) => {
-                                            alert('todo');
-                                            {
-                                                /* to prevent navigation to eventdetail */
-                                            }
-                                            e.stopPropagation();
-                                        }}>
-                                        Leave Event
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant="primary"
-                                        disabled
-                                        onClick={(e) => {
-                                            alert('todo');
-                                            {
-                                                /* to prevent navigation to eventdetail */
-                                            }
-                                            e.stopPropagation();
-                                        }}>
-                                        Pending
-                                    </Button>
-                                )}
-                            </>
-                        ) : (
-                            <>
-                                {event.currentParticipants < event.capacity && (
-                                    <Button
-                                        variant="primary"
-                                        onClick={(e) => {
-                                            onSubmitJoin(
-                                                event.id,
-                                                session?.user?.userId
-                                            );
-                                            {
-                                                /* to prevent navigation to eventdetail */
-                                            }
-                                            e.stopPropagation();
-                                        }}>
-                                        Ask to join
-                                    </Button>
-                                )}
-                            </>
-                        )}
-                    </ButtonWrapper>
-                )}
-            </Card>
-        </CardWithDateTime>
+                <Card onClick={() => router.push(`/events/${event.id}`)}>
+                    {event.status === EventStatus.CANCELLED ? (
+                        <StyledCancelNote>CANCELLED</StyledCancelNote>
+                    ) : (
+                        <TimeLimitAndSeatsWrapper>
+                            <TimeLimitAndSeatsRow>
+                                <StyledClock />
+                                <div>{timeLimit}</div>
+                            </TimeLimitAndSeatsRow>
+                            <TimeLimitAndSeatsRow>
+                                <StyledSeat />
+                                <div>
+                                    {event.currentParticipants}/{event.capacity}{' '}
+                                    seats taken
+                                </div>
+                            </TimeLimitAndSeatsRow>
+                        </TimeLimitAndSeatsWrapper>
+                    )}
+                    <Host>{hostName}</Host>
+                    <Place>
+                        <StyledLocation />
+                        <div>{event?.host?.dormitory}</div>
+                    </Place>
+                    <TitleAndCostsWrapper>
+                        <EventTitle>{event.title}</EventTitle>
+                        <Costs>{event.costs} &#8364; p. p.</Costs>
+                    </TitleAndCostsWrapper>
+
+                    {event?.host?.image && (
+                        <>
+                            <StyledChefHood />
+                            <HostImage userIsHost={userIsHost}>
+                                <StyledImage
+                                    src={event.host.image}
+                                    alt="Image"
+                                    layout={'fill'}
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </HostImage>
+                        </>
+                    )}
+                    <Dishes>
+                        {event.menu?.map((dish) => (
+                            <DishEntry key={dish.id} className="dish">
+                                <StyledMenuStar />
+                                {dish.title}
+                            </DishEntry>
+                        ))}
+                    </Dishes>
+                    {event.status !== EventStatus.CANCELLED && !userIsHost && (
+                        <ButtonWrapper>
+                            {hasUserSendRequest ? (
+                                <>
+                                    {isRequestAccepted ? (
+                                        <Button
+                                            variant="primary"
+                                            onClick={(e) => {
+                                                setShowQuestion(true);
+                                                e.stopPropagation();
+                                            }}>
+                                            Leave Event
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="primary"
+                                            onClick={(e) => {
+                                                onSubmitLeave(
+                                                    hasUserSendRequest.id,
+                                                    event.id,
+                                                    'withdraw'
+                                                );
+                                                {
+                                                    /* to prevent navigation to eventdetail */
+                                                }
+                                                e.stopPropagation();
+                                            }}>
+                                            Withdraw
+                                        </Button>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    {event.currentParticipants <
+                                        event.capacity && (
+                                        <Button
+                                            variant="primary"
+                                            onClick={(e) => {
+                                                onSubmitJoin(
+                                                    event.id,
+                                                    session?.user?.userId
+                                                );
+                                                {
+                                                    /* to prevent navigation to eventdetail */
+                                                }
+                                                e.stopPropagation();
+                                            }}>
+                                            Ask to join
+                                        </Button>
+                                    )}
+                                </>
+                            )}
+                        </ButtonWrapper>
+                    )}
+                </Card>
+            </CardWithDateTime>
+        </>
     );
 };
 
@@ -276,12 +311,18 @@ const StyledMenuStar = styled(MenuStar)`
     margin-right: 10px;
 `;
 
-const DateAndTime = styled.div`
+interface DateAndTimeProps {
+    cancelled?: boolean;
+}
+const DateAndTime = styled.div<DateAndTimeProps>`
     display: flex;
     justify-content: space-between;
     padding: 8px 16px;
     gap: 24px;
-    background-color: ${({ theme }) => theme.green};
+    background-color: ${(props) =>
+        props.cancelled
+            ? ({ theme }) => theme.lightGrey
+            : ({ theme }) => theme.green};
     border-top-right-radius: 16px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 32px;
@@ -375,4 +416,9 @@ const Dishes = styled.div`
 
 const ButtonWrapper = styled.div`
     text-align: end;
+`;
+
+const StyledCancelNote = styled.p`
+    color: red;
+    font-weight: 800;
 `;

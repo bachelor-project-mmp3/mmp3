@@ -35,11 +35,29 @@ export default async function handler(
                     where: {
                         OR: [
                             { host: { id: userId } },
-                            { requests: { some: { userId: userId } } },
+                            {
+                                requests: {
+                                    some: {
+                                        AND: [
+                                            { userId: userId },
+                                            {
+                                                OR: [
+                                                    { status: 'ACCEPTED' },
+                                                    { status: 'CANCELLED' },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
                         ],
-
                         AND: [{ date: { gte: today } }],
                     },
+                    orderBy: [
+                        {
+                            date: 'desc',
+                        },
+                    ],
                 });
 
                 const pastEvents = await prisma.event.findMany({
@@ -58,10 +76,28 @@ export default async function handler(
                     where: {
                         OR: [
                             { host: { id: userId } },
-                            { requests: { some: { userId: userId } } },
+                            {
+                                requests: {
+                                    some: {
+                                        AND: [
+                                            { userId: userId },
+                                            {
+                                                OR: [
+                                                    { status: 'ACCEPTED' },
+                                                    { status: 'CANCELLED' },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
                         ],
-
-                        AND: [{ date: { lte: today } }],
+                        AND: [
+                            {
+                                date: { lte: today },
+                                NOT: { status: 'CANCELLED' },
+                            },
+                        ],
                     },
                 });
 

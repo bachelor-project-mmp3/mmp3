@@ -1,24 +1,32 @@
 export const getFormattedDate = (date: string) => {
-    let formattedDate = new Date(date);
-    return formattedDate.toLocaleDateString('en-US');
+    return (
+        date.substring(5, 7) +
+        '/' +
+        date.substring(8, 10) +
+        '/' +
+        date.substring(0, 4)
+    );
 };
 
 export const getFormattedTime = (date: string) => {
-    const formattedTime = new Date(date);
-    let timeString = formattedTime.toLocaleTimeString('en-US');
+    const convertedDate = new Date(date);
+    const time = convertedDate.toLocaleTimeString();
 
-    const amPm = timeString.substring(timeString.length - 2, timeString.length);
-    const hoursAndMinutes = timeString.substring(0, timeString.length - 6);
-    timeString = hoursAndMinutes + ' ' + amPm;
+    const timeArray = time.split(':');
+    const amPm = Number(timeArray[0]) <= 12 ? ' AM' : ' PM';
+    const hours =
+        Number(timeArray[0]) <= 12 ? timeArray[0] : Number(timeArray[0]) - 12;
 
-    return timeString;
+    return hours + ':' + timeArray[1] + amPm;
 };
 
 export const getTimeLeftToJoin = (timeLimit: string) => {
     const today = new Date();
     const timeLimitDate = new Date(timeLimit);
+
     const leftTimeToJoin = timeLimitDate.getTime() - today.getTime();
     const differenceInDays = Math.floor(leftTimeToJoin / (1000 * 3600 * 24));
+
     if (differenceInDays < 1) {
         const differenceInHours = leftTimeToJoin / (1000 * 3600);
 
@@ -47,4 +55,16 @@ export const formatDateForDateInput = (input: number) => {
         output = input;
     }
     return output;
+};
+
+export const formatDateForForm = (date: Date) => {
+    return (
+        date.getFullYear() +
+        '-' +
+        formatDateForDateInput(date.getMonth() + 1) +
+        '-' +
+        formatDateForDateInput(date.getDate()) +
+        'T' +
+        date.toLocaleTimeString().substring(0, 5)
+    );
 };

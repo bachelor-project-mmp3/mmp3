@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout';
 import { Button } from '../../../components/atoms/Button';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import {
     HostImageProps,
@@ -13,7 +13,6 @@ import {
 import styled from 'styled-components';
 import PhoneIcon from '../../../public/icons/phone.svg';
 import EmailIcon from '../../../public/icons/email.svg';
-import Image from 'next/image';
 import {
     getFormattedDate,
     getFormattedTime,
@@ -23,7 +22,7 @@ import { Header } from '../../../components/organisms/Header';
 import { Card } from '../../../components/atoms/Card';
 import MenuItem from '../../../components/organisms/events/MenuItem';
 import GuestListItem from '../../../components/organisms/events/GuestListItem';
-import { RequestStatus } from '.prisma/client';
+import { EventStatus, RequestStatus } from '.prisma/client';
 import {
     hasUserSendRequestHelper,
     hostNameHelper,
@@ -34,6 +33,8 @@ import Link from 'next/link';
 import { ChefAndImage } from '../../../components/organisms/ChefAndImage';
 import { Loading } from '../../../components/organisms/Loading';
 import InfoPopUp from '../../../components/organisms/popups/InfoPopUp';
+import ActionPopUp from '../../../components/organisms/popups/ActionPopUp';
+import { RequestProps } from '../../../components/organisms/requests/Request';
 
 type EventProps = {
     id: string;
@@ -44,6 +45,7 @@ type EventProps = {
     costs: number;
     currentParticipants: number;
     capacity: number;
+    status: EventStatus;
     host: {
         id: string;
         firstName: string;
@@ -75,21 +77,35 @@ type EventProps = {
     }> | null;
 };
 
-async function deleteEvent(id: string): Promise<void> {
-    await fetch(`/api/events/${id}`, {
-        method: 'DELETE',
-    });
-    // replace url, because event doesn't exist anymore
-    Router.push('/events');
-}
-
 const EventDetail = () => {
     const { data: session } = useSession();
     const router = useRouter();
     // TODO add type definition
     const [event, setEvent] = useState(null);
     const [isLoading, setLoading] = useState(true);
-    const [showInfoPopOpOnJoin, setShowInfoPopOpOnJoin] = useState(false);
+    const [showInfoPopUpOnJoin, setShowInfoPopUpOnJoin] = useState(false);
+    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<
+        string | undefined
+    >();
+    const [showQuestion, setShowQuestion] = useState(false);
+    const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
+    const [showInfoPopUpOnDeleteGuest, setShowInfoPopUpOnDeleteGuest] =
+        useState(false);
+    const [deleteGuest, setDeleteGuest] = useState<undefined | RequestProps>();
+
+    useEffect(() => {
+        // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
+        if (router.isReady) {
+            fetch(`/api/events/${router.query.id}`, {
+                method: 'GET',
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    setEvent(data.event);
+                    setLoading(false);
+                });
+        }
+    }, [router.isReady, router.query.id]);
 
     async function joinEvent(eventId: string, userId: string): Promise<void> {
         setLoading(true);
@@ -110,25 +126,72 @@ const EventDetail = () => {
                 setEvent(joinedEvent);
             });
             setLoading(false);
-            setShowInfoPopOpOnJoin(true);
+            setShowInfoPopUpOnJoin(true);
         } else {
             router.push('/404');
         }
     }
 
-    useEffect(() => {
-        // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
-        if (router.isReady) {
-            fetch(`/api/events/${router.query.id}`, {
-                method: 'GET',
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    setEvent(data.event);
-                    setLoading(false);
-                });
+    const onSubmitLeave = async (
+        requestId: string,
+        type: 'leave' | 'withdraw' | 'deleteGuest'
+    ) => {
+        setLoading(true);
+
+        const res = await fetch(`/api/requests/${requestId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (res.status === 200) {
+            res.json().then((event) => {
+                setEvent(event);
+            });
+
+            if (type === 'deleteGuest' && userIsHost) {
+                setShowInfoPopOpOnLeave(
+                    `${deleteGuest.User.firstName} got deleted from the event.`
+                );
+                setDeleteGuest(undefined);
+            } else {
+                setShowQuestion(false);
+
+                if (type === 'leave') {
+                    setShowInfoPopOpOnLeave('You left the event.');
+                } else {
+                    setShowInfoPopOpOnLeave(
+                        'Your Request was deleted successfully.'
+                    );
+                }
+            }
+
+            setLoading(false);
+        } else {
+            router.push('/404');
         }
-    }, [router.isReady, router.query.id]);
+    };
+
+    const cancelEvent = async (eventId: string) => {
+        setLoading(true);
+        const cancelHeaders = new Headers();
+        cancelHeaders.append('Content-Type', 'application/json');
+        cancelHeaders.append('Cancel', 'true');
+
+        const res = await fetch(`/api/events/${eventId}`, {
+            method: 'PATCH',
+            headers: cancelHeaders,
+        });
+
+        if (res.status === 200) {
+            res.json().then((event) => {
+                setEvent(event);
+            });
+            setshowInfoPopUpOnCancel(false);
+            setLoading(false);
+        } else {
+            router.push('/404');
+        }
+    };
 
     if (isLoading) return <Loading />;
     if (!event) return <div>No event detail </div>;
@@ -136,14 +199,14 @@ const EventDetail = () => {
     const timeLimit = getTimeLeftToJoin(event.timeLimit);
     const date = getFormattedDate(event.date);
     const time = getFormattedTime(event.date);
-    const userIsHost = userIsHostHelper(session?.user?.userId, event.host.id);
+    const userIsHost = userIsHostHelper(session?.user?.userId, event?.host?.id);
     const hostName = hostNameHelper(
         event?.host.firstName,
         event?.host.lastName
     );
 
     const hasUserSendRequest = hasUserSendRequestHelper(
-        event.requests,
+        event?.requests,
         session
     );
 
@@ -154,8 +217,8 @@ const EventDetail = () => {
     // @ts-ignore
     return (
         <>
-            {showInfoPopOpOnJoin && (
-                <InfoPopUp onClose={() => setShowInfoPopOpOnJoin(false)}>
+            {showInfoPopUpOnJoin && (
+                <InfoPopUp onClose={() => setShowInfoPopUpOnJoin(false)}>
                     Your Request to join <strong>{event.title}</strong> was
                     successfully sent. Check your{' '}
                     <strong>
@@ -164,24 +227,77 @@ const EventDetail = () => {
                     or FH mails to stay up to date!
                 </InfoPopUp>
             )}
+
+            {showInfoPopOpOnLeave && (
+                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(undefined)}>
+                    {showInfoPopOpOnLeave}
+                </InfoPopUp>
+            )}
+
+            {showQuestion && (
+                <ActionPopUp
+                    onClose={() => setShowQuestion(false)}
+                    onAction={() =>
+                        onSubmitLeave(hasUserSendRequest.id, 'leave')
+                    }
+                    textButtonAction={'Leave'}
+                    textButtonClose={'Cancel'}>
+                    Do you really want to leave <strong>{event.title}</strong>?
+                </ActionPopUp>
+            )}
+
+            {showInfoPopUpOnCancel && (
+                <ActionPopUp
+                    onClose={() => setshowInfoPopUpOnCancel(false)}
+                    onAction={() => cancelEvent(event.id)}
+                    textButtonAction={'Cancel Event'}
+                    textButtonClose={'Close'}>
+                    Are your sure you want to cancel this event?
+                </ActionPopUp>
+            )}
+
+            {showInfoPopUpOnDeleteGuest && (
+                <ActionPopUp
+                    onClose={() => setShowInfoPopUpOnDeleteGuest(false)}
+                    onAction={() => {
+                        onSubmitLeave(deleteGuest.id, 'deleteGuest').then(() =>
+                            setShowInfoPopUpOnDeleteGuest(false)
+                        );
+                    }}
+                    textButtonAction={'Delete'}
+                    textButtonClose={'Cancel'}>
+                    Are your sure you want to delete{' '}
+                    {deleteGuest.User.firstName} from{' '}
+                    <strong>{event.title}</strong>?
+                </ActionPopUp>
+            )}
+
             <Layout>
                 <StyledDetailsWrapper>
                     <Header backButton>{event.title}</Header>
+
                     <StyledInfoEventDetails>
                         <StyledInfoEventDetailsBoxes>
-                            <TimeLimitAndSeatsWrapper bold>
-                                <TimeLimitAndSeatsRow>
-                                    <StyledClock />
-                                    <div>{timeLimit}</div>
-                                </TimeLimitAndSeatsRow>
-                                <TimeLimitAndSeatsRow>
-                                    <StyledSeat />
-                                    <div>
-                                        {event.currentParticipants}/
-                                        {event.capacity} seats taken
-                                    </div>
-                                </TimeLimitAndSeatsRow>
-                            </TimeLimitAndSeatsWrapper>
+                            {new Date() < new Date(event.date) &&
+                                (event.status === EventStatus.CANCELLED ? (
+                                    <StyledCancelNote>
+                                        CANCELLED
+                                    </StyledCancelNote>
+                                ) : (
+                                    <TimeLimitAndSeatsWrapper bold>
+                                        <TimeLimitAndSeatsRow>
+                                            <StyledClock />
+                                            <div>{timeLimit}</div>
+                                        </TimeLimitAndSeatsRow>
+                                        <TimeLimitAndSeatsRow>
+                                            <StyledSeat />
+                                            <div>
+                                                {event.currentParticipants}/
+                                                {event.capacity} seats taken
+                                            </div>
+                                        </TimeLimitAndSeatsRow>
+                                    </TimeLimitAndSeatsWrapper>
+                                ))}
                             <div>{date}</div>
                             <div>{time}</div>
                             <div>{event.host?.dormitory}</div>
@@ -253,67 +369,80 @@ const EventDetail = () => {
                                         key={index}
                                         guest={request.User}
                                         userIsHost={userIsHost}
+                                        onClick={() => {
+                                            setShowInfoPopUpOnDeleteGuest(true);
+                                            setDeleteGuest(request);
+                                        }}
                                     />
                                 ))}
                         </Card>
                     )}
-                    {userIsHost ? (
-                        <StyledButtons userIsHost={userIsHost}>
-                            <Button
-                                variant={'red'}
-                                // onClick={() => deleteEvent(event.id)}
-                                width={45}
-                                disabled>
-                                Cancel Event
-                            </Button>
-                            <Button
-                                variant={'primary'}
-                                // onClick={() => router.push(`/events/${event.id}/edit`)}
-                                width={45}
-                                disabled>
-                                Edit event
-                            </Button>
-                        </StyledButtons>
-                    ) : (
-                        <StyledButtons>
-                            {hasUserSendRequest ? (
-                                <>
-                                    {isRequestAccepted ? (
-                                        <Button
-                                            variant="primary"
-                                            disabled
-                                            onClick={() => alert('todo')}>
-                                            Leave Event
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            variant="primary"
-                                            disabled
-                                            onClick={() => alert('todo')}>
-                                            Pending
-                                        </Button>
-                                    )}
-                                </>
-                            ) : (
-                                <>
-                                    {event.currentParticipants <
-                                        event.capacity && (
-                                        <Button
-                                            variant="primary"
-                                            width={45}
-                                            onClick={() =>
-                                                joinEvent(
-                                                    event.id,
-                                                    session?.user?.userId
-                                                )
-                                            }>
-                                            Ask to join
-                                        </Button>
-                                    )}
-                                </>
-                            )}
-                        </StyledButtons>
-                    )}
+                    {event.status !== EventStatus.CANCELLED &&
+                        new Date() < new Date(event.date) &&
+                        (userIsHost ? (
+                            <StyledButtons userIsHost={userIsHost}>
+                                <Button
+                                    variant={'red'}
+                                    onClick={() =>
+                                        setshowInfoPopUpOnCancel(true)
+                                    }
+                                    width={45}>
+                                    Cancel Event
+                                </Button>
+                                <Button
+                                    variant={'primary'}
+                                    onClick={() =>
+                                        router.push(`/events/${event.id}/edit`)
+                                    }
+                                    width={45}>
+                                    Edit event
+                                </Button>
+                            </StyledButtons>
+                        ) : (
+                            <StyledButtons>
+                                {hasUserSendRequest ? (
+                                    <>
+                                        {isRequestAccepted ? (
+                                            <Button
+                                                variant="primary"
+                                                onClick={() =>
+                                                    setShowQuestion(true)
+                                                }>
+                                                Leave Event
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                variant="primary"
+                                                onClick={() =>
+                                                    onSubmitLeave(
+                                                        hasUserSendRequest.id,
+                                                        'withdraw'
+                                                    )
+                                                }>
+                                                Withdraw
+                                            </Button>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        {event.currentParticipants <
+                                            event.capacity && (
+                                            <Button
+                                                variant="primary"
+                                                width={45}
+                                                onClick={() =>
+                                                    joinEvent(
+                                                        event.id,
+                                                        session?.user?.userId
+                                                    )
+                                                }>
+                                                Ask to join
+                                            </Button>
+                                        )}
+                                    </>
+                                )}
+                            </StyledButtons>
+                        ))}
                 </StyledDetailsWrapper>
             </Layout>
         </>
@@ -372,10 +501,15 @@ const StyledButtons = styled.div<HostImageProps>`
 `;
 
 const StyledHeadings = styled.p`
-    font-weight: 600;
+    font-weight: 800;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 100%;
         font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
     }
+`;
+
+const StyledCancelNote = styled.p`
+    color: red;
+    font-weight: 800;
 `;

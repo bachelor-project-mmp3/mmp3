@@ -54,7 +54,17 @@ export const GlobalStyles = createGlobalStyle`
     src: url("/fonts/hanken-grotesk-v5-latin-regular.woff2");
     format: ("woff2");
     font-display: swap;
+    font-weight:400;
   }
+
+  @font-face {
+    font-family: HankenGrotesk;
+    src: url("/fonts/hanken-grotesk-v7-latin-800.woff2");
+    format: ("woff2");
+    font-display: swap;
+    font-weight:800;
+  }
+
   html {
     box-sizing: border-box;
   }
@@ -71,6 +81,7 @@ export const GlobalStyles = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
+    background: ${({ theme }) => theme.backgroundLightGreen};
     font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
     @media ${({ theme }) => theme.breakpoint.tablet} {
       font-size: ${({ theme }) => theme.fonts.normal.paragraph};
@@ -87,4 +98,15 @@ export const GlobalStyles = createGlobalStyle`
   textarea, input{
     font-family: HankenGrotesk, Arial, Roboto, sans-serif;
   }
+
+  .swiper-pagination-bullet-active{
+    background-color: ${({ theme }) => theme.primary};
+  }
+  .swiper-pagination-fraction,
+  .swiper-pagination-custom,
+  .swiper-horizontal > .swiper-pagination-bullets,
+  .swiper-pagination-bullets.swiper-pagination-horizontal {
+    position: unset;
+    margin: 20px 0px;
+}
 `;

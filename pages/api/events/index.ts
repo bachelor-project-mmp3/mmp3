@@ -47,35 +47,113 @@ export default async function handler(
                 });
                 res.status(200).json(event.id);
             }
-            // TODO extend with query parameters for filtering later
             // GET events /api/events
             else if (req.method === 'GET') {
                 const today = new Date();
+
+                const { dormitoryFilter, dateFilter, page } = req.query;
+                const entriesPerPage = 10;
+                const skipValue = (Number(page) - 1) * entriesPerPage;
+
+                const dataQuery = {
+                    host: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            image: true,
+                            dormitory: true,
+                            id: true,
+                        },
+                    },
+                    menu: true,
+                    requests: true,
+                };
+
+                const timeLimitCondition = { timeLimit: { gte: today } };
+                const filter = [];
+                filter.push(timeLimitCondition);
+
+                if (dormitoryFilter && dormitoryFilter !== 'undefined') {
+                    const dormitoryCondition = {
+                        host: {
+                            dormitory: dormitoryFilter as string,
+                        },
+                    };
+                    filter.push(dormitoryCondition);
+                }
+
+                if (dateFilter && dateFilter !== 'undefined') {
+                    let from = new Date();
+                    let until = new Date();
+                    until.setHours(0, 0, 0, 0);
+                    from.setHours(0, 0, 0, 0);
+                    if (dateFilter === 'Today') {
+                        until.setDate(until.getDate() + 1);
+                    } else if (dateFilter === 'Tomorrow') {
+                        from.setDate(from.getDate() + 1);
+                        until.setDate(until.getDate() + 2);
+                    } else if (dateFilter === 'This week') {
+                        const date = new Date();
+                        const day = date.getDay(); // get day of week
+                        // day of month - day of week (-6 if Sunday), otherwise +1
+                        const diff =
+                            date.getDate() - day + (day === 0 ? -6 : 1);
+                        let firstDay = new Date(date.setDate(diff));
+
+                        until = new Date(firstDay);
+                        until.setDate(until.getDate() + 7);
+                        until.setHours(0, 0, 0, 0);
+                    } else if (dateFilter === 'This month') {
+                        until = new Date(
+                            from.getFullYear(),
+                            from.getMonth() + 1,
+                            0
+                        );
+                        until.setHours(0, 0, 0, 0);
+                    } else {
+                        if (isNaN(Date.parse(dateFilter as string))) {
+                            res.status(500);
+                        }
+                        from = new Date(dateFilter as string);
+                        until = new Date(dateFilter as string);
+                        until.setDate(from.getDate() + 1);
+                    }
+
+                    const dateCondition = {
+                        date: {
+                            gte: from,
+                            lt: until,
+                        },
+                    };
+                    filter.push(dateCondition);
+                }
+
+                const eventsCount = await prisma.event.count({
+                    where: {
+                        AND: [...filter, { NOT: { status: 'CANCELLED' } }],
+                    },
+                });
+
+                const pageCount = Math.ceil(eventsCount / entriesPerPage);
+
                 const events = await prisma.event.findMany({
+                    skip: skipValue, // How many rows to skip
+                    take: entriesPerPage, // Page size
                     orderBy: [
                         {
                             date: 'asc',
                         },
                     ],
-                    include: {
-                        host: {
-                            select: {
-                                firstName: true,
-                                lastName: true,
-                                image: true,
-                                dormitory: true,
-                                id: true,
-                            },
-                        },
-                        menu: true,
-                        requests: true,
-                    },
+                    include: dataQuery,
                     where: {
-                        timeLimit: { gte: today },
+                        AND: [...filter, { NOT: { status: 'CANCELLED' } }],
                     },
                 });
 
-                res.status(200).json({ events: events });
+                res.status(200).json({
+                    events: events,
+                    pageCount: pageCount,
+                });
             } else {
                 res.status(405).end('Method Not Allowed');
             }
