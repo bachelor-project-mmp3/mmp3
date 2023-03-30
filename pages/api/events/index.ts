@@ -51,7 +51,9 @@ export default async function handler(
             else if (req.method === 'GET') {
                 const today = new Date();
 
-                const { dormitoryFilter, dateFilter } = req.query;
+                const { dormitoryFilter, dateFilter, page } = req.query;
+                const entriesPerPage = 10;
+                const skipValue = (Number(page) - 1) * entriesPerPage;
 
                 const dataQuery = {
                     host: {
@@ -126,7 +128,17 @@ export default async function handler(
                     filter.push(dateCondition);
                 }
 
+                const eventsCount = await prisma.event.count({
+                    where: {
+                        AND: [...filter, { NOT: { status: 'CANCELLED' } }],
+                    },
+                });
+
+                const pageCount = Math.ceil(eventsCount / entriesPerPage);
+
                 const events = await prisma.event.findMany({
+                    skip: skipValue, // How many rows to skip
+                    take: entriesPerPage, // Page size
                     orderBy: [
                         {
                             date: 'asc',
@@ -138,7 +150,10 @@ export default async function handler(
                     },
                 });
 
-                res.status(200).json({ events: events });
+                res.status(200).json({
+                    events: events,
+                    pageCount: pageCount,
+                });
             } else {
                 res.status(405).end('Method Not Allowed');
             }

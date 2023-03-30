@@ -10,6 +10,7 @@ import Link from 'next/link';
 import FilterCampus from '../../components/organisms/filter/FilterCampus';
 import NoEventsImage from '../../public/images/no-events.svg';
 import FilterDate from '../../components/organisms/filter/FilterDate';
+import FilterIcon from '../../public/icons/goBack.svg';
 
 const Events = () => {
     const [events, setEvents] = useState(null);
@@ -22,6 +23,8 @@ const Events = () => {
     const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<
         string | undefined
     >();
+    const [pageIndex, setPageIndex] = useState(1);
+    const [pageCount, setPageCount] = useState(1);
 
     const router = useRouter();
 
@@ -67,7 +70,7 @@ const Events = () => {
 
         if (res.status === 200) {
             res.json().then((updatedEvent) => {
-                let updatedEvents = events.map((event) =>
+                let updatedEvents = events?.map((event) =>
                     event.id === updatedEvent.id ? updatedEvent : event
                 );
 
@@ -87,22 +90,28 @@ const Events = () => {
     };
 
     useEffect(() => {
-        fetch('/api/events', {
-            method: 'GET',
-        })
+        setLoading(true);
+        fetch(
+            `/api/events?dormitoryFilter=${filterCampus}&dateFilter=${filterDate}&page=${pageIndex}`,
+            {
+                method: 'GET',
+            }
+        )
             .then((res) => res.json())
             .then((data) => {
                 setEvents(data.events);
-                setLoading(false);
+                setPageCount(data.pageCount);
             });
-    }, []);
+        setLoading(false);
+    }, [pageIndex]);
 
     const onFilterEvents = async (filter: string) => {
         setLoading(true);
         setFilterCampus(filter);
+        setPageIndex(1);
 
         const res = await fetch(
-            `/api/events?dormitoryFilter=${filter}&dateFilter=${filterDate}`,
+            `/api/events?dormitoryFilter=${filter}&dateFilter=${filterDate}&page=1`,
             {
                 method: 'GET',
             }
@@ -110,6 +119,7 @@ const Events = () => {
         if (res.status < 300) {
             res.json().then((data) => {
                 setEvents(data.events);
+                setPageCount(data.pageCount);
                 setLoading(false);
             });
         } else {
@@ -120,8 +130,9 @@ const Events = () => {
     const onFilterDate = async (filter: string) => {
         setLoading(true);
         setFilterDate(filter);
+        setPageIndex(1);
         const res = await fetch(
-            `/api/events?dateFilter=${filter}&dormitoryFilter=${filterCampus}`,
+            `/api/events?dateFilter=${filter}&dormitoryFilter=${filterCampus}&page=1`,
             {
                 method: 'GET',
             }
@@ -130,6 +141,7 @@ const Events = () => {
         if (res.status < 300) {
             res.json().then((data) => {
                 setEvents(data.events);
+                setPageCount(data.pageCount);
                 setLoading(false);
             });
         } else {
@@ -138,7 +150,6 @@ const Events = () => {
     };
 
     if (isLoading) return <Loading />;
-    if (!events) return <p>No events </p>;
 
     return (
         <>
@@ -190,6 +201,35 @@ const Events = () => {
                         </EmptyEventsList>
                     )}
                 </EventsList>
+                {events?.length > 0 && (
+                    <Pagination>
+                        <PaginationAction
+                            onClick={
+                                pageIndex !== 1
+                                    ? () => {
+                                          setPageIndex(pageIndex - 1);
+                                      }
+                                    : null
+                            }
+                            disabled={pageIndex === 1}>
+                            <StyledFilterIcon option="prev" />
+                            Prev
+                        </PaginationAction>
+                        <PaginationPageCount>{`${pageIndex}/${pageCount}`}</PaginationPageCount>
+                        <PaginationAction
+                            onClick={
+                                pageIndex !== pageCount
+                                    ? () => {
+                                          setPageIndex(pageIndex + 1);
+                                      }
+                                    : null
+                            }
+                            disabled={pageIndex === pageCount}>
+                            Next
+                            <StyledFilterIcon option="next" />
+                        </PaginationAction>
+                    </Pagination>
+                )}
             </Layout>
         </>
     );
@@ -228,3 +268,65 @@ const FilterBar = styled.div`
 `;
 
 const StyledNoEventsImage = styled(NoEventsImage)``;
+
+const Pagination = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    font-weight: bold;
+    margin-top: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        justify-content: flex-start;
+        margin-left: 10px;
+        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
+        gap: 30px;
+    }
+`;
+
+interface PaginationIconProps {
+    disabled: boolean;
+    option: 'prev' | 'next';
+}
+
+interface PaginationActionProps {
+    disabled: boolean;
+}
+
+const StyledFilterIcon = styled(FilterIcon)<PaginationIconProps>`
+    height: 16px;
+    width: 16px;
+
+    transform: ${(props) =>
+        props.option === 'prev' ? 'rotate(0deg)' : 'rotate(180deg)'};
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        height: 20px;
+        width: 20px;
+    }
+`;
+
+const PaginationAction = styled.div<PaginationActionProps>`
+    display: flex;
+    align-items: center;
+    color: ${(props) => `${props.theme.primary}`};
+    cursor: pointer;
+
+    ${(props) =>
+        !props.disabled &&
+        `
+        :hover {
+            color: ${props.theme.hoverPrimary};
+        }
+    `}
+    ${(props) =>
+        props.disabled &&
+        `
+        color: ${props.theme.midGrey};
+        cursor: auto;
+    `}
+`;
+
+const PaginationPageCount = styled.div``;
