@@ -20,7 +20,7 @@ export const getFormattedTime = (date: string) => {
     return hours + ':' + timeArray[1] + amPm;
 };
 
-export const getTimeLeftToJoin = (timeLimit: string) => {
+export const getTimeLeftToJoin = (timeLimit: string): string => {
     const today = new Date();
     const timeLimitDate = new Date(timeLimit);
 
@@ -29,6 +29,9 @@ export const getTimeLeftToJoin = (timeLimit: string) => {
 
     if (differenceInDays < 1) {
         const differenceInHours = leftTimeToJoin / (1000 * 3600);
+        if (differenceInHours < 0) {
+            return 'time to join is over';
+        }
 
         if (differenceInHours < 1) {
             return '<1 hour left to apply';

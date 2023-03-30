@@ -170,21 +170,32 @@ const ExtendedEventPreview: React.FC<{
                                             Leave Event
                                         </Button>
                                     ) : (
-                                        <Button
-                                            variant="primary"
-                                            onClick={(e) => {
-                                                onSubmitLeave(
-                                                    hasUserSendRequest.id,
-                                                    event.id,
-                                                    'withdraw'
-                                                );
-                                                {
-                                                    /* to prevent navigation to eventdetail */
-                                                }
-                                                e.stopPropagation();
-                                            }}>
-                                            Withdraw
-                                        </Button>
+                                        <>
+                                            {hasUserSendRequest.status ===
+                                            'PENDING' ? (
+                                                <Button
+                                                    variant="primary"
+                                                    onClick={(e) => {
+                                                        onSubmitLeave(
+                                                            hasUserSendRequest.id,
+                                                            event.id,
+                                                            'withdraw'
+                                                        );
+                                                        {
+                                                            /* to prevent navigation to eventdetail */
+                                                        }
+                                                        e.stopPropagation();
+                                                    }}>
+                                                    Withdraw
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    variant="primary"
+                                                    disabled>
+                                                    Declined
+                                                </Button>
+                                            )}
+                                        </>
                                     )}
                                 </>
                             ) : (

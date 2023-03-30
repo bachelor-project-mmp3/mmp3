@@ -411,16 +411,27 @@ const EventDetail = () => {
                                                 Leave Event
                                             </Button>
                                         ) : (
-                                            <Button
-                                                variant="primary"
-                                                onClick={() =>
-                                                    onSubmitLeave(
-                                                        hasUserSendRequest.id,
-                                                        'withdraw'
-                                                    )
-                                                }>
-                                                Withdraw
-                                            </Button>
+                                            <>
+                                                {hasUserSendRequest.status ===
+                                                'PENDING' ? (
+                                                    <Button
+                                                        variant="primary"
+                                                        onClick={() =>
+                                                            onSubmitLeave(
+                                                                hasUserSendRequest.id,
+                                                                'withdraw'
+                                                            )
+                                                        }>
+                                                        Withdraw
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="primary"
+                                                        disabled>
+                                                        Declined
+                                                    </Button>
+                                                )}
+                                            </>
                                         )}
                                     </>
                                 ) : (
