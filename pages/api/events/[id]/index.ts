@@ -75,10 +75,29 @@ export default async function handler(
             } else if (req.method === 'PATCH') {
                 const eventId = req.query.id.toString();
                 const cancelFlag = req.headers.cancel;
+                const uploadFlag = req.headers.upload;
                 const transporter = getNodeMailerTransporter();
 
-                // sent in http header for edit or cancel event as host
-                if (cancelFlag === 'false') {
+                // event photo upload
+                if (uploadFlag) {
+                    try {
+                        const { imageUrl } = req.body;
+
+                        const result = await prisma.event.update({
+                            where: {
+                                id: eventId,
+                            },
+                            data: {
+                                image: imageUrl,
+                            },
+                        });
+
+                        res.json(result);
+                    } catch (err) {
+                        res.status(500).json({ message: err.message });
+                    }
+                } else if (cancelFlag === 'false') {
+                    // sent in http header for edit or cancel event as host
                     const {
                         title,
                         info,
