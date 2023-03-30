@@ -92,7 +92,6 @@ export default async function handler(
                                 },
                             },
                         ],
-
                         AND: [
                             {
                                 date: { lte: today },

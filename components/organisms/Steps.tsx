@@ -1,6 +1,5 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import Image from 'next/image';
 import Bubble1 from '../../public/images/bubble-1.svg';
 import Bubble2 from '../../public/images/bubble-2.svg';
 import Bubble3 from '../../public/images/bubble-3.svg';
@@ -44,11 +43,6 @@ const Wrapper = styled.div`
     @media ${(props) => props.theme.breakpoint.tablet} {
         padding: 60px;
     }
-`;
-
-const StyledImage = styled(Image)`
-    width: 300px;
-    height: 300px;
 `;
 
 const WrapperItem = styled.div`
