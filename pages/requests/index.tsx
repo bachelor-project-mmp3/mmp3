@@ -18,7 +18,7 @@ const Requests = () => {
     const [showInfoPopOpOnAcceptOrDecline, setShowInfoPopOpOnAcceptOrDecline] =
         useState<undefined | { status: string; name: string; title: string }>();
     const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<
-        undefined | { message: string }
+        undefined | string
     >();
     const [showInfoPopUpOnCancel, setShowInfoPopUpOnCancel] = useState(false);
     const [cancelRequest, setCancelRequest] = useState<
@@ -84,14 +84,14 @@ const Requests = () => {
 
             setRequests(updatedRequests);
             setLoading(false);
-            if (cancelRequest.id !== session?.user.userId)
-                setShowInfoPopOpOnLeave({
-                    message: 'Your request was deleted successfully.',
-                });
+            if (cancelRequest.Event.host.id !== session?.user.userId)
+                setShowInfoPopOpOnLeave(
+                    'Your request was deleted successfully.'
+                );
             else {
-                setShowInfoPopOpOnLeave({
-                    message: `${cancelRequest.User.firstName} got deleted from the event.`,
-                });
+                setShowInfoPopOpOnLeave(
+                    `${cancelRequest.User.firstName} got deleted from the event.`
+                );
                 setCancelRequest(undefined);
             }
         } else {
@@ -118,7 +118,7 @@ const Requests = () => {
 
             {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(undefined)}>
-                    {showInfoPopOpOnLeave.message}
+                    {showInfoPopOpOnLeave}
                 </InfoPopUp>
             )}
 

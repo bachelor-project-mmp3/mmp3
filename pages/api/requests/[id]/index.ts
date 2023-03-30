@@ -176,7 +176,9 @@ export default async function handler(
                                 console.log(info);
                             }
                         });
-                    } else {
+                    }
+                    // guests leaves event
+                    else {
                         // send mail to host
                         const mailData = getEmailTemplate({
                             hostFirstName: request.Event.host.firstName,
