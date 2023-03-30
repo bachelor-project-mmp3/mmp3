@@ -34,6 +34,10 @@ import { ChefAndImage } from '../../../components/organisms/ChefAndImage';
 import { Loading } from '../../../components/organisms/Loading';
 import InfoPopUp from '../../../components/organisms/popups/InfoPopUp';
 import ActionPopUp from '../../../components/organisms/popups/ActionPopUp';
+import UploadButton from '../../../components/atoms/UploadButton';
+import { uploadImage } from '../../../helper/uploadHelper';
+import Image from 'next/image';
+import Discard from '../../../public/icons/discard.svg';
 import { RequestProps } from '../../../components/organisms/requests/Request';
 
 type EventProps = {
@@ -77,6 +81,9 @@ type EventProps = {
     }> | null;
 };
 
+const defaultImage =
+    'https://firebasestorage.googleapis.com/v0/b/studentenfutter-dba6a.appspot.com/o/profile%2Fpexels-cats-coming-920220.jpg?alt=media&token=fde91666-3d24-471b-9bd3-8a1825edde79';
+
 const EventDetail = () => {
     const { data: session } = useSession();
     const router = useRouter();
@@ -89,6 +96,7 @@ const EventDetail = () => {
     >();
     const [showQuestion, setShowQuestion] = useState(false);
     const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
+    const [eventImage, setEventImage] = useState('');
     const [showInfoPopUpOnDeleteGuest, setShowInfoPopUpOnDeleteGuest] =
         useState(false);
     const [deleteGuest, setDeleteGuest] = useState<undefined | RequestProps>();
@@ -102,6 +110,7 @@ const EventDetail = () => {
                 .then((res) => res.json())
                 .then((data) => {
                     setEvent(data.event);
+                    setEventImage(data.event.image);
                     setLoading(false);
                 });
         }
@@ -192,6 +201,76 @@ const EventDetail = () => {
             router.push('/404');
         }
     };
+
+    const uploadEventPhoto = async (e: any) => {
+        setLoading(true);
+
+        const uploadHeaders = new Headers();
+        uploadHeaders.append('Content-Type', 'application/json');
+        uploadHeaders.append('Upload', 'true');
+
+        let imageUrl = await uploadImage(e.target.files[0], 'events');
+
+        const body = {
+            imageUrl,
+        };
+
+        const res = await fetch(`/api/events/${event.id}`, {
+            method: 'PATCH',
+            headers: uploadHeaders,
+            body: JSON.stringify(body),
+        });
+
+        if (res.status === 200) {
+            res.json().then((event) => {
+                setEventImage(event.image);
+            });
+            setLoading(false);
+        } else {
+            router.push('/404');
+        }
+    };
+
+    const deleteEventPhoto = async () => {
+        setLoading(true);
+
+        const uploadHeaders = new Headers();
+        uploadHeaders.append('Content-Type', 'application/json');
+        uploadHeaders.append('Upload', 'true');
+
+        const body = {
+            imageUrl: defaultImage,
+        };
+
+        const res = await fetch(`/api/events/${event.id}`, {
+            method: 'PATCH',
+            headers: uploadHeaders,
+            body: JSON.stringify(body),
+        });
+
+        if (res.status === 200) {
+            res.json().then(() => {
+                setEventImage(defaultImage);
+            });
+            setLoading(false);
+        } else {
+            router.push('/404');
+        }
+    };
+
+    useEffect(() => {
+        // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
+        if (router.isReady) {
+            fetch(`/api/events/${router.query.id}`, {
+                method: 'GET',
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    setEvent(data.event);
+                    setLoading(false);
+                });
+        }
+    }, [router.isReady, router.query.id]);
 
     if (isLoading) return <Loading />;
     if (!event) return <div>No event detail </div>;
@@ -329,6 +408,32 @@ const EventDetail = () => {
                             )}
                         </StyledInfoEventDetailsBoxes>
                     </StyledInfoEventDetails>
+
+                    {eventImage != defaultImage && (
+                        <>
+                            <Card variant="no-padding">
+                                <EventImageWrapper>
+                                    <FakePlaceholder />
+                                    <StyledImage
+                                        src={eventImage}
+                                        fill
+                                        alt="event"
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                    {event.status !== EventStatus.CANCELLED &&
+                                        new Date() > new Date(event.date) &&
+                                        userIsHost && (
+                                            <StyledDelete>
+                                                <StyledDiscard
+                                                    onClick={deleteEventPhoto}
+                                                />
+                                            </StyledDelete>
+                                        )}
+                                </EventImageWrapper>
+                            </Card>
+                        </>
+                    )}
+
                     {event.menu.length > 0 && (
                         <Card variant={'description'}>
                             <StyledHeadings>Menu</StyledHeadings>
@@ -454,6 +559,15 @@ const EventDetail = () => {
                                 )}
                             </StyledButtons>
                         ))}
+                    {event.status !== EventStatus.CANCELLED &&
+                        new Date() > new Date(event.date) &&
+                        userIsHost && (
+                            <StyledButtons>
+                                <UploadButton onChange={uploadEventPhoto}>
+                                    Upload photo
+                                </UploadButton>
+                            </StyledButtons>
+                        )}
                 </StyledDetailsWrapper>
             </Layout>
         </>
@@ -523,4 +637,44 @@ const StyledHeadings = styled.p`
 const StyledCancelNote = styled.p`
     color: red;
     font-weight: 800;
+`;
+
+const StyledImage = styled(Image)`
+    border-radius: 40px;
+    padding: 10px;
+`;
+
+const FakePlaceholder = styled.div`
+    background: ${({ theme }) => theme.lightGrey};
+    border-radius: 40px;
+    border: 10px solid white;
+    width: 100%;
+    height: 300px;
+`;
+
+const EventImageWrapper = styled.div`
+    position: relative;
+    width: 100%;
+    height: 300px;
+`;
+
+const StyledDelete = styled.div`
+    position: absolute;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    right: 20px;
+    top: 20px;
+    background: ${({ theme }) => theme.primary};
+    cursor: pointer;
+`;
+
+const StyledDiscard = styled(Discard)`
+    fill: white;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 `;
