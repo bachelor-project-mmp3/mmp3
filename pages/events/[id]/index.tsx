@@ -34,6 +34,7 @@ import { ChefAndImage } from '../../../components/organisms/ChefAndImage';
 import { Loading } from '../../../components/organisms/Loading';
 import InfoPopUp from '../../../components/organisms/popups/InfoPopUp';
 import ActionPopUp from '../../../components/organisms/popups/ActionPopUp';
+import { RequestProps } from '../../../components/organisms/requests/Request';
 
 type EventProps = {
     id: string;
@@ -88,6 +89,9 @@ const EventDetail = () => {
     >();
     const [showQuestion, setShowQuestion] = useState(false);
     const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
+    const [showInfoPopUpOnDeleteGuest, setShowInfoPopUpOnDeleteGuest] =
+        useState(false);
+    const [deleteGuest, setDeleteGuest] = useState<undefined | RequestProps>();
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
@@ -130,7 +134,7 @@ const EventDetail = () => {
 
     const onSubmitLeave = async (
         requestId: string,
-        type: 'leave' | 'withdraw'
+        type: 'leave' | 'withdraw' | 'deleteGuest'
     ) => {
         setLoading(true);
 
@@ -143,15 +147,24 @@ const EventDetail = () => {
             res.json().then((event) => {
                 setEvent(event);
             });
-            setShowQuestion(false);
 
-            if (type === 'leave') {
-                setShowInfoPopOpOnLeave('You left the event.');
-            } else {
+            if (type === 'deleteGuest' && userIsHost) {
                 setShowInfoPopOpOnLeave(
-                    'Your Request was deleted successfully.'
+                    `${deleteGuest.User.firstName} got deleted from the event.`
                 );
+                setDeleteGuest(undefined);
+            } else {
+                setShowQuestion(false);
+
+                if (type === 'leave') {
+                    setShowInfoPopOpOnLeave('You left the event.');
+                } else {
+                    setShowInfoPopOpOnLeave(
+                        'Your Request was deleted successfully.'
+                    );
+                }
             }
+
             setLoading(false);
         } else {
             router.push('/404');
@@ -179,20 +192,6 @@ const EventDetail = () => {
             router.push('/404');
         }
     };
-
-    useEffect(() => {
-        // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
-        if (router.isReady) {
-            fetch(`/api/events/${router.query.id}`, {
-                method: 'GET',
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    setEvent(data.event);
-                    setLoading(false);
-                });
-        }
-    }, [router.isReady, router.query.id]);
 
     if (isLoading) return <Loading />;
     if (!event) return <div>No event detail </div>;
@@ -254,6 +253,22 @@ const EventDetail = () => {
                     textButtonAction={'Cancel Event'}
                     textButtonClose={'Close'}>
                     Are your sure you want to cancel this event?
+                </ActionPopUp>
+            )}
+
+            {showInfoPopUpOnDeleteGuest && (
+                <ActionPopUp
+                    onClose={() => setShowInfoPopUpOnDeleteGuest(false)}
+                    onAction={() => {
+                        onSubmitLeave(deleteGuest.id, 'deleteGuest').then(() =>
+                            setShowInfoPopUpOnDeleteGuest(false)
+                        );
+                    }}
+                    textButtonAction={'Delete'}
+                    textButtonClose={'Cancel'}>
+                    Are your sure you want to delete{' '}
+                    {deleteGuest.User.firstName} from{' '}
+                    <strong>{event.title}</strong>?
                 </ActionPopUp>
             )}
 
@@ -354,6 +369,10 @@ const EventDetail = () => {
                                         key={index}
                                         guest={request.User}
                                         userIsHost={userIsHost}
+                                        onClick={() => {
+                                            setShowInfoPopUpOnDeleteGuest(true);
+                                            setDeleteGuest(request);
+                                        }}
                                     />
                                 ))}
                         </Card>

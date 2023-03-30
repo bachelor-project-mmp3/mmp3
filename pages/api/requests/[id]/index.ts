@@ -5,6 +5,7 @@ import prisma from '../../../../lib/prisma';
 import { authOptions } from '../../auth/[...nextauth]';
 import { getEmailTemplate } from '../../../../helper/mailTemplaes';
 import { getNodeMailerTransporter } from '../../../../helper/nodemailer';
+import { getSession } from 'next-auth/react';
 
 export default async function handler(
     req: NextApiRequest,
@@ -119,7 +120,7 @@ export default async function handler(
                 });
 
                 let event;
-                // Leave event
+                // Leave event & kick guest out of event
                 if (request.status === 'ACCEPTED') {
                     event = await prisma.event.update({
                         where: {
@@ -146,35 +147,60 @@ export default async function handler(
                     });
 
                     // delete the request
-                    const deleteRequest = await prisma.request.delete({
+                    await prisma.request.delete({
                         where: {
                             id: String(req.query.id),
                         },
                     });
 
-                    // send mail to host
                     const transporter = getNodeMailerTransporter();
+                    if (event.host.id === session?.user.userId) {
+                        // send mail to guest who got kicked out of event
+                        const mailData = getEmailTemplate({
+                            hostFirstName: request.Event.host.firstName,
+                            eventTitle: request.Event.title,
+                            guestName: request.User.firstName,
+                            type: 'kickGuest',
+                        });
 
-                    const mailData = getEmailTemplate({
-                        hostFirstName: request.Event.host.firstName,
-                        eventTitle: request.Event.title,
-                        guestName: request.User.firstName,
-                        type: 'leave',
-                    });
+                        const mail = {
+                            from: 'studentenfuttermmp3@gmail.com',
+                            to: request.User.email,
+                            ...mailData,
+                        };
 
-                    const mail = {
-                        from: 'studentenfuttermmp3@gmail.com',
-                        to: request.Event.host.email,
-                        ...mailData,
-                    };
+                        transporter.sendMail(mail, function (err, info) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(info);
+                            }
+                        });
+                    }
+                    // guests leaves event
+                    else {
+                        // send mail to host
+                        const mailData = getEmailTemplate({
+                            hostFirstName: request.Event.host.firstName,
+                            eventTitle: request.Event.title,
+                            guestName: request.User.firstName,
+                            type: 'leave',
+                        });
 
-                    transporter.sendMail(mail, function (err, info) {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            console.log(info);
-                        }
-                    });
+                        const mail = {
+                            from: 'studentenfuttermmp3@gmail.com',
+                            to: request.Event.host.email,
+                            ...mailData,
+                        };
+
+                        transporter.sendMail(mail, function (err, info) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(info);
+                            }
+                        });
+                    }
                 }
 
                 // Withdraw event

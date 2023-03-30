@@ -74,7 +74,7 @@ const Dialog = styled.div`
 
     @media ${(props) => props.theme.breakpoint.tablet} {
         left: 50%;
-        width: 400px;
+        width: 410px;
     }
 `;
 
