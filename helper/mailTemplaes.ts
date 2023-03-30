@@ -1,10 +1,13 @@
+import { getFormattedDate, getFormattedTime } from './helperFunctions';
+
 export function getEmailTemplate(data: {
     hostFirstName: string;
     eventTitle: string;
-    guestName: string;
+    guestName?: string;
     guestId?: string;
-    type: 'join' | 'accepted' | 'declined' | 'leave' | 'edit';
+    type: 'join' | 'accepted' | 'declined' | 'leave' | 'edit' | 'cancel' | 'timelimit-host';
     eventId?: string;
+    eventDetail?: { amountOfGuests: number };
 }) {
     if (data.type === 'join') {
         return {
@@ -66,6 +69,35 @@ export function getEmailTemplate(data: {
             }</strong> you will be joining! <br>Check out what changed: <a href=${
                 'https://mmp3.vercel.app/events/' + data.eventId
             }>${data.eventTitle}</a></p>
+        `,
+        };
+    }
+    if (data.type === 'cancel') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} cancelled event`,
+            text: `${data.hostFirstName} cancelled event`,
+            html: `<div>Hi ${data.guestName},<br></div>
+<p>Unfortunately ${data.hostFirstName} decided to cancel the event <strong>${
+                data.eventTitle
+            }</strong> you wanted to attend!<br>Maybe ${
+                data.hostFirstName
+            } will host different events you can join in the future.<br>
+ In the meantime check out other <a href=${'https://mmp3.vercel.app/events/'}>events</a></p>
+        `,
+        };
+    }
+    if (data.type === 'timelimit-host') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= Timelimit to join your event ${data.eventTitle} is over`,
+            text: `Timelimit to join your event ${data.eventTitle} is over`,
+            html: `<div>Hi ${
+                data.hostFirstName
+            },<br></div><p>the time to join your event <a href=${
+                'https://mmp3.vercel.app/events/' + data.eventId
+            }>${data.eventTitle}</a> is over!<br>
+            Final amount of guests:  ${data.eventDetail.amountOfGuests}<br>
+            Get ready, make your grocery run and show your cooking skills.<br>
+            Enjoy your time at the event, make new friends and have fun!
         `,
         };
     }

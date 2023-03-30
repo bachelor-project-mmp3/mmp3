@@ -3,7 +3,6 @@ import prisma from '../../../lib/prisma';
 import { getSession } from 'next-auth/react';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
-import { addHoursToDateTime } from '../../../helper/helperFunctions';
 
 export default async function handler(
     req: NextApiRequest,
@@ -25,11 +24,8 @@ export default async function handler(
                     dishes,
                 } = req.body;
 
-                const dateTimeDate = addHoursToDateTime(new Date(date), 2);
-                const dateTimeTimeLimit = addHoursToDateTime(
-                    new Date(timeLimit),
-                    2
-                );
+                const dateTimeDate = new Date(date);
+                const dateTimeTimeLimit = new Date(timeLimit);
                 const floatCosts = parseFloat(costs);
                 const intCapacity = parseInt(capacity);
                 const session = await getSession({ req });
@@ -55,7 +51,9 @@ export default async function handler(
             else if (req.method === 'GET') {
                 const today = new Date();
 
-                const { dormitoryFilter, dateFilter } = req.query;
+                const { dormitoryFilter, dateFilter, page } = req.query;
+                const entriesPerPage = 10;
+                const skipValue = (Number(page) - 1) * entriesPerPage;
 
                 const dataQuery = {
                     host: {
@@ -86,38 +84,32 @@ export default async function handler(
 
                 if (dateFilter && dateFilter !== 'undefined') {
                     let from = new Date();
-                    from.setHours(today.getHours() + 2);
-                    let until;
+                    let until = new Date();
+                    until.setHours(0, 0, 0, 0);
+                    from.setHours(0, 0, 0, 0);
                     if (dateFilter === 'Today') {
-                        until = new Date();
-                        until.setHours(2, 0, 0, 0);
                         until.setDate(until.getDate() + 1);
                     } else if (dateFilter === 'Tomorrow') {
-                        from = new Date();
-                        from.setHours(2, 0, 0, 0);
                         from.setDate(from.getDate() + 1);
-                        until = new Date();
-                        until.setHours(2, 0, 0, 0);
                         until.setDate(until.getDate() + 2);
                     } else if (dateFilter === 'This week') {
                         const date = new Date();
                         const day = date.getDay(); // get day of week
-
                         // day of month - day of week (-6 if Sunday), otherwise +1
                         const diff =
                             date.getDate() - day + (day === 0 ? -6 : 1);
-
                         let firstDay = new Date(date.setDate(diff));
+
                         until = new Date(firstDay);
                         until.setDate(until.getDate() + 7);
-                        until.setHours(2, 0, 0, 0);
+                        until.setHours(0, 0, 0, 0);
                     } else if (dateFilter === 'This month') {
                         until = new Date(
                             from.getFullYear(),
                             from.getMonth() + 1,
                             0
                         );
-                        until.setHours(2, 0, 0, 0);
+                        until.setHours(0, 0, 0, 0);
                     } else {
                         if (isNaN(Date.parse(dateFilter as string))) {
                             res.status(500);
@@ -136,7 +128,17 @@ export default async function handler(
                     filter.push(dateCondition);
                 }
 
+                const eventsCount = await prisma.event.count({
+                    where: {
+                        AND: [...filter, { NOT: { status: 'CANCELLED' } }],
+                    },
+                });
+
+                const pageCount = Math.ceil(eventsCount / entriesPerPage);
+
                 const events = await prisma.event.findMany({
+                    skip: skipValue, // How many rows to skip
+                    take: entriesPerPage, // Page size
                     orderBy: [
                         {
                             date: 'asc',
@@ -144,11 +146,14 @@ export default async function handler(
                     ],
                     include: dataQuery,
                     where: {
-                        AND: filter,
+                        AND: [...filter, { NOT: { status: 'CANCELLED' } }],
                     },
                 });
 
-                res.status(200).json({ events: events });
+                res.status(200).json({
+                    events: events,
+                    pageCount: pageCount,
+                });
             } else {
                 res.status(405).end('Method Not Allowed');
             }

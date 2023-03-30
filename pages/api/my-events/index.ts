@@ -53,6 +53,11 @@ export default async function handler(
                         ],
                         AND: [{ date: { gte: today } }],
                     },
+                    orderBy: [
+                        {
+                            date: 'desc',
+                        },
+                    ],
                 });
 
                 const pastEvents = await prisma.event.findMany({
@@ -87,8 +92,12 @@ export default async function handler(
                                 },
                             },
                         ],
-
-                        AND: [{ date: { lte: today } }],
+                        AND: [
+                            {
+                                date: { lte: today },
+                                NOT: { status: 'CANCELLED' },
+                            },
+                        ],
                     },
                 });
 

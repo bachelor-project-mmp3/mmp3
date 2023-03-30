@@ -16,7 +16,7 @@ import { Button } from '../../../components/atoms/Button';
 import AddDishIcon from '../../../public/icons/addDish.svg';
 import DiscardIcon from '../../../public/icons/discard.svg';
 import LinkIcon from '../../../public/icons/link.svg';
-import { formatDateForDateInput } from '../../../helper/helperFunctions';
+import { formatDateForForm } from '../../../helper/helperFunctions';
 import { Header } from '../../../components/organisms/Header';
 import { Loading } from '../../../components/organisms/Loading';
 import { Info } from '../../../components/atoms/Info';
@@ -78,17 +78,11 @@ const EditEvent = () => {
     const { data: session } = useSession();
     const router = useRouter();
     let currentDate = new Date();
+    let dateTimePlusOneHourDate = new Date(currentDate);
+    dateTimePlusOneHourDate.setHours(dateTimePlusOneHourDate.getHours() + 1);
 
-    let cDay = formatDateForDateInput(currentDate.getDate());
-    let cMonth = formatDateForDateInput(currentDate.getMonth() + 1);
-    let cYear = currentDate.getFullYear();
-    let cHour = formatDateForDateInput(currentDate.getHours());
-    let cMinutes = formatDateForDateInput(currentDate.getMinutes());
-    let cHourPlusOne = formatDateForDateInput(currentDate.getHours() + 1);
-    let dateTimeNow =
-        cYear + '-' + cMonth + '-' + cDay + 'T' + cHour + ':' + cMinutes;
-    let dateTimePlusOneHour =
-        cYear + '-' + cMonth + '-' + cDay + 'T' + cHourPlusOne + ':' + cMinutes;
+    let dateTimeNow = formatDateForForm(currentDate);
+    let dateTimePlusOneHour = formatDateForForm(dateTimePlusOneHourDate);
 
     const [isLoading, setLoading] = useState(true);
 
@@ -134,11 +128,18 @@ const EditEvent = () => {
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    const dateInput = new Date(data.event.date);
+                    const timeLimitInput = new Date(data.event.timeLimit);
+
+                    let dateInputString = formatDateForForm(dateInput);
+                    let timeLimitInputString =
+                        formatDateForForm(timeLimitInput);
+
                     setEvent(data.event);
                     setTitle(data.event.title);
                     setInfo(data.event.info);
-                    setDate(data.event.date.slice(0, 16));
-                    setTimeLimit(data.event.timeLimit.slice(0, 16));
+                    setDate(dateInputString);
+                    setTimeLimit(timeLimitInputString);
                     setCosts(data.event.costs);
                     setCapacity(data.event.capacity);
                     setDishes(data.event.menu);
@@ -150,7 +151,7 @@ const EditEvent = () => {
                     setLoading(false);
                 });
         }
-    }, [register, session, setValue]);
+    }, [register, session, setValue, router?.query.id]);
 
     const handleChange = (event, index) => {
         const values = [...dishes];
@@ -218,9 +219,12 @@ const EditEvent = () => {
                 dishes,
             };
 
+            const header = new Headers();
+            header.append('Content-Type', 'application/json');
+            header.append('Cancel', 'false');
             await fetch(`/api/events/${event.id}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: header,
                 body: JSON.stringify(body),
             });
 
