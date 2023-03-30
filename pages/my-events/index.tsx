@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../../components/Layout';
 import styled from 'styled-components';
 import ExtendedEventPreview from '../../components/organisms/events/ExtendedEventPreview';
@@ -17,15 +17,16 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 const MyEvents = () => {
+    const router = useRouter();
+    const { data: session } = useSession();
+
     const [upcomingEvents, setUpcomingEvents] = useState(null);
     const [notifications, setNotfications] = useState(null);
     const [pastEvents, setPastEvents] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] =
         useState<boolean>(false);
-    const { data: session } = useSession();
-
-    const router = useRouter();
+    const [isToggle, setIsToggle] = useState(true);
 
     useEffect(() => {
         Promise.all([
@@ -156,31 +157,55 @@ const MyEvents = () => {
                             ))}
                     </Swiper>
                 </NotificationsWrapper>
-                <WrapperRow>
+
+                <StyledToggle>
+                    <StyledToggleContent style={{ justifyContent: 'flex-end' }}>
+                        <StyledToggleText
+                            isActive={isToggle}
+                            onClick={() => setIsToggle(!isToggle)}>
+                            Upcoming
+                        </StyledToggleText>
+                    </StyledToggleContent>
+                    <StyledToggleContent>
+                        <StyledToggleText
+                            isActive={!isToggle}
+                            onClick={() => setIsToggle(!isToggle)}>
+                            Past
+                        </StyledToggleText>
+                    </StyledToggleContent>
+                </StyledToggle>
+
+                {isToggle ? (
                     <WrapperColumn>
                         <StyledHeadline>Upcoming Events</StyledHeadline>
-                        {upcomingEvents?.length > 0 ? (
-                            upcomingEvents.map((event) => {
-                                const request = hasUserSendRequestHelper(
-                                    event.requests,
-                                    session
-                                );
+                        <EventsList>
+                            {upcomingEvents?.length > 0 ? (
+                                upcomingEvents.map((event) => {
+                                    const request = hasUserSendRequestHelper(
+                                        event.requests,
+                                        session
+                                    );
 
-                                return (
-                                    <ExtendedEventPreview
-                                        key={event.id}
-                                        event={event}
-                                        onSubmitJoin={() => alert('hi')}
-                                        onSubmitLeave={() =>
-                                            onSubmitLeave(request.id, event.id)
-                                        }
-                                    />
-                                );
-                            })
-                        ) : (
-                            <p>No upcoming events...</p>
-                        )}
+                                    return (
+                                        <ExtendedEventPreview
+                                            key={event.id}
+                                            event={event}
+                                            onSubmitJoin={() => alert('hi')}
+                                            onSubmitLeave={() =>
+                                                onSubmitLeave(
+                                                    request.id,
+                                                    event.id
+                                                )
+                                            }
+                                        />
+                                    );
+                                })
+                            ) : (
+                                <p>No upcoming events...</p>
+                            )}
+                        </EventsList>
                     </WrapperColumn>
+                ) : (
                     <WrapperColumn className="top">
                         <StyledHeadline>Past Events</StyledHeadline>
                         <EventsWrapper>
@@ -208,7 +233,7 @@ const MyEvents = () => {
                             )}
                         </EventsWrapper>
                     </WrapperColumn>
-                </WrapperRow>
+                )}
             </Layout>
         </>
     );
@@ -233,7 +258,6 @@ const WrapperColumn = styled.div`
     gap: 30px;
     width: 100%;
     @media ${(props) => props.theme.breakpoint.tablet} {
-        width: 45%;
         min-width: 400px;
     }
     &.top {
@@ -263,7 +287,6 @@ const EventsWrapper = styled.div`
 `;
 
 const EventItem = styled.div`
-    width: 45%;
     height: 170px;
     margin-bottom: 20px;
     @media ${(props) => props.theme.breakpoint.tablet} {
@@ -273,4 +296,45 @@ const EventItem = styled.div`
 
 const NotificationsWrapper = styled.div`
     max-width: 1000px;
+`;
+
+const StyledToggle = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 20px 0 -10px 0;
+`;
+
+const StyledToggleContent = styled.div`
+    display: flex;
+    width: 50%;
+    color: ${({ theme }) => theme.midGrey};
+    ${(props) => props.rightAlign && 'justify-content: flex-end;'};
+`;
+interface StyledToggleTextProps {
+    isActive?: boolean;
+}
+
+const StyledToggleText = styled.div<StyledToggleTextProps>`
+    padding: 5px 15px;
+    width: 125px;
+    text-align: center;
+    cursor: pointer;
+    ${(props) =>
+        props.isActive &&
+        `border: solid 1px ${props.theme.primary}; border-radius:25px; color: ${props.theme.body}; background-color: ${props.theme.primary}`};
+`;
+
+const EventsList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: auto;
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        max-width: 1500px;
+    }
 `;
