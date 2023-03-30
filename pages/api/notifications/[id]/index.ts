@@ -13,7 +13,7 @@ export default async function handler(
         try {
             // UPDATE api/notification/{id}
             if (req.method === 'PATCH') {
-                const request = await prisma.notification.update({
+                const notification = await prisma.notification.update({
                     where: {
                         id: String(req.query.id),
                     },
@@ -21,7 +21,7 @@ export default async function handler(
                         seen: true,
                     },
                 });
-                res.status(200).json(request);
+                res.status(200).json(notification);
             }
         } catch (err) {
             res.status(500).json({ message: err.message });

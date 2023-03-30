@@ -64,7 +64,7 @@ export default async function handler(
                     },
                 });
 
-                events.forEach((event) => {
+                for (const event of events) {
                     // mail to host
                     const mailData = getEmailTemplate({
                         hostFirstName: event.host.firstName,
@@ -86,6 +86,16 @@ export default async function handler(
                         } else {
                             console.log(info);
                         }
+                    });
+
+                    //notification for host
+                    await prisma.notification.create({
+                        data: {
+                            Event: { connect: { id: event.id } },
+                            User: { connect: { id: event.authorId } },
+                            type: 'EVENT',
+                            message: 'Registration time over',
+                        },
                     });
 
                     // mail to each guest
@@ -112,7 +122,7 @@ export default async function handler(
                             });
                         }
                     });
-                });
+                }
                 res.status(200).json({ statusCode: 200, success: true });
             } else {
                 res.status(401).json({ statusCode: 401, success: false });
