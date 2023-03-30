@@ -38,6 +38,7 @@ import UploadButton from '../../../components/atoms/UploadButton';
 import { uploadImage } from '../../../helper/uploadHelper';
 import Image from 'next/image';
 import Discard from '../../../public/icons/discard.svg';
+import { RequestProps } from '../../../components/organisms/requests/Request';
 
 type EventProps = {
     id: string;
@@ -96,6 +97,9 @@ const EventDetail = () => {
     const [showQuestion, setShowQuestion] = useState(false);
     const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
     const [eventImage, setEventImage] = useState('');
+    const [showInfoPopUpOnDeleteGuest, setShowInfoPopUpOnDeleteGuest] =
+        useState(false);
+    const [deleteGuest, setDeleteGuest] = useState<undefined | RequestProps>();
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
@@ -139,7 +143,7 @@ const EventDetail = () => {
 
     const onSubmitLeave = async (
         requestId: string,
-        type: 'leave' | 'withdraw'
+        type: 'leave' | 'withdraw' | 'deleteGuest'
     ) => {
         setLoading(true);
 
@@ -152,15 +156,24 @@ const EventDetail = () => {
             res.json().then((event) => {
                 setEvent(event);
             });
-            setShowQuestion(false);
 
-            if (type === 'leave') {
-                setShowInfoPopOpOnLeave('You left the event.');
-            } else {
+            if (type === 'deleteGuest' && userIsHost) {
                 setShowInfoPopOpOnLeave(
-                    'Your Request was deleted successfully.'
+                    `${deleteGuest.User.firstName} got deleted from the event.`
                 );
+                setDeleteGuest(undefined);
+            } else {
+                setShowQuestion(false);
+
+                if (type === 'leave') {
+                    setShowInfoPopOpOnLeave('You left the event.');
+                } else {
+                    setShowInfoPopOpOnLeave(
+                        'Your Request was deleted successfully.'
+                    );
+                }
             }
+
             setLoading(false);
         } else {
             router.push('/404');
@@ -322,6 +335,22 @@ const EventDetail = () => {
                 </ActionPopUp>
             )}
 
+            {showInfoPopUpOnDeleteGuest && (
+                <ActionPopUp
+                    onClose={() => setShowInfoPopUpOnDeleteGuest(false)}
+                    onAction={() => {
+                        onSubmitLeave(deleteGuest.id, 'deleteGuest').then(() =>
+                            setShowInfoPopUpOnDeleteGuest(false)
+                        );
+                    }}
+                    textButtonAction={'Delete'}
+                    textButtonClose={'Cancel'}>
+                    Are your sure you want to delete{' '}
+                    {deleteGuest.User.firstName} from{' '}
+                    <strong>{event.title}</strong>?
+                </ActionPopUp>
+            )}
+
             <Layout>
                 <StyledDetailsWrapper>
                     <Header backButton>{event.title}</Header>
@@ -445,6 +474,10 @@ const EventDetail = () => {
                                         key={index}
                                         guest={request.User}
                                         userIsHost={userIsHost}
+                                        onClick={() => {
+                                            setShowInfoPopUpOnDeleteGuest(true);
+                                            setDeleteGuest(request);
+                                        }}
                                     />
                                 ))}
                         </Card>
@@ -483,16 +516,27 @@ const EventDetail = () => {
                                                 Leave Event
                                             </Button>
                                         ) : (
-                                            <Button
-                                                variant="primary"
-                                                onClick={() =>
-                                                    onSubmitLeave(
-                                                        hasUserSendRequest.id,
-                                                        'withdraw'
-                                                    )
-                                                }>
-                                                Withdraw
-                                            </Button>
+                                            <>
+                                                {hasUserSendRequest.status ===
+                                                'PENDING' ? (
+                                                    <Button
+                                                        variant="primary"
+                                                        onClick={() =>
+                                                            onSubmitLeave(
+                                                                hasUserSendRequest.id,
+                                                                'withdraw'
+                                                            )
+                                                        }>
+                                                        Withdraw
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="primary"
+                                                        disabled>
+                                                        Declined
+                                                    </Button>
+                                                )}
+                                            </>
                                         )}
                                     </>
                                 ) : (

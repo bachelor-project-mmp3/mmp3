@@ -53,6 +53,7 @@ export default async function handler(
                                 OR: [
                                     { status: 'ACCEPTED' },
                                     { status: 'PENDING' },
+                                    { status: 'DECLINED' },
                                 ],
                             },
                             select: {
@@ -167,6 +168,7 @@ export default async function handler(
                     event.requests.forEach((guest) => {
                         const mailData = getEmailTemplate({
                             hostFirstName: event.host.firstName,
+                            eventId: event.id,
                             eventTitle: event.title,
                             guestName: guest.User.firstName,
                             type: 'edit',

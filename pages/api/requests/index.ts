@@ -46,6 +46,7 @@ export default async function handler(
                                 OR: [
                                     { status: 'ACCEPTED' },
                                     { status: 'PENDING' },
+                                    { status: 'DECLINED' },
                                 ],
                             },
                             select: {
