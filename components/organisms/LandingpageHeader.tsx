@@ -86,28 +86,26 @@ export const LandingPageHeader = () => {
                         </TextWrapper>
                     </WrapperContentItem>
                     <WrapperContentItem>
-                        <MobileImage
-                            src={'/images/hands_mobile.svg'}
-                            alt="Image"
-                            width={200}
-                            height={200}
-                            style={{
-                                objectFit: 'cover',
-                                width: '100% !important',
-                                height: '100% !important',
-                            }}
-                        />
-                        <DesktopImage
-                            src={'/images/hands_desktop.svg'}
-                            alt="Image"
-                            width={890}
-                            height={640}
-                            style={{
-                                objectFit: 'cover',
-                                width: '100% !important',
-                                height: '100% !important',
-                            }}
-                        />
+                        <MobileImageWrapper>
+                            <MobileImage
+                                src={'/images/hands_mobile.svg'}
+                                alt="Image"
+                                fill
+                                style={{
+                                    objectFit: 'contain',
+                                }}
+                            />
+                        </MobileImageWrapper>
+                        <DesktopImageWrapper>
+                            <DesktopImage
+                                src={'/images/hands_desktop.svg'}
+                                alt="Image"
+                                fill
+                                style={{
+                                    objectFit: 'contain',
+                                }}
+                            />
+                        </DesktopImageWrapper>
                     </WrapperContentItem>
                 </WrapperContent>
             </Wrapper>
@@ -204,6 +202,7 @@ const DesktopImage = styled(Image)`
     display: none;
     @media ${({ theme }) => theme.breakpoint.tablet} {
         display: block;
+        height: 10vh;
     }
 `;
 
@@ -211,5 +210,24 @@ const TextWrapper = styled.div`
     margin: 30px;
     @media ${({ theme }) => theme.breakpoint.tablet} {
         margin: 60px;
+    }
+`;
+
+const DesktopImageWrapper = styled.div`
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        display: block;
+    }
+`;
+
+const MobileImageWrapper = styled.div`
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        display: none;
     }
 `;
