@@ -48,10 +48,6 @@ const SortByDate: React.FC<SortByDateProps> = ({
                         <ButtonWrapper>
                             <Button
                                 onClick={() => {
-                                    console.log(
-                                        preSettedSorting,
-                                        'in component'
-                                    );
                                     onSubmit(preSettedSorting);
                                 }}
                                 variant="primary">
