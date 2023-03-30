@@ -70,6 +70,7 @@ export default async function handler(
                         hostFirstName: event.host.firstName,
                         eventTitle: event.title,
                         type: 'timelimit-host',
+                        eventId: event.id,
                         eventDetail: {
                             amountOfGuests: event.currentParticipants,
                         },
