@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '../atoms/Button';
+import Logo from '../../public/images/logo.svg';
 
 const hideNavigationOnPaths = [
     '/profile/[id]/edit',
@@ -28,9 +29,7 @@ const Navigation: React.FC = () => {
             ) : (
                 <>
                     <DesktopNavigation>
-                        <LogoText>
-                            <Link href="/">Studentenfutter</Link>
-                        </LogoText>
+                        <StyledLogo onClick={() => router.push('/')} />
 
                         <DesktopNavigationItems>
                             <DesktopNavigationItem
@@ -308,13 +307,7 @@ const DesktopFooter = styled.div`
     }
 `;
 
-const LogoText = styled.div`
-    font-size: ${({ theme }) => theme.fonts.normal.headline4};
-    font-weight: 800;
-    text-align: center;
-    padding-top: 20px;
-
-    * {
-        text-decoration: none;
-    }
+const StyledLogo = styled(Logo)`
+    padding: 35px;
+    cursor: pointer;
 `;
