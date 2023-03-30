@@ -308,6 +308,6 @@ const DesktopFooter = styled.div`
 `;
 
 const StyledLogo = styled(Logo)`
-    padding: 35px;
+    margin: 35px;
     cursor: pointer;
 `;
