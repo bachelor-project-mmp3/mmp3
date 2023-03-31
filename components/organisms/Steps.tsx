@@ -6,31 +6,29 @@ import Bubble3 from '../../public/images/bubble-3.svg';
 
 export const Steps = () => {
     return (
-        <>
-            <Wrapper>
-                <WrapperItem>
-                    <Bubble1 />
-                    <StyledText>
-                        Create your own events or join ones that suit your
-                        preferences.
-                    </StyledText>
-                </WrapperItem>
-                <WrapperItem>
-                    <Bubble2 />
-                    <StyledText>
-                        Get to know to other students outside of your own degree
-                        programm
-                    </StyledText>
-                </WrapperItem>
-                <WrapperItem>
-                    <Bubble3 />
-                    <StyledText>
-                        Enjoy meals with newfound friends and create lasting
-                        connections
-                    </StyledText>
-                </WrapperItem>
-            </Wrapper>
-        </>
+        <Wrapper>
+            <WrapperItem>
+                <Bubble1 />
+                <StyledText>
+                    Create your own events or join ones that suit your
+                    preferences.
+                </StyledText>
+            </WrapperItem>
+            <WrapperItem>
+                <Bubble2 />
+                <StyledText>
+                    Get to know to other students outside of your own degree
+                    programm
+                </StyledText>
+            </WrapperItem>
+            <WrapperItem>
+                <Bubble3 />
+                <StyledText>
+                    Enjoy meals with newfound friends and create lasting
+                    connections
+                </StyledText>
+            </WrapperItem>
+        </Wrapper>
     );
 };
 

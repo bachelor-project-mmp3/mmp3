@@ -1,13 +1,24 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import { signIn, useSession } from 'next-auth/react';
 
 export const Footer = () => {
     const router = useRouter();
+    const { status } = useSession();
     return (
         <>
             <Wrapper>
-                <StyledText>Join the mix</StyledText>
+                <StyledText
+                    onClick={() =>
+                        status === 'authenticated'
+                            ? router.push('/events')
+                            : signIn('fhs', {
+                                  callbackUrl: '/api/auth/signin',
+                              })
+                    }>
+                    Join the mix
+                </StyledText>
                 <LinksWrapper>
                     <StyledText>&copy; 2023 Studentenfutter</StyledText>
                     <StyledText onClick={() => router.push('/imprint')}>
@@ -45,9 +56,6 @@ const StyledText = styled.p`
     color: ${({ theme }) => theme.darkGrey};
     cursor: pointer;
     font-size: ${({ theme }) => theme.fonts.mobile.info};
-    :first-child {
-        cursor: initial;
-    }
     @media ${({ theme }) => theme.breakpoint.tablet} {
       font-size: ${({ theme }) => theme.fonts.normal.info};
 `;

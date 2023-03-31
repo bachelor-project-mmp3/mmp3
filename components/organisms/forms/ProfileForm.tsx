@@ -171,7 +171,8 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                         <StyledImage
                             src={selectedImage ? selectedImage : image}
                             alt="Image"
-                            layout={'fill'}
+                            fill
+                            sizes="100"
                             style={{ objectFit: 'cover' }}
                         />
                         <InputFile

@@ -9,6 +9,7 @@ import { Button } from '../../../components/atoms/Button';
 import { SmallEventPreview } from '../../../components/organisms/events/SmallEventPreview';
 import Location from '../../../public/icons/location.svg';
 import Study from '../../../public/icons/major.svg';
+import Phone from '../../../public/icons/phone_filled.svg';
 import Instagram from '../../../public/icons/insta.svg';
 import Burger from '../../../public/icons/burger_menu.svg';
 import Link from 'next/link';
@@ -120,16 +121,29 @@ const Profile = () => {
                         <StyledMember>
                             member since {getFormattedDate(profile.createdAt)}
                         </StyledMember>
-                        <DormitoryAndStudyWrapper>
-                            <DormitoryAndStudyRow>
+                        <InfoWrapper>
+                            <InfoRow>
                                 <StyledLocation />
-                                <p>{profile.dormitory}</p>
-                            </DormitoryAndStudyRow>
-                            <DormitoryAndStudyRow>
+                                {profile.id === session?.user?.userId ? (
+                                    <p>
+                                        {profile.dormitory} -{' '}
+                                        {profile.roomNumber}
+                                    </p>
+                                ) : (
+                                    <p>{profile.dormitory}</p>
+                                )}
+                            </InfoRow>
+                            <InfoRow>
                                 <StyledStudy />
                                 <p>{profile.study}</p>
-                            </DormitoryAndStudyRow>
-                        </DormitoryAndStudyWrapper>
+                            </InfoRow>
+                            {profile.id === session?.user?.userId && (
+                                <InfoRow>
+                                    <StyledPhone />
+                                    <p>{profile.phone}</p>
+                                </InfoRow>
+                            )}
+                        </InfoWrapper>
                         {profile.interests && (
                             <Card>
                                 <StyledAboutMe>A little about me</StyledAboutMe>
@@ -158,22 +172,20 @@ const Profile = () => {
                         <EventsWrapper>
                             {profile.events?.length > 0 ? (
                                 profile.events.map((event) => (
-                                    <>
-                                        <EventItem>
-                                            <SmallEventPreview
-                                                title={event.title}
-                                                imageEvent={event.image}
-                                                imageHost={profile.image}
-                                                onClick={() =>
-                                                    router.push(
-                                                        `/events/${event.id}`
-                                                    )
-                                                }
-                                                date={
-                                                    event.date
-                                                }></SmallEventPreview>
-                                        </EventItem>
-                                    </>
+                                    <EventItem key={`hosted-event-${event.id}`}>
+                                        <SmallEventPreview
+                                            title={event.title}
+                                            imageEvent={event.image}
+                                            imageHost={profile.image}
+                                            onClick={() =>
+                                                router.push(
+                                                    `/events/${event.id}`
+                                                )
+                                            }
+                                            date={
+                                                event.date
+                                            }></SmallEventPreview>
+                                    </EventItem>
                                 ))
                             ) : (
                                 <p>No hosted events...</p>
@@ -199,7 +211,7 @@ const WrapperName = styled.div`
     position: relative;
 `;
 
-const DormitoryAndStudyWrapper = styled.div`
+const InfoWrapper = styled.div`
     display: flex;
     flex-direction: column;
 `;
@@ -238,7 +250,7 @@ const EventsWrapper = styled.div`
     width: 100%;
 `;
 
-const DormitoryAndStudyRow = styled.div`
+const InfoRow = styled.div`
     gap: 10px;
     display: flex;
     flex-direction: row;
@@ -260,6 +272,11 @@ const StyledLocation = styled(Location)`
 
 const StyledStudy = styled(Study)`
     height: 25px;
+    width: 25px;
+`;
+
+const StyledPhone = styled(Phone)`
+    height: 19px;
     width: 25px;
 `;
 

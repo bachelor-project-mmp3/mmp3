@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '../atoms/Button';
+import Logo from '../../public/images/logo.svg';
 
 const hideNavigationOnPaths = [
     '/profile/[id]/edit',
@@ -28,27 +29,27 @@ const Navigation: React.FC = () => {
             ) : (
                 <>
                     <DesktopNavigation>
-                        <LogoText>
-                            <Link href="/">Studentenfutter</Link>
-                        </LogoText>
+                        <StyledLogo onClick={() => router.push('/')} />
 
                         <DesktopNavigationItems>
                             <DesktopNavigationItem
-                                isActive={router?.pathname === '/my-events'}
+                                $isactive={router?.pathname === '/my-events'}
                                 onClick={() => router.push('/my-events')}>
                                 <StyledMyEventsIcon
-                                    isActive={router?.pathname === '/my-events'}
+                                    $isactive={
+                                        router?.pathname === '/my-events'
+                                    }
                                 />
                                 <NavText>My Events</NavText>
                             </DesktopNavigationItem>
                             <DesktopNavigationItem
-                                isActive={
+                                $isactive={
                                     router?.pathname === '/events' ||
                                     router?.pathname === '/events/[id]'
                                 }
                                 onClick={() => router.push('/events')}>
                                 <StyledEventIcon
-                                    isActive={
+                                    $isactive={
                                         router?.pathname === '/events' ||
                                         router?.pathname === '/events/[id]'
                                     }
@@ -56,25 +57,27 @@ const Navigation: React.FC = () => {
                                 <NavText>All Events</NavText>
                             </DesktopNavigationItem>
                             <DesktopNavigationItem
-                                isActive={router?.pathname === '/events/create'}
+                                $isactive={
+                                    router?.pathname === '/events/create'
+                                }
                                 onClick={() => router.push('/events/create')}>
                                 <StyledCreateIcon
-                                    isActive={
+                                    $isactive={
                                         router?.pathname === '/events/create'
                                     }
                                 />
                                 <NavText>Create Event</NavText>
                             </DesktopNavigationItem>
                             <DesktopNavigationItem
-                                isActive={router?.pathname === '/requests'}
+                                $isactive={router?.pathname === '/requests'}
                                 onClick={() => router.push('/requests')}>
                                 <StyledRequestsIcon
-                                    isActive={router?.pathname === '/requests'}
+                                    $isactive={router?.pathname === '/requests'}
                                 />
                                 <NavText>Requests</NavText>
                             </DesktopNavigationItem>
                             <DesktopNavigationItem
-                                isActive={
+                                $isactive={
                                     (router?.pathname === `/profile/[id]` &&
                                         router?.query.id ===
                                             session?.user.userId) ||
@@ -89,7 +92,7 @@ const Navigation: React.FC = () => {
                                     )
                                 }>
                                 <StyledProfileIcon
-                                    isActive={
+                                    $isactive={
                                         (router?.pathname === `/profile/[id]` &&
                                             router?.query.id ===
                                                 session?.user.userId) ||
@@ -120,26 +123,28 @@ const Navigation: React.FC = () => {
                     {!hideNavigationOnPaths.includes(router?.pathname) && (
                         <MobileNavigation>
                             <StyledMyEventsIcon
-                                isActive={router?.pathname === '/my-events'}
+                                $isactive={router?.pathname === '/my-events'}
                                 onClick={() => router.push('/my-events')}
                             />
                             <StyledEventIcon
-                                isActive={
+                                $isactive={
                                     router?.pathname === '/events' ||
                                     router?.pathname === '/events/[id]'
                                 }
                                 onClick={() => router.push('/events')}
                             />
                             <StyledCreateIcon
-                                isActive={router?.pathname === '/events/create'}
+                                $isactive={
+                                    router?.pathname === '/events/create'
+                                }
                                 onClick={() => router.push('/events/create')}
                             />
                             <StyledRequestsIcon
-                                isActive={router?.pathname === '/requests'}
+                                $isactive={router?.pathname === '/requests'}
                                 onClick={() => router.push('/requests')}
                             />
                             <StyledProfileIcon
-                                isActive={
+                                $isactive={
                                     (router?.pathname === `/profile/[id]` &&
                                         router?.query.id ===
                                             session?.user.userId) ||
@@ -185,14 +190,14 @@ const MobileNavigation = styled.div`
 `;
 
 interface NavProps {
-    isActive: boolean;
+    $isactive: boolean;
 }
 
 const StyledEventIcon = styled(EventsIcon)<NavProps>`
     height: 32px;
     width: 32px;
     color: ${(props) =>
-        props.isActive ? props.theme.primary : props.theme.text};
+        props.$isactive ? props.theme.primary : props.theme.text};
 
     :hover {
         color: ${({ theme }) => theme.primary};
@@ -203,7 +208,7 @@ const StyledCreateIcon = styled(CreateIcon)<NavProps>`
     height: 32px;
     width: 32px;
     color: ${(props) =>
-        props.isActive ? props.theme.primary : props.theme.text};
+        props.$isactive ? props.theme.primary : props.theme.text};
     :hover {
         color: ${({ theme }) => theme.primary};
     }
@@ -213,7 +218,7 @@ const StyledProfileIcon = styled(ProfileIcon)<NavProps>`
     height: 32px;
     width: 32px;
     color: ${(props) =>
-        props.isActive ? props.theme.primary : props.theme.text};
+        props.$isactive ? props.theme.primary : props.theme.text};
     :hover {
         color: ${({ theme }) => theme.primary};
     }
@@ -223,7 +228,7 @@ const StyledMyEventsIcon = styled(MyEventsIcon)<NavProps>`
     height: 32px;
     width: 32px;
     color: ${(props) =>
-        props.isActive ? props.theme.primary : props.theme.text};
+        props.$isactive ? props.theme.primary : props.theme.text};
     :hover {
         color: ${({ theme }) => theme.primary};
     }
@@ -233,7 +238,7 @@ const StyledRequestsIcon = styled(RequestsIcon)<NavProps>`
     height: 32px;
     width: 32px;
     color: ${(props) =>
-        props.isActive ? props.theme.primary : props.theme.text};
+        props.$isactive ? props.theme.primary : props.theme.text};
     :hover {
         color: ${({ theme }) => theme.primary};
     }
@@ -277,7 +282,7 @@ const DesktopNavigationItem = styled.div<NavProps>`
     font-size: ${({ theme }) => theme.fonts.normal.paragraph};
 
     color: ${(props) =>
-        props.isActive ? props.theme.primary : props.theme.text};
+        props.$isactive ? props.theme.primary : props.theme.text};
 
     :hover {
         * {
@@ -286,7 +291,7 @@ const DesktopNavigationItem = styled.div<NavProps>`
     }
 
     ${(props) =>
-        props.isActive &&
+        props.$isactive &&
         `
             font-weight: 800;
         `}
@@ -308,13 +313,7 @@ const DesktopFooter = styled.div`
     }
 `;
 
-const LogoText = styled.div`
-    font-size: ${({ theme }) => theme.fonts.normal.headline4};
-    font-weight: 800;
-    text-align: center;
-    padding-top: 20px;
-
-    * {
-        text-decoration: none;
-    }
+const StyledLogo = styled(Logo)`
+    margin: 35px;
+    cursor: pointer;
 `;

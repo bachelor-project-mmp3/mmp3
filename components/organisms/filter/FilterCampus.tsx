@@ -167,10 +167,6 @@ const StyledCheck = styled(Check)`
     transform: translate(0, -50%);
 `;
 
-interface FilterItemProps {
-    isOpen: boolean;
-}
-
 const FakeBlur = styled.div`
     z-index: 110;
     position: fixed;

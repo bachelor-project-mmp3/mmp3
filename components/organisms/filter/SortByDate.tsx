@@ -48,10 +48,6 @@ const SortByDate: React.FC<SortByDateProps> = ({
                         <ButtonWrapper>
                             <Button
                                 onClick={() => {
-                                    console.log(
-                                        preSettedSorting,
-                                        'in component'
-                                    );
                                     onSubmit(preSettedSorting);
                                 }}
                                 variant="primary">
@@ -161,10 +157,6 @@ const StyledCheck = styled(Check)`
     right: 20px;
     transform: translate(0, -50%);
 `;
-
-interface FilterItemProps {
-    isOpen: boolean;
-}
 
 const FakeBlur = styled.div`
     z-index: 110;

@@ -1,0 +1,11 @@
+name: reminderForEvents
+on:
+    schedule:
+        - cron: '0 9 * * *'
+jobs:
+    cron:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Reminder for events tomorrow
+              run: |
+                  curl --request POST --url "https://mmp3.vercel.app/api/cron/eventReminder" --header "Authorization: Bearer ${{ secrets.API_SECRET_KEY }}"

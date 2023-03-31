@@ -206,8 +206,6 @@ const Events = () => {
         filterCampus !== undefined ||
         filterDate !== undefined;
 
-    console.log(filterDate, 'datefilter');
-
     return (
         <>
             {showInfoPopOpOnJoin && (
@@ -251,7 +249,7 @@ const Events = () => {
                     {events &&
                         events.map((event) => (
                             <ExtendedEventPreview
-                                key={event.id}
+                                key={`extendetEventPreview-${event.id}`}
                                 event={event}
                                 onSubmitJoin={onSubmitJoin}
                                 onSubmitLeave={onSubmitLeave}
@@ -334,6 +332,7 @@ const FilterBar = styled.div`
 
 const Reset = styled.div`
     cursor: pointer;
+    padding: 0 10px;
     :hover {
         color: ${({ theme }) => theme.hoverPrimary};
     }

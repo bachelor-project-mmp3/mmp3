@@ -446,7 +446,7 @@ const EditEvent = () => {
                     <StyledH2>Add your menu</StyledH2>
                     {dishes.map((currentDish, i) => {
                         return (
-                            <StyledMenuInputItem key={i}>
+                            <StyledMenuInputItem key={`styledmenuinput-${i}`}>
                                 <StyledInputWithError>
                                     <InputText
                                         onChange={(e) => handleChange(e, i)}

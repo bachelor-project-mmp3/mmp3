@@ -144,7 +144,7 @@ const Requests = () => {
                     {requests &&
                         requests.map((request) => (
                             <Request
-                                key={request.id}
+                                key={`request-${request.id}`}
                                 request={request}
                                 onSubmitAccept={() =>
                                     onSubmit(request.id, RequestStatus.ACCEPTED)
