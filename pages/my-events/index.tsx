@@ -178,8 +178,9 @@ const MyEvents = () => {
                 {isToggle ? (
                     <WrapperColumn>
                         <StyledHeadline>Upcoming Events</StyledHeadline>
+
                         {upcomingEvents?.length > 0 ? (
-                            <>
+                            <EventsWrapper>
                                 {upcomingEvents.map((event) => {
                                     const request = hasUserSendRequestHelper(
                                         event.requests,
@@ -200,7 +201,7 @@ const MyEvents = () => {
                                         />
                                     );
                                 })}
-                            </>
+                            </EventsWrapper>
                         ) : (
                             <StyledNoEvents>
                                 <StyledNoUpcomingEventsIllustraition />
@@ -294,13 +295,22 @@ const NotificationsWrapper = styled.div`
 const StyledToggle = styled.div`
     display: flex;
     justify-content: center;
+    width: fit-content;
     gap: 5px;
     margin-top: 20px;
+    background: white;
+    border-radius: 25px;
+    padding: 2px;
+    margin: auto;
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        margin: inherit;
+        justify-content: flex-start;
+    }
 `;
 
 const StyledToggleContent = styled.div`
     display: flex;
-    width: 50%;
     color: ${({ theme }) => theme.midGrey};
     ${(props) => props.rightAlign && 'justify-content: flex-end;'};
 `;

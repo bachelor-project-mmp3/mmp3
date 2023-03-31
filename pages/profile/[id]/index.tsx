@@ -137,12 +137,13 @@ const Profile = () => {
                                 <StyledStudy />
                                 <p>{profile.study}</p>
                             </InfoRow>
-                            {profile.id === session?.user?.userId && (
-                                <InfoRow>
-                                    <StyledPhone />
-                                    <p>{profile.phone}</p>
-                                </InfoRow>
-                            )}
+                            {profile.id === session?.user?.userId &&
+                                profile.phone && (
+                                    <InfoRow>
+                                        <StyledPhone />
+                                        <p>{profile.phone}</p>
+                                    </InfoRow>
+                                )}
                         </InfoWrapper>
                         {profile.interests && (
                             <Card>

@@ -184,11 +184,9 @@ const Request: React.FC<{
             {request.status === 'PENDING' &&
                 !userIsHost &&
                 isRegistrationTimeinFuture && (
-                    <ButtonWrapper>
-                        <WithdrawButton onClick={() => onSubmitWithdraw()}>
-                            <StyledDiscard />
-                        </WithdrawButton>
-                    </ButtonWrapper>
+                    <WithdrawButton onClick={() => onSubmitWithdraw()}>
+                        <StyledDiscard />
+                    </WithdrawButton>
                 )}
         </Card>
     );
