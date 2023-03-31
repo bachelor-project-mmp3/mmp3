@@ -14,7 +14,9 @@ export function getEmailTemplate(data: {
         | 'cancel'
         | 'timelimit-host'
         | 'kickGuest'
-        | 'imageUpload';
+        | 'imageUpload'
+        | 'reminder-host'
+        | 'reminder-guest';
     eventId?: string;
     eventDetail?: { amountOfGuests: number };
 }) {
@@ -129,6 +131,32 @@ export function getEmailTemplate(data: {
             } is over now, we hope you had a good time and met new friends.<br>Please upload a picture of your dinner <a href=${
                 'https://mmp3.vercel.app/events/' + data.eventId
             }>here</a> to show your cooking skills to the community.<br><br>See you at the next event!
+        `,
+        };
+    }
+    if (data.type === 'reminder-host') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.eventTitle} takes place tomorrow`,
+            text: `${data.eventTitle} takes place tomorrow`,
+            html: `<div>Hi ${
+                data.hostFirstName
+            },<br></div><p>your event <a href=${
+                'https://mmp3.vercel.app/events/' + data.eventId
+            }>${
+                data.eventTitle
+            }</a> takes place tomorrow! Don't forget to take a picture, which you can upload afterwards!<br>Prepare yourself and have fun! 
+        `,
+        };
+    }
+    if (data.type === 'reminder-guest') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.eventTitle} takes place tomorrow`,
+            text: `${data.eventTitle} takes place tomorrow`,
+            html: `<div>Hi ${data.guestName},<br></div><p>the event <a href=${
+                'https://mmp3.vercel.app/events/' + data.eventId
+            }>${
+                data.eventTitle
+            }</a> takes place tomorrow! Don't forget to leave a review after the event and have fun! 
         `,
         };
     }
