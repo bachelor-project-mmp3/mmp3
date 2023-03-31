@@ -24,7 +24,8 @@ export const ChefAndImage: React.FC<ChefAndImageProps> = ({
                     <StyledImage
                         src={source}
                         alt="Image"
-                        layout={'fill'}
+                        fill
+                        sizes="100"
                         style={{ objectFit: 'cover' }}
                     />
                 </HostImage>

@@ -417,6 +417,7 @@ const EventDetail = () => {
                                     <StyledImage
                                         src={eventImage}
                                         fill
+                                        sizes="100"
                                         alt="event"
                                         style={{ objectFit: 'cover' }}
                                     />
@@ -439,7 +440,7 @@ const EventDetail = () => {
                             <StyledHeadings>Menu</StyledHeadings>
                             {event.menu.map((dish, index) => (
                                 <MenuItem
-                                    key={index}
+                                    key={`menuItem-${index}`}
                                     dishTitle={dish.title}
                                     dishLink={dish.link}
                                     dishDescription={dish.description}
@@ -471,7 +472,7 @@ const EventDetail = () => {
                                 )
                                 .map((request, index) => (
                                     <GuestListItem
-                                        key={index}
+                                        key={`guestlistitem-${index}`}
                                         guest={request.User}
                                         userIsHost={userIsHost}
                                         onClick={() => {
