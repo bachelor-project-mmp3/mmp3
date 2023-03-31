@@ -206,8 +206,6 @@ const Events = () => {
         filterCampus !== undefined ||
         filterDate !== undefined;
 
-    console.log(filterDate, 'datefilter');
-
     return (
         <>
             {showInfoPopOpOnJoin && (

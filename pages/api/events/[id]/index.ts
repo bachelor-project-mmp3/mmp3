@@ -158,6 +158,7 @@ export default async function handler(
                                             firstName: true,
                                             lastName: true,
                                             email: true,
+                                            id: true,
                                         },
                                     },
                                 },
@@ -165,31 +166,39 @@ export default async function handler(
                         },
                     });
 
-                    event.requests.forEach((guest) => {
+                    for (const request of event.requests) {
                         const mailData = getEmailTemplate({
                             hostFirstName: event.host.firstName,
                             eventId: event.id,
                             eventTitle: event.title,
-                            guestName: guest.User.firstName,
+                            guestName: request.User.firstName,
                             type: 'edit',
                         });
 
                         const mail = {
                             from: 'studentenfuttermmp3@gmail.com',
-                            to: guest.User.email,
+                            to: request.User.email,
                             ...mailData,
                         };
 
                         transporter.sendMail(mail, function (err, info) {
                             if (err) {
-                                res.status(500).json({
-                                    statusCode: 500,
-                                    success: false,
-                                    message: err,
-                                });
+                                console.log(err);
+                            } else {
+                                console.log(info);
                             }
                         });
-                    });
+
+                        // notifications to guests
+                        await prisma.notification.create({
+                            data: {
+                                Event: { connect: { id: event.id } },
+                                User: { connect: { id: request.User.id } },
+                                type: 'EVENT',
+                                message: 'was edited',
+                            },
+                        });
+                    }
 
                     res.json(result);
                 } else {
@@ -260,30 +269,39 @@ export default async function handler(
                             status: 'CANCELLED',
                         },
                     });
-                    event.requests.forEach((guest) => {
+
+                    for (const request of event.requests) {
                         const mailData = getEmailTemplate({
                             hostFirstName: event.host.firstName,
                             eventTitle: event.title,
-                            guestName: guest.User.firstName,
+                            guestName: request.User.firstName,
                             type: 'cancel',
                         });
 
                         const mail = {
                             from: 'studentenfuttermmp3@gmail.com',
-                            to: guest.User.email,
+                            to: request.User.email,
                             ...mailData,
                         };
 
                         transporter.sendMail(mail, function (err, info) {
                             if (err) {
-                                res.status(500).json({
-                                    statusCode: 500,
-                                    success: false,
-                                    message: err,
-                                });
+                                console.log(err);
+                            } else {
+                                console.log(info);
                             }
                         });
-                    });
+
+                        //notification for guest
+                        await prisma.notification.create({
+                            data: {
+                                Event: { connect: { id: event.id } },
+                                User: { connect: { id: request.User.id } },
+                                type: 'EVENT',
+                                message: 'is cancelled',
+                            },
+                        });
+                    }
 
                     res.status(200).json(event);
                 }
