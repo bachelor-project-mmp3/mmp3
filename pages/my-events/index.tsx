@@ -15,6 +15,8 @@ import { Pagination } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import NoPastEventsIllustration from '../../public/images/no_past_events.svg';
+import NoUpcomingEventsIllustration from '../../public/images/no_upcoming_events.svg';
 
 const MyEvents = () => {
     const router = useRouter();
@@ -178,9 +180,9 @@ const MyEvents = () => {
                 {isToggle ? (
                     <WrapperColumn>
                         <StyledHeadline>Upcoming Events</StyledHeadline>
-                        <EventsList>
-                            {upcomingEvents?.length > 0 ? (
-                                upcomingEvents.map((event) => {
+                        {upcomingEvents?.length > 0 ? (
+                            <EventsList>
+                                {upcomingEvents.map((event) => {
                                     const request = hasUserSendRequestHelper(
                                         event.requests,
                                         session
@@ -199,11 +201,18 @@ const MyEvents = () => {
                                             }
                                         />
                                     );
-                                })
-                            ) : (
-                                <p>No upcoming events...</p>
-                            )}
-                        </EventsList>
+                                })}
+                            </EventsList>
+                        ) : (
+                            <StyledNoEvents>
+                                <StyledNoUpcomingEventsIllustraition />
+                                <StyledP>No upcoming events...</StyledP>
+                                <StyledP>
+                                    Look for new events you would like to join
+                                    or create your own! Have fun :)
+                                </StyledP>
+                            </StyledNoEvents>
+                        )}
                     </WrapperColumn>
                 ) : (
                     <WrapperColumn className="top">
@@ -217,6 +226,7 @@ const MyEvents = () => {
                                                 title={event.title}
                                                 imageEvent={event.image}
                                                 imageHost={event.host.image}
+                                                myEventsPage={true}
                                                 onClick={() =>
                                                     router.push(
                                                         `/events/${event.id}`
@@ -229,7 +239,14 @@ const MyEvents = () => {
                                     </>
                                 ))
                             ) : (
-                                <p>No past events...</p>
+                                <StyledNoEvents>
+                                    <StyledNoPastEventsIllustration />
+                                    <StyledP>No past events...</StyledP>
+                                    <StyledP>
+                                        After joining or visiting events, you
+                                        can find them here
+                                    </StyledP>
+                                </StyledNoEvents>
                             )}
                         </EventsWrapper>
                     </WrapperColumn>
@@ -265,19 +282,6 @@ const WrapperColumn = styled.div`
     }
 `;
 
-const WrapperRow = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    margin-top: 20px;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        flex-wrap: no-wrap;
-    }
-`;
-
 const EventsWrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -302,7 +306,7 @@ const StyledToggle = styled.div`
     display: flex;
     justify-content: center;
     gap: 5px;
-    margin: 20px 0 -10px 0;
+    margin-top: 20px;
 `;
 
 const StyledToggleContent = styled.div`
@@ -337,4 +341,32 @@ const EventsList = styled.div`
         justify-content: flex-start;
         max-width: 1500px;
     }
+`;
+
+const StyledNoPastEventsIllustration = styled(NoPastEventsIllustration)`
+    height: 150px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        height: 250px;
+    }
+`;
+
+const StyledNoUpcomingEventsIllustraition = styled(
+    NoUpcomingEventsIllustration
+)`
+    height: 150px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        height: 250px;
+    }
+`;
+
+const StyledNoEvents = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+`;
+
+const StyledP = styled.p`
+    width: 300px;
+    text-align: center;
 `;

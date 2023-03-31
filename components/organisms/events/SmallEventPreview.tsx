@@ -9,6 +9,7 @@ interface SmallEventProps {
     imageEvent: string;
     imageHost: string;
     date: string;
+    myEventsPage?: boolean;
     onClick?: (e: any) => void;
 }
 
@@ -23,9 +24,10 @@ export const SmallEventPreview: React.FC<SmallEventProps> = ({
     imageHost,
     date,
     onClick,
+    myEventsPage,
 }: SmallEventProps) => {
     return (
-        <SmallEventWrapper onClick={onClick}>
+        <SmallEventWrapper onClick={onClick} myEventsPage={myEventsPage}>
             <Card variant={'small-event'}>
                 <StyledImageEvent
                     src={imageEvent}
@@ -54,14 +56,21 @@ export const SmallEventPreview: React.FC<SmallEventProps> = ({
     );
 };
 
-const SmallEventWrapper = styled.div`
+interface SmallEventWrapperProps {
+    myEventsPage?: boolean;
+}
+const SmallEventWrapper = styled.div<SmallEventWrapperProps>`
     cursor: pointer;
-    width: 22 0px;
+    ${(props) => props.myEventsPage && 'width: 200px'};
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        ${(props) => props.myEventsPage && 'width: 300px'};
+    }
 `;
 
 const ColumnWrapper = styled.div`
     display: flex;
-    flex-direction: col;
+    flex-direction: column;
     justify-content: flex-end;
     align-items: center;
     &.col-1 {
