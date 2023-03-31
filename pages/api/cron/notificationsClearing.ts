@@ -1,7 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getNodeMailerTransporter } from '../../../helper/nodemailer';
 import prisma from '../../../lib/prisma';
-import { getEmailTemplate } from '../../../helper/mailTemplaes';
 
 // this cron job does:
 // - delete notifications from yesterday which says that event takes place tomorrow (so today)
