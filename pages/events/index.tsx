@@ -332,6 +332,7 @@ const FilterBar = styled.div`
 
 const Reset = styled.div`
     cursor: pointer;
+    padding: 0 10px;
     :hover {
         color: ${({ theme }) => theme.hoverPrimary};
     }
