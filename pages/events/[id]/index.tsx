@@ -96,6 +96,8 @@ const EventDetail = () => {
     >();
     const [showQuestion, setShowQuestion] = useState(false);
     const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
+    const [showInfoPopUpOnUploadPhoto, setshowInfoPopUpOnUploadPhoto] =
+        useState(false);
     const [eventImage, setEventImage] = useState('');
     const [showInfoPopUpOnDeleteGuest, setShowInfoPopUpOnDeleteGuest] =
         useState(false);
@@ -195,8 +197,8 @@ const EventDetail = () => {
             res.json().then((event) => {
                 setEvent(event);
             });
-            setshowInfoPopUpOnCancel(false);
             setLoading(false);
+            setshowInfoPopUpOnCancel(false);
         } else {
             router.push('/404');
         }
@@ -225,6 +227,7 @@ const EventDetail = () => {
             res.json().then((event) => {
                 setEventImage(event.image);
             });
+            setshowInfoPopUpOnUploadPhoto(true);
             setLoading(false);
         } else {
             router.push('/404');
@@ -310,6 +313,11 @@ const EventDetail = () => {
             {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(undefined)}>
                     {showInfoPopOpOnLeave}
+                </InfoPopUp>
+            )}
+            {showInfoPopUpOnUploadPhoto && (
+                <InfoPopUp onClose={() => setshowInfoPopUpOnUploadPhoto(false)}>
+                    Photo was successfully uploaded!
                 </InfoPopUp>
             )}
 
