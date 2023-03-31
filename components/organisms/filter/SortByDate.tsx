@@ -1,81 +1,73 @@
 import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
-import { dormitories } from '../forms/ProfileForm';
 import { Button } from '../../atoms/Button';
 import Check from '../../../public/icons/hakerl.svg';
 import FilterButton from '../../atoms/FilterButton';
 
-interface FilterProps {
+interface SortByDateProps {
     onSubmit?: (filter: string) => void;
     children: ReactNode;
-    currentFilter?: string;
+    currentSort?: string;
 }
 
-const FilterCampus: React.FC<FilterProps> = ({
+export const sortOptions = ['Sort by latest', 'Sort by event date'];
+
+const SortByDate: React.FC<SortByDateProps> = ({
     children,
     onSubmit,
-    currentFilter,
-}: FilterProps) => {
-    const [showCampusFilterList, setShowCampusFilterList] = useState(false);
-    const [preSettedFilterCampus, setPreSettedFilterCampus] = useState<
+    currentSort,
+}: SortByDateProps) => {
+    const [showSortByList, setShowSortByList] = useState(false);
+    const [preSettedSorting, setPreSettedSorting] = useState<
         string | undefined
-    >(currentFilter);
+    >(currentSort);
 
     return (
         <Wrapper>
-            {showCampusFilterList && (
+            {showSortByList && (
                 <>
-                    <FakeBlur onClick={() => setShowCampusFilterList(false)} />
-                    <CampusList>
+                    <FakeBlur onClick={() => setShowSortByList(false)} />
+                    <OptionList>
                         <Headline>Filter by campus</Headline>
-                        <FilterListWrapper>
-                            {dormitories.map((dormitory) => (
-                                <FilterItemWrapper
-                                    key={`${dormitory}-filter-entry`}>
+                        <SortListWrapper>
+                            {sortOptions.map((option) => (
+                                <SortItemWrapper key={`${option}-filter-entry`}>
                                     <FilterItem
-                                        selected={
-                                            dormitory === preSettedFilterCampus
-                                        }
+                                        selected={option === preSettedSorting}
                                         onClick={() =>
-                                            setPreSettedFilterCampus(dormitory)
+                                            setPreSettedSorting(option)
                                         }>
-                                        {dormitory}
+                                        {option}
                                     </FilterItem>
-                                    {dormitory === preSettedFilterCampus && (
+                                    {option === preSettedSorting && (
                                         <StyledCheck />
                                     )}
-                                </FilterItemWrapper>
+                                </SortItemWrapper>
                             ))}
-                        </FilterListWrapper>
+                        </SortListWrapper>
                         <ButtonWrapper>
                             <Button
                                 onClick={() => {
-                                    setPreSettedFilterCampus(undefined);
-                                    onSubmit(undefined);
+                                    onSubmit(preSettedSorting);
                                 }}
-                                variant="secondary">
-                                Reset
-                            </Button>
-                            <Button
-                                onClick={() => onSubmit(preSettedFilterCampus)}
                                 variant="primary">
                                 Save
                             </Button>
                         </ButtonWrapper>
-                    </CampusList>
+                    </OptionList>
                 </>
             )}
 
             <FilterButton
-                onClick={() => setShowCampusFilterList(true)}
-                isOpen={showCampusFilterList}>
+                onClick={() => setShowSortByList(true)}
+                isOpen={showSortByList}>
                 {children}
             </FilterButton>
         </Wrapper>
     );
 };
 
-export default FilterCampus;
+export default SortByDate;
 
 const Wrapper = styled.div`
     @media ${(props) => props.theme.breakpoint.tablet} {
@@ -83,7 +75,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const CampusList = styled.div`
+const OptionList = styled.div`
     position: absolute;
     bottom: 0;
     left: 0;
@@ -97,11 +89,10 @@ const CampusList = styled.div`
     @media ${(props) => props.theme.breakpoint.tablet} {
         top: 45px;
         bottom: auto;
-        left: 0;
+        left: auto;
         width: 280px;
-        right: auto;
+        right: 0;
         border-radius: 10px;
-        width: 300px;
     }
 `;
 
@@ -113,7 +104,7 @@ const Headline = styled.h2`
     }
 `;
 
-const FilterListWrapper = styled.ul`
+const SortListWrapper = styled.ul`
     padding: 0;
     max-height: 300px;
     overflow: scroll;
@@ -124,7 +115,7 @@ interface FilterItemProps {
     selected: boolean;
 }
 
-const FilterItemWrapper = styled.li`
+const SortItemWrapper = styled.li`
     position: relative;
     cursor: pointer;
     list-style: none;

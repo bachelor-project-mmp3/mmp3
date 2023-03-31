@@ -1,0 +1,11 @@
+name: eventOver
+on:
+    schedule:
+        - cron: '0 1 * * *'
+jobs:
+    cron:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Event is over Cron Job
+              run: |
+                  curl --request POST --url "https://mmp3.vercel.app/api/cron/eventOver" --header "Authorization: Bearer ${{ secrets.API_SECRET_KEY }}"

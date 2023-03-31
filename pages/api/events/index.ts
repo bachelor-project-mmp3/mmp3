@@ -3,6 +3,7 @@ import prisma from '../../../lib/prisma';
 import { getSession } from 'next-auth/react';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
+import { Prisma } from '.prisma/client';
 
 export default async function handler(
     req: NextApiRequest,
@@ -51,7 +52,8 @@ export default async function handler(
             else if (req.method === 'GET') {
                 const today = new Date();
 
-                const { dormitoryFilter, dateFilter, page } = req.query;
+                const { dormitoryFilter, dateFilter, page, sortByDate } =
+                    req.query;
                 const entriesPerPage = 10;
                 const skipValue = (Number(page) - 1) * entriesPerPage;
 
@@ -135,15 +137,15 @@ export default async function handler(
                 });
 
                 const pageCount = Math.ceil(eventsCount / entriesPerPage);
+                const orderBy =
+                    sortByDate === 'Sort by event date'
+                        ? { date: 'asc' as Prisma.SortOrder }
+                        : { createdAt: 'desc' as Prisma.SortOrder };
 
                 const events = await prisma.event.findMany({
                     skip: skipValue, // How many rows to skip
                     take: entriesPerPage, // Page size
-                    orderBy: [
-                        {
-                            date: 'asc',
-                        },
-                    ],
+                    orderBy,
                     include: dataQuery,
                     where: {
                         AND: [...filter, { NOT: { status: 'CANCELLED' } }],

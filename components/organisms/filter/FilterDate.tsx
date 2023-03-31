@@ -46,7 +46,7 @@ const FilterDate: React.FC<FilterProps> = ({
     const formattedTodayIsoString = today.toISOString().split('T')[0];
 
     return (
-        <>
+        <Wrapper>
             {showDateFilterList && (
                 <>
                     <FakeBlur onClick={() => setShowDateFilterList(false)} />
@@ -136,11 +136,16 @@ const FilterDate: React.FC<FilterProps> = ({
                 isOpen={showDateFilterList}>
                 {children}
             </FilterButton>
-        </>
+        </Wrapper>
     );
 };
 
 export default FilterDate;
+const Wrapper = styled.div`
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        position: relative;
+    }
+`;
 
 const DateOptions = styled.div`
     position: absolute;
@@ -154,9 +159,10 @@ const DateOptions = styled.div`
     box-shadow: 17px 17px 35px -11px ${({ theme }) => theme.darkGrey};
 
     @media ${(props) => props.theme.breakpoint.tablet} {
-        top: 145px;
+        top: 45px;
         bottom: auto;
-        left: auto;
+        left: 0;
+        width: 280px;
         right: auto;
         border-radius: 10px;
     }

@@ -1,10 +1,11 @@
 import React from 'react';
 import Layout from '../../components/Layout';
+import styled from 'styled-components';
 
 const Privacy = () => {
     return (
         <Layout>
-            <div className="page">
+            <StyledDiv>
                 <h1>Privacy Policy</h1>
                 <p>Last updated: March 21, 2023</p>
                 <p>
@@ -153,9 +154,13 @@ const Privacy = () => {
                         abuchecker.mma-b2020@fh-salzburg.ac.at
                     </li>
                 </ul>
-            </div>
+            </StyledDiv>
         </Layout>
     );
 };
 
 export default Privacy;
+
+const StyledDiv = styled.div`
+    max-width: 600px;
+`;

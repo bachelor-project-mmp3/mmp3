@@ -53,6 +53,7 @@ export default async function handler(
                                 OR: [
                                     { status: 'ACCEPTED' },
                                     { status: 'PENDING' },
+                                    { status: 'DECLINED' },
                                 ],
                             },
                             select: {
@@ -75,10 +76,29 @@ export default async function handler(
             } else if (req.method === 'PATCH') {
                 const eventId = req.query.id.toString();
                 const cancelFlag = req.headers.cancel;
+                const uploadFlag = req.headers.upload;
                 const transporter = getNodeMailerTransporter();
 
-                // sent in http header for edit or cancel event as host
-                if (cancelFlag === 'false') {
+                // event photo upload
+                if (uploadFlag) {
+                    try {
+                        const { imageUrl } = req.body;
+
+                        const result = await prisma.event.update({
+                            where: {
+                                id: eventId,
+                            },
+                            data: {
+                                image: imageUrl,
+                            },
+                        });
+
+                        res.json(result);
+                    } catch (err) {
+                        res.status(500).json({ message: err.message });
+                    }
+                } else if (cancelFlag === 'false') {
+                    // sent in http header for edit or cancel event as host
                     const {
                         title,
                         info,
@@ -138,6 +158,7 @@ export default async function handler(
                                             firstName: true,
                                             lastName: true,
                                             email: true,
+                                            id: true,
                                         },
                                     },
                                 },
@@ -145,30 +166,39 @@ export default async function handler(
                         },
                     });
 
-                    event.requests.forEach((guest) => {
+                    for (const request of event.requests) {
                         const mailData = getEmailTemplate({
                             hostFirstName: event.host.firstName,
+                            eventId: event.id,
                             eventTitle: event.title,
-                            guestName: guest.User.firstName,
+                            guestName: request.User.firstName,
                             type: 'edit',
                         });
 
                         const mail = {
                             from: 'studentenfuttermmp3@gmail.com',
-                            to: guest.User.email,
+                            to: request.User.email,
                             ...mailData,
                         };
 
                         transporter.sendMail(mail, function (err, info) {
                             if (err) {
-                                res.status(500).json({
-                                    statusCode: 500,
-                                    success: false,
-                                    message: err,
-                                });
+                                console.log(err);
+                            } else {
+                                console.log(info);
                             }
                         });
-                    });
+
+                        // notifications to guests
+                        await prisma.notification.create({
+                            data: {
+                                Event: { connect: { id: event.id } },
+                                User: { connect: { id: request.User.id } },
+                                type: 'EVENT',
+                                message: 'was edited',
+                            },
+                        });
+                    }
 
                     res.json(result);
                 } else {
@@ -239,30 +269,39 @@ export default async function handler(
                             status: 'CANCELLED',
                         },
                     });
-                    event.requests.forEach((guest) => {
+
+                    for (const request of event.requests) {
                         const mailData = getEmailTemplate({
                             hostFirstName: event.host.firstName,
                             eventTitle: event.title,
-                            guestName: guest.User.firstName,
+                            guestName: request.User.firstName,
                             type: 'cancel',
                         });
 
                         const mail = {
                             from: 'studentenfuttermmp3@gmail.com',
-                            to: guest.User.email,
+                            to: request.User.email,
                             ...mailData,
                         };
 
                         transporter.sendMail(mail, function (err, info) {
                             if (err) {
-                                res.status(500).json({
-                                    statusCode: 500,
-                                    success: false,
-                                    message: err,
-                                });
+                                console.log(err);
+                            } else {
+                                console.log(info);
                             }
                         });
-                    });
+
+                        //notification for guest
+                        await prisma.notification.create({
+                            data: {
+                                Event: { connect: { id: event.id } },
+                                User: { connect: { id: request.User.id } },
+                                type: 'EVENT',
+                                message: 'is cancelled',
+                            },
+                        });
+                    }
 
                     res.status(200).json(event);
                 }
