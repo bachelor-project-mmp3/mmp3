@@ -20,12 +20,14 @@ const Layout: React.FC<LayoutProps> = ({
                     src={'/images/background_mobile.svg'}
                     alt="Image"
                     fill
+                    sizes="100"
                     style={{ objectFit: 'cover' }}
                 />
                 <DesktopImage
                     src={'/images/background_desktop.svg'}
                     alt="Image"
                     fill
+                    sizes="100"
                     style={{ objectFit: 'cover' }}
                 />
             </BackgroundImageWrapper>

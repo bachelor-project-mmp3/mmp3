@@ -91,8 +91,9 @@ export const LandingPageHeader = () => {
                                 src={'/images/hands_mobile.svg'}
                                 alt="Image"
                                 fill
+                                sizes="100"
                                 style={{
-                                    objectFit: 'contain',
+                                    objectFit: 'fill',
                                 }}
                             />
                         </MobileImageWrapper>
@@ -101,8 +102,9 @@ export const LandingPageHeader = () => {
                                 src={'/images/hands_desktop.svg'}
                                 alt="Image"
                                 fill
+                                sizes="100"
                                 style={{
-                                    objectFit: 'contain',
+                                    objectFit: 'fill',
                                 }}
                             />
                         </DesktopImageWrapper>

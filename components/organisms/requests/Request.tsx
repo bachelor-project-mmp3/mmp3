@@ -107,7 +107,7 @@ const Request: React.FC<{
             <Content>
                 <ImageAndLinkWrapper>
                     <ImageAndChefHood>
-                        <StyledChefHood showChefHood={!userIsHost} />
+                        <StyledChefHood $showChefHood={!userIsHost} />
                         <HostImage>
                             <StyledImage
                                 src={
@@ -116,7 +116,8 @@ const Request: React.FC<{
                                         : request.User.image
                                 }
                                 alt="Image"
-                                layout={'fill'}
+                                fill
+                                sizes="100"
                                 style={{ objectFit: 'cover' }}
                             />
                         </HostImage>
@@ -229,7 +230,7 @@ const StyledChefHood = styled(ChefHood)<HostImageProps>`
     right: 0;
     top: -11px;
     transform: rotate(36deg);
-    display: ${(props) => (props.showChefHood ? 'block' : 'none')};
+    display: ${(props) => (props.$showChefHood ? 'block' : 'none')};
 `;
 
 const StyledCheck = styled(Check)`
@@ -283,7 +284,7 @@ const WithdrawButton = styled(DeclineButton)`
 `;
 
 interface HostImageProps {
-    showChefHood: boolean;
+    $showChefHood: boolean;
 }
 
 const HostImage = styled.div`

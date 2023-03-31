@@ -249,7 +249,7 @@ const Events = () => {
                     {events &&
                         events.map((event) => (
                             <ExtendedEventPreview
-                                key={event.id}
+                                key={`extendetEventPreview-${event.id}`}
                                 event={event}
                                 onSubmitJoin={onSubmitJoin}
                                 onSubmitLeave={onSubmitLeave}

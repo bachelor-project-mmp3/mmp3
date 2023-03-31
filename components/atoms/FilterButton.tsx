@@ -15,7 +15,7 @@ const FilterButton: React.FC<FilterButtonProps> = ({
 }: FilterButtonProps) => {
     return (
         <Root onClick={onClick}>
-            {children} <StyledFilterIcon isOpen={isOpen} />
+            {children} <StyledFilterIcon $isOpen={isOpen} />
         </Root>
     );
 };
@@ -40,7 +40,7 @@ const Root = styled.div`
 `;
 
 interface FilterItemProps {
-    isOpen: boolean;
+    $isOpen: boolean;
 }
 
 const StyledFilterIcon = styled(FilterIcon)<FilterItemProps>`
@@ -51,6 +51,6 @@ const StyledFilterIcon = styled(FilterIcon)<FilterItemProps>`
         height: 16px;
         width: 16px;
         transform: ${(props) =>
-            props.isOpen ? 'rotate(90deg)' : 'rotate(270deg)'};
+            props.$isOpen ? 'rotate(90deg)' : 'rotate(270deg)'};
     }
 `;

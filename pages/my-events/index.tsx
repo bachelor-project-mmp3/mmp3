@@ -139,23 +139,21 @@ const MyEvents = () => {
                         }}>
                         {notifications?.length > 0 &&
                             notifications.map((notification) => (
-                                <>
-                                    <SwiperSlide>
-                                        <Notification
-                                            key={notification.id}
-                                            notification={notification}
-                                            onClickLink={() =>
-                                                onClickLink(
-                                                    notification.id,
-                                                    notification.eventId
-                                                )
-                                            }
-                                            onClickHide={() =>
-                                                onClickHide(notification.id)
-                                            }
-                                        />
-                                    </SwiperSlide>
-                                </>
+                                <SwiperSlide
+                                    key={`notification-${notification.id}`}>
+                                    <Notification
+                                        notification={notification}
+                                        onClickLink={() =>
+                                            onClickLink(
+                                                notification.id,
+                                                notification.eventId
+                                            )
+                                        }
+                                        onClickHide={() =>
+                                            onClickHide(notification.id)
+                                        }
+                                    />
+                                </SwiperSlide>
                             ))}
                     </Swiper>
                 </NotificationsWrapper>
@@ -181,7 +179,7 @@ const MyEvents = () => {
                     <WrapperColumn>
                         <StyledHeadline>Upcoming Events</StyledHeadline>
                         {upcomingEvents?.length > 0 ? (
-                            <EventsList>
+                            <>
                                 {upcomingEvents.map((event) => {
                                     const request = hasUserSendRequestHelper(
                                         event.requests,
@@ -190,7 +188,7 @@ const MyEvents = () => {
 
                                     return (
                                         <ExtendedEventPreview
-                                            key={event.id}
+                                            key={`event-${event.id}`}
                                             event={event}
                                             onSubmitJoin={() => alert('hi')}
                                             onSubmitLeave={() =>
@@ -202,14 +200,15 @@ const MyEvents = () => {
                                         />
                                     );
                                 })}
-                            </EventsList>
+                            </>
                         ) : (
                             <StyledNoEvents>
                                 <StyledNoUpcomingEventsIllustraition />
                                 <StyledP>No upcoming events...</StyledP>
                                 <StyledP>
-                                    Look for new events you would like to join
-                                    or create your own! Have fun :)
+                                    {
+                                        'Look for new events you would like to join or create your own! Have fun :)'
+                                    }
                                 </StyledP>
                             </StyledNoEvents>
                         )}
@@ -220,23 +219,16 @@ const MyEvents = () => {
                         <EventsWrapper>
                             {pastEvents?.length > 0 ? (
                                 pastEvents.map((event) => (
-                                    <>
-                                        <EventItem>
-                                            <SmallEventPreview
-                                                title={event.title}
-                                                imageEvent={event.image}
-                                                imageHost={event.host.image}
-                                                myEventsPage={true}
-                                                onClick={() =>
-                                                    router.push(
-                                                        `/events/${event.id}`
-                                                    )
-                                                }
-                                                date={
-                                                    event.date
-                                                }></SmallEventPreview>
-                                        </EventItem>
-                                    </>
+                                    <SmallEventPreview
+                                        key={`pastevent-${event.id}`}
+                                        title={event.title}
+                                        imageEvent={event.image}
+                                        imageHost={event.host.image}
+                                        myEventsPage={true}
+                                        onClick={() =>
+                                            router.push(`/events/${event.id}`)
+                                        }
+                                        date={event.date}></SmallEventPreview>
                                 ))
                             ) : (
                                 <StyledNoEvents>
@@ -288,13 +280,10 @@ const EventsWrapper = styled.div`
     gap: 20px;
     width: 100%;
     row-gap: 50px;
-`;
+    justify-content: center;
 
-const EventItem = styled.div`
-    height: 170px;
-    margin-bottom: 20px;
     @media ${(props) => props.theme.breakpoint.tablet} {
-        margin-bottom: 80px;
+        justify-content: flex-start;
     }
 `;
 
@@ -327,20 +316,6 @@ const StyledToggleText = styled.div<StyledToggleTextProps>`
     ${(props) =>
         props.isActive &&
         `border: solid 1px ${props.theme.primary}; border-radius:25px; color: ${props.theme.body}; background-color: ${props.theme.primary}`};
-`;
-
-const EventsList = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin: auto;
-
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        max-width: 1500px;
-    }
 `;
 
 const StyledNoPastEventsIllustration = styled(NoPastEventsIllustration)`

@@ -61,11 +61,7 @@ interface SmallEventWrapperProps {
 }
 const SmallEventWrapper = styled.div<SmallEventWrapperProps>`
     cursor: pointer;
-    ${(props) => props.myEventsPage && 'width: 200px'};
-
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        ${(props) => props.myEventsPage && 'width: 300px'};
-    }
+    ${(props) => props.myEventsPage && 'max-width: 300px; width:100%;'};
 `;
 
 const ColumnWrapper = styled.div`

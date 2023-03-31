@@ -19,12 +19,14 @@ export const Quote: React.FC<QuoteProps> = ({
                     src={'/images/background_quote_mobile.svg'}
                     alt="Image"
                     fill
+                    sizes="100"
                     style={{ objectFit: 'cover' }}
                 />
                 <DesktopImage
                     src={'/images/background_quote_desktop.svg'}
                     alt="Image"
                     fill
+                    sizes="100"
                     style={{ objectFit: 'cover' }}
                 />
 
