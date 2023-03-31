@@ -14,12 +14,11 @@ type GuestProps = {
 
 const GuestListItem: React.FC<{
     guest: GuestProps;
-    key: string;
     userIsHost: boolean;
     onClick?: (e: any) => void;
-}> = ({ guest, key, userIsHost, onClick }) => {
+}> = ({ guest, userIsHost, onClick }) => {
     return (
-        <StyledGuestListItem key={key}>
+        <StyledGuestListItem>
             <StyledImageAndName
                 onClick={() => router.push(`/profile/${guest.id}`)}>
                 <StyledImage

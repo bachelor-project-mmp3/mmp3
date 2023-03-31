@@ -136,23 +136,21 @@ const MyEvents = () => {
                         }}>
                         {notifications?.length > 0 &&
                             notifications.map((notification) => (
-                                <>
-                                    <SwiperSlide>
-                                        <Notification
-                                            key={notification.id}
-                                            notification={notification}
-                                            onClickLink={() =>
-                                                onClickLink(
-                                                    notification.id,
-                                                    notification.eventId
-                                                )
-                                            }
-                                            onClickHide={() =>
-                                                onClickHide(notification.id)
-                                            }
-                                        />
-                                    </SwiperSlide>
-                                </>
+                                <SwiperSlide
+                                    key={`notification-${notification.id}`}>
+                                    <Notification
+                                        notification={notification}
+                                        onClickLink={() =>
+                                            onClickLink(
+                                                notification.id,
+                                                notification.eventId
+                                            )
+                                        }
+                                        onClickHide={() =>
+                                            onClickHide(notification.id)
+                                        }
+                                    />
+                                </SwiperSlide>
                             ))}
                     </Swiper>
                 </NotificationsWrapper>
@@ -168,7 +166,7 @@ const MyEvents = () => {
 
                                 return (
                                     <ExtendedEventPreview
-                                        key={event.id}
+                                        key={`event-${event.id}`}
                                         event={event}
                                         onSubmitJoin={() => alert('hi')}
                                         onSubmitLeave={() =>
@@ -186,22 +184,20 @@ const MyEvents = () => {
                         <EventsWrapper>
                             {pastEvents?.length > 0 ? (
                                 pastEvents.map((event) => (
-                                    <>
-                                        <EventItem>
-                                            <SmallEventPreview
-                                                title={event.title}
-                                                imageEvent={event.image}
-                                                imageHost={event.host.image}
-                                                onClick={() =>
-                                                    router.push(
-                                                        `/events/${event.id}`
-                                                    )
-                                                }
-                                                date={
-                                                    event.date
-                                                }></SmallEventPreview>
-                                        </EventItem>
-                                    </>
+                                    <EventItem key={`pastevent-${event.id}`}>
+                                        <SmallEventPreview
+                                            title={event.title}
+                                            imageEvent={event.image}
+                                            imageHost={event.host.image}
+                                            onClick={() =>
+                                                router.push(
+                                                    `/events/${event.id}`
+                                                )
+                                            }
+                                            date={
+                                                event.date
+                                            }></SmallEventPreview>
+                                    </EventItem>
                                 ))
                             ) : (
                                 <p>No past events...</p>

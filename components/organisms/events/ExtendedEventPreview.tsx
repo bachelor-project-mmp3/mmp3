@@ -142,7 +142,8 @@ const ExtendedEventPreview: React.FC<{
                                 <StyledImage
                                     src={event.host.image}
                                     alt="Image"
-                                    layout={'fill'}
+                                    fill
+                                    sizes="100"
                                     style={{ objectFit: 'cover' }}
                                 />
                             </HostImage>
@@ -150,7 +151,9 @@ const ExtendedEventPreview: React.FC<{
                     )}
                     <Dishes>
                         {event.menu?.map((dish) => (
-                            <DishEntry key={dish.id} className="dish">
+                            <DishEntry
+                                key={`dishentry-${dish.id}`}
+                                className="dish">
                                 <StyledMenuStar />
                                 {dish.title}
                             </DishEntry>

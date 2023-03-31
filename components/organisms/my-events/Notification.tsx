@@ -24,28 +24,26 @@ const Notification: React.FC<{
     onClickHide: () => void;
 }> = ({ notification, onClickHide, onClickLink }) => {
     return (
-        <>
-            <NotificationWrapper>
-                <StyledCard
-                    onClick={notification.type === 'EVENT' ? onClickLink : null}
-                    style={{
-                        cursor:
-                            notification.type === 'EVENT' ? 'pointer' : null,
-                    }}>
-                    <StyledTitle>{notification.Event.title}</StyledTitle>
-                    <StyledMessage>{notification.message}</StyledMessage>
-                    <HostImage>
-                        <StyledImage
-                            src={notification.Event.host.image}
-                            alt="Image"
-                            layout={'fill'}
-                            style={{ objectFit: 'cover' }}
-                        />
-                    </HostImage>
-                </StyledCard>
-                <StyledDeleteButton onClick={onClickHide} />
-            </NotificationWrapper>
-        </>
+        <NotificationWrapper>
+            <StyledCard
+                onClick={notification.type === 'EVENT' ? onClickLink : null}
+                style={{
+                    cursor: notification.type === 'EVENT' ? 'pointer' : null,
+                }}>
+                <StyledTitle>{notification.Event.title}</StyledTitle>
+                <StyledMessage>{notification.message}</StyledMessage>
+                <HostImage>
+                    <StyledImage
+                        src={notification.Event.host.image}
+                        alt="Image"
+                        fill
+                        sizes="100"
+                        style={{ objectFit: 'cover' }}
+                    />
+                </HostImage>
+            </StyledCard>
+            <StyledDeleteButton onClick={onClickHide} />
+        </NotificationWrapper>
     );
 };
 

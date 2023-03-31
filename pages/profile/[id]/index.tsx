@@ -172,22 +172,20 @@ const Profile = () => {
                         <EventsWrapper>
                             {profile.events?.length > 0 ? (
                                 profile.events.map((event) => (
-                                    <>
-                                        <EventItem>
-                                            <SmallEventPreview
-                                                title={event.title}
-                                                imageEvent={event.image}
-                                                imageHost={profile.image}
-                                                onClick={() =>
-                                                    router.push(
-                                                        `/events/${event.id}`
-                                                    )
-                                                }
-                                                date={
-                                                    event.date
-                                                }></SmallEventPreview>
-                                        </EventItem>
-                                    </>
+                                    <EventItem key={`hosted-event-${event.id}`}>
+                                        <SmallEventPreview
+                                            title={event.title}
+                                            imageEvent={event.image}
+                                            imageHost={profile.image}
+                                            onClick={() =>
+                                                router.push(
+                                                    `/events/${event.id}`
+                                                )
+                                            }
+                                            date={
+                                                event.date
+                                            }></SmallEventPreview>
+                                    </EventItem>
                                 ))
                             ) : (
                                 <p>No hosted events...</p>

@@ -6,14 +6,12 @@ import InfoIcon from '../../../public/icons/info.svg';
 import LinkIcon from '../../../public/icons/link.svg';
 
 interface MenuItemProps {
-    key: string;
     dishLink?: string;
     dishTitle: string;
     dishDescription?: string;
 }
 
 export const MenuItem: React.FC<MenuItemProps> = ({
-    key,
     dishLink,
     dishDescription,
     dishTitle,
@@ -25,7 +23,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     };
 
     return (
-        <StyledMenuItem key={key}>
+        <StyledMenuItem>
             {dishLink ? <a href={dishLink}>{dishTitle}</a> : <p>{dishTitle}</p>}
             <div>
                 {dishLink && (
