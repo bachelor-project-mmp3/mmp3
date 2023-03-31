@@ -18,7 +18,7 @@ const UploadButton: React.FC<UploadButtonProps> = ({
                     id="eventPhoto"
                     name="eventPhoto"
                     type="file"
-                    accept="image/*"
+                    accept="image/png, image/jpeg"
                     onChange={onChange}></StyledInputFile>
             </StyledUpload>
         </>
