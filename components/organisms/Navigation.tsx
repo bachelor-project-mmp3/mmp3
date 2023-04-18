@@ -24,7 +24,7 @@ const Navigation: React.FC = () => {
 
     return (
         <>
-            {router?.pathname === '/' ? (
+            {router?.pathname === '/' || router?.pathname === '/landingpage' ? (
                 <></>
             ) : (
                 <>

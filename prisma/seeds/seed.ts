@@ -6,11 +6,17 @@ import {
     reviews,
     notifications,
     dishes,
+    universities,
 } from './data';
 
 const prisma = new PrismaClient();
 
 async function main() {
+    await prisma.university.createMany({
+        data: universities,
+    });
+    console.log('Created universities successfully');
+
     await prisma.user.deleteMany();
     console.log('Deleted records in users table');
 
