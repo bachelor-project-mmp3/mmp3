@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
-import { universities } from './universities';
+import { universities } from '../../helper/universities';
 import { Button } from '../../components/atoms/Button';
 import { useRouter } from 'next/router';
 import { Footer } from '../../components/organisms/Footer';
