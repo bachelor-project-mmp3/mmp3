@@ -162,21 +162,21 @@ export const reviews = [
 export const notifications = [
     {
         message: 'Das Dinner Indische Vielfalt findet heute statt!',
-        senameEn: true,
+        seen: true,
         type: NotificationType.EVENT,
         userId: 'clcudeerp0000q4fwzv4db5c8',
         eventId: 'clcudeesd0004q4fwlctptbbm',
     },
     {
         message: 'Das Dinner Indische Vielfalt findet heute statt!',
-        senameEn: true,
+        seen: true,
         type: NotificationType.EVENT,
         userId: 'clcudeerq0002q4fwwuoaigwf',
         eventId: 'clcudeesd0004q4fwlctptbbm',
     },
     {
         message: 'Dein Dinner Indische Vielfalt findet heute statt!',
-        senameEn: true,
+        seen: true,
         type: NotificationType.EVENT,
         userId: 'clcudeerq0001q4fw3wlqh0x6',
         eventId: 'clcudeesd0004q4fwlctptbbm',
@@ -185,7 +185,7 @@ export const notifications = [
     {
         message:
             'Du hast eine neue Anfrage zum Weißwurscht-Frühshoppen erhalten!',
-        senameEn: false,
+        seen: false,
         type: NotificationType.GENERAL,
         userId: 'clcudeerp0000q4fwzv4db5c8',
         eventId: 'clcudeesd0006q4fwhmq4o2ls',
