@@ -5,11 +5,14 @@ import { universities } from '../../helper/universities';
 import { Button } from '../../components/atoms/Button';
 import { useRouter } from 'next/router';
 import { Footer } from '../../components/organisms/Footer';
+import { signIn } from 'next-auth/react';
+import { LandingPageHeader } from '../../components/organisms/LandingpageHeader';
 
 const Landingpage = () => {
     const [university, setUniversity] = useState<string | undefined>();
     const [success, setSuccess] = useState(false);
 
+    console.log(university, 'university');
     const router = useRouter();
 
     const onSubmit = async () => {
@@ -51,38 +54,68 @@ const Landingpage = () => {
 
     return (
         <>
-            {success ? (
-                <div>Vielen Dank!</div>
-            ) : (
-                <FormWrapper>
-                    <Select
-                        options={universities}
-                        placeholder="Wähle deine Universität"
-                        theme={(theme) => ({
-                            ...theme,
-                            colors: {
-                                ...theme.colors,
-                                primary25: '#40845e',
-                                primary: '#52A174',
-                            },
-                        })}
-                        styles={customStyles}
-                        onChange={(value) => setUniversity(value.value)}
-                    />
-                    <Button
-                        disabled={university === undefined}
-                        onClick={onSubmit}
-                        variant="primary">
-                        Abschicken
-                    </Button>
-                </FormWrapper>
-            )}
+            <LandingPageHeader hideLogin>
+                {success ? (
+                    <>
+                        {university === 'Fachhochschule Salzburg GmbH' ||
+                        university === 'Fachhochschule Salzburg (Puch)' ? (
+                            <Wrapper>
+                                <div>
+                                    {
+                                        'Gratuliere, für die Fachhochschule Salzburg gibt es Studentenfutter schon! Starte gleich kostenlos!'
+                                    }
+                                </div>
+                                <Button
+                                    variant={'primary'}
+                                    onClick={() =>
+                                        signIn('fhs', {
+                                            callbackUrl: '/api/auth/signin',
+                                        })
+                                    }>
+                                    {'Login'}
+                                </Button>
+                            </Wrapper>
+                        ) : (
+                            <Wrapper>Vielen Dank!</Wrapper>
+                        )}
+                    </>
+                ) : (
+                    <FormWrapper>
+                        <Select
+                            options={universities}
+                            placeholder="Wähle deine Universität"
+                            theme={(theme) => ({
+                                ...theme,
+                                colors: {
+                                    ...theme.colors,
+                                    primary25: '#40845e',
+                                    primary: '#52A174',
+                                },
+                            })}
+                            styles={customStyles}
+                            onChange={(value) => setUniversity(value.value)}
+                        />
+                        <Button
+                            disabled={university === undefined}
+                            onClick={onSubmit}
+                            variant="primary">
+                            Abschicken
+                        </Button>
+                    </FormWrapper>
+                )}
+            </LandingPageHeader>
+
             <Footer />
         </>
     );
 };
 
 export default Landingpage;
+
+const Wrapper = styled.div`
+    margin: auto;
+    text-align: center;
+`;
 
 const FormWrapper = styled.div`
     width: 600px;
