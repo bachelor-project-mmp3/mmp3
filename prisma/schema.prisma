@@ -15,7 +15,7 @@ model Event {
   title               String         @db.VarChar(100)
   info                String?        @db.Text
   host                User?          @relation(fields: [authorId], references: [id]) //TODO: change authorId to hostId
-  authorId            String?//TODO: naming change to hostId
+  authorId            String? //TODO: naming change to hostId
   createdAt           DateTime       @default(now()) @map(name: "created_at")
   updatedAt           DateTime       @updatedAt @map(name: "updated_at")
   date                DateTime
@@ -30,7 +30,7 @@ model Event {
   reviews             Review[]
   notifications       Notification[]
   menu                Dish[]
-  recipeLink          String?//TODO: delete, links in den dishes
+  recipeLink          String? //TODO: delete, links in den dishes
   status              EventStatus    @default(UPCOMING)
 
   @@map(name: "events")
@@ -130,4 +130,11 @@ model Notification {
 enum NotificationType {
   EVENT
   GENERAL
+}
+
+model University {
+  id     String @id @default(cuid())
+  name   String @unique
+  nameEn String
+  count  Int    @default(0)
 }
