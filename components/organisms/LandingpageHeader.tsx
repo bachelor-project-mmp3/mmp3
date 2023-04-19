@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
 import Logo from '../../public/images/logo.svg';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { Button } from '../atoms/Button';
 import Image from 'next/image';
 
-export const LandingPageHeader = () => {
-    const router = useRouter();
+interface LandingPageHeaderProps {
+    children: ReactNode;
+    hideLogin?: boolean;
+}
+
+export const LandingPageHeader: React.FC<LandingPageHeaderProps> = ({
+    children,
+    hideLogin,
+}) => {
     const { data: session, status } = useSession();
 
     return (
@@ -15,76 +20,30 @@ export const LandingPageHeader = () => {
             <Wrapper>
                 <Navbar>
                     <StyledLogo />
-                    {status != 'authenticated' ? (
-                        <StyledLog
-                            onClick={() =>
-                                signIn('fhs', {
-                                    callbackUrl: '/api/auth/signin',
-                                })
-                            }>
-                            Log in
-                        </StyledLog>
-                    ) : (
-                        <StyledLog
-                            onClick={() => signOut({ callbackUrl: '/' })}>
-                            Log out
-                        </StyledLog>
+                    {!hideLogin && (
+                        <>
+                            {status != 'authenticated' ? (
+                                <StyledLog
+                                    onClick={() =>
+                                        signIn('fhs', {
+                                            callbackUrl: '/api/auth/signin',
+                                        })
+                                    }>
+                                    Log in
+                                </StyledLog>
+                            ) : (
+                                <StyledLog
+                                    onClick={() =>
+                                        signOut({ callbackUrl: '/' })
+                                    }>
+                                    Log out
+                                </StyledLog>
+                            )}
+                        </>
                     )}
                 </Navbar>
                 <WrapperContent>
-                    <WrapperContentItem>
-                        <TextWrapper>
-                            <h1>Welcome to Studentenfutter</h1>
-                            <h2>
-                                {
-                                    'The platform for students to socialize through meal events'
-                                }
-                            </h2>
-                            <p>
-                                Join the mix and meet new people - meal by meal!
-                            </p>
-
-                            <ButtonWrapperDesktop>
-                                {status != 'authenticated' ? (
-                                    <Button
-                                        variant={'primary'}
-                                        onClick={() =>
-                                            signIn('fhs', {
-                                                callbackUrl: '/api/auth/signin',
-                                            })
-                                        }>
-                                        {"Let's get started"}
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant={'primary'}
-                                        onClick={() => router.push('/events')}>
-                                        {'Show all events'}
-                                    </Button>
-                                )}
-                            </ButtonWrapperDesktop>
-
-                            <ButtonWrapperMobile>
-                                {status != 'authenticated' ? (
-                                    <Button
-                                        variant={'primary'}
-                                        onClick={() =>
-                                            signIn('fhs', {
-                                                callbackUrl: '/api/auth/signin',
-                                            })
-                                        }>
-                                        {'Login'}
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant={'primary'}
-                                        onClick={() => router.push('/events')}>
-                                        {'Show all events'}
-                                    </Button>
-                                )}
-                            </ButtonWrapperMobile>
-                        </TextWrapper>
-                    </WrapperContentItem>
+                    <WrapperContentItem>{children}</WrapperContentItem>
                     <WrapperContentItem>
                         <MobileImageWrapper>
                             <MobileImage
@@ -215,6 +174,15 @@ const TextWrapper = styled.div`
     }
 `;
 
+const MobileImageWrapper = styled.div`
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        display: none;
+    }
+`;
+
 const DesktopImageWrapper = styled.div`
     position: relative;
     width: 100%;
@@ -222,14 +190,5 @@ const DesktopImageWrapper = styled.div`
     display: none;
     @media ${({ theme }) => theme.breakpoint.tablet} {
         display: block;
-    }
-`;
-
-const MobileImageWrapper = styled.div`
-    position: relative;
-    width: 100%;
-    height: 60vh;
-    @media ${({ theme }) => theme.breakpoint.tablet} {
-        display: none;
     }
 `;
