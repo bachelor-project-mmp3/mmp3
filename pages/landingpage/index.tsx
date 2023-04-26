@@ -10,6 +10,7 @@ import { LandingPageHeader } from '../../components/organisms/LandingpageHeader'
 import { Quote } from '../../components/organisms/Quote';
 import { Steps } from '../../components/organisms/Steps';
 import Head from 'next/head';
+import { GoogleAnalytics } from 'nextjs-google-analytics';
 
 const Landingpage = () => {
     const [university, setUniversity] = useState<string | undefined>();
@@ -58,6 +59,7 @@ const Landingpage = () => {
             <Head>
                 <title>{'Studentenfutter'}</title>
             </Head>
+            <GoogleAnalytics trackPageViews />
             <LandingPageHeader hideLogin>
                 <>
                     <TextWrapper>

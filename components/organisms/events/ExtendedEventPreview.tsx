@@ -165,7 +165,7 @@ const ExtendedEventPreview: React.FC<{
                                 <>
                                     {isRequestAccepted ? (
                                         <Button
-                                            variant="primary"
+                                            variant="secondary"
                                             onClick={(e) => {
                                                 setShowQuestion(true);
                                                 e.stopPropagation();
@@ -177,16 +177,15 @@ const ExtendedEventPreview: React.FC<{
                                             {hasUserSendRequest.status ===
                                             'PENDING' ? (
                                                 <Button
-                                                    variant="primary"
+                                                    variant="secondary"
                                                     onClick={(e) => {
                                                         onSubmitLeave(
                                                             hasUserSendRequest.id,
                                                             event.id,
                                                             'withdraw'
                                                         );
-                                                        {
-                                                            /* to prevent navigation to eventdetail */
-                                                        }
+
+                                                        /* to prevent navigation to eventdetail */
                                                         e.stopPropagation();
                                                     }}>
                                                     Withdraw
@@ -212,9 +211,8 @@ const ExtendedEventPreview: React.FC<{
                                                     event.id,
                                                     session?.user?.userId
                                                 );
-                                                {
-                                                    /* to prevent navigation to eventdetail */
-                                                }
+
+                                                /* to prevent navigation to eventdetail */
                                                 e.stopPropagation();
                                             }}>
                                             Ask to join
@@ -222,6 +220,19 @@ const ExtendedEventPreview: React.FC<{
                                     )}
                                 </>
                             )}
+                        </ButtonWrapper>
+                    )}
+                    {userIsHost && (
+                        <ButtonWrapper>
+                            <Button
+                                variant="primary"
+                                onClick={(e) => {
+                                    router.push(`/events/${event.id}/edit`);
+                                    /* to prevent navigation to eventdetail */
+                                    e.stopPropagation();
+                                }}>
+                                Edit Event
+                            </Button>
                         </ButtonWrapper>
                     )}
                 </Card>
