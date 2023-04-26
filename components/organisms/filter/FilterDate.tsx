@@ -1,8 +1,10 @@
 import React, { ReactNode, useState } from 'react';
 import styled from 'styled-components';
-import { Button } from '../../atoms/Button';
-import Check from '../../../public/icons/hakerl.svg';
-import FilterButton from '../../atoms/FilterButton';
+import FilterComponent, {
+    FilterItem,
+    FilterItemWrapper,
+    StyledCheck,
+} from '../../atoms/FilterComponent';
 
 const dateOptions = [
     'Today',
@@ -46,127 +48,67 @@ const FilterDate: React.FC<FilterProps> = ({
     const formattedTodayIsoString = today.toISOString().split('T')[0];
 
     return (
-        <Wrapper>
-            {showDateFilterList && (
-                <>
-                    <FakeBlur onClick={() => setShowDateFilterList(false)} />
-                    <DateOptions>
-                        <Headline>Filter by date</Headline>
-                        <FilterListWrapper>
-                            {dateOptions.map((option) => {
-                                return (
-                                    <FilterItemWrapper
-                                        key={`${option}-filter-entry`}>
-                                        <FilterItem
-                                            selected={option === filterType}
-                                            onClick={() => {
-                                                if (
-                                                    option ===
-                                                    'choose a specific date'
-                                                ) {
-                                                    setPreSettedFilterDate(
-                                                        inputDate
-                                                    );
-                                                } else {
-                                                    setPreSettedFilterDate(
-                                                        option
-                                                    );
-                                                }
-                                                setSelectedFilterType(option);
-                                            }}>
-                                            {option ===
-                                            'Choose a specific date' ? (
-                                                <InputWrapper>
-                                                    {option}
-                                                    <Input
-                                                        type="date"
-                                                        id="datefilter"
-                                                        name="datefilter"
-                                                        defaultValue={inputDate}
-                                                        min={
-                                                            formattedTodayIsoString
-                                                        }
-                                                        onChange={(e) => {
-                                                            setSelectedFilterType(
-                                                                'Choose a specific date'
-                                                            );
-                                                            setinputDate(
-                                                                e.target.value
-                                                            );
-                                                            setPreSettedFilterDate(
-                                                                e.target.value
-                                                            );
-                                                        }}
-                                                    />
-                                                </InputWrapper>
-                                            ) : (
-                                                option
-                                            )}
-                                        </FilterItem>
-                                        {option === filterType && (
-                                            <StyledCheck />
-                                        )}
-                                    </FilterItemWrapper>
-                                );
-                            })}
-                        </FilterListWrapper>
-                        <ButtonWrapper>
-                            <Button
+        <FilterComponent
+            isOpen={showDateFilterList}
+            filterButtonChildren={children}
+            onOpen={() => setShowDateFilterList(true)}
+            onClose={() => setShowDateFilterList(false)}
+            onSubmit={() => onSubmit(preSettedFilterDate)}
+            onReset={() => {
+                setPreSettedFilterDate(undefined);
+                setinputDate(undefined);
+                setSelectedFilterType(undefined);
+                onSubmit(undefined);
+            }}
+            type="sortDate">
+            <>
+                {dateOptions.map((option) => {
+                    return (
+                        <FilterItemWrapper key={`${option}-filter-entry`}>
+                            <FilterItem
+                                selected={option === filterType}
                                 onClick={() => {
-                                    setPreSettedFilterDate(undefined);
-                                    setinputDate(undefined);
-                                    setSelectedFilterType(undefined);
-                                    onSubmit(undefined);
-                                }}
-                                variant="secondary">
-                                Reset
-                            </Button>
-                            <Button
-                                onClick={() => onSubmit(preSettedFilterDate)}
-                                variant="primary">
-                                Save
-                            </Button>
-                        </ButtonWrapper>
-                    </DateOptions>
-                </>
-            )}
-
-            <FilterButton
-                onClick={() => setShowDateFilterList(true)}
-                isOpen={showDateFilterList}>
-                {children}
-            </FilterButton>
-        </Wrapper>
+                                    if (option === 'choose a specific date') {
+                                        setPreSettedFilterDate(inputDate);
+                                    } else {
+                                        setPreSettedFilterDate(option);
+                                    }
+                                    setSelectedFilterType(option);
+                                }}>
+                                {option === 'Choose a specific date' ? (
+                                    <InputWrapper>
+                                        {option}
+                                        <Input
+                                            type="date"
+                                            id="datefilter"
+                                            name="datefilter"
+                                            defaultValue={inputDate}
+                                            min={formattedTodayIsoString}
+                                            onChange={(e) => {
+                                                setSelectedFilterType(
+                                                    'Choose a specific date'
+                                                );
+                                                setinputDate(e.target.value);
+                                                setPreSettedFilterDate(
+                                                    e.target.value
+                                                );
+                                            }}
+                                        />
+                                    </InputWrapper>
+                                ) : (
+                                    option
+                                )}
+                            </FilterItem>
+                            {option === filterType && <StyledCheck />}
+                        </FilterItemWrapper>
+                    );
+                })}
+            </>
+        </FilterComponent>
     );
 };
 
 export default FilterDate;
-const Wrapper = styled.div`
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        position: relative;
-    }
-`;
-
-const DateOptions = styled.div`
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: white;
-    z-index: 120;
-    border-top-right-radius: 40px;
-    border-top-left-radius: 40px;
-    box-shadow: 17px 17px 35px -11px ${({ theme }) => theme.darkGrey};
-
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        top: 45px;
-        bottom: auto;
-        left: 0;
-        width: 280px;
-        right: auto;
-        border-radius: 10px;
-    }
-`;
 
 const InputWrapper = styled.div`
     display: flex;
@@ -176,80 +118,4 @@ const InputWrapper = styled.div`
 
 const Input = styled.input`
     width: fit-content;
-`;
-
-const Headline = styled.h2`
-    text-align: center;
-
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        display: none;
-    }
-`;
-
-const FilterListWrapper = styled.ul`
-    padding: 0;
-    max-height: 300px;
-    overflow: scroll;
-    display: initial;
-`;
-
-interface FilterItemProps {
-    selected: boolean;
-}
-
-const FilterItemWrapper = styled.li`
-    position: relative;
-    cursor: pointer;
-    list-style: none;
-`;
-
-const FilterItem = styled.div<FilterItemProps>`
-    border-bottom: 1px solid ${({ theme }) => theme.midGrey};
-    font-size: ${({ theme }) => theme.fonts.mobile.headline5};
-    padding: 10px 50px;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
-        border: none;
-    }
-
-    ${(props) =>
-        props.selected &&
-        `
-        font-weight: 800;
-    `}
-`;
-
-const ButtonWrapper = styled.div`
-    margin: 20px;
-    display: flex;
-    gap: 20px;
-    justify-content: flex-end;
-
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        justify-content: center;
-        margin: 30px 0;
-    }
-`;
-
-const StyledCheck = styled(Check)`
-    position: absolute;
-    height: 19px;
-    width: 19px;
-    top: 50%;
-    right: 20px;
-    transform: translate(0, -50%);
-`;
-
-const FakeBlur = styled.div`
-    z-index: 110;
-    position: fixed;
-    backdrop-filter: blur(10px);
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        backdrop-filter: blur(0px);
-    }
 `;
