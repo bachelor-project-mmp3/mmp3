@@ -43,9 +43,32 @@ const FilterDate: React.FC<FilterProps> = ({
             ? currentFilter
             : undefined
     );
+    const [showInfoOnDateError, setShowInfoOnDateError] = useState(false);
 
     const today = new Date();
     const formattedTodayIsoString = today.toISOString().split('T')[0];
+
+    const checkDateValidityBeforeSubmit = () => {
+        if (preSettedFilterDate === 'Choose a specific date') {
+            setShowInfoOnDateError(true);
+            return;
+        }
+        if (!dateOptions.includes(preSettedFilterDate)) {
+            const filterDate = new Date(preSettedFilterDate);
+            if (!(filterDate instanceof Date)) {
+                setShowInfoOnDateError(true);
+                return;
+            }
+
+            const today = new Date();
+            if (filterDate < today) {
+                setShowInfoOnDateError(true);
+                return;
+            }
+        }
+
+        onSubmit(preSettedFilterDate);
+    };
 
     return (
         <FilterComponent
@@ -53,7 +76,9 @@ const FilterDate: React.FC<FilterProps> = ({
             filterButtonChildren={children}
             onOpen={() => setShowDateFilterList(true)}
             onClose={() => setShowDateFilterList(false)}
-            onSubmit={() => onSubmit(preSettedFilterDate)}
+            onSubmit={() => {
+                checkDateValidityBeforeSubmit();
+            }}
             onReset={() => {
                 setPreSettedFilterDate(undefined);
                 setinputDate(undefined);
@@ -84,6 +109,7 @@ const FilterDate: React.FC<FilterProps> = ({
                                             name="datefilter"
                                             defaultValue={inputDate}
                                             min={formattedTodayIsoString}
+                                            max="2030-01-01"
                                             onChange={(e) => {
                                                 setSelectedFilterType(
                                                     'Choose a specific date'
@@ -94,6 +120,11 @@ const FilterDate: React.FC<FilterProps> = ({
                                                 );
                                             }}
                                         />
+                                        {showInfoOnDateError && (
+                                            <InvalidDateError>
+                                                Please choose a valid date
+                                            </InvalidDateError>
+                                        )}
                                     </InputWrapper>
                                 ) : (
                                     option
@@ -118,4 +149,10 @@ const InputWrapper = styled.div`
 
 const Input = styled.input`
     width: fit-content;
+`;
+
+const InvalidDateError = styled.span`
+    color: ${({ theme }) => theme.red};
+    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
+    font-weight: normal;
 `;
