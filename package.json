@@ -25,6 +25,7 @@
         "next": "^13.1.6",
         "next-auth": "^4.3.3",
         "next-transpile-modules": "^10.0.0",
+        "nextjs-google-analytics": "^2.3.3",
         "nodemailer": "^6.9.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
