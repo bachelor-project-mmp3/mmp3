@@ -1,7 +1,9 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
+import FhsLogo from '../../public/icons/fhs.svg';
+import Link from 'next/link';
 
 export const Footer = () => {
     const router = useRouter();
@@ -20,6 +22,13 @@ export const Footer = () => {
                     Join the mix
                 </StyledText>
                 <LinksWrapper>
+                    <FhsSign
+                        href="https://www.fh-salzburg.ac.at/"
+                        target="_blank">
+                        <StyledFHLogo />
+                        <FhsText>FH Salzburg</FhsText>
+                    </FhsSign>
+
                     <StyledText>&copy; 2023 Studentenfutter</StyledText>
                     <StyledText onClick={() => router.push('/imprint')}>
                         Imprint
@@ -50,6 +59,7 @@ const LinksWrapper = styled.div`
         gap: 40px;
         padding-top: 40px;
         font-size: ${({ theme }) => theme.fonts.normal.info};
+    }
 `;
 
 const StyledText = styled.p`
@@ -57,5 +67,34 @@ const StyledText = styled.p`
     cursor: pointer;
     font-size: ${({ theme }) => theme.fonts.mobile.info};
     @media ${({ theme }) => theme.breakpoint.tablet} {
-      font-size: ${({ theme }) => theme.fonts.normal.info};
+        font-size: ${({ theme }) => theme.fonts.normal.info};
+    }
+`;
+
+const FhsSign = styled(Link)`
+    margin-right: auto;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    text-decoration: none;
+`;
+
+const FhsText = styled.span`
+    display: none;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        display: block;
+        font-size: ${({ theme }) => theme.fonts.normal.info};
+        color: ${({ theme }) => theme.darkGrey};
+    }
+`;
+
+const StyledFHLogo = styled(FhsLogo)`
+    width: 20px;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        width: 30px;
+    }
 `;
