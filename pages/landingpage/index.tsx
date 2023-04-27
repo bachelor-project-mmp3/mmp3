@@ -158,7 +158,7 @@ const Landingpage = () => {
             <MockupWrapper>
                 <ImageWrapper>
                     <Image
-                        src={'/images/mockupPhones.jpg'}
+                        src={'/images/mockupPhones.png'}
                         alt="Mockup Mobile"
                         fill
                         sizes="100"
@@ -167,7 +167,7 @@ const Landingpage = () => {
                 </ImageWrapper>
                 <ImageWrapper>
                     <Image
-                        src={'/images/mockupLaptop.jpg'}
+                        src={'/images/mockupLaptop.png'}
                         alt="Mockup Desktop"
                         fill
                         sizes="100"
