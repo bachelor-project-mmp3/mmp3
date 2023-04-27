@@ -198,7 +198,7 @@ const FormWrapper = styled.div`
 const TextWrapper = styled.div`
     margin: 0 30px 10px;
 
-    @media ${({ theme }) => theme.breakpoint.tablet} {
+    @media ${({ theme }) => theme.breakpoint.desktop} {
         margin: 60px;
     }
 `;
