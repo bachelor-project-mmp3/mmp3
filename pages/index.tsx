@@ -100,7 +100,7 @@ const ButtonWrapperMobile = styled.div`
 
 const TextWrapper = styled.div`
     margin: 30px;
-    @media ${({ theme }) => theme.breakpoint.tablet} {
+    @media ${({ theme }) => theme.breakpoint.desktop} {
         margin: 60px;
     }
 `;

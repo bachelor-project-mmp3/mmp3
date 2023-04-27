@@ -10,6 +10,8 @@ import Request, {
 } from '../../components/organisms/requests/Request';
 import ActionPopUp from '../../components/organisms/popups/ActionPopUp';
 import { useSession } from 'next-auth/react';
+import NoRequestsImage from '../../public/images/no requests.svg';
+import styled from 'styled-components';
 
 const Requests = () => {
     const { data: session } = useSession();
@@ -100,7 +102,6 @@ const Requests = () => {
     };
 
     if (isLoading) return <Loading />;
-    if (!requests) return <p>No requests </p>;
 
     return (
         <>
@@ -139,9 +140,9 @@ const Requests = () => {
             )}
 
             <Layout>
-                <Header backButton>Requests</Header>
+                <Header>Requests</Header>
                 <div>
-                    {requests &&
+                    {requests?.length > 0 ? (
                         requests.map((request) => (
                             <Request
                                 key={`request-${request.id}`}
@@ -164,7 +165,13 @@ const Requests = () => {
                                     }
                                 }}
                             />
-                        ))}
+                        ))
+                    ) : (
+                        <EmptyRequests>
+                            <StyledNoRequestsImage />
+                            <div>You have no requests</div>
+                        </EmptyRequests>
+                    )}
                 </div>
             </Layout>
         </>
@@ -172,3 +179,22 @@ const Requests = () => {
 };
 
 export default Requests;
+
+const EmptyRequests = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobile.headline4};
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        width: fit-content;
+    }
+`;
+
+const StyledNoRequestsImage = styled(NoRequestsImage)`
+    width: 80vw;
+    max-width: 400px;
+`;
