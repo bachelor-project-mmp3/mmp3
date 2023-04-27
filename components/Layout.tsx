@@ -21,14 +21,14 @@ const Layout: React.FC<LayoutProps> = ({
                     alt="Image"
                     fill
                     sizes="100"
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: 'cover', objectPosition: '0 0' }}
                 />
                 <DesktopImage
                     src={'/images/background_desktop.svg'}
                     alt="Image"
                     fill
                     sizes="100"
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: 'cover', objectPosition: '0 0' }}
                 />
             </BackgroundImageWrapper>
             {children}
