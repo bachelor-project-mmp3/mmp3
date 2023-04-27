@@ -11,6 +11,7 @@ import { Quote } from '../../components/organisms/Quote';
 import { Steps } from '../../components/organisms/Steps';
 import Head from 'next/head';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
+import Image from 'next/image';
 
 const Landingpage = () => {
     const [university, setUniversity] = useState<string | undefined>();
@@ -154,6 +155,26 @@ const Landingpage = () => {
                 text="Studentenfutter will Studierende außerhalb ihres gewohnten Umfelds zusammenbringen und so bei einem gemütlichen Essen neue Freundschaften entstehen lassen."
             />
             <Steps german />
+            <MockupWrapper>
+                <ImageWrapper>
+                    <Image
+                        src={'/images/mockupPhones.jpg'}
+                        alt="Mockup Mobile"
+                        fill
+                        sizes="100"
+                        style={{ objectFit: 'scale-down' }}
+                    />
+                </ImageWrapper>
+                <ImageWrapper>
+                    <Image
+                        src={'/images/mockupLaptop.jpg'}
+                        alt="Mockup Desktop"
+                        fill
+                        sizes="100"
+                        style={{ objectFit: 'scale-down' }}
+                    />
+                </ImageWrapper>
+            </MockupWrapper>
             <Footer />
         </>
     );
@@ -193,5 +214,25 @@ const Question = styled.p`
 
     @media ${({ theme }) => theme.breakpoint.tablet} {
         text-align: left;
+    }
+`;
+
+const MockupWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        flex-direction: row;
+    }
+`;
+
+const ImageWrapper = styled.div`
+    position: relative;
+    width: 100%;
+    height: 350px;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        height: 550px;
     }
 `;
