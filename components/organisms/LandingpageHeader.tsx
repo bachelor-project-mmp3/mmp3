@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import Logo from '../../public/images/logo.svg';
+import Logo from '../../public/icons/logo.svg';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 
@@ -77,7 +77,7 @@ export const LandingPageHeader: React.FC<LandingPageHeaderProps> = ({
 const Navbar = styled.div`
     display: flex;
     justify-content: center;
-    padding: 40px;
+    padding-top: 30px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         justify-content: space-between;
         padding: 30px 60px 0px 60px;
