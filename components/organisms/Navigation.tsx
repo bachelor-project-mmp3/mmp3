@@ -265,7 +265,7 @@ const DesktopNavigationItems = styled.div`
     align-items: center;
     position: absolute;
     width: 100%;
-    bottom: 150px;
+    bottom: 55px;
 `;
 
 const DesktopSignOutButton = styled.div`
