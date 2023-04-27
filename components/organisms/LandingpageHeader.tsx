@@ -56,6 +56,17 @@ export const LandingPageHeader: React.FC<LandingPageHeaderProps> = ({
                                 }}
                             />
                         </MobileImageWrapper>
+                        <TabletImageWrapper>
+                            <TabletImage
+                                src={'/images/hands_tablet.svg'}
+                                alt="Image"
+                                fill
+                                sizes="100"
+                                style={{
+                                    objectFit: 'fill',
+                                }}
+                            />
+                        </TabletImageWrapper>
                         <DesktopImageWrapper>
                             <DesktopImage
                                 src={'/images/hands_desktop.svg'}
@@ -122,15 +133,22 @@ const WrapperContent = styled.div`
 const WrapperContentItem = styled.div`
     width: 100%;
     @media ${(props) => props.theme.breakpoint.tablet} {
+        width: 50%;
+        align-self: center;
+        &:nth-child(2) {
+            width: 49%;
+        }
+    }
+
+    @media ${(props) => props.theme.breakpoint.desktop} {
         width: 40%;
         &:nth-child(2) {
             align-self: flex-end;
             width: 60%;
         }
-    }
-    &:nth-child(2) {
-        display: flex;
-        align-self: flex-end;
+        &:nth-child(1) {
+            align-self: auto;
+        }
     }
 `;
 
@@ -141,9 +159,21 @@ const MobileImage = styled(Image)`
     }
 `;
 
+const TabletImage = styled(Image)`
+    display: none;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        display: block;
+    }
+
+    @media ${({ theme }) => theme.breakpoint.desktop} {
+        display: none;
+    }
+`;
+
 const DesktopImage = styled(Image)`
     display: none;
-    @media ${({ theme }) => theme.breakpoint.tablet} {
+    @media ${({ theme }) => theme.breakpoint.desktop} {
         display: block;
         height: 10vh;
     }
@@ -158,12 +188,27 @@ const MobileImageWrapper = styled.div`
     }
 `;
 
+const TabletImageWrapper = styled.div`
+    display: none;
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 60vh;
+    }
+
+    @media ${({ theme }) => theme.breakpoint.desktop} {
+        display: none;
+    }
+`;
+
 const DesktopImageWrapper = styled.div`
     position: relative;
     width: 100%;
     height: 100vh;
     display: none;
-    @media ${({ theme }) => theme.breakpoint.tablet} {
+    @media ${({ theme }) => theme.breakpoint.desktop} {
         display: block;
     }
 `;

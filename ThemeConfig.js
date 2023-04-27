@@ -2,6 +2,7 @@ import { createGlobalStyle } from 'styled-components';
 
 const size = {
     tablet: '768px',
+    desktop: '1200px',
 };
 
 export const theme = {
@@ -45,6 +46,7 @@ export const theme = {
     },
     breakpoint: {
         tablet: `(min-width: ${size.tablet})`,
+        desktop: `(min-width: ${size.desktop})`,
     },
 };
 
