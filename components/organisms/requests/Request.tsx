@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Check from '../../../public/icons/hakerl.svg';
 import Discard from '../../../public/icons/discard.svg';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 export type RequestProps = {
     info: string;
@@ -75,21 +76,22 @@ const Request: React.FC<{
     );
 
     const getRequestText = () => {
+        console.log(request.Event.id, 'ID');
         if (userIsHost) {
             if (request.status === 'PENDING') {
-                return `${request.User.firstName} ${request.User.lastName} wants to join ${request.Event.title}`;
+                return `${request.User.firstName} ${request.User.lastName} wants to join `;
             } else if (request.status === 'ACCEPTED') {
-                return `${request.User.firstName} ${request.User.lastName} joined ${request.Event.title}`;
+                return `${request.User.firstName} ${request.User.lastName} joined `;
             } else if (request.status === 'DECLINED') {
-                return `You declined request from ${request.User.firstName} ${request.User.lastName} for ${request.Event.title}`;
+                return `You declined request from ${request.User.firstName} ${request.User.lastName} for `;
             }
         } else {
             if (request.status === 'PENDING') {
-                return `You sent ${request.Event.host.firstName} ${request.Event.host.lastName} a request to join ${request.Event.title}`;
+                return `You sent ${request.Event.host.firstName} ${request.Event.host.lastName} a request to join `;
             } else if (request.status === 'ACCEPTED') {
-                return `${request.Event.host.firstName} ${request.Event.host.lastName} accepted your request to join ${request.Event.title}`;
+                return `${request.Event.host.firstName} ${request.Event.host.lastName} accepted your request to join `;
             } else if (request.status === 'DECLINED') {
-                return `${request.Event.host.firstName} ${request.Event.host.lastName} declined your request to join ${request.Event.title}`;
+                return `${request.Event.host.firstName} ${request.Event.host.lastName} declined your request to join `;
             }
         }
         return '';
@@ -122,12 +124,12 @@ const Request: React.FC<{
                             />
                         </HostImage>
                     </ImageAndChefHood>
-                    <Link
+                    <StyledLink
                         href={`/profile/${
                             userIsHost ? request.User.id : request.Event.host.id
                         }`}>
                         view profile
-                    </Link>
+                    </StyledLink>
                 </ImageAndLinkWrapper>
 
                 <TimeAndInfo>
@@ -144,7 +146,12 @@ const Request: React.FC<{
                         </>
                     )}
 
-                    <div>{requestText}</div>
+                    <div>
+                        {requestText}
+                        <Link href={`/events/${request.Event.id}`}>
+                            {request.Event.title}
+                        </Link>
+                    </div>
                 </TimeAndInfo>
             </Content>
 
@@ -313,7 +320,7 @@ const TimeAndInfo = styled.div`
     flex-direction: column;
 `;
 
-const Link = styled.a`
+const StyledLink = styled(Link)`
     color: ${({ theme }) => theme.midGrey};
     text-decoration: none;
     @media ${(props) => props.theme.breakpoint.tablet} {
