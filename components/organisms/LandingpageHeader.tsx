@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import Logo from '../../public/images/logo.svg';
+import Logo from '../../public/icons/logo.svg';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 
@@ -77,7 +77,7 @@ export const LandingPageHeader: React.FC<LandingPageHeaderProps> = ({
 const Navbar = styled.div`
     display: flex;
     justify-content: center;
-    padding: 40px;
+    padding-top: 30px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         justify-content: space-between;
         padding: 30px 60px 0px 60px;
@@ -134,24 +134,6 @@ const WrapperContentItem = styled.div`
     }
 `;
 
-const ButtonWrapperDesktop = styled.div`
-    display: none;  
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        display: block;
-        margin-top: 50px;
-`;
-
-const ButtonWrapperMobile = styled.div`
-    position: fixed;
-    z-index: 1;
-    left: 50%;
-    bottom: 0;
-    transform: translate(-50%);
-    margin: 30px 0px;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        display: none;
-`;
-
 const MobileImage = styled(Image)`
     display: block;
     @media ${({ theme }) => theme.breakpoint.tablet} {
@@ -164,13 +146,6 @@ const DesktopImage = styled(Image)`
     @media ${({ theme }) => theme.breakpoint.tablet} {
         display: block;
         height: 10vh;
-    }
-`;
-
-const TextWrapper = styled.div`
-    margin: 30px;
-    @media ${({ theme }) => theme.breakpoint.tablet} {
-        margin: 60px;
     }
 `;
 

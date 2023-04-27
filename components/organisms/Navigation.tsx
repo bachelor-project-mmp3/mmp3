@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '../atoms/Button';
-import Logo from '../../public/images/logo.svg';
+import Logo from '../../public/icons/logo.svg';
 
 const hideNavigationOnPaths = [
     '/profile/[id]/edit',

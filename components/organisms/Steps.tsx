@@ -40,12 +40,12 @@ export const Steps: React.FC<StepsProps> = ({ german }) => {
 };
 
 const Wrapper = styled.div`
-    margin-top: 80px;
     padding: 60px 30px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     @media ${(props) => props.theme.breakpoint.tablet} {
+        margin-top: 40px;
         padding: 60px;
         justify-content: center;
         gap: 20px;
