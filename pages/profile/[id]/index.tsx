@@ -300,6 +300,7 @@ const StyledInsta = styled(Instagram)`
     position: absolute;
     right: -60px;
     bottom: 30px;
+    cursor: pointer;
 `;
 
 const StyledName = styled.h1`
