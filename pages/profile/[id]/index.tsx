@@ -146,7 +146,7 @@ const Profile = () => {
                                 )}
                         </InfoWrapper>
                         {profile.interests && (
-                            <Card>
+                            <Card width="100%">
                                 <StyledAboutMe>A little about me</StyledAboutMe>
                                 <p>{profile.interests}</p>
                             </Card>
@@ -218,6 +218,7 @@ const InfoWrapper = styled.div`
 `;
 
 const WrapperColumn = styled.div`
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -228,6 +229,18 @@ const WrapperColumn = styled.div`
     }
     &.top {
         align-self: flex-start;
+    }
+    :first-child {
+        &:before {
+            content: '';
+            width: 100%;
+            height: 550px;
+            border-radius: 40px;
+            background: ${({ theme }) => theme.backgroundLightGreen};
+            position: absolute;
+            top: 150px;
+            z-index: -1;
+        }
     }
 `;
 
