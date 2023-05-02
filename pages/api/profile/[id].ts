@@ -52,27 +52,80 @@ export default async function handler(
             }
             // GET /api/profile/${id}
             else if (req.method === 'GET') {
-                const profile = await prisma.user.findUnique({
-                    where: {
-                        id: String(req.query.id),
-                    },
-                    include: {
-                        events: {
-                            select: {
-                                id: true,
-                                title: true,
-                                image: true,
-                                date: true,
-                            },
-                            where: {
-                                date: {
-                                    lte: new Date(),
+                const { page, id } = req.query;
+
+                if (page) {
+                    const entriesPerPage = 6;
+                    const skipValue = (Number(page) - 1) * entriesPerPage;
+                    const profile = await prisma.user.findUnique({
+                        where: {
+                            id: String(req.query.id),
+                        },
+                        include: {
+                            events: {
+                                skip: skipValue, // How many rows to skip
+                                take: entriesPerPage, // Page size
+                                select: {
+                                    id: true,
+                                    title: true,
+                                    image: true,
+                                    date: true,
+                                },
+                                where: {
+                                    date: {
+                                        lte: new Date(),
+                                    },
                                 },
                             },
                         },
-                    },
-                });
-                res.status(200).json({ profile: profile });
+                    });
+
+                    const hostedEventsCount = await prisma.event.count({
+                        where: {
+                            AND: [
+                                {
+                                    host: { id: String(req.query.id) },
+                                    date: { lte: new Date() },
+                                    NOT: { status: 'CANCELLED' },
+                                },
+                            ],
+                        },
+                    });
+
+                    const pageCount = Math.ceil(
+                        hostedEventsCount / entriesPerPage
+                    );
+
+                    res.status(200).json({
+                        profile: profile,
+                        pageCount: pageCount,
+                    });
+                } else {
+                    const profile = await prisma.user.findUnique({
+                        where: {
+                            id: String(req.query.id),
+                        },
+                        include: {
+                            events: {
+                                select: {
+                                    id: true,
+                                    title: true,
+                                    image: true,
+                                    date: true,
+                                },
+                                where: {
+                                    date: {
+                                        lte: new Date(),
+                                    },
+                                },
+                            },
+                        },
+                    });
+
+                    res.status(200).json({
+                        profile: profile,
+                    });
+                }
             } else {
                 res.status(405).end('Method Not Allowed');
             }

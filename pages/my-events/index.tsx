@@ -179,7 +179,7 @@ const MyEvents = () => {
 
                 {isToggle ? (
                     <WrapperColumn>
-                        <StyledHeadline>Upcoming Events</StyledHeadline>
+                        <StyledHeadline>My upcoming events</StyledHeadline>
 
                         {upcomingEvents?.length > 0 ? (
                             <EventsWrapper>
@@ -218,7 +218,7 @@ const MyEvents = () => {
                     </WrapperColumn>
                 ) : (
                     <WrapperColumn className="top">
-                        <StyledHeadline>Past Events</StyledHeadline>
+                        <StyledHeadline>My past events</StyledHeadline>
                         <EventsWrapper>
                             {pastEvents?.length > 0 ? (
                                 pastEvents.map((event) => (
@@ -304,9 +304,10 @@ const StyledToggle = styled.div`
     border-radius: 25px;
     padding: 2px;
     margin: auto;
-
+    margin-top: 40px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         margin: inherit;
+        margin-top: 40px;
         justify-content: flex-start;
     }
 `;
