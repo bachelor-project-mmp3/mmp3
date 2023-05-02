@@ -337,7 +337,7 @@ const InfoRow = styled.div`
     flex-direction: row;
     align-items: center;
     height: 30px;
-    min-width: 50%;
+    min-width: 250px;
 `;
 
 const StyledImage = styled(Image)`
@@ -566,6 +566,7 @@ const PaginationPageCount = styled.div``;
 
 const FakeGreenBackgroundWrapper = styled.div`
     position: relative;
+    width: 100%;
 `;
 
 const FakeGreenBackground = styled.div`
