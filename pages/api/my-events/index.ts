@@ -18,7 +18,40 @@ export default async function handler(
                 const userId = session?.user?.userId;
                 const today = new Date();
 
+                const { upcomingEventsPage, pastEventsPage } = req.query;
+                const entriesPerPage = 6;
+                const upcomingEventsSkipValue =
+                    (Number(upcomingEventsPage) - 1) * entriesPerPage;
+                const upcomingEventsCount = await prisma.event.count({
+                    where: {
+                        OR: [
+                            { host: { id: userId } },
+                            {
+                                requests: {
+                                    some: {
+                                        AND: [
+                                            { userId: userId },
+                                            {
+                                                OR: [
+                                                    { status: 'ACCEPTED' },
+                                                    { status: 'CANCELLED' },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        AND: [{ date: { gte: today } }],
+                    },
+                });
+                const upcomingEventsPageCount = Math.ceil(
+                    upcomingEventsCount / entriesPerPage
+                );
+
                 const upcomingEvents = await prisma.event.findMany({
+                    skip: upcomingEventsSkipValue, // How many rows to skip
+                    take: entriesPerPage, // Page size
                     include: {
                         host: {
                             select: {
@@ -60,7 +93,43 @@ export default async function handler(
                     ],
                 });
 
+                const pastEventsSkipValue =
+                    (Number(pastEventsPage) - 1) * entriesPerPage;
+
+                const pastEventsCount = await prisma.event.count({
+                    where: {
+                        OR: [
+                            { host: { id: userId } },
+                            {
+                                requests: {
+                                    some: {
+                                        AND: [
+                                            { userId: userId },
+                                            {
+                                                OR: [
+                                                    { status: 'ACCEPTED' },
+                                                    { status: 'CANCELLED' },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        AND: [
+                            {
+                                date: { lte: today },
+                                NOT: { status: 'CANCELLED' },
+                            },
+                        ],
+                    },
+                });
+                const pastEventsPageCount = Math.ceil(
+                    pastEventsCount / entriesPerPage
+                );
                 const pastEvents = await prisma.event.findMany({
+                    skip: pastEventsSkipValue, // How many rows to skip
+                    take: entriesPerPage, // Page size
                     include: {
                         host: {
                             select: {
@@ -104,6 +173,8 @@ export default async function handler(
                 res.status(200).json({
                     upcomingEvents: upcomingEvents,
                     pastEvents: pastEvents,
+                    upcomingEventsPageCount: upcomingEventsPageCount,
+                    pastEventsPageCount: pastEventsPageCount,
                 });
             } else {
                 res.status(405).end('Method Not Allowed');

@@ -222,7 +222,7 @@ const ExtendedEventPreview: React.FC<{
                             )}
                         </ButtonWrapper>
                     )}
-                    {userIsHost && (
+                    {userIsHost && event.status !== EventStatus.CANCELLED && (
                         <ButtonWrapper>
                             <Button
                                 variant="primary"
