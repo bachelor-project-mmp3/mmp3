@@ -146,7 +146,7 @@ const Profile = () => {
                                 )}
                         </InfoWrapper>
                         {profile.interests && (
-                            <Card width="100%">
+                            <Card width="100%" variant="description">
                                 <StyledAboutMe>A little about me</StyledAboutMe>
                                 <p>{profile.interests}</p>
                             </Card>
@@ -260,7 +260,7 @@ const EventsWrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    row-gap: 50px;
+    row-gap: 20px;
     width: 100%;
 `;
 
