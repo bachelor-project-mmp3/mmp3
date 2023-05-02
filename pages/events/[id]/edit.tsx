@@ -490,7 +490,7 @@ const EditEvent = () => {
                                         }
                                         value={currentDish.link}
                                         padding="left">
-                                        {"Link for the dish's recipe"}
+                                        Link for the dish&apos;s recipe
                                     </InputUrl>
                                 </StyledInputWithError>
                                 <StyledLinkIcon />
