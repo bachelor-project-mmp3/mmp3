@@ -16,6 +16,9 @@ export type NotificationProps = {
             image: string;
         };
     };
+    UserFrom: {
+        image: string;
+    };
 };
 
 const Notification: React.FC<{
@@ -34,7 +37,11 @@ const Notification: React.FC<{
                 <StyledMessage>{notification.message}</StyledMessage>
                 <HostImage>
                     <StyledImage
-                        src={notification.Event.host.image}
+                        src={
+                            notification.UserFrom
+                                ? notification.UserFrom.image
+                                : notification.Event.host.image
+                        }
                         alt="Image"
                         fill
                         sizes="100"
