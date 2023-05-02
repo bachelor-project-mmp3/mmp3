@@ -15,28 +15,37 @@ import Burger from '../../../public/icons/burger_menu.svg';
 import Link from 'next/link';
 import { Loading } from '../../../components/organisms/Loading';
 import { Header } from '../../../components/organisms/Header';
+import FilterIcon from '../../../public/icons/goBack.svg';
 
 const Profile = () => {
     const { data: session } = useSession();
     const router = useRouter();
 
     const [profile, setProfile] = useState(null);
+    const [events, setEvents] = useState(null);
+    const [pageIndex, setPageIndex] = useState(1);
+    const [pageCount, setPageCount] = useState(1);
     const [isLoading, setLoading] = useState(true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    console.log(events);
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
         if (router.isReady) {
-            fetch(`/api/profile/${router.query.id}`, {
+            fetch(`/api/profile/${router.query.id}?page=${pageIndex}`, {
                 method: 'GET',
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log(data);
                     setProfile(data.profile);
-                    setLoading(false);
+                    setEvents(data.profile.events);
+                    setPageCount(data.pageCount);
                 });
+            setLoading(false);
         }
-    }, [router.isReady, router.query.id]);
+    }, [router.isReady, router.query.id, pageIndex]);
 
     if (isLoading) return <Loading />;
     if (!profile) return <p>No profile</p>;
@@ -147,14 +156,22 @@ const Profile = () => {
                                 )}
                         </InfoWrapper>
                         {profile.interests && (
-                            <Card width="100%" variant="description">
-                                <StyledAboutMeHeadline>
-                                    A little about me
-                                </StyledAboutMeHeadline>
-                                <StyledAboutMeText>
-                                    {profile.interests}
-                                </StyledAboutMeText>
-                            </Card>
+                            <>
+                                <FakeGreenBackgroundWrapper>
+                                    <Card
+                                        width="100%"
+                                        variant="description"
+                                        margin="0px">
+                                        <StyledAboutMeHeadline>
+                                            A little about me
+                                        </StyledAboutMeHeadline>
+                                        <StyledAboutMeText>
+                                            {profile.interests}
+                                        </StyledAboutMeText>
+                                    </Card>
+                                    <FakeGreenBackground />
+                                </FakeGreenBackgroundWrapper>
+                            </>
                         )}
 
                         {profile.id === session?.user?.userId && (
@@ -171,13 +188,13 @@ const Profile = () => {
                             </ButtonWrapper>
                         )}
                     </WrapperColumn>
-                    <WrapperColumn className="top">
-                        <StyledH2>
-                            {profile.firstName}&apos;s hosted events
-                        </StyledH2>
-                        <EventsWrapper>
-                            {profile.events?.length > 0 ? (
-                                profile.events.map((event) => (
+                    {events?.length > 0 && (
+                        <WrapperColumn className="top">
+                            <StyledH2>
+                                {profile.firstName}&apos;s hosted events
+                            </StyledH2>
+                            <EventsWrapper>
+                                {events.map((event) => (
                                     <EventItem key={`hosted-event-${event.id}`}>
                                         <SmallEventPreview
                                             title={event.title}
@@ -192,12 +209,38 @@ const Profile = () => {
                                                 event.date
                                             }></SmallEventPreview>
                                     </EventItem>
-                                ))
-                            ) : (
-                                <p>No hosted events...</p>
-                            )}
-                        </EventsWrapper>
-                    </WrapperColumn>
+                                ))}
+                            </EventsWrapper>
+
+                            <Pagination>
+                                <PaginationAction
+                                    onClick={
+                                        pageIndex !== 1
+                                            ? () => {
+                                                  setPageIndex(pageIndex - 1);
+                                              }
+                                            : null
+                                    }
+                                    disabled={pageIndex === 1}>
+                                    <StyledFilterIcon option="prev" />
+                                    Prev
+                                </PaginationAction>
+                                <PaginationPageCount>{`${pageIndex}/${pageCount}`}</PaginationPageCount>
+                                <PaginationAction
+                                    onClick={
+                                        pageIndex !== pageCount
+                                            ? () => {
+                                                  setPageIndex(pageIndex + 1);
+                                              }
+                                            : null
+                                    }
+                                    disabled={pageIndex === pageCount}>
+                                    Next
+                                    <StyledFilterIcon option="next" />
+                                </PaginationAction>
+                            </Pagination>
+                        </WrapperColumn>
+                    )}
                 </WrapperRow>
             </div>
         </Layout>
@@ -220,6 +263,12 @@ const WrapperName = styled.div`
 const InfoWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    width: 100%;
+    background: ${({ theme }) => theme.backgroundLightGreen};
+    align-items: center;
+    padding-bottom: 50px;
+    border-bottom-right-radius: 40px;
+    border-bottom-left-radius: 40px;
 `;
 
 const WrapperColumn = styled.div`
@@ -227,10 +276,22 @@ const WrapperColumn = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    align-self: start;
     width: 100%;
+    :nth-child(2) {
+        margin-top: 40px;
+    }
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 45%;
         min-width: 500px;
+        :nth-child(2) {
+            margin-top: 60px;
+        }
+        @media ${(props) => props.theme.breakpoint.tablet} {
+            :nth-child(2) {
+                margin-top: 0px;
+            }
+        }
     }
     &.top {
         align-self: flex-start;
@@ -239,8 +300,9 @@ const WrapperColumn = styled.div`
         &:before {
             content: '';
             width: 100%;
-            height: 550px;
-            border-radius: 40px;
+            height: 350px;
+            border-top-right-radius: 40px;
+            border-top-left-radius: 40px;
             background: ${({ theme }) => theme.backgroundLightGreen};
             position: absolute;
             top: 150px;
@@ -275,6 +337,7 @@ const InfoRow = styled.div`
     flex-direction: row;
     align-items: center;
     height: 30px;
+    min-width: 50%;
 `;
 
 const StyledImage = styled(Image)`
@@ -426,7 +489,7 @@ const ButtonWrapper = styled.div`
     z-index: 1;
     bottom: 100px;
     @media ${(props) => props.theme.breakpoint.tablet} {
-        position: static;
+        bottom: 40px;
         font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
     }
 `;
@@ -437,4 +500,81 @@ const ProfileImage = styled.div`
     width: 300px;
     height: 300px;
     background: white;
+`;
+
+const Pagination = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    font-weight: bold;
+    margin-top: 20px;
+    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        justify-content: flex-start;
+        margin-left: 10px;
+        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
+        gap: 30px;
+    }
+`;
+
+interface PaginationIconProps {
+    disabled: boolean;
+    option: 'prev' | 'next';
+}
+
+interface PaginationActionProps {
+    disabled: boolean;
+}
+
+const StyledFilterIcon = styled(FilterIcon)<PaginationIconProps>`
+    height: 16px;
+    width: 16px;
+
+    transform: ${(props) =>
+        props.option === 'prev' ? 'rotate(0deg)' : 'rotate(180deg)'};
+
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        height: 20px;
+        width: 20px;
+    }
+`;
+
+const PaginationAction = styled.div<PaginationActionProps>`
+    display: flex;
+    align-items: center;
+    color: ${(props) => `${props.theme.primary}`};
+    cursor: pointer;
+
+    ${(props) =>
+        !props.disabled &&
+        `
+        :hover {
+            color: ${props.theme.hoverPrimary};
+        }
+    `}
+    ${(props) =>
+        props.disabled &&
+        `
+        color: ${props.theme.midGrey};
+        cursor: auto;
+    `}
+`;
+
+const PaginationPageCount = styled.div``;
+
+const FakeGreenBackgroundWrapper = styled.div`
+    position: relative;
+`;
+
+const FakeGreenBackground = styled.div`
+    content: '';
+    height: 80px;
+    width: 100%;
+    left: 0;
+    background: ${({ theme }) => theme.backgroundLightGreen};
+    position: absolute;
+    z-index: -1;
+    top: -40px;
 `;
