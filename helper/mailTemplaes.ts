@@ -16,7 +16,8 @@ export function getEmailTemplate(data: {
         | 'kickGuest'
         | 'imageUpload'
         | 'reminder-host'
-        | 'reminder-guest';
+        | 'reminder-guest'
+        | 'reviewReminder';
     eventId?: string;
     eventDetail?: { amountOfGuests: number };
 }) {
@@ -157,6 +158,20 @@ export function getEmailTemplate(data: {
             }>${
                 data.eventTitle
             }</a> takes place tomorrow! Don't forget to leave a review after the event and have fun! 
+        `,
+        };
+    }
+    if (data.type === 'reviewReminder') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= It's time to review ${data.eventTitle}`,
+            text: `It's time to review ${data.eventTitle}`,
+            html: `<div>Hi ${data.guestName},<br></div><p>the event <a href=${
+                'https://mmp3.vercel.app/events/' + data.eventId
+            }>${
+                data.eventTitle
+            }</a> is over! Now it's time to leave a short <a href=${
+                'https://mmp3.vercel.app/events/' + data.eventId
+            }>review</a>!
         `,
         };
     }
