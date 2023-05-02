@@ -226,7 +226,7 @@ const Events = () => {
             )}
 
             <Layout>
-                <Header>Find an event to join</Header>
+                <StyledHeading>Find an event to join</StyledHeading>
                 <FilterBar>
                     <FilterCampus
                         onSubmit={onFilterEvents}
@@ -398,6 +398,16 @@ const PaginationAction = styled.div<PaginationActionProps>`
         color: ${props.theme.midGrey};
         cursor: auto;
     `}
+`;
+
+const StyledHeading = styled.h2`
+    font-size: ${({ theme }) => theme.fonts.mobile.headline3};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline3};
+    }
+    font-weight: 800;
+    margin-bottom: 10px;
+    margin-top: 30px;
 `;
 
 const PaginationPageCount = styled.div``;
