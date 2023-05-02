@@ -126,7 +126,8 @@ const Profile = () => {
                                 <StyledLocation />
                                 {profile.id === session?.user?.userId ? (
                                     <p>
-                                        {profile.dormitory} -{' '}
+                                        {profile.dormitory}
+                                        {', No.'}
                                         {profile.roomNumber}
                                     </p>
                                 ) : (
@@ -413,6 +414,13 @@ const FakeBlur = styled.div`
 
 const ButtonWrapper = styled.div`
     margin-top: 30px;
+    position: fixed;
+    z-index: 1;
+    bottom: 100px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        position: static;
+        font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
+    }
 `;
 
 const ProfileImage = styled.div`
