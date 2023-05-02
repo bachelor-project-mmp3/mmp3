@@ -27,6 +27,7 @@ import {
     hasUserSendRequestHelper,
     hostNameHelper,
     isRequestAcceptedHelper,
+    userHasSentReview,
     userIsHostHelper,
 } from '../../../helper/EventsAndUserHelper';
 import Link from 'next/link';
@@ -39,6 +40,7 @@ import { uploadImage } from '../../../helper/uploadHelper';
 import Image from 'next/image';
 import Discard from '../../../public/icons/discard.svg';
 import { RequestProps } from '../../../components/organisms/requests/Request';
+import ReviewPopUp from '../../../components/organisms/popups/ReviewPopUp';
 
 type EventProps = {
     id: string;
@@ -102,6 +104,12 @@ const EventDetail = () => {
     const [showInfoPopUpOnDeleteGuest, setShowInfoPopUpOnDeleteGuest] =
         useState(false);
     const [deleteGuest, setDeleteGuest] = useState<undefined | RequestProps>();
+    const [showReviewPopUp, setShowReviewPopUp] = useState(false);
+    const [reviewData, setReviewData] = useState<{
+        food: number;
+        hospitality: number;
+        text: string;
+    }>({ food: 0, hospitality: 0, text: '' });
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
@@ -204,6 +212,38 @@ const EventDetail = () => {
         }
     };
 
+    const addReview = async () => {
+        setLoading(true);
+        const data = {
+            eventId: event.id,
+            userId: session.user.userId,
+            dish: reviewData.food,
+            environment: reviewData.hospitality,
+            text: reviewData.text,
+        };
+
+        const res = await fetch(`/api/events/${event.id}/review`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (res.status === 200) {
+            res.json().then((review) => {
+                let updatedEvent = {
+                    ...event,
+                    reviews: [...event.reviews, review],
+                };
+
+                setEvent(updatedEvent);
+                setLoading(false);
+                setShowReviewPopUp(false);
+            });
+        } else {
+            router.push('/404');
+        }
+    };
+
     const uploadEventPhoto = async (e: any) => {
         setLoading(true);
 
@@ -296,7 +336,6 @@ const EventDetail = () => {
 
     //TODO: Add onClick to PhoneButton to copy phone number
 
-    // @ts-ignore
     return (
         <>
             {showInfoPopUpOnJoin && (
@@ -357,6 +396,22 @@ const EventDetail = () => {
                     {deleteGuest.User.firstName} from{' '}
                     <strong>{event.title}</strong>?
                 </ActionPopUp>
+            )}
+
+            {showReviewPopUp && (
+                <ReviewPopUp
+                    onClose={() => setShowReviewPopUp(false)}
+                    onAction={addReview}
+                    eventTitle={event.title}
+                    onChangeReview={(data: {
+                        food: number;
+                        hospitality: number;
+                        text: string;
+                    }) => {
+                        setReviewData(data);
+                    }}
+                    currentReviewData={reviewData}
+                />
             )}
 
             <Layout>
@@ -440,6 +495,22 @@ const EventDetail = () => {
                                         )}
                                 </EventImageWrapper>
                             </Card>
+                        </>
+                    )}
+
+                    {event.reviews?.length > 0 && (
+                        <>
+                            {
+                                // TODO STYLE COMPONENT
+                                event.reviews.map((review, index) => (
+                                    <div key={`reviewItem-${index}`}>
+                                        <p>{review?.User?.image}</p>
+                                        <p>Food {review.dish}</p>
+                                        <p> Environment{review.environment}</p>
+                                        <p>{review.text}</p>
+                                    </div>
+                                ))
+                            }
                         </>
                     )}
 
@@ -575,6 +646,20 @@ const EventDetail = () => {
                                 <UploadButton onChange={uploadEventPhoto}>
                                     Upload photo
                                 </UploadButton>
+                            </StyledButtons>
+                        )}
+                    {event.status !== EventStatus.CANCELLED &&
+                        new Date() > new Date(event.date) &&
+                        !userIsHost &&
+                        !userHasSentReview(event, session) && (
+                            <StyledButtons>
+                                <Button
+                                    variant="primary"
+                                    onClick={() => {
+                                        setShowReviewPopUp(true);
+                                    }}>
+                                    Add review
+                                </Button>
                             </StyledButtons>
                         )}
                 </StyledDetailsWrapper>
