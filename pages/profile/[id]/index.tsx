@@ -49,9 +49,7 @@ const Profile = () => {
                         onClick={() => setIsMenuOpen(isMenuOpen ? false : true)}
                     />
                 )}
-                {session?.user.userId !== profile.id && (
-                    <Header backButton>Go back</Header>
-                )}
+                {session?.user.userId !== profile.id && <Header />}
 
                 {isMenuOpen && (
                     <>

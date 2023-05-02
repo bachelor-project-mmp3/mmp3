@@ -140,7 +140,7 @@ const Requests = () => {
             )}
 
             <Layout>
-                <Header>Requests</Header>
+                <StyledHeading>Requests</StyledHeading>
                 <div>
                     {requests?.length > 0 ? (
                         requests.map((request) => (
@@ -197,4 +197,14 @@ const EmptyRequests = styled.div`
 const StyledNoRequestsImage = styled(NoRequestsImage)`
     width: 80vw;
     max-width: 400px;
+`;
+
+const StyledHeading = styled.h2`
+    font-size: ${({ theme }) => theme.fonts.mobile.headline3};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline3};
+    }
+    font-weight: 800;
+    margin-bottom: 10px;
+    margin-top: 30px;
 `;

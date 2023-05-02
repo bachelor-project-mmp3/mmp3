@@ -74,6 +74,7 @@ const StyledInfoIcon = styled(InfoIcon)`
     width: 18px;
     height: 18px;
     margin: 0 10px;
+    cursor: pointer;
 `;
 
 const StyledLinkIcon = styled(LinkIcon)`

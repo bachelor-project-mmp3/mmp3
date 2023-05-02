@@ -115,7 +115,9 @@ const MyEvents = () => {
             )}
 
             <Layout>
-                <Header>Hello {session?.user?.firstName}! 👋</Header>
+                <StyledHeading>
+                    Hello {session?.user?.firstName}! 👋
+                </StyledHeading>
                 {notifications?.length > 0 && (
                     <StyledHeadline>Notifications</StyledHeadline>
                 )}
@@ -354,4 +356,14 @@ const StyledNoEvents = styled.div`
 const StyledP = styled.p`
     width: 300px;
     text-align: center;
+`;
+
+const StyledHeading = styled.h2`
+    font-size: ${({ theme }) => theme.fonts.mobile.headline3};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline3};
+    }
+    font-weight: 800;
+    margin-bottom: 10px;
+    margin-top: 30px;
 `;

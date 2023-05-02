@@ -361,61 +361,84 @@ const EventDetail = () => {
 
             <Layout>
                 <StyledDetailsWrapper>
-                    <Header backButton>{event.title}</Header>
+                    <StyledInfoWrapper>
+                        <Header />
+                        <StyledHeading>{event.title}</StyledHeading>
 
-                    <StyledInfoEventDetails>
-                        <StyledInfoEventDetailsBoxes>
-                            {new Date() < new Date(event.date) &&
-                                (event.status === EventStatus.CANCELLED ? (
-                                    <StyledCancelNote>
-                                        CANCELLED
-                                    </StyledCancelNote>
-                                ) : (
-                                    <TimeLimitAndSeatsWrapper bold>
-                                        <TimeLimitAndSeatsRow>
-                                            <StyledClock />
-                                            <div>{timeLimit}</div>
-                                        </TimeLimitAndSeatsRow>
-                                        <TimeLimitAndSeatsRow>
-                                            <StyledSeat />
-                                            <div>
-                                                {event.currentParticipants}/
-                                                {event.capacity} seats taken
-                                            </div>
-                                        </TimeLimitAndSeatsRow>
-                                    </TimeLimitAndSeatsWrapper>
-                                ))}
-                            <div>{date}</div>
-                            <div>{time}</div>
-                            <div>{event.host?.dormitory}</div>
-                            <div>Room No. {event.host?.roomNumber}</div>
-                            <div>Costs: {event.costs} &#8364; per person</div>
-                        </StyledInfoEventDetailsBoxes>
-                        <StyledInfoEventDetailsBoxes textAlign="right">
-                            {event.host.image && (
-                                <ChefAndImage
-                                    onClick={() =>
-                                        router.push(`/profile/${event.host.id}`)
-                                    }
-                                    userIsHost={userIsHost}
-                                    source={event.host.image}
-                                    hostName={hostName}></ChefAndImage>
-                            )}
+                        <StyledInfoEventDetails>
+                            <StyledInfoEventDetailsBoxes>
+                                {new Date() < new Date(event.date) &&
+                                    (event.status === EventStatus.CANCELLED ? (
+                                        <StyledCancelNote>
+                                            CANCELLED
+                                        </StyledCancelNote>
+                                    ) : (
+                                        <TimeLimitAndSeatsWrapper bold>
+                                            <TimeLimitAndSeatsRow>
+                                                <StyledClock />
+                                                <div>{timeLimit}</div>
+                                            </TimeLimitAndSeatsRow>
+                                            <TimeLimitAndSeatsRow>
+                                                <StyledSeat />
+                                                <div>
+                                                    {event.currentParticipants}/
+                                                    {event.capacity} seats taken
+                                                </div>
+                                            </TimeLimitAndSeatsRow>
+                                        </TimeLimitAndSeatsWrapper>
+                                    ))}
+                                <StyledInfoEventDetailsBoxesDesktop>
+                                    <div>{date}</div>
+                                    <div>{time}</div>
+                                    <div>{event.host?.dormitory}</div>
+                                    <div>Room No. {event.host?.roomNumber}</div>
+                                    <div>
+                                        Costs: {event.costs} &#8364; per person
+                                    </div>
+                                </StyledInfoEventDetailsBoxesDesktop>
+                                <StyledInfoEventDetailsBoxesMobile>
+                                    <div>
+                                        {date}, {time}
+                                    </div>
+                                    <div>
+                                        {event.host?.dormitory} - No.{' '}
+                                        {event.host?.roomNumber}
+                                    </div>
+                                    <div>
+                                        Costs: {event.costs} &#8364; per person
+                                    </div>
+                                </StyledInfoEventDetailsBoxesMobile>
+                            </StyledInfoEventDetailsBoxes>
+                            <StyledInfoEventDetailsBoxes textAlign="center">
+                                {event.host.image && (
+                                    <ChefAndImage
+                                        onClick={() =>
+                                            router.push(
+                                                `/profile/${event.host.id}`
+                                            )
+                                        }
+                                        userIsHost={userIsHost}
+                                        source={event.host.image}
+                                        hostName={hostName}></ChefAndImage>
+                                )}
 
-                            {event.requests.filter(
-                                (request) =>
-                                    request.status == RequestStatus.ACCEPTED &&
-                                    request.userId == session?.user?.userId
-                            ).length > 0 && (
-                                <div>
-                                    <StyledPhoneIcon />
-                                    <Link href={`mailto:${event.host.email}`}>
-                                        <StyledEmailIcon />
-                                    </Link>
-                                </div>
-                            )}
-                        </StyledInfoEventDetailsBoxes>
-                    </StyledInfoEventDetails>
+                                {event.requests.filter(
+                                    (request) =>
+                                        request.status ==
+                                            RequestStatus.ACCEPTED &&
+                                        request.userId == session?.user?.userId
+                                ).length > 0 && (
+                                    <div>
+                                        <StyledPhoneIcon />
+                                        <Link
+                                            href={`mailto:${event.host.email}`}>
+                                            <StyledEmailIcon />
+                                        </Link>
+                                    </div>
+                                )}
+                            </StyledInfoEventDetailsBoxes>
+                        </StyledInfoEventDetails>
+                    </StyledInfoWrapper>
 
                     {eventImage != defaultImage && (
                         <>
@@ -445,7 +468,7 @@ const EventDetail = () => {
 
                     {event.menu.length > 0 && (
                         <Card variant={'description'}>
-                            <StyledHeadings>Menu</StyledHeadings>
+                            <StyledSectionHeadings>Menu</StyledSectionHeadings>
                             {event.menu.map((dish, index) => (
                                 <MenuItem
                                     key={`menuItem-${index}`}
@@ -459,9 +482,9 @@ const EventDetail = () => {
 
                     {event.info && (
                         <Card variant={'description'}>
-                            <StyledHeadings style={{ marginTop: 0 }}>
+                            <StyledSectionHeadings style={{ marginTop: 0 }}>
                                 About the event
-                            </StyledHeadings>
+                            </StyledSectionHeadings>
                             {event.info}
                         </Card>
                     )}
@@ -470,9 +493,9 @@ const EventDetail = () => {
                         (request) => request.status == RequestStatus.ACCEPTED
                     ).length > 0 && (
                         <Card variant={'description'}>
-                            <StyledHeadings style={{ marginTop: 0 }}>
+                            <StyledSectionHeadings style={{ marginTop: 0 }}>
                                 Guestlist
-                            </StyledHeadings>
+                            </StyledSectionHeadings>
                             {event.requests
                                 .filter(
                                     (request) =>
@@ -586,15 +609,29 @@ const EventDetail = () => {
 export default EventDetail;
 
 const StyledDetailsWrapper = styled.div`
-    max-width: 600px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        max-width: 600px;
+    }
 `;
 
 const StyledInfoEventDetails = styled.div`
     position: relative;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: 50px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        flex-direction: row;
+        gap: 0;
+    }
     justify-content: space-between;
-    padding: 50px 20px;
+    padding: 10px 40px 40px 40px;
+`;
+
+const StyledInfoWrapper = styled.div`
+    background-color: ${({ theme }) => theme.backgroundLightGreen};
+    margin-top: -30px;
+    padding-top: 30px;
+    border-radius: 0 0 40px 40px;
 `;
 
 const StyledPhoneIcon = styled(PhoneIcon)`
@@ -618,7 +655,8 @@ const StyledInfoEventDetailsBoxes = styled.div<StyledInfoEventDetailsBoxesProps>
     display: flex;
     flex-direction: column;
     gap: 10px;
-    align-items: ${(props) => (props.textAlign === 'right' ? 'end' : 'start')};
+    align-items: ${(props) =>
+        props.textAlign === 'center' ? 'center' : 'start'};
 `;
 
 const StyledButtons = styled.div<HostImageProps>`
@@ -634,8 +672,9 @@ const StyledButtons = styled.div<HostImageProps>`
     }
 `;
 
-const StyledHeadings = styled.p`
+const StyledSectionHeadings = styled.p`
     font-weight: 800;
+    margin-top: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 100%;
@@ -686,4 +725,29 @@ const StyledDiscard = styled(Discard)`
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+`;
+
+const StyledHeading = styled.h2`
+    font-size: ${({ theme }) => theme.fonts.mobile.headline3};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline3};
+    }
+    font-weight: 800;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    padding: 0 40px;
+`;
+
+const StyledInfoEventDetailsBoxesDesktop = styled.div`
+    display: none;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        display: initial;
+    }
+`;
+
+const StyledInfoEventDetailsBoxesMobile = styled.div`
+    display: initial;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        display: none;
+    }
 `;

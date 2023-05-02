@@ -70,6 +70,7 @@ export const StyledInput = styled.input<InputStyleProps>`
     max-width: 100%;
     padding-top: 13px;
     padding-bottom: 13px;
+    cursor: text;
     padding-left: ${(props) => (props.padding === 'left' ? '45px' : '20px')};
     padding-right: ${(props) => (props.padding === 'right' ? '45px' : '20px')};
     background-color: ${(props) =>
