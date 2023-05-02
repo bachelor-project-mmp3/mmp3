@@ -438,8 +438,8 @@ const EditEvent = () => {
                                             x.status === RequestStatus.ACCEPTED
                                     ).length
                                 }{' '}
-                                people already joined, you can't set the number
-                                of guests lower.
+                                people already joined, you can&apos;t set the
+                                number of guests lower.
                             </ErrorMessage>
                         )}
                         {errors.guests && errors.guests.type === 'max' && (
