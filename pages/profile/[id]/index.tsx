@@ -301,6 +301,9 @@ const StyledInsta = styled(Instagram)`
     right: -60px;
     bottom: 30px;
     cursor: pointer;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        bottom: 35px;
+    }
 `;
 
 const StyledName = styled.h1`
