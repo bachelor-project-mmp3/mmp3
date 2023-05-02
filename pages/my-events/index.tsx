@@ -302,9 +302,10 @@ const StyledToggle = styled.div`
     border-radius: 25px;
     padding: 2px;
     margin: auto;
-
+    margin-top: 40px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         margin: inherit;
+        margin-top: 40px;
         justify-content: flex-start;
     }
 `;
