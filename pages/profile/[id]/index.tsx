@@ -148,8 +148,12 @@ const Profile = () => {
                         </InfoWrapper>
                         {profile.interests && (
                             <Card width="100%" variant="description">
-                                <StyledAboutMe>A little about me</StyledAboutMe>
-                                <p>{profile.interests}</p>
+                                <StyledAboutMeHeadline>
+                                    A little about me
+                                </StyledAboutMeHeadline>
+                                <StyledAboutMeText>
+                                    {profile.interests}
+                                </StyledAboutMeText>
                             </Card>
                         )}
 
@@ -313,7 +317,6 @@ const StyledName = styled.h1`
 
 const StyledH2 = styled.h2`
     align-self: flex-start;
-    margin-top: 80px;
 `;
 
 const StyledMember = styled.p`
@@ -326,13 +329,18 @@ const StyledMember = styled.p`
     }
 `;
 
-const StyledAboutMe = styled.p`
+const StyledAboutMeHeadline = styled.p`
     font-weight: 800;
+    margin-top: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
     @media ${(props) => props.theme.breakpoint.tablet} {
         width: 100%;
         font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
     }
+`;
+
+const StyledAboutMeText = styled.p`
+    margin-bottom: 0;
 `;
 
 const EventItem = styled.div`
