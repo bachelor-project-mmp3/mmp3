@@ -26,6 +26,9 @@ export default async function handler(
                                 host: true,
                             },
                         },
+                        UserFrom: {
+                            select: { image: true },
+                        },
                     },
                     where: {
                         AND: [{ userId: userId }, { seen: false }],
