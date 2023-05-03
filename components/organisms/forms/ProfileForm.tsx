@@ -36,7 +36,7 @@ const schema = yup.object({
     image: yup.string().notRequired(),
     firstName: yup.string().min(2).required(),
     lastName: yup.string().min(2).required(),
-    roomNumber: yup.string().required(),
+    roomNumber: yup.string().max(10).required(),
     aboutYou: yup.string().notRequired(),
     instagram: yup.string().notRequired(),
     phone: yup.string().notRequired(),
@@ -295,11 +295,14 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                             setRoomNumber(e.target.value);
                             if (e.target.value.length === 0) {
                                 setError('roomNumber', { type: 'required' });
+                            } else if (e.target.value.length > 10) {
+                                setError('roomNumber', { type: 'max' });
                             } else {
                                 clearErrors('roomNumber');
                             }
                         }}
                         id="roomNumber"
+                        maxLength={10}
                         placeholder="000"
                         value={roomNumber}
                         required={true}
@@ -314,6 +317,11 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                                 Please enter a room number
                             </ErrorMessage>
                         )}
+                    {errors.roomNumber && errors.roomNumber.type === 'max' && (
+                        <ErrorMessage>
+                            Please enter a room number up to 10 characters
+                        </ErrorMessage>
+                    )}
                     <StyledInfo>
                         <Info>
                             The room number will only be shared with guests

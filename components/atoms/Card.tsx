@@ -4,6 +4,7 @@ import React from 'react';
 
 interface CardProps {
     variant?: 'small-event' | 'no-padding' | 'center' | 'description';
+    margin?: string;
     height?: string;
     width?: string;
     children: ReactNode;
@@ -12,11 +13,14 @@ interface CardProps {
 export const Card: React.FC<CardProps> = ({
     variant,
     children,
+    margin,
     height,
     width,
 }: CardProps) => {
     return (
-        <StyledCard variant={variant} style={{ height: height, width: width }}>
+        <StyledCard
+            variant={variant}
+            style={{ height: height, width: width, margin }}>
             {children}
         </StyledCard>
     );

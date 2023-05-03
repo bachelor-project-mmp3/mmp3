@@ -96,6 +96,6 @@ export const GlobalStyles = createGlobalStyle`
   .swiper-horizontal > .swiper-pagination-bullets,
   .swiper-pagination-bullets.swiper-pagination-horizontal {
     position: unset;
-    margin: 20px 0px;
+    margin-top: 20px;
 }
 `;
