@@ -273,63 +273,18 @@ const MyEvents = () => {
                         <StyledHeadline>My past events</StyledHeadline>
                         <EventsWrapper>
                             {pastEvents?.length > 0 ? (
-                                <>
-                                    {pastEvents.map((event) => (
-                                        <SmallEventPreview
-                                            key={`pastevent-${event.id}`}
-                                            title={event.title}
-                                            imageEvent={event.image}
-                                            imageHost={event.host.image}
-                                            myEventsPage={true}
-                                            onClick={() =>
-                                                router.push(
-                                                    `/events/${event.id}`
-                                                )
-                                            }
-                                            date={
-                                                event.date
-                                            }></SmallEventPreview>
-                                    ))}
-                                    <PaginationEvents>
-                                        <PaginationAction
-                                            onClick={
-                                                upcomingEventsPageIndex !== 1
-                                                    ? () => {
-                                                          setPastEventsPageIndex(
-                                                              pastEventsPageIndex -
-                                                                  1
-                                                          );
-                                                      }
-                                                    : null
-                                            }
-                                            disabled={
-                                                pastEventsPageIndex === 1
-                                            }>
-                                            <StyledFilterIcon option="prev" />
-                                            Prev
-                                        </PaginationAction>
-                                        <PaginationPageCount>{`${pastEventsPageIndex}/${pastEventsPageCount}`}</PaginationPageCount>
-                                        <PaginationAction
-                                            onClick={
-                                                pastEventsPageIndex !==
-                                                pastEventsPageCount
-                                                    ? () => {
-                                                          setPastEventsPageIndex(
-                                                              pastEventsPageIndex +
-                                                                  1
-                                                          );
-                                                      }
-                                                    : null
-                                            }
-                                            disabled={
-                                                pastEventsPageIndex ===
-                                                pastEventsPageCount
-                                            }>
-                                            Next
-                                            <StyledFilterIcon option="next" />
-                                        </PaginationAction>
-                                    </PaginationEvents>
-                                </>
+                                pastEvents.map((event) => (
+                                    <SmallEventPreview
+                                        key={`pastevent-${event.id}`}
+                                        title={event.title}
+                                        imageEvent={event.image}
+                                        imageHost={event.host.image}
+                                        myEventsPage={true}
+                                        onClick={() =>
+                                            router.push(`/events/${event.id}`)
+                                        }
+                                        date={event.date}></SmallEventPreview>
+                                ))
                             ) : (
                                 <StyledNoEvents>
                                     <StyledNoPastEventsIllustration />
@@ -341,6 +296,43 @@ const MyEvents = () => {
                                 </StyledNoEvents>
                             )}
                         </EventsWrapper>
+                        {pastEvents?.length > 0 && (
+                            <PaginationEvents>
+                                <PaginationAction
+                                    onClick={
+                                        pastEventsPageIndex !== 1
+                                            ? () => {
+                                                  setPastEventsPageIndex(
+                                                      pastEventsPageIndex - 1
+                                                  );
+                                              }
+                                            : null
+                                    }
+                                    disabled={pastEventsPageIndex === 1}>
+                                    <StyledFilterIcon option="prev" />
+                                    Prev
+                                </PaginationAction>
+                                <PaginationPageCount>{`${pastEventsPageIndex}/${pastEventsPageCount}`}</PaginationPageCount>
+                                <PaginationAction
+                                    onClick={
+                                        pastEventsPageIndex !==
+                                        pastEventsPageCount
+                                            ? () => {
+                                                  setPastEventsPageIndex(
+                                                      pastEventsPageIndex + 1
+                                                  );
+                                              }
+                                            : null
+                                    }
+                                    disabled={
+                                        pastEventsPageIndex ===
+                                        pastEventsPageCount
+                                    }>
+                                    Next
+                                    <StyledFilterIcon option="next" />
+                                </PaginationAction>
+                            </PaginationEvents>
+                        )}
                     </WrapperColumn>
                 )}
             </Layout>

@@ -88,7 +88,7 @@ export default async function handler(
                     },
                     orderBy: [
                         {
-                            date: 'desc',
+                            date: 'asc',
                         },
                     ],
                 });
