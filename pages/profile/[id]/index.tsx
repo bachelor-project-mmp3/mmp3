@@ -28,8 +28,6 @@ const Profile = () => {
     const [isLoading, setLoading] = useState(true);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    console.log(events);
-
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
         if (router.isReady) {
@@ -38,7 +36,6 @@ const Profile = () => {
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    console.log(data);
                     setProfile(data.profile);
                     setEvents(data.profile.events);
                     setPageCount(data.pageCount);

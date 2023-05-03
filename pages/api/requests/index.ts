@@ -63,6 +63,11 @@ export default async function handler(
                                 id: true,
                             },
                         },
+                        reviews: {
+                            include: {
+                                User: true,
+                            },
+                        },
                     },
                 });
 

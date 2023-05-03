@@ -7,7 +7,7 @@ import { getEmailTemplate } from '../../../helper/mailTemplaes';
 // - set event status to over on upcoming events
 // - sends email to host that he should upload an image to event
 // - creates a notification for host to upload an image to event
-// - TODO: review email (later)
+// - review email
 
 export default async function handler(
     req: NextApiRequest,
@@ -42,6 +42,18 @@ export default async function handler(
                     },
                     include: {
                         host: { select: { firstName: true, email: true } },
+                        requests: {
+                            select: {
+                                User: {
+                                    select: {
+                                        email: true,
+                                        firstName: true,
+                                        id: true,
+                                    },
+                                },
+                            },
+                            where: { status: 'ACCEPTED' },
+                        },
                     },
                 });
 
@@ -93,6 +105,41 @@ export default async function handler(
                             message: 'Add a photo now!',
                         },
                     });
+
+                    // review reminder mail and notification
+                    for (const request of event.requests) {
+                        // mail to each guest
+                        const mailData = getEmailTemplate({
+                            hostFirstName: event.host.firstName,
+                            guestName: request.User.firstName,
+                            eventTitle: event.title,
+                            eventId: event.id,
+                            type: 'reviewReminder',
+                        });
+
+                        const mail = {
+                            from: 'studentenfuttermmp3@gmail.com',
+                            to: request.User.email,
+                            ...mailData,
+                        };
+                        transporter.sendMail(mail, function (err, info) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log(info);
+                            }
+                        });
+
+                        // notification for each guest
+                        await prisma.notification.create({
+                            data: {
+                                Event: { connect: { id: event.id } },
+                                User: { connect: { id: request.User.id } },
+                                type: 'EVENT',
+                                message: 'Add a review now!',
+                            },
+                        });
+                    }
                 }
                 res.status(200).json({ statusCode: 200, success: true });
             } else {

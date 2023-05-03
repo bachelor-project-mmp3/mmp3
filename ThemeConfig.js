@@ -51,21 +51,7 @@ export const theme = {
 };
 
 export const GlobalStyles = createGlobalStyle`
-  @font-face {
-    font-family: HankenGrotesk;
-    src: url("/fonts/hanken-grotesk-v5-latin-regular.woff2");
-    format: ("woff2");
-    font-display: swap;
-    font-weight:400;
-  }
-
-  @font-face {
-    font-family: HankenGrotesk;
-    src: url("/fonts/hanken-grotesk-v7-latin-800.woff2");
-    format: ("woff2");
-    font-display: swap;
-    font-weight:800;
-  }
+  
 
   html {
     box-sizing: border-box;

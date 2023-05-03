@@ -36,9 +36,4 @@ const StyledBackButton = styled(GoBackIcon)`
     height: 16px;
     width: 16px;
     stroke-width: 20px;
-
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        height: 24px;
-        width: 24px;
-    }
 `;

@@ -76,7 +76,6 @@ const Request: React.FC<{
     );
 
     const getRequestText = () => {
-        console.log(request.Event.id, 'ID');
         if (userIsHost) {
             if (request.status === 'PENDING') {
                 return `${request.User.firstName} ${request.User.lastName} wants to join `;
