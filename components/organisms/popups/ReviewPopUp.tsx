@@ -35,11 +35,8 @@ const ReviewPopUp: React.FC<ReviewPopUpProps> = ({
     };
 
     const textRatingChanged = (newRating) => {
-        console.log(newRating);
         onChangeReview({ ...currentReviewData, text: newRating });
     };
-
-    console.log('ratingincomponent', currentReviewData);
 
     return (
         <ActionPopUp
