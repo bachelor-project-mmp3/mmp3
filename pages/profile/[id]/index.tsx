@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { Loading } from '../../../components/organisms/Loading';
 import { Header } from '../../../components/organisms/Header';
 import FilterIcon from '../../../public/icons/goBack.svg';
+import Head from 'next/head';
 
 const Profile = () => {
     const { data: session } = useSession();
@@ -39,206 +40,218 @@ const Profile = () => {
                     setProfile(data.profile);
                     setEvents(data.profile.events);
                     setPageCount(data.pageCount);
+                    setLoading(false);
                 });
-            setLoading(false);
         }
     }, [router.isReady, router.query.id, pageIndex]);
 
     if (isLoading) return <Loading />;
-    if (!profile) return <p>No profile</p>;
 
     return (
-        <Layout>
-            <div>
-                {session?.user.userId == profile.id && (
-                    <StyledBurger
-                        onClick={() => setIsMenuOpen(isMenuOpen ? false : true)}
-                    />
-                )}
-                {session?.user.userId !== profile.id && <Header />}
-
-                {isMenuOpen && (
-                    <>
-                        <FakeBlur onClick={() => setIsMenuOpen(false)} />
-                        <MenuMobile>
-                            <NavItemsWrapper>
-                                <StyledNavItem
-                                    href={`/profile/${profile.id}/edit`}>
-                                    Edit Profile
-                                </StyledNavItem>
-                                <StyledLine />
-                                <StyledNavItem href="/privacy">
-                                    Data privacy
-                                </StyledNavItem>
-                                <StyledLine />
-                                <StyledNavItem href="/imprint">
-                                    Imprint
-                                </StyledNavItem>
-                                <StyledLine />
-                                <LogoutWrapper
-                                    onClick={() =>
-                                        signOut({ callbackUrl: '/' })
-                                    }>
-                                    {profile.image && (
-                                        <StyledImageLogout
-                                            src={profile.image}
-                                            alt="Image"
-                                            width="300"
-                                            height="300"
-                                        />
-                                    )}
-                                    <StyledLogout>Logout</StyledLogout>
-                                </LogoutWrapper>
-                                <StyledLine />
-                            </NavItemsWrapper>
-                        </MenuMobile>
-                    </>
-                )}
-                <WrapperRow>
-                    <WrapperColumn>
-                        {profile.image && (
-                            <ProfileImage>
-                                <StyledImage
-                                    src={profile.image}
-                                    alt="Image"
-                                    width="300"
-                                    height="300"
-                                />
-                            </ProfileImage>
-                        )}
-                        <WrapperName>
-                            {profile.instagram && (
-                                <StyledInsta
-                                    onClick={() =>
-                                        window.open(
-                                            `https://www.instagram.com/${profile.instagram}`
-                                        )
-                                    }
-                                />
-                            )}
-                            <StyledName>
-                                {profile.firstName}
-                                <br></br> {profile.lastName}
-                            </StyledName>
-                        </WrapperName>
-
-                        <StyledMember>
-                            member since {getFormattedDate(profile.createdAt)}
-                        </StyledMember>
-                        <InfoWrapper>
-                            <InfoRow>
-                                <StyledLocation />
-                                {profile.id === session?.user?.userId ? (
-                                    <p>
-                                        {profile.dormitory}
-                                        {', No.'}
-                                        {profile.roomNumber}
-                                    </p>
-                                ) : (
-                                    <p>{profile.dormitory}</p>
-                                )}
-                            </InfoRow>
-                            <InfoRow>
-                                <StyledStudy />
-                                <p>{profile.study}</p>
-                            </InfoRow>
-                            {profile.id === session?.user?.userId &&
-                                profile.phone && (
-                                    <InfoRow>
-                                        <StyledPhone />
-                                        <p>{profile.phone}</p>
-                                    </InfoRow>
-                                )}
-                        </InfoWrapper>
-                        {profile.interests && (
-                            <>
-                                <FakeGreenBackgroundWrapper>
-                                    <Card
-                                        width="100%"
-                                        variant="description"
-                                        margin="0px">
-                                        <StyledAboutMeHeadline>
-                                            A little about me
-                                        </StyledAboutMeHeadline>
-                                        <StyledAboutMeText>
-                                            {profile.interests}
-                                        </StyledAboutMeText>
-                                    </Card>
-                                    <FakeGreenBackground />
-                                </FakeGreenBackgroundWrapper>
-                            </>
-                        )}
-
-                        {profile.id === session?.user?.userId && (
-                            <ButtonWrapper>
-                                <Button
-                                    variant="primary"
-                                    onClick={() =>
-                                        router.push(
-                                            `/profile/${profile.id}/edit`
-                                        )
-                                    }>
-                                    Edit profile
-                                </Button>
-                            </ButtonWrapper>
-                        )}
-                    </WrapperColumn>
-                    {events?.length > 0 && (
-                        <WrapperColumn className="top">
-                            <StyledH2>
-                                {profile.firstName}&apos;s hosted events
-                            </StyledH2>
-                            <EventsWrapper>
-                                {events.map((event) => (
-                                    <EventItem key={`hosted-event-${event.id}`}>
-                                        <SmallEventPreview
-                                            title={event.title}
-                                            imageEvent={event.image}
-                                            imageHost={profile.image}
-                                            onClick={() =>
-                                                router.push(
-                                                    `/events/${event.id}`
-                                                )
-                                            }
-                                            date={
-                                                event.date
-                                            }></SmallEventPreview>
-                                    </EventItem>
-                                ))}
-                            </EventsWrapper>
-
-                            <Pagination>
-                                <PaginationAction
-                                    onClick={
-                                        pageIndex !== 1
-                                            ? () => {
-                                                  setPageIndex(pageIndex - 1);
-                                              }
-                                            : null
-                                    }
-                                    disabled={pageIndex === 1}>
-                                    <StyledFilterIcon option="prev" />
-                                    Prev
-                                </PaginationAction>
-                                <PaginationPageCount>{`${pageIndex}/${pageCount}`}</PaginationPageCount>
-                                <PaginationAction
-                                    onClick={
-                                        pageIndex !== pageCount
-                                            ? () => {
-                                                  setPageIndex(pageIndex + 1);
-                                              }
-                                            : null
-                                    }
-                                    disabled={pageIndex === pageCount}>
-                                    Next
-                                    <StyledFilterIcon option="next" />
-                                </PaginationAction>
-                            </Pagination>
-                        </WrapperColumn>
+        <>
+            <Head>
+                <title>{`Studentenfutter - ${profile.firstName} ${profile.lastName}`}</title>
+            </Head>
+            <Layout>
+                <div>
+                    {session?.user.userId == profile.id && (
+                        <StyledBurger
+                            onClick={() =>
+                                setIsMenuOpen(isMenuOpen ? false : true)
+                            }
+                        />
                     )}
-                </WrapperRow>
-            </div>
-        </Layout>
+                    {session?.user.userId !== profile.id && <Header />}
+
+                    {isMenuOpen && (
+                        <>
+                            <FakeBlur onClick={() => setIsMenuOpen(false)} />
+                            <MenuMobile>
+                                <NavItemsWrapper>
+                                    <StyledNavItem
+                                        href={`/profile/${profile.id}/edit`}>
+                                        Edit Profile
+                                    </StyledNavItem>
+                                    <StyledLine />
+                                    <StyledNavItem href="/privacy">
+                                        Data privacy
+                                    </StyledNavItem>
+                                    <StyledLine />
+                                    <StyledNavItem href="/imprint">
+                                        Imprint
+                                    </StyledNavItem>
+                                    <StyledLine />
+                                    <LogoutWrapper
+                                        onClick={() =>
+                                            signOut({ callbackUrl: '/' })
+                                        }>
+                                        {profile.image && (
+                                            <StyledImageLogout
+                                                src={profile.image}
+                                                alt="Image"
+                                                width="300"
+                                                height="300"
+                                            />
+                                        )}
+                                        <StyledLogout>Logout</StyledLogout>
+                                    </LogoutWrapper>
+                                    <StyledLine />
+                                </NavItemsWrapper>
+                            </MenuMobile>
+                        </>
+                    )}
+                    <WrapperRow>
+                        <WrapperColumn>
+                            {profile.image && (
+                                <ProfileImage>
+                                    <StyledImage
+                                        src={profile.image}
+                                        alt="Image"
+                                        width="300"
+                                        height="300"
+                                    />
+                                </ProfileImage>
+                            )}
+                            <WrapperName>
+                                {profile.instagram && (
+                                    <StyledInsta
+                                        onClick={() =>
+                                            window.open(
+                                                `https://www.instagram.com/${profile.instagram}`
+                                            )
+                                        }
+                                    />
+                                )}
+                                <StyledName>
+                                    {profile.firstName}
+                                    <br></br> {profile.lastName}
+                                </StyledName>
+                            </WrapperName>
+
+                            <StyledMember>
+                                member since{' '}
+                                {getFormattedDate(profile.createdAt)}
+                            </StyledMember>
+                            <InfoWrapper>
+                                <InfoRow>
+                                    <StyledLocation />
+                                    {profile.id === session?.user?.userId ? (
+                                        <p>
+                                            {profile.dormitory}
+                                            {', No.'}
+                                            {profile.roomNumber}
+                                        </p>
+                                    ) : (
+                                        <p>{profile.dormitory}</p>
+                                    )}
+                                </InfoRow>
+                                <InfoRow>
+                                    <StyledStudy />
+                                    <p>{profile.study}</p>
+                                </InfoRow>
+                                {profile.id === session?.user?.userId &&
+                                    profile.phone && (
+                                        <InfoRow>
+                                            <StyledPhone />
+                                            <p>{profile.phone}</p>
+                                        </InfoRow>
+                                    )}
+                            </InfoWrapper>
+                            {profile.interests && (
+                                <>
+                                    <FakeGreenBackgroundWrapper>
+                                        <Card
+                                            width="100%"
+                                            variant="description"
+                                            margin="0px">
+                                            <StyledAboutMeHeadline>
+                                                A little about me
+                                            </StyledAboutMeHeadline>
+                                            <StyledAboutMeText>
+                                                {profile.interests}
+                                            </StyledAboutMeText>
+                                        </Card>
+                                        <FakeGreenBackground />
+                                    </FakeGreenBackgroundWrapper>
+                                </>
+                            )}
+
+                            {profile.id === session?.user?.userId && (
+                                <ButtonWrapper>
+                                    <Button
+                                        variant="primary"
+                                        onClick={() =>
+                                            router.push(
+                                                `/profile/${profile.id}/edit`
+                                            )
+                                        }>
+                                        Edit profile
+                                    </Button>
+                                </ButtonWrapper>
+                            )}
+                        </WrapperColumn>
+                        {events?.length > 0 && (
+                            <WrapperColumn className="top">
+                                <StyledH2>
+                                    {profile.firstName}&apos;s hosted events
+                                </StyledH2>
+                                <EventsWrapper>
+                                    {events.map((event) => (
+                                        <EventItem
+                                            key={`hosted-event-${event.id}`}>
+                                            <SmallEventPreview
+                                                title={event.title}
+                                                imageEvent={event.image}
+                                                imageHost={profile.image}
+                                                onClick={() =>
+                                                    router.push(
+                                                        `/events/${event.id}`
+                                                    )
+                                                }
+                                                date={
+                                                    event.date
+                                                }></SmallEventPreview>
+                                        </EventItem>
+                                    ))}
+                                </EventsWrapper>
+
+                                <Pagination>
+                                    <PaginationAction
+                                        onClick={
+                                            pageIndex !== 1
+                                                ? () => {
+                                                      setPageIndex(
+                                                          pageIndex - 1
+                                                      );
+                                                  }
+                                                : null
+                                        }
+                                        disabled={pageIndex === 1}>
+                                        <StyledFilterIcon option="prev" />
+                                        Prev
+                                    </PaginationAction>
+                                    <PaginationPageCount>{`${pageIndex}/${pageCount}`}</PaginationPageCount>
+                                    <PaginationAction
+                                        onClick={
+                                            pageIndex !== pageCount
+                                                ? () => {
+                                                      setPageIndex(
+                                                          pageIndex + 1
+                                                      );
+                                                  }
+                                                : null
+                                        }
+                                        disabled={pageIndex === pageCount}>
+                                        Next
+                                        <StyledFilterIcon option="next" />
+                                    </PaginationAction>
+                                </Pagination>
+                            </WrapperColumn>
+                        )}
+                    </WrapperRow>
+                </div>
+            </Layout>
+        </>
     );
 };
 
