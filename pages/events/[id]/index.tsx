@@ -41,6 +41,7 @@ import Image from 'next/image';
 import Discard from '../../../public/icons/discard.svg';
 import { RequestProps } from '../../../components/organisms/requests/Request';
 import ReviewPopUp from '../../../components/organisms/popups/ReviewPopUp';
+import ReviewListItem from '../../../components/organisms/events/ReviewListItem';
 
 type EventProps = {
     id: string;
@@ -499,19 +500,15 @@ const EventDetail = () => {
                     )}
 
                     {event.reviews?.length > 0 && (
-                        <>
-                            {
-                                // TODO STYLE COMPONENT
-                                event.reviews.map((review, index) => (
-                                    <div key={`reviewItem-${index}`}>
-                                        <p>{review?.User?.image}</p>
-                                        <p>Food {review.dish}</p>
-                                        <p> Environment{review.environment}</p>
-                                        <p>{review.text}</p>
-                                    </div>
-                                ))
-                            }
-                        </>
+                        <Card variant={'description'}>
+                            <StyledHeadings>Reviews</StyledHeadings>
+                            {event.reviews.map((review, index) => (
+                                <ReviewListItem
+                                    key={`reviewItem-${index}`}
+                                    review={review}
+                                />
+                            ))}
+                        </Card>
                     )}
 
                     {event.menu.length > 0 && (
