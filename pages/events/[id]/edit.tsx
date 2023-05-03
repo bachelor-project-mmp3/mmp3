@@ -22,6 +22,7 @@ import { Loading } from '../../../components/organisms/Loading';
 import { Info } from '../../../components/atoms/Info';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { RequestStatus } from '.prisma/client';
 
 type EventProps = {
     id: string;
@@ -65,7 +66,7 @@ type EventProps = {
 
 const schema = yup
     .object({
-        title: yup.string().min(3).required(),
+        title: yup.string().min(1).required(),
         date: yup.string().required(),
         timelimit: yup.string().required(),
         costs: yup.number().positive().min(0).max(99),
@@ -196,7 +197,10 @@ const EditEvent = () => {
         const inputTimelimit = new Date(e);
         const eventDate = new Date(date);
 
-        if (inputTimelimit <= currentDate || inputTimelimit >= eventDate) {
+        if (
+            inputTimelimit <= dateTimePlusOneHourDate ||
+            inputTimelimit >= eventDate
+        ) {
             setError('timelimit', { type: 'min' });
         } else {
             if (errors.timelimit) {
@@ -237,7 +241,8 @@ const EditEvent = () => {
     if (isLoading) return <Loading />;
     return (
         <Layout>
-            <Header backButton>Edit {event.title}</Header>
+            <Header />
+            <StyledHeading>Edit {event.title}</StyledHeading>
             <EventForm onSubmit={handleSubmit(onSubmit)}>
                 <StyledInputWithError>
                     <InputText
@@ -246,7 +251,7 @@ const EditEvent = () => {
                             setTitle(e.target.value);
                             if (
                                 e.target.value.length >= 0 &&
-                                e.target.value.length < 4
+                                e.target.value.length < 2
                             ) {
                                 setError('title', { type: 'min' });
                             } else {
@@ -269,7 +274,7 @@ const EditEvent = () => {
                     )}
                     {errors.title && errors.title.type === 'min' && (
                         <ErrorMessage>
-                            Please enter a title of at least 4 characters
+                            Please enter a title of at least 2 characters
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
@@ -310,8 +315,8 @@ const EditEvent = () => {
                     </InputDateTime>
                     {errors.timelimit && errors.timelimit.type === 'min' && (
                         <ErrorMessage>
-                            Please enter a date and time between today and the
-                            event
+                            Please enter a date and time between an hour from
+                            now and the event
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
@@ -394,7 +399,13 @@ const EditEvent = () => {
                                 setCapacity(e.target.value);
                                 if (isNaN(e.target.value)) {
                                     setError('guests', { type: 'notnumber' });
-                                } else if (e.target.value < 0) {
+                                } else if (
+                                    e.target.value <
+                                    event.requests.filter(
+                                        (x) =>
+                                            x.status === RequestStatus.ACCEPTED
+                                    ).length
+                                ) {
                                     setError('guests', { type: 'min' });
                                 } else if (e.target.value > 99) {
                                     setError('guests', { type: 'max' });
@@ -420,7 +431,16 @@ const EditEvent = () => {
                                 </ErrorMessage>
                             )}
                         {errors.guests && errors.guests.type === 'min' && (
-                            <ErrorMessage>Must be at least 1</ErrorMessage>
+                            <ErrorMessage>
+                                {
+                                    event.requests.filter(
+                                        (x) =>
+                                            x.status === RequestStatus.ACCEPTED
+                                    ).length
+                                }{' '}
+                                people already joined, you can&apos;t set the
+                                number of guests lower.
+                            </ErrorMessage>
                         )}
                         {errors.guests && errors.guests.type === 'max' && (
                             <ErrorMessage>Must be maximum 99</ErrorMessage>
@@ -470,7 +490,7 @@ const EditEvent = () => {
                                         }
                                         value={currentDish.link}
                                         padding="left">
-                                        {"Link for the dish's recipe"}
+                                        Link for the dish&apos;s recipe
                                     </InputUrl>
                                 </StyledInputWithError>
                                 <StyledLinkIcon />
@@ -623,4 +643,15 @@ const StyledMoneyIcon = styled.div`
     @media ${(props) => props.theme.breakpoint.tablet} {
         top: 44px;
     }
+`;
+
+const StyledHeading = styled.h2`
+    font-size: ${({ theme }) => theme.fonts.mobile.headline3};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline3};
+    }
+    font-weight: 800;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    padding: 0 18px;
 `;

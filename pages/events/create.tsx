@@ -25,7 +25,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 const schema = yup
     .object({
-        title: yup.string().min(3).required(),
+        title: yup.string().min(1).required(),
         date: yup.string().required(),
         timelimit: yup.string().required(),
         costs: yup.number().positive().min(0).max(99),
@@ -135,7 +135,10 @@ const CreateEvent = () => {
         const inputTimelimit = new Date(e);
         const eventDate = new Date(date);
 
-        if (inputTimelimit <= currentDate || inputTimelimit >= eventDate) {
+        if (
+            inputTimelimit <= dateTimePlusOneHourDate ||
+            inputTimelimit >= eventDate
+        ) {
             setError('timelimit', { type: 'min' });
         } else {
             if (errors.timelimit) {
@@ -146,6 +149,7 @@ const CreateEvent = () => {
 
     const onSubmit = async () => {
         try {
+            setLoading(true);
             const body = {
                 title,
                 info,
@@ -162,7 +166,7 @@ const CreateEvent = () => {
                 body: JSON.stringify(body),
             });
             const eventId = await res.json();
-
+            setLoading(false);
             router.replace(`/events/${eventId}`);
         } catch (error) {
             console.error('Failed to create event:' + error);
@@ -172,7 +176,8 @@ const CreateEvent = () => {
     if (isLoading) return <Loading />;
     return (
         <Layout>
-            <Header backButton>Create a new Event</Header>
+            <Header />
+            <StyledHeading>Create a new Event</StyledHeading>
             <EventForm onSubmit={handleSubmit(onSubmit)}>
                 <StyledInputWithError>
                     <InputText
@@ -181,7 +186,7 @@ const CreateEvent = () => {
                             setTitle(e.target.value);
                             if (
                                 e.target.value.length >= 0 &&
-                                e.target.value.length < 4
+                                e.target.value.length < 2
                             ) {
                                 setError('title', { type: 'min' });
                             } else {
@@ -204,7 +209,7 @@ const CreateEvent = () => {
                     )}
                     {errors.title && errors.title.type === 'min' && (
                         <ErrorMessage>
-                            Please enter a title of at least 4 characters
+                            Please enter a title of at least 2 characters
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
@@ -217,6 +222,13 @@ const CreateEvent = () => {
                             setValue('date', e?.target?.value);
                             setDate(e?.target?.value);
                             CheckDateInputTime(e?.target?.value);
+                            const newDate = new Date(e?.target?.value);
+                            newDate.setDate(newDate.getDate() - 1);
+                            if (newDate >= dateTimePlusOneHourDate) {
+                                setTimeLimit(formatDateForForm(newDate));
+                            } else {
+                                setTimeLimit(dateTimePlusOneHour);
+                            }
                         }}
                         isInvalid={errors.date ? 'true' : 'false'}
                         required>
@@ -245,8 +257,8 @@ const CreateEvent = () => {
                     </InputDateTime>
                     {errors.timelimit && errors.timelimit.type === 'min' && (
                         <ErrorMessage>
-                            Please enter a date and time between today and the
-                            event
+                            Please enter a date and time between an hour from
+                            now and the event
                         </ErrorMessage>
                     )}
                 </StyledInputWithError>
@@ -546,4 +558,15 @@ const StyledMoneyIcon = styled.div`
     @media ${(props) => props.theme.breakpoint.tablet} {
         top: 44px;
     }
+`;
+
+const StyledHeading = styled.h2`
+    font-size: ${({ theme }) => theme.fonts.mobile.headline3};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        font-size: ${({ theme }) => theme.fonts.normal.headline3};
+    }
+    font-weight: 800;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    padding: 0 18px;
 `;

@@ -70,6 +70,11 @@ export default async function handler(
                                 id: true,
                             },
                         },
+                        reviews: {
+                            include: {
+                                User: true,
+                            },
+                        },
                     },
                 });
                 res.status(200).json({ event: event });
@@ -161,6 +166,11 @@ export default async function handler(
                                             id: true,
                                         },
                                     },
+                                },
+                            },
+                            reviews: {
+                                include: {
+                                    User: true,
                                 },
                             },
                         },
@@ -256,6 +266,11 @@ export default async function handler(
                                     status: true,
                                     userId: true,
                                     id: true,
+                                },
+                            },
+                            reviews: {
+                                include: {
+                                    User: true,
                                 },
                             },
                         },

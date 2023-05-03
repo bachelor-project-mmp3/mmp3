@@ -176,6 +176,15 @@ export default async function handler(
                                 console.log(info);
                             }
                         });
+                        // create notification for guest who got kicked out
+                        await prisma.notification.create({
+                            data: {
+                                User: { connect: { id: request.User.id } },
+                                Event: { connect: { id: request.Event.id } },
+                                type: 'EVENT',
+                                message: `You won't attend this event anymore`,
+                            },
+                        });
                     }
                     // guests leaves event
                     else {
@@ -200,6 +209,19 @@ export default async function handler(
                                 console.log(info);
                             }
                         });
+
+                        // create notification for host that guest left
+                        await prisma.notification.create({
+                            data: {
+                                User: {
+                                    connect: { id: request.Event.authorId },
+                                },
+                                Event: { connect: { id: request.Event.id } },
+                                UserFrom: { connect: { id: request.User.id } },
+                                type: 'EVENT',
+                                message: `${request.User.firstName} left your event`,
+                            },
+                        });
                     }
                 }
 
@@ -222,6 +244,11 @@ export default async function handler(
                                     NOT: { id: String(req.query.id) },
                                 },
                                 include: { User: true },
+                            },
+                            reviews: {
+                                include: {
+                                    User: true,
+                                },
                             },
                         },
                     });
