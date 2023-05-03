@@ -8,4 +8,4 @@ jobs:
         steps:
             - name: Notifications Clearing Cron Job
               run: |
-                  curl --request POST --url "https://mmp3.vercel.app/api/cron/notificationsClearing" --header "Authorization: Bearer ${{ secrets.API_SECRET_KEY }}"
+                  curl --request POST --url "${{ secrets.BASE_URL }}/api/cron/notificationsClearing" --header "Authorization: Bearer ${{ secrets.API_SECRET_KEY }}"

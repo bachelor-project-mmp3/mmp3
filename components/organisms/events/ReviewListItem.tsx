@@ -86,7 +86,6 @@ export default ReviewListItem;
 const Wrapper = styled.div`
     display: flex;
     gap: 10px;
-    margin-top: 25px;
 
     @media ${(props) => props.theme.breakpoint.desktop} {
         gap: 20px;
@@ -125,7 +124,7 @@ const ReviewCategory = styled.div`
 `;
 
 const Text = styled.div`
-    margin-top: 10px;
+    margin-top: 25px;
 `;
 
 const StarsMobile = styled.div`

@@ -553,12 +553,14 @@ const EventDetail = () => {
                             <StyledSectionHeadings>
                                 Reviews
                             </StyledSectionHeadings>
-                            {event.reviews.map((review, index) => (
-                                <ReviewListItem
-                                    key={`reviewItem-${index}`}
-                                    review={review}
-                                />
-                            ))}
+                            <ReviewList>
+                                {event.reviews.map((review, index) => (
+                                    <ReviewListItem
+                                        key={`reviewItem-${index}`}
+                                        review={review}
+                                    />
+                                ))}
+                            </ReviewList>
                         </Card>
                     )}
 
@@ -880,4 +882,10 @@ const StarsMobile = styled.div`
     @media ${(props) => props.theme.breakpoint.tablet} {
         display: none;
     }
+`;
+
+const ReviewList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 `;
