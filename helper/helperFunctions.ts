@@ -10,7 +10,7 @@ export const getFormattedDate = (date: string) => {
 
 export const getFormattedTime = (date: string) => {
     const convertedDate = new Date(date);
-    const time = convertedDate.toLocaleTimeString();
+    const time = convertedDate.toLocaleTimeString('de-AT');
 
     const timeArray = time.split(':');
     const amPm = Number(timeArray[0]) <= 12 ? ' AM' : ' PM';
