@@ -12,6 +12,7 @@ import ActionPopUp from '../../components/organisms/popups/ActionPopUp';
 import { useSession } from 'next-auth/react';
 import NoRequestsImage from '../../public/images/no requests.svg';
 import styled from 'styled-components';
+import Head from 'next/head';
 
 const Requests = () => {
     const { data: session } = useSession();
@@ -105,6 +106,9 @@ const Requests = () => {
 
     return (
         <>
+            <Head>
+                <title>{`Studentenfutter - Requests`}</title>
+            </Head>
             {showInfoPopOpOnAcceptOrDecline && (
                 <InfoPopUp
                     onClose={() =>

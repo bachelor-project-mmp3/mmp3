@@ -23,6 +23,7 @@ import { Info } from '../../../components/atoms/Info';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { RequestStatus } from '.prisma/client';
+import Head from 'next/head';
 
 type EventProps = {
     id: string;
@@ -240,311 +241,332 @@ const EditEvent = () => {
 
     if (isLoading) return <Loading />;
     return (
-        <Layout>
-            <Header />
-            <StyledHeading>Edit {event.title}</StyledHeading>
-            <EventForm onSubmit={handleSubmit(onSubmit)}>
-                <StyledInputWithError>
-                    <InputText
-                        onChange={(e) => {
-                            setValue('title', e.target.value);
-                            setTitle(e.target.value);
-                            if (
-                                e.target.value.length >= 0 &&
-                                e.target.value.length < 2
-                            ) {
-                                setError('title', { type: 'min' });
-                            } else {
-                                if (errors.title) {
-                                    clearErrors('title');
-                                }
-                            }
-                        }}
-                        id="title"
-                        placeholder={event.title}
-                        value={title}
-                        isInvalid={errors.title ? 'true' : 'false'}
-                        required>
-                        Title*
-                    </InputText>
-                    {errors.title && errors.title.type === 'required' && (
-                        <ErrorMessage>
-                            Please enter a title of the event
-                        </ErrorMessage>
-                    )}
-                    {errors.title && errors.title.type === 'min' && (
-                        <ErrorMessage>
-                            Please enter a title of at least 2 characters
-                        </ErrorMessage>
-                    )}
-                </StyledInputWithError>
-                <StyledInputWithError>
-                    <InputDateTime
-                        id="date"
-                        value={date}
-                        min={dateTimeNow}
-                        onChange={(e) => {
-                            setValue('date', e?.target?.value);
-                            setDate(e?.target?.value);
-                            CheckDateInputTime(e?.target?.value);
-                        }}
-                        isInvalid={errors.date ? 'true' : 'false'}
-                        required>
-                        Date and time*
-                    </InputDateTime>
-                    {errors.date && errors.date.type === 'min' && (
-                        <ErrorMessage>
-                            Please enter a date in the future
-                        </ErrorMessage>
-                    )}
-                </StyledInputWithError>
-                <StyledInputWithError>
-                    <InputDateTime
-                        id="timelimit"
-                        value={timeLimit}
-                        min={dateTimePlusOneHour}
-                        max={date}
-                        onChange={(e) => {
-                            setValue('timelimit', e.target.value);
-                            setTimeLimit(e?.target?.value);
-                            CheckTimelimitInputTime(e?.target?.value);
-                        }}
-                        isInvalid={errors.timelimit ? 'true' : 'false'}
-                        required>
-                        Time limit to receive join requests until*
-                    </InputDateTime>
-                    {errors.timelimit && errors.timelimit.type === 'min' && (
-                        <ErrorMessage>
-                            Please enter a date and time between an hour from
-                            now and the event
-                        </ErrorMessage>
-                    )}
-                </StyledInputWithError>
-                <StyledFormComponentsInRow>
-                    <StyledInputWithError className="small">
-                        <InputText
-                            id=""
-                            placeholder={event.host.dormitory}
-                            value={event.host.dormitory}
-                            disabled={true}>
-                            Dormitory
-                        </InputText>
-                    </StyledInputWithError>
-                    <StyledInputWithError className="small">
-                        <InputText
-                            id=""
-                            placeholder={event.host.roomNumber}
-                            value={event.host.roomNumber}
-                            disabled={true}>
-                            Roomnumber
-                        </InputText>
-                    </StyledInputWithError>
-                </StyledFormComponentsInRow>
+        <>
+            <Head>
+                <title>{`Studentenfutter - Edit ${event.title}`}</title>
+            </Head>
 
-                <StyledInfo>
-                    <StyledInfo>
-                        <Info>
-                            The exact location will only be shared with guests
-                        </Info>
-                    </StyledInfo>
-                </StyledInfo>
-                <StyledFormComponentsInRow>
-                    <StyledInputWithError className="small">
-                        <InputNumber
-                            id="costs"
-                            placeholder={event.costs.toString()}
-                            step="0.01"
-                            min="0"
-                            value={costs}
+            <Layout>
+                <Header />
+                <StyledHeading>Edit {event.title}</StyledHeading>
+                <EventForm onSubmit={handleSubmit(onSubmit)}>
+                    <StyledInputWithError>
+                        <InputText
                             onChange={(e) => {
-                                setValue('costs', e.target.value);
-                                setCosts(e.target.value);
-                                if (isNaN(e.target.value)) {
-                                    setError('costs', { type: 'notnumber' });
-                                } else if (e.target.value < 0) {
-                                    setError('costs', { type: 'min' });
-                                } else if (e.target.value > 99) {
-                                    setError('costs', { type: 'max' });
+                                setValue('title', e.target.value);
+                                setTitle(e.target.value);
+                                if (
+                                    e.target.value.length >= 0 &&
+                                    e.target.value.length < 2
+                                ) {
+                                    setError('title', { type: 'min' });
                                 } else {
-                                    if (errors.costs) {
-                                        clearErrors('costs');
+                                    if (errors.title) {
+                                        clearErrors('title');
                                     }
                                 }
                             }}
-                            isInvalid={errors.costs ? 'true' : 'false'}
-                            padding="left">
-                            Costs per person
-                        </InputNumber>
-                        {errors.costs && errors.costs.type === 'notnumber' && (
-                            <ErrorMessage>You must enter a number</ErrorMessage>
-                        )}
-                        {errors.costs && errors.costs.type === 'max' && (
-                            <ErrorMessage>Must be maximum 99</ErrorMessage>
-                        )}
-                        {errors.costs && errors.costs.type === 'min' && (
+                            id="title"
+                            placeholder={event.title}
+                            value={title}
+                            isInvalid={errors.title ? 'true' : 'false'}
+                            required>
+                            Title*
+                        </InputText>
+                        {errors.title && errors.title.type === 'required' && (
                             <ErrorMessage>
-                                Cannot be a negative amount
+                                Please enter a title of the event
+                            </ErrorMessage>
+                        )}
+                        {errors.title && errors.title.type === 'min' && (
+                            <ErrorMessage>
+                                Please enter a title of at least 2 characters
                             </ErrorMessage>
                         )}
                     </StyledInputWithError>
-                    <StyledMoneyIcon> &#8364;</StyledMoneyIcon>
-                    <StyledInputWithError className="small">
-                        <InputNumber
-                            id="guests"
-                            placeholder={event.capacity.toString()}
-                            min="0"
-                            value={capacity}
+                    <StyledInputWithError>
+                        <InputDateTime
+                            id="date"
+                            value={date}
+                            min={dateTimeNow}
                             onChange={(e) => {
-                                setValue('guests', e.target.value);
-                                setCapacity(e.target.value);
-                                if (isNaN(e.target.value)) {
-                                    setError('guests', { type: 'notnumber' });
-                                } else if (
-                                    e.target.value <
-                                    event.requests.filter(
-                                        (x) =>
-                                            x.status === RequestStatus.ACCEPTED
-                                    ).length
-                                ) {
-                                    setError('guests', { type: 'min' });
-                                } else if (e.target.value > 99) {
-                                    setError('guests', { type: 'max' });
-                                } else {
-                                    if (errors.guests) {
-                                        clearErrors('guests');
-                                    }
-                                }
+                                setValue('date', e?.target?.value);
+                                setDate(e?.target?.value);
+                                CheckDateInputTime(e?.target?.value);
                             }}
-                            isInvalid={errors.guests ? 'true' : 'false'}
+                            isInvalid={errors.date ? 'true' : 'false'}
                             required>
-                            Guests*
-                        </InputNumber>
-                        {errors.guests && errors.guests.type === 'required' && (
+                            Date and time*
+                        </InputDateTime>
+                        {errors.date && errors.date.type === 'min' && (
                             <ErrorMessage>
-                                Please enter the number of guests
+                                Please enter a date in the future
                             </ErrorMessage>
                         )}
-                        {errors.guests &&
-                            errors.guests.type === 'notnumber' && (
+                    </StyledInputWithError>
+                    <StyledInputWithError>
+                        <InputDateTime
+                            id="timelimit"
+                            value={timeLimit}
+                            min={dateTimePlusOneHour}
+                            max={date}
+                            onChange={(e) => {
+                                setValue('timelimit', e.target.value);
+                                setTimeLimit(e?.target?.value);
+                                CheckTimelimitInputTime(e?.target?.value);
+                            }}
+                            isInvalid={errors.timelimit ? 'true' : 'false'}
+                            required>
+                            Time limit to receive join requests until*
+                        </InputDateTime>
+                        {errors.timelimit &&
+                            errors.timelimit.type === 'min' && (
                                 <ErrorMessage>
-                                    You must enter a number
+                                    Please enter a date and time between an hour
+                                    from now and the event
                                 </ErrorMessage>
                             )}
-                        {errors.guests && errors.guests.type === 'min' && (
-                            <ErrorMessage>
-                                {
-                                    event.requests.filter(
-                                        (x) =>
-                                            x.status === RequestStatus.ACCEPTED
-                                    ).length
-                                }{' '}
-                                people already joined, you can&apos;t set the
-                                number of guests lower.
-                            </ErrorMessage>
-                        )}
-                        {errors.guests && errors.guests.type === 'max' && (
-                            <ErrorMessage>Must be maximum 99</ErrorMessage>
-                        )}
                     </StyledInputWithError>
-                </StyledFormComponentsInRow>
-                <StyledInputWithError>
-                    <InputTextarea
-                        id="information"
-                        cols={50}
-                        rows={8}
-                        placeholder={
-                            event.info
-                                ? event.info
-                                : 'Write a little bit about your event plans'
-                        }
-                        value={info}
-                        onChange={(e) => setInfo(e.target.value)}>
-                        Short information
-                    </InputTextarea>
-                </StyledInputWithError>
-                <StyledMenuInput>
-                    <StyledH2>Add your menu</StyledH2>
-                    {dishes.map((currentDish, i) => {
-                        return (
-                            <StyledMenuInputItem key={`styledmenuinput-${i}`}>
-                                <StyledInputWithError>
-                                    <InputText
-                                        onChange={(e) => handleChange(e, i)}
-                                        id="title"
-                                        placeholder={currentDish.title}
-                                        minLength={3}
-                                        value={currentDish.title}
-                                        padding="right"
-                                        required={true}>
-                                        Name of the dish*
-                                    </InputText>
-                                </StyledInputWithError>
-                                <StyledInputWithError>
-                                    <InputUrl
-                                        onChange={(e) => handleChange(e, i)}
-                                        id="link"
-                                        placeholder={
-                                            currentDish.link
-                                                ? currentDish.link
-                                                : 'https://www.google.at'
-                                        }
-                                        value={currentDish.link}
-                                        padding="left">
-                                        Link for the dish&apos;s recipe
-                                    </InputUrl>
-                                </StyledInputWithError>
-                                <StyledLinkIcon />
-                                <StyledInputWithError>
-                                    <InputTextarea
-                                        id="description"
-                                        cols={50}
-                                        rows={5}
-                                        placeholder={
-                                            currentDish.description
-                                                ? currentDish.description
-                                                : 'Add any information about the dish'
-                                        }
-                                        value={currentDish.description}
-                                        onChange={(e) => handleChange(e, i)}>
-                                        Short information
-                                    </InputTextarea>
-                                </StyledInputWithError>
-                                <StyledHR />
-                                <div>
-                                    {dishes.length - 1 === i && (
-                                        <StyledAddButton
-                                            onClick={handleAddClick}>
-                                            <StyledAddDish />
-                                            <div>Add another dish</div>
-                                        </StyledAddButton>
-                                    )}
-                                </div>
-                                {dishes.length !== 1 && (
-                                    <StyledDeleteButton
-                                        onClick={() => handleRemoveClick(i)}
-                                    />
-                                )}
-                            </StyledMenuInputItem>
-                        );
-                    })}
                     <StyledFormComponentsInRow>
-                        <Button
-                            variant="red"
-                            onClick={() => router.replace(`/events`)}
-                            width={45}>
-                            Cancel
-                        </Button>
-                        {Object.keys(errors).length !== 0 ? (
-                            <Button variant={'primary'} width={45} disabled>
-                                Create event
-                            </Button>
-                        ) : (
-                            <SubmitButton value="Save changes"></SubmitButton>
-                        )}
+                        <StyledInputWithError className="small">
+                            <InputText
+                                id=""
+                                placeholder={event.host.dormitory}
+                                value={event.host.dormitory}
+                                disabled={true}>
+                                Dormitory
+                            </InputText>
+                        </StyledInputWithError>
+                        <StyledInputWithError className="small">
+                            <InputText
+                                id=""
+                                placeholder={event.host.roomNumber}
+                                value={event.host.roomNumber}
+                                disabled={true}>
+                                Roomnumber
+                            </InputText>
+                        </StyledInputWithError>
                     </StyledFormComponentsInRow>
-                </StyledMenuInput>
-            </EventForm>
-        </Layout>
+
+                    <StyledInfo>
+                        <StyledInfo>
+                            <Info>
+                                The exact location will only be shared with
+                                guests
+                            </Info>
+                        </StyledInfo>
+                    </StyledInfo>
+                    <StyledFormComponentsInRow>
+                        <StyledInputWithError className="small">
+                            <InputNumber
+                                id="costs"
+                                placeholder={event.costs.toString()}
+                                step="0.01"
+                                min="0"
+                                value={costs}
+                                onChange={(e) => {
+                                    setValue('costs', e.target.value);
+                                    setCosts(e.target.value);
+                                    if (isNaN(e.target.value)) {
+                                        setError('costs', {
+                                            type: 'notnumber',
+                                        });
+                                    } else if (e.target.value < 0) {
+                                        setError('costs', { type: 'min' });
+                                    } else if (e.target.value > 99) {
+                                        setError('costs', { type: 'max' });
+                                    } else {
+                                        if (errors.costs) {
+                                            clearErrors('costs');
+                                        }
+                                    }
+                                }}
+                                isInvalid={errors.costs ? 'true' : 'false'}
+                                padding="left">
+                                Costs per person
+                            </InputNumber>
+                            {errors.costs &&
+                                errors.costs.type === 'notnumber' && (
+                                    <ErrorMessage>
+                                        You must enter a number
+                                    </ErrorMessage>
+                                )}
+                            {errors.costs && errors.costs.type === 'max' && (
+                                <ErrorMessage>Must be maximum 99</ErrorMessage>
+                            )}
+                            {errors.costs && errors.costs.type === 'min' && (
+                                <ErrorMessage>
+                                    Cannot be a negative amount
+                                </ErrorMessage>
+                            )}
+                        </StyledInputWithError>
+                        <StyledMoneyIcon> &#8364;</StyledMoneyIcon>
+                        <StyledInputWithError className="small">
+                            <InputNumber
+                                id="guests"
+                                placeholder={event.capacity.toString()}
+                                min="0"
+                                value={capacity}
+                                onChange={(e) => {
+                                    setValue('guests', e.target.value);
+                                    setCapacity(e.target.value);
+                                    if (isNaN(e.target.value)) {
+                                        setError('guests', {
+                                            type: 'notnumber',
+                                        });
+                                    } else if (
+                                        e.target.value <
+                                        event.requests.filter(
+                                            (x) =>
+                                                x.status ===
+                                                RequestStatus.ACCEPTED
+                                        ).length
+                                    ) {
+                                        setError('guests', { type: 'min' });
+                                    } else if (e.target.value > 99) {
+                                        setError('guests', { type: 'max' });
+                                    } else {
+                                        if (errors.guests) {
+                                            clearErrors('guests');
+                                        }
+                                    }
+                                }}
+                                isInvalid={errors.guests ? 'true' : 'false'}
+                                required>
+                                Guests*
+                            </InputNumber>
+                            {errors.guests &&
+                                errors.guests.type === 'required' && (
+                                    <ErrorMessage>
+                                        Please enter the number of guests
+                                    </ErrorMessage>
+                                )}
+                            {errors.guests &&
+                                errors.guests.type === 'notnumber' && (
+                                    <ErrorMessage>
+                                        You must enter a number
+                                    </ErrorMessage>
+                                )}
+                            {errors.guests && errors.guests.type === 'min' && (
+                                <ErrorMessage>
+                                    {
+                                        event.requests.filter(
+                                            (x) =>
+                                                x.status ===
+                                                RequestStatus.ACCEPTED
+                                        ).length
+                                    }{' '}
+                                    people already joined, you can&apos;t set
+                                    the number of guests lower.
+                                </ErrorMessage>
+                            )}
+                            {errors.guests && errors.guests.type === 'max' && (
+                                <ErrorMessage>Must be maximum 99</ErrorMessage>
+                            )}
+                        </StyledInputWithError>
+                    </StyledFormComponentsInRow>
+                    <StyledInputWithError>
+                        <InputTextarea
+                            id="information"
+                            cols={50}
+                            rows={8}
+                            placeholder={
+                                event.info
+                                    ? event.info
+                                    : 'Write a little bit about your event plans'
+                            }
+                            value={info}
+                            onChange={(e) => setInfo(e.target.value)}>
+                            Short information
+                        </InputTextarea>
+                    </StyledInputWithError>
+                    <StyledMenuInput>
+                        <StyledH2>Add your menu</StyledH2>
+                        {dishes.map((currentDish, i) => {
+                            return (
+                                <StyledMenuInputItem
+                                    key={`styledmenuinput-${i}`}>
+                                    <StyledInputWithError>
+                                        <InputText
+                                            onChange={(e) => handleChange(e, i)}
+                                            id="title"
+                                            placeholder={currentDish.title}
+                                            minLength={3}
+                                            value={currentDish.title}
+                                            padding="right"
+                                            required={true}>
+                                            Name of the dish*
+                                        </InputText>
+                                    </StyledInputWithError>
+                                    <StyledInputWithError>
+                                        <InputUrl
+                                            onChange={(e) => handleChange(e, i)}
+                                            id="link"
+                                            placeholder={
+                                                currentDish.link
+                                                    ? currentDish.link
+                                                    : 'https://www.google.at'
+                                            }
+                                            value={currentDish.link}
+                                            padding="left">
+                                            Link for the dish&apos;s recipe
+                                        </InputUrl>
+                                    </StyledInputWithError>
+                                    <StyledLinkIcon />
+                                    <StyledInputWithError>
+                                        <InputTextarea
+                                            id="description"
+                                            cols={50}
+                                            rows={5}
+                                            placeholder={
+                                                currentDish.description
+                                                    ? currentDish.description
+                                                    : 'Add any information about the dish'
+                                            }
+                                            value={currentDish.description}
+                                            onChange={(e) =>
+                                                handleChange(e, i)
+                                            }>
+                                            Short information
+                                        </InputTextarea>
+                                    </StyledInputWithError>
+                                    <StyledHR />
+                                    <div>
+                                        {dishes.length - 1 === i && (
+                                            <StyledAddButton
+                                                onClick={handleAddClick}>
+                                                <StyledAddDish />
+                                                <div>Add another dish</div>
+                                            </StyledAddButton>
+                                        )}
+                                    </div>
+                                    {dishes.length !== 1 && (
+                                        <StyledDeleteButton
+                                            onClick={() => handleRemoveClick(i)}
+                                        />
+                                    )}
+                                </StyledMenuInputItem>
+                            );
+                        })}
+                        <StyledFormComponentsInRow>
+                            <Button
+                                variant="red"
+                                onClick={() => router.replace(`/events`)}
+                                width={45}>
+                                Cancel
+                            </Button>
+                            {Object.keys(errors).length !== 0 ? (
+                                <Button variant={'primary'} width={45} disabled>
+                                    Create event
+                                </Button>
+                            ) : (
+                                <SubmitButton value="Save changes"></SubmitButton>
+                            )}
+                        </StyledFormComponentsInRow>
+                    </StyledMenuInput>
+                </EventForm>
+            </Layout>
+        </>
     );
 };
 

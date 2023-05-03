@@ -44,6 +44,7 @@ import { RequestProps } from '../../../components/organisms/requests/Request';
 import ReviewPopUp from '../../../components/organisms/popups/ReviewPopUp';
 import ReviewListItem from '../../../components/organisms/events/ReviewListItem';
 import ReactStars from 'react-stars';
+import Head from 'next/head';
 
 type EventProps = {
     id: string;
@@ -343,6 +344,10 @@ const EventDetail = () => {
 
     return (
         <>
+            <Head>
+                <title>{`Studentenfutter - ${event.title}`}</title>
+            </Head>
+
             {showInfoPopUpOnJoin && (
                 <InfoPopUp onClose={() => setShowInfoPopUpOnJoin(false)}>
                     Your Request to join <strong>{event.title}</strong> was

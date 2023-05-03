@@ -4,15 +4,21 @@ import { Header } from '../../components/organisms/Header';
 import { ProfileForm } from '../../components/organisms/forms/ProfileForm';
 import Walkthrough from '../../components/organisms/Walkthrough';
 import styled from 'styled-components';
+import Head from 'next/head';
 
 const CreateProfile = () => {
     return (
-        <Layout>
-            <Walkthrough />
-            <Header />
-            <StyledHeading>Complete your profile</StyledHeading>
-            <ProfileForm />
-        </Layout>
+        <>
+            <Head>
+                <title>{`Studentenfutter - Complete your profile`}</title>
+            </Head>
+            <Layout>
+                <Walkthrough />
+                <Header />
+                <StyledHeading>Complete your profile</StyledHeading>
+                <ProfileForm />
+            </Layout>
+        </>
     );
 };
 

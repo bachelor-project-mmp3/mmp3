@@ -3,14 +3,20 @@ import Layout from '../../../components/Layout';
 import { ProfileForm } from '../../../components/organisms/forms/ProfileForm';
 import { Header } from '../../../components/organisms/Header';
 import styled from 'styled-components';
+import Head from 'next/head';
 
 const Profile = () => {
     return (
-        <Layout>
-            <Header />
-            <StyledHeading>Edit profile</StyledHeading>
-            <ProfileForm cancelButton />
-        </Layout>
+        <>
+            <Head>
+                <title>{`Studentenfutter - Edit profile`}</title>
+            </Head>
+            <Layout>
+                <Header />
+                <StyledHeading>Edit profile</StyledHeading>
+                <ProfileForm cancelButton />
+            </Layout>
+        </>
     );
 };
 

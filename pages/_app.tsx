@@ -42,6 +42,7 @@ const App = ({
                             name="msapplication-TileColor"
                             content="#da532c"
                         />
+                        <title>{'Studentenfutter'}</title>
                         <meta name="theme-color" content="#ffffff" />
                         <style>{`
                         @font-face {
