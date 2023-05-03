@@ -9,6 +9,7 @@ interface InputTextProps {
     onChange?: (e: any) => void;
     children?: ReactNode;
     minLength?: 3;
+    maxLength?: number;
     required?: boolean;
     isInvalid?: string;
     variant?: 'center' | 'right';
@@ -21,6 +22,7 @@ export const InputText = ({
     placeholder,
     value,
     minLength,
+    maxLength,
     required,
     onChange,
     isInvalid,
@@ -41,6 +43,7 @@ export const InputText = ({
                 placeholder={placeholder}
                 value={value}
                 minLength={minLength}
+                maxLength={maxLength}
                 isInvalid={isInvalid}
                 required={required}
                 onChange={onChange}
