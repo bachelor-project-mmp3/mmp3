@@ -20,6 +20,22 @@ export const userHasSentReview = (event, session) => {
     );
 };
 
+export const getOverallRating = (reviews: { total: number }[]) => {
+    if (reviews?.length > 0) {
+        // round to half for star rating
+        return (
+            Math.round(
+                (reviews
+                    .map((review) => review.total)
+                    .reduce((prev, next) => prev + next) /
+                    reviews.length) *
+                    2
+            ) / 2
+        );
+    }
+    return null;
+};
+
 export const hasUserSendRequestHelper = (requests, session) => {
     return requests.find((request) => request.userId === session?.user?.userId);
 };

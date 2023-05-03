@@ -72,7 +72,7 @@ const ReviewListItem: React.FC<ReviewItemProps> = ({ review }) => {
                                 edit={false}
                             />
                         </StarsDesktop>
-                        <span>Environment</span>
+                        <span>Atmosphere</span>
                     </ReviewCategory>
                 </ReviewStarsWrapper>
                 <Text>{review.text}</Text>

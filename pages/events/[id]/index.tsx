@@ -24,6 +24,7 @@ import MenuItem from '../../../components/organisms/events/MenuItem';
 import GuestListItem from '../../../components/organisms/events/GuestListItem';
 import { EventStatus, RequestStatus } from '.prisma/client';
 import {
+    getOverallRating,
     hasUserSendRequestHelper,
     hostNameHelper,
     isRequestAcceptedHelper,
@@ -42,6 +43,7 @@ import Discard from '../../../public/icons/discard.svg';
 import { RequestProps } from '../../../components/organisms/requests/Request';
 import ReviewPopUp from '../../../components/organisms/popups/ReviewPopUp';
 import ReviewListItem from '../../../components/organisms/events/ReviewListItem';
+import ReactStars from 'react-stars';
 
 type EventProps = {
     id: string;
@@ -111,6 +113,8 @@ const EventDetail = () => {
         hospitality: number;
         text: string;
     }>({ food: 0, hospitality: 0, text: '' });
+
+    const overAllRating = getOverallRating(event?.reviews);
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
@@ -420,6 +424,28 @@ const EventDetail = () => {
                     <StyledInfoWrapper>
                         <Header />
                         <StyledHeading>{event.title}</StyledHeading>
+                        {event.reviews.length > 0 && (
+                            <EventRating>
+                                <StarsMobile>
+                                    <ReactStars
+                                        count={5}
+                                        size={25}
+                                        color2={'#ffd700'}
+                                        value={overAllRating}
+                                        edit={false}
+                                    />
+                                </StarsMobile>
+                                <StarsDesktop>
+                                    <ReactStars
+                                        count={5}
+                                        size={35}
+                                        color2={'#ffd700'}
+                                        value={overAllRating}
+                                        edit={false}
+                                    />
+                                </StarsDesktop>
+                            </EventRating>
+                        )}
 
                         <StyledInfoEventDetails>
                             <StyledInfoEventDetailsBoxes>
@@ -524,7 +550,9 @@ const EventDetail = () => {
 
                     {event.reviews?.length > 0 && (
                         <Card variant={'description'}>
-                            <StyledHeadings>Reviews</StyledHeadings>
+                            <StyledSectionHeadings>
+                                Reviews
+                            </StyledSectionHeadings>
                             {event.reviews.map((review, index) => (
                                 <ReviewListItem
                                     key={`reviewItem-${index}`}
@@ -815,8 +843,8 @@ const StyledHeading = styled.h2`
         font-size: ${({ theme }) => theme.fonts.normal.headline3};
     }
     font-weight: 800;
-    margin-bottom: 10px;
     margin-top: 30px;
+    margin-bottom: 0;
     padding: 0 40px;
 `;
 
@@ -829,6 +857,26 @@ const StyledInfoEventDetailsBoxesDesktop = styled.div`
 
 const StyledInfoEventDetailsBoxesMobile = styled.div`
     display: initial;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        display: none;
+    }
+`;
+
+const EventRating = styled.div`
+    padding-left: 40px;
+`;
+
+const StarsDesktop = styled.div`
+    display: none;
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        display: block;
+    }
+`;
+
+const StarsMobile = styled.div`
+    display: block;
+
     @media ${(props) => props.theme.breakpoint.tablet} {
         display: none;
     }
