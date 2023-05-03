@@ -89,8 +89,11 @@ const Navbar = styled.div`
     display: flex;
     justify-content: center;
     padding-top: 30px;
+    height: 20vh;
+    position: relative;
     @media ${(props) => props.theme.breakpoint.tablet} {
-        justify-content: space-between;
+        height: 10vh;
+        justify-content: flex-end;
         padding: 30px 60px 0px 60px;
     }
 `;
@@ -109,8 +112,10 @@ const StyledLog = styled.p`
 `;
 
 const StyledLogo = styled(Logo)`
-    width: 250px;
+    width: 200px;
     @media ${(props) => props.theme.breakpoint.tablet} {
+        position: absolute;
+        left: 60px;
         width: 300px;
     }
 `;
@@ -127,7 +132,10 @@ const WrapperContent = styled.div`
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    height: 90vh;
+    height: 80vh;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        height: 90vh;
+    }
 `;
 
 const WrapperContentItem = styled.div`
