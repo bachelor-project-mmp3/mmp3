@@ -61,9 +61,6 @@ export const formatDateForDateInput = (input: number) => {
 };
 
 export const formatDateForForm = (date: Date) => {
-    const timeArray = date.toLocaleTimeString().substring(0, 5).split(':');
-    const checkAMPM =
-        timeArray[2] == 'AM' ? timeArray[0] : Number(timeArray[0]) + 12;
     return (
         date.getFullYear() +
         '-' +
@@ -71,8 +68,6 @@ export const formatDateForForm = (date: Date) => {
         '-' +
         formatDateForDateInput(date.getDate()) +
         'T' +
-        formatDateForDateInput(Number(checkAMPM)) +
-        ':' +
-        formatDateForDateInput(Number(timeArray[1]))
+        date.toLocaleTimeString().substring(0, 5)
     );
 };

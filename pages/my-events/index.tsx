@@ -18,6 +18,7 @@ import 'swiper/css/pagination';
 import NoPastEventsIllustration from '../../public/images/no_past_events.svg';
 import NoUpcomingEventsIllustration from '../../public/images/no_upcoming_events.svg';
 import FilterIcon from '../../public/icons/goBack.svg';
+import Head from 'next/head';
 
 const MyEvents = () => {
     const router = useRouter();
@@ -118,6 +119,9 @@ const MyEvents = () => {
 
     return (
         <>
+            <Head>
+                <title>{`Studentenfutter - My events`}</title>
+            </Head>
             {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
                     You left the event.

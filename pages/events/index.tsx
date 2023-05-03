@@ -14,6 +14,7 @@ import FilterIcon from '../../public/icons/goBack.svg';
 import SortByDate, {
     sortOptions,
 } from '../../components/organisms/filter/SortByDate';
+import Head from 'next/head';
 
 const Events = () => {
     const [events, setEvents] = useState(null);
@@ -208,6 +209,9 @@ const Events = () => {
 
     return (
         <>
+            <Head>
+                <title>{'Studentenfutter - Events feed'}</title>
+            </Head>
             {showInfoPopOpOnJoin && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnJoin(undefined)}>
                     Your Request to join <strong>{showInfoPopOpOnJoin}</strong>{' '}

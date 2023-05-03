@@ -44,6 +44,7 @@ import { RequestProps } from '../../../components/organisms/requests/Request';
 import ReviewPopUp from '../../../components/organisms/popups/ReviewPopUp';
 import ReviewListItem from '../../../components/organisms/events/ReviewListItem';
 import ReactStars from 'react-stars';
+import Head from 'next/head';
 
 type EventProps = {
     id: string;
@@ -343,6 +344,10 @@ const EventDetail = () => {
 
     return (
         <>
+            <Head>
+                <title>{`Studentenfutter - ${event.title}`}</title>
+            </Head>
+
             {showInfoPopUpOnJoin && (
                 <InfoPopUp onClose={() => setShowInfoPopUpOnJoin(false)}>
                     Your Request to join <strong>{event.title}</strong> was
@@ -553,12 +558,14 @@ const EventDetail = () => {
                             <StyledSectionHeadings>
                                 Reviews
                             </StyledSectionHeadings>
-                            {event.reviews.map((review, index) => (
-                                <ReviewListItem
-                                    key={`reviewItem-${index}`}
-                                    review={review}
-                                />
-                            ))}
+                            <ReviewList>
+                                {event.reviews.map((review, index) => (
+                                    <ReviewListItem
+                                        key={`reviewItem-${index}`}
+                                        review={review}
+                                    />
+                                ))}
+                            </ReviewList>
                         </Card>
                     )}
 
@@ -880,4 +887,10 @@ const StarsMobile = styled.div`
     @media ${(props) => props.theme.breakpoint.tablet} {
         display: none;
     }
+`;
+
+const ReviewList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 `;
