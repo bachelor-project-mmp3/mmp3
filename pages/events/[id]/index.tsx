@@ -474,7 +474,7 @@ const EventDetail = () => {
                         )}
 
                         <StyledInfoEventDetails>
-                            <StyledInfoEventDetailsBoxes>
+                            <StyledInfoEventDetailsBoxes textAlign="start">
                                 {new Date() < new Date(event.date) &&
                                     (event.status === EventStatus.CANCELLED ? (
                                         <StyledCancelNote>
@@ -517,7 +517,7 @@ const EventDetail = () => {
                                     </div>
                                 </StyledInfoEventDetailsBoxesMobile>
                             </StyledInfoEventDetailsBoxes>
-                            <StyledInfoEventDetailsBoxes textAlign="center">
+                            <StyledInfoEventDetailsBoxes>
                                 {event.host.image && (
                                     <ChefAndImage
                                         onClick={() =>
@@ -537,7 +537,12 @@ const EventDetail = () => {
                                         request.userId == session?.user?.userId
                                 ).length > 0 && (
                                     <div>
-                                        <StyledPhoneIcon />
+                                        {event.host?.phone && (
+                                            <Link
+                                                href={`tel:${event.host.phone}`}>
+                                                <StyledPhoneIcon />
+                                            </Link>
+                                        )}
                                         <Link
                                             href={`mailto:${event.host.email}`}>
                                             <StyledEmailIcon />
@@ -785,6 +790,7 @@ const StyledInfoEventDetails = styled.div`
     @media ${(props) => props.theme.breakpoint.tablet} {
         flex-direction: row;
         gap: 0;
+        padding: 40px;
     }
     justify-content: space-between;
     padding: 10px 40px 40px 40px;
@@ -819,7 +825,11 @@ const StyledInfoEventDetailsBoxes = styled.div<StyledInfoEventDetailsBoxesProps>
     flex-direction: column;
     gap: 10px;
     align-items: ${(props) =>
-        props.textAlign === 'center' ? 'center' : 'start'};
+        props.textAlign === 'start' ? 'start' : 'center'};
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        align-items: ${(props) =>
+            props.textAlign === 'start' ? 'start' : 'end'};
+    }
 `;
 
 const StyledButtons = styled.div<HostImageProps>`
@@ -899,6 +909,7 @@ const StyledHeading = styled.h2`
     margin-top: 30px;
     margin-bottom: 0;
     padding: 0 40px;
+    overflow-wrap: break-word;
 `;
 
 const StyledInfoEventDetailsBoxesDesktop = styled.div`
