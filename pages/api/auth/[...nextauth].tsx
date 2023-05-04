@@ -40,7 +40,9 @@ export const authOptions: NextAuthOptions = {
                             data: {
                                 firstName: fetchedUser.given_name,
                                 lastName: fetchedUser.family_name,
-                                study: fetchedUser.studies.split('-')[0],
+                                study: fetchedUser.studies
+                                    ? fetchedUser.studies.split('-')[0]
+                                    : '',
                                 dormitory: 'Campus Urstein',
                                 email: fetchedUser.email,
                                 image: 'https://firebasestorage.googleapis.com/v0/b/studentenfutter-dba6a.appspot.com/o/profile%2Fdefault-profile.jpg?alt=media&token=578a83b8-ef61-474c-8d9a-ee3b59af528f',
