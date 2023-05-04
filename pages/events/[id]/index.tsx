@@ -450,7 +450,7 @@ const EventDetail = () => {
                     <StyledInfoWrapper>
                         <Header />
                         <StyledHeading>{event.title}</StyledHeading>
-                        {event.reviews.length > 0 && (
+                        {event.reviews?.length > 0 && (
                             <EventRating>
                                 <StarsMobile>
                                     <ReactStars
