@@ -42,6 +42,7 @@ export const theme = {
             smallParagraph: '16px',
             info: '16px',
             caption: '16px',
+            bubble: '12px',
         },
     },
     breakpoint: {
