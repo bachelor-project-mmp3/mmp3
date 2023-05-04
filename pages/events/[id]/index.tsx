@@ -530,7 +530,7 @@ const EventDetail = () => {
                                         hostName={hostName}></ChefAndImage>
                                 )}
 
-                                {event.requests.filter(
+                                {event.requests?.filter(
                                     (request) =>
                                         request.status ==
                                             RequestStatus.ACCEPTED &&
@@ -595,7 +595,7 @@ const EventDetail = () => {
                         </Card>
                     )}
 
-                    {event.menu.length > 0 && (
+                    {event.menu?.length > 0 && (
                         <Card variant={'description'}>
                             <StyledSectionHeadings>Menu</StyledSectionHeadings>
                             {event.menu.map((dish, index) => (
@@ -618,7 +618,7 @@ const EventDetail = () => {
                         </Card>
                     )}
 
-                    {event.requests.filter(
+                    {event.requests?.filter(
                         (request) => request.status == RequestStatus.ACCEPTED
                     ).length > 0 &&
                         event.status !== EventStatus.CANCELLED && (
