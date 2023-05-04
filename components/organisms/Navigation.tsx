@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EventsIcon from '../../public/icons/events_feed.svg';
 import CreateIcon from '../../public/icons/menu_create.svg';
@@ -10,6 +10,7 @@ import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '../atoms/Button';
 import Logo from '../../public/icons/logo.svg';
+import { RequestStatus } from '@prisma/client';
 
 const hideNavigationOnPaths = [
     '/profile/[id]/edit',
@@ -21,6 +22,22 @@ const hideNavigationOnPaths = [
 const Navigation: React.FC = () => {
     const router = useRouter();
     const { data: session } = useSession();
+    const [pendingRequestsLength, setPendingRequestsLength] = useState(0);
+
+    useEffect(() => {
+        fetch('/api/requests', {
+            method: 'GET',
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                const pendingRequests = data.requests.filter(
+                    (request) =>
+                        request.status === RequestStatus.PENDING &&
+                        request.Event.host.id === session.user.userId
+                ).length;
+                setPendingRequestsLength(pendingRequests);
+            });
+    }, [session.user.userId]);
 
     return (
         <>
