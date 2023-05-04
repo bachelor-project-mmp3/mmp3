@@ -25,6 +25,7 @@ const StyledWrapper = styled.div`
     min-width: 20px;
     border-radius: 20px;
     padding: 2px;
+    z-index: 1;
     background: ${({ theme }) => theme.red};
 `;
 
@@ -33,7 +34,7 @@ const StyledCount = styled.p`
     margin-bottom: 0px;
     font-size: ${({ theme }) => theme.fonts.mobile.bubble};
     @media ${(props) => props.theme.breakpoint.tablet} {
-        font-size: ${({ theme }) => theme.fonts.normal.bubble};
+        font-size: ${({ theme }) => theme.fonts.normal.caption};
         :hover {
             color: ${({ theme }) => theme.body};
         }

@@ -34,13 +34,11 @@ const Navigation: React.FC = () => {
                 const pendingRequests = data.requests.filter(
                     (request) =>
                         request.status === RequestStatus.PENDING &&
-                        request.Event.host.id === session.user.userId
+                        request.Event.host.id === session?.user.userId
                 ).length;
                 setPendingRequestsLength(pendingRequests);
             });
-    }, [session.user.userId]);
-
-    const [requestCount, setRequestCount] = useState(5);
+    }, []);
 
     return (
         <>
@@ -88,19 +86,23 @@ const Navigation: React.FC = () => {
                                 />
                                 <NavText>Create Event</NavText>
                             </DesktopNavigationItem>
-                            <DesktopNavigationItem
-                                $isactive={router?.pathname === '/requests'}
-                                onClick={() => router.push('/requests')}>
-                                <StyledRequestsIcon
-                                    $isactive={router?.pathname === '/requests'}
-                                />
-                                <NavText>Requests</NavText>
-                                {requestCount > 0 && (
+                            <BubbleWrapper>
+                                {pendingRequestsLength > 0 && (
                                     <NotificationBubble>
-                                        {requestCount}
+                                        {pendingRequestsLength}
                                     </NotificationBubble>
                                 )}
-                            </DesktopNavigationItem>
+                                <DesktopNavigationItem
+                                    $isactive={router?.pathname === '/requests'}
+                                    onClick={() => router.push('/requests')}>
+                                    <StyledRequestsIcon
+                                        $isactive={
+                                            router?.pathname === '/requests'
+                                        }
+                                    />
+                                    <NavText>Requests</NavText>
+                                </DesktopNavigationItem>
+                            </BubbleWrapper>
                             <DesktopNavigationItem
                                 $isactive={
                                     (router?.pathname === `/profile/[id]` &&
@@ -164,17 +166,17 @@ const Navigation: React.FC = () => {
                                 }
                                 onClick={() => router.push('/events/create')}
                             />
-                            <BubbleMobileWrapper>
+                            <BubbleWrapper>
                                 <StyledRequestsIcon
                                     $isactive={router?.pathname === '/requests'}
                                     onClick={() => router.push('/requests')}
                                 />
-                                {requestCount > 0 && (
+                                {pendingRequestsLength > 0 && (
                                     <NotificationBubble>
-                                        {requestCount}
+                                        {pendingRequestsLength}
                                     </NotificationBubble>
                                 )}
-                            </BubbleMobileWrapper>
+                            </BubbleWrapper>
                             <StyledProfileIcon
                                 $isactive={
                                     (router?.pathname === `/profile/[id]` &&
@@ -351,6 +353,6 @@ const StyledLogo = styled(Logo)`
     cursor: pointer;
 `;
 
-const BubbleMobileWrapper = styled.div`
+const BubbleWrapper = styled.div`
     position: relative;
 `;
