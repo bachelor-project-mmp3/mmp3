@@ -235,7 +235,7 @@ const EditEvent = () => {
 
             await router.replace(`/events/${event.id}`);
         } catch (error) {
-            console.error('Failed to edit event:' + error);
+            router.push('/404');
         }
     };
 
