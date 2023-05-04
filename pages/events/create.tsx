@@ -28,7 +28,7 @@ const schema = yup
     .object({
         title: yup.string().min(1).required(),
         date: yup.string().required(),
-        timelimit: yup.string().required(),
+        timelimit: yup.string(),
         costs: yup.number().positive().min(0).max(99),
         guests: yup.number().positive().integer().min(1).max(99).required(),
     })
@@ -72,6 +72,8 @@ const CreateEvent = () => {
     } = useForm<FormData>({
         resolver: yupResolver(schema),
     });
+
+    console.log({ errors });
 
     React.useEffect(() => {
         register('title');
@@ -149,8 +151,9 @@ const CreateEvent = () => {
     };
 
     const onSubmit = async () => {
+        setLoading(true);
+
         try {
-            setLoading(true);
             const body = {
                 title,
                 info,
@@ -167,10 +170,9 @@ const CreateEvent = () => {
                 body: JSON.stringify(body),
             });
             const eventId = await res.json();
-            setLoading(false);
             router.replace(`/events/${eventId}`);
         } catch (error) {
-            console.error('Failed to create event:' + error);
+            router.push('/404');
         }
     };
 
