@@ -676,4 +676,6 @@ const StyledHeading = styled.h2`
     margin-bottom: 10px;
     margin-top: 30px;
     padding: 0 18px;
+    overflow-wrap: break-word;
+    max-width: 600px;
 `;

@@ -398,7 +398,7 @@ const EventDetail = () => {
                 <ActionPopUp
                     onClose={() => setshowInfoPopUpOnCancel(false)}
                     onAction={() => cancelEvent(event.id)}
-                    textButtonAction={'Cancel Event'}
+                    textButtonAction={'Cancel'}
                     textButtonClose={'Close'}>
                     Are your sure you want to cancel this event?
                 </ActionPopUp>
@@ -423,7 +423,7 @@ const EventDetail = () => {
                 <ActionPopUp
                     onClose={() => setShowQuestionDeleteEvent(false)}
                     onAction={() => deleteEvent(event.id)}
-                    textButtonAction={'Delete event'}
+                    textButtonAction={'Delete'}
                     textButtonClose={'Cancel'}>
                     Do you really want to delete <strong>{event.title}</strong>?
                 </ActionPopUp>
@@ -530,7 +530,7 @@ const EventDetail = () => {
                                         hostName={hostName}></ChefAndImage>
                                 )}
 
-                                {event.requests.filter(
+                                {event.requests?.filter(
                                     (request) =>
                                         request.status ==
                                             RequestStatus.ACCEPTED &&
@@ -595,7 +595,7 @@ const EventDetail = () => {
                         </Card>
                     )}
 
-                    {event.menu.length > 0 && (
+                    {event.menu?.length > 0 && (
                         <Card variant={'description'}>
                             <StyledSectionHeadings>Menu</StyledSectionHeadings>
                             {event.menu.map((dish, index) => (
@@ -618,7 +618,7 @@ const EventDetail = () => {
                         </Card>
                     )}
 
-                    {event.requests.filter(
+                    {event.requests?.filter(
                         (request) => request.status == RequestStatus.ACCEPTED
                     ).length > 0 &&
                         event.status !== EventStatus.CANCELLED && (

@@ -105,7 +105,7 @@ const ExtendedEventPreview: React.FC<{
                         /* to prevent navigation to eventdetail */
                         e.stopPropagation();
                     }}
-                    textButtonAction={'Delete event'}
+                    textButtonAction={'Delete'}
                     textButtonClose={'Cancel'}>
                     Do you really want to delete <strong>{event.title}</strong>?
                 </ActionPopUp>
