@@ -145,12 +145,12 @@ const Request: React.FC<{
                         </>
                     )}
 
-                    <div>
+                    <StyledDiv>
                         {requestText}
-                        <Link href={`/events/${request.Event.id}`}>
+                        <StyledEventLink href={`/events/${request.Event.id}`}>
                             {request.Event.title}
-                        </Link>
-                    </div>
+                        </StyledEventLink>
+                    </StyledDiv>
                 </TimeAndInfo>
             </Content>
 
@@ -211,7 +211,7 @@ const Card = styled.div`
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 40px;
-    height: 150px;
+    height: 160px;
 
     @media ${({ theme }) => theme.breakpoint.tablet} {
         margin: initial;
@@ -256,6 +256,7 @@ const ApproveButton = styled.div`
     height: 40px;
     position: absolute;
     right: 40px;
+    bottom: -20px;
     cursor: pointer;
     box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkGrey};
 
@@ -276,6 +277,7 @@ const DeclineButton = styled.div`
     color: ${({ theme }) => theme.red};
     border: 1px solid ${({ theme }) => theme.red};
     right: 100px;
+    bottom: -20px;
 
     :hover {
         color: ${({ theme }) => theme.hoverRed};
@@ -338,4 +340,16 @@ const TimeAgo = styled.div`
 const ButtonWrapper = styled.div`
     position: absolute;
     right: 40px;
+    bottom: -20px;
+`;
+
+const StyledEventLink = styled(Link)``;
+
+const StyledDiv = styled.div`
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 200px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        max-width: 300px;
+    }
 `;

@@ -35,9 +35,6 @@ const MyEvents = () => {
     const [pastEventsPageIndex, setPastEventsPageIndex] = useState(1);
     const [pastEventsPageCount, setPastEventsPageCount] = useState(1);
 
-    const [showInfoPopUpOnDeleteEvent, setshowInfoPopUpOnDeleteEvent] =
-        useState(false);
-
     useEffect(() => {
         Promise.all([
             fetch(
@@ -130,7 +127,6 @@ const MyEvents = () => {
             );
 
             setUpcomingEvents(updatedEvents);
-            setshowInfoPopUpOnDeleteEvent(true);
             setLoading(false);
         } else {
             router.push('/404');
@@ -146,15 +142,6 @@ const MyEvents = () => {
             {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
                     You left the event.
-                </InfoPopUp>
-            )}
-
-            {showInfoPopUpOnDeleteEvent && (
-                <InfoPopUp
-                    onClose={() => {
-                        setshowInfoPopUpOnDeleteEvent(false);
-                    }}>
-                    You deleted your event!
                 </InfoPopUp>
             )}
 
@@ -249,7 +236,8 @@ const MyEvents = () => {
                                             />
                                         );
                                     })}
-
+                                </EventsWrapper>
+                                <StyledPagination>
                                     <PaginationEvents>
                                         <PaginationAction
                                             onClick={
@@ -289,7 +277,7 @@ const MyEvents = () => {
                                             <StyledFilterIcon option="next" />
                                         </PaginationAction>
                                     </PaginationEvents>
-                                </EventsWrapper>
+                                </StyledPagination>
                             </>
                         ) : (
                             <StyledNoEvents>
@@ -331,8 +319,9 @@ const MyEvents = () => {
                                     </StyledP>
                                 </StyledNoEvents>
                             )}
-
-                            {pastEvents?.length > 0 && (
+                        </EventsWrapper>
+                        {pastEvents?.length > 0 && (
+                            <StyledPagination>
                                 <PaginationEvents>
                                     <PaginationAction
                                         onClick={
@@ -370,8 +359,8 @@ const MyEvents = () => {
                                         <StyledFilterIcon option="next" />
                                     </PaginationAction>
                                 </PaginationEvents>
-                            )}
-                        </EventsWrapper>
+                            </StyledPagination>
+                        )}
                     </WrapperColumn>
                 )}
             </Layout>
@@ -559,3 +548,12 @@ const PaginationEvents = styled.div`
 `;
 
 const PaginationPageCount = styled.div``;
+
+const StyledPagination = styled.div`
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    @media ${({ theme }) => theme.breakpoint.tablet} {
+        justify-content: start;
+    }
+`;
