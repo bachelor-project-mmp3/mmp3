@@ -1,16 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import styled from 'styled-components';
 import ExtendedEventPreview from '../../components/organisms/events/ExtendedEventPreview';
 import { useRouter } from 'next/router';
-import { Header } from '../../components/organisms/Header';
 import { SmallEventPreview } from '../../components/organisms/events/SmallEventPreview';
 import { useSession } from 'next-auth/react';
 import { Loading } from '../../components/organisms/Loading';
 import InfoPopUp from '../../components/organisms/popups/InfoPopUp';
 import { hasUserSendRequestHelper } from '../../helper/EventsAndUserHelper';
 import Notification from '../../components/organisms/my-events/Notification';
-import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -34,6 +33,9 @@ const MyEvents = () => {
     const [upcomingEventsPageCount, setUpcomingEventsPageCount] = useState(1);
     const [pastEventsPageIndex, setPastEventsPageIndex] = useState(1);
     const [pastEventsPageCount, setPastEventsPageCount] = useState(1);
+
+    const [showInfoPopUpOnDeleteEvent, setshowInfoPopUpOnDeleteEvent] =
+        useState(false);
 
     useEffect(() => {
         Promise.all([
@@ -114,6 +116,25 @@ const MyEvents = () => {
         }
     };
 
+    const onSubmitDelete = async (eventId: string) => {
+        setLoading(true);
+        const res = await fetch(`/api/events/${eventId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (res.status === 200) {
+            let updatedEvents = upcomingEvents.filter(
+                (event) => event.id !== eventId
+            );
+
+            setUpcomingEvents(updatedEvents);
+            setshowInfoPopUpOnDeleteEvent(true);
+            setLoading(false);
+        } else {
+            router.push('/404');
+        }
+    };
     if (isLoading) return <Loading />;
 
     return (
@@ -121,6 +142,15 @@ const MyEvents = () => {
             {showInfoPopOpOnLeave && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(false)}>
                     You left the event.
+                </InfoPopUp>
+            )}
+
+            {showInfoPopUpOnDeleteEvent && (
+                <InfoPopUp
+                    onClose={() => {
+                        setshowInfoPopUpOnDeleteEvent(false);
+                    }}>
+                    You deleted your event!
                 </InfoPopUp>
             )}
 
@@ -205,7 +235,7 @@ const MyEvents = () => {
                                             <ExtendedEventPreview
                                                 key={`event-${event.id}`}
                                                 event={event}
-                                                onSubmitJoin={() => alert('hi')}
+                                                onSubmitDelete={onSubmitDelete}
                                                 onSubmitLeave={() =>
                                                     onSubmitLeave(
                                                         request.id,
