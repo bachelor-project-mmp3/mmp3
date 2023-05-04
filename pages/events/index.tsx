@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Layout from '../../components/Layout';
-import ExtendedEventPreview from '../../components/organisms/events/ExtendedEventPreview';
 import { useRouter } from 'next/router';
-import { Header } from '../../components/organisms/Header';
 import { Loading } from '../../components/organisms/Loading';
 import InfoPopUp from '../../components/organisms/popups/InfoPopUp';
 import Link from 'next/link';
@@ -14,6 +12,7 @@ import FilterIcon from '../../public/icons/goBack.svg';
 import SortByDate, {
     sortOptions,
 } from '../../components/organisms/filter/SortByDate';
+import ExtendedEventPreview from '../../components/organisms/events/ExtendedEventPreview';
 import Head from 'next/head';
 
 const Events = () => {
@@ -253,7 +252,7 @@ const Events = () => {
                     {events &&
                         events.map((event) => (
                             <ExtendedEventPreview
-                                key={`extendetEventPreview-${event.id}`}
+                                key={`extendedEventPreview-${event.id}`}
                                 event={event}
                                 onSubmitJoin={onSubmitJoin}
                                 onSubmitLeave={onSubmitLeave}
