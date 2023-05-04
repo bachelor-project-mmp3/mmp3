@@ -31,6 +31,7 @@ export const theme = {
             smallParagraph: '1em', // 12pt
             info: '0.8em', // 10pt
             caption: '0.7em', // 8pt
+            bubble: '0.5em', // 6pt
         },
         mobile: {
             headline: '26px',
@@ -42,6 +43,7 @@ export const theme = {
             smallParagraph: '16px',
             info: '16px',
             caption: '16px',
+            bubble: '12px',
         },
     },
     breakpoint: {
