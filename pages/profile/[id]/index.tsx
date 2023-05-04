@@ -320,13 +320,13 @@ const WrapperColumn = styled.div`
 `;
 
 const WrapperRow = styled.div`
-    margin-top: 50px;
+    margin: 50px 0 80px 0;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    flex-wrap: wrap @media ${(props) => props.theme.breakpoint.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         flex-wrap: no-wrap;
     }
 `;
@@ -350,8 +350,6 @@ const InfoRow = styled.div`
 
 const StyledImage = styled(Image)`
     border-radius: 100%;
-    height: 200;
-    widht: 300;
     object-fit: cover;
 `;
 

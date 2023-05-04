@@ -249,46 +249,47 @@ const MyEvents = () => {
                                             />
                                         );
                                     })}
+
+                                    <PaginationEvents>
+                                        <PaginationAction
+                                            onClick={
+                                                upcomingEventsPageIndex !== 1
+                                                    ? () => {
+                                                          setUpcomingEventsPageIndex(
+                                                              upcomingEventsPageIndex -
+                                                                  1
+                                                          );
+                                                      }
+                                                    : null
+                                            }
+                                            disabled={
+                                                upcomingEventsPageIndex === 1
+                                            }>
+                                            <StyledFilterIcon option="prev" />
+                                            Prev
+                                        </PaginationAction>
+                                        <PaginationPageCount>{`${upcomingEventsPageIndex}/${upcomingEventsPageCount}`}</PaginationPageCount>
+                                        <PaginationAction
+                                            onClick={
+                                                upcomingEventsPageIndex !==
+                                                upcomingEventsPageCount
+                                                    ? () => {
+                                                          setUpcomingEventsPageIndex(
+                                                              upcomingEventsPageIndex +
+                                                                  1
+                                                          );
+                                                      }
+                                                    : null
+                                            }
+                                            disabled={
+                                                upcomingEventsPageIndex ===
+                                                upcomingEventsPageCount
+                                            }>
+                                            Next
+                                            <StyledFilterIcon option="next" />
+                                        </PaginationAction>
+                                    </PaginationEvents>
                                 </EventsWrapper>
-                                <PaginationEvents>
-                                    <PaginationAction
-                                        onClick={
-                                            upcomingEventsPageIndex !== 1
-                                                ? () => {
-                                                      setUpcomingEventsPageIndex(
-                                                          upcomingEventsPageIndex -
-                                                              1
-                                                      );
-                                                  }
-                                                : null
-                                        }
-                                        disabled={
-                                            upcomingEventsPageIndex === 1
-                                        }>
-                                        <StyledFilterIcon option="prev" />
-                                        Prev
-                                    </PaginationAction>
-                                    <PaginationPageCount>{`${upcomingEventsPageIndex}/${upcomingEventsPageCount}`}</PaginationPageCount>
-                                    <PaginationAction
-                                        onClick={
-                                            upcomingEventsPageIndex !==
-                                            upcomingEventsPageCount
-                                                ? () => {
-                                                      setUpcomingEventsPageIndex(
-                                                          upcomingEventsPageIndex +
-                                                              1
-                                                      );
-                                                  }
-                                                : null
-                                        }
-                                        disabled={
-                                            upcomingEventsPageIndex ===
-                                            upcomingEventsPageCount
-                                        }>
-                                        Next
-                                        <StyledFilterIcon option="next" />
-                                    </PaginationAction>
-                                </PaginationEvents>
                             </>
                         ) : (
                             <StyledNoEvents>
@@ -329,44 +330,47 @@ const MyEvents = () => {
                                     </StyledP>
                                 </StyledNoEvents>
                             )}
+
+                            {pastEvents?.length > 0 && (
+                                <PaginationEvents>
+                                    <PaginationAction
+                                        onClick={
+                                            pastEventsPageIndex !== 1
+                                                ? () => {
+                                                      setPastEventsPageIndex(
+                                                          pastEventsPageIndex -
+                                                              1
+                                                      );
+                                                  }
+                                                : null
+                                        }
+                                        disabled={pastEventsPageIndex === 1}>
+                                        <StyledFilterIcon option="prev" />
+                                        Prev
+                                    </PaginationAction>
+                                    <PaginationPageCount>{`${pastEventsPageIndex}/${pastEventsPageCount}`}</PaginationPageCount>
+                                    <PaginationAction
+                                        onClick={
+                                            pastEventsPageIndex !==
+                                            pastEventsPageCount
+                                                ? () => {
+                                                      setPastEventsPageIndex(
+                                                          pastEventsPageIndex +
+                                                              1
+                                                      );
+                                                  }
+                                                : null
+                                        }
+                                        disabled={
+                                            pastEventsPageIndex ===
+                                            pastEventsPageCount
+                                        }>
+                                        Next
+                                        <StyledFilterIcon option="next" />
+                                    </PaginationAction>
+                                </PaginationEvents>
+                            )}
                         </EventsWrapper>
-                        {pastEvents?.length > 0 && (
-                            <PaginationEvents>
-                                <PaginationAction
-                                    onClick={
-                                        pastEventsPageIndex !== 1
-                                            ? () => {
-                                                  setPastEventsPageIndex(
-                                                      pastEventsPageIndex - 1
-                                                  );
-                                              }
-                                            : null
-                                    }
-                                    disabled={pastEventsPageIndex === 1}>
-                                    <StyledFilterIcon option="prev" />
-                                    Prev
-                                </PaginationAction>
-                                <PaginationPageCount>{`${pastEventsPageIndex}/${pastEventsPageCount}`}</PaginationPageCount>
-                                <PaginationAction
-                                    onClick={
-                                        pastEventsPageIndex !==
-                                        pastEventsPageCount
-                                            ? () => {
-                                                  setPastEventsPageIndex(
-                                                      pastEventsPageIndex + 1
-                                                  );
-                                              }
-                                            : null
-                                    }
-                                    disabled={
-                                        pastEventsPageIndex ===
-                                        pastEventsPageCount
-                                    }>
-                                    Next
-                                    <StyledFilterIcon option="next" />
-                                </PaginationAction>
-                            </PaginationEvents>
-                        )}
                     </WrapperColumn>
                 )}
             </Layout>
@@ -538,10 +542,11 @@ const PaginationAction = styled.div<PaginationActionProps>`
 const PaginationEvents = styled.div`
     display: flex;
     justify-content: center;
+    flex-direction: row;
     gap: 20px;
     align-items: center;
     font-weight: bold;
-    margin-top: 20px;
+    margin-bottom: 20px;
     font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
 
     @media ${({ theme }) => theme.breakpoint.tablet} {
