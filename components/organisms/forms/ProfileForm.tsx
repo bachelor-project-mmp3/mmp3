@@ -160,7 +160,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
             await Router.replace(`/profile/${profile.id}`);
         } catch (error) {
-            console.error('Failed to save user:' + error);
+            router.push('/404');
         }
     };
     return (
