@@ -427,7 +427,7 @@ const EventItem = styled.div`
 const StyledBurger = styled(Burger)`
     position: absolute;
     right: 20px;
-    top: 35px px;
+    top: 35px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         display: none;
     }
