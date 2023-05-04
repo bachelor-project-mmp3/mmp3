@@ -203,6 +203,7 @@ const Profile = () => {
                                                 title={event.title}
                                                 imageEvent={event.image}
                                                 imageHost={profile.image}
+                                                reviews={event.reviews}
                                                 onClick={() =>
                                                     router.push(
                                                         `/events/${event.id}`
@@ -320,13 +321,13 @@ const WrapperColumn = styled.div`
 `;
 
 const WrapperRow = styled.div`
-    margin-top: 50px;
+    margin: 50px 0 80px 0;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    flex-wrap: wrap @media ${(props) => props.theme.breakpoint.tablet} {
+    @media ${(props) => props.theme.breakpoint.tablet} {
         flex-wrap: no-wrap;
     }
 `;
@@ -350,8 +351,6 @@ const InfoRow = styled.div`
 
 const StyledImage = styled(Image)`
     border-radius: 100%;
-    height: 200;
-    widht: 300;
     object-fit: cover;
 `;
 
@@ -416,7 +415,7 @@ const StyledAboutMeText = styled.p`
 
 const EventItem = styled.div`
     width: 45%;
-    height: 170px;
+    height: 190px;
     margin-bottom: 20px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         margin-bottom: 80px;
@@ -426,7 +425,7 @@ const EventItem = styled.div`
 const StyledBurger = styled(Burger)`
     position: absolute;
     right: 20px;
-    top: 35px px;
+    top: 35px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         display: none;
     }

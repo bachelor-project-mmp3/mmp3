@@ -73,8 +73,6 @@ const CreateEvent = () => {
         resolver: yupResolver(schema),
     });
 
-    console.log({ errors });
-
     React.useEffect(() => {
         register('title');
         register('date');

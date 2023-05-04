@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import EventsIcon from '../../public/icons/events_feed.svg';
 import CreateIcon from '../../public/icons/menu_create.svg';
@@ -10,6 +10,8 @@ import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '../atoms/Button';
 import Logo from '../../public/icons/logo.svg';
+import { RequestStatus } from '@prisma/client';
+import { NotificationBubble } from '../atoms/NotificationBubble';
 
 const hideNavigationOnPaths = [
     '/profile/[id]/edit',
@@ -21,6 +23,22 @@ const hideNavigationOnPaths = [
 const Navigation: React.FC = () => {
     const router = useRouter();
     const { data: session } = useSession();
+    const [pendingRequestsLength, setPendingRequestsLength] = useState(0);
+
+    useEffect(() => {
+        fetch('/api/requests', {
+            method: 'GET',
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                const pendingRequests = data.requests.filter(
+                    (request) =>
+                        request.status === RequestStatus.PENDING &&
+                        request.Event.host.id === session?.user.userId
+                ).length;
+                setPendingRequestsLength(pendingRequests);
+            });
+    }, []);
 
     return (
         <>
@@ -68,14 +86,23 @@ const Navigation: React.FC = () => {
                                 />
                                 <NavText>Create Event</NavText>
                             </DesktopNavigationItem>
-                            <DesktopNavigationItem
-                                $isactive={router?.pathname === '/requests'}
-                                onClick={() => router.push('/requests')}>
-                                <StyledRequestsIcon
+                            <BubbleWrapper>
+                                {pendingRequestsLength > 0 && (
+                                    <NotificationBubble>
+                                        {pendingRequestsLength}
+                                    </NotificationBubble>
+                                )}
+                                <DesktopNavigationItem
                                     $isactive={router?.pathname === '/requests'}
-                                />
-                                <NavText>Requests</NavText>
-                            </DesktopNavigationItem>
+                                    onClick={() => router.push('/requests')}>
+                                    <StyledRequestsIcon
+                                        $isactive={
+                                            router?.pathname === '/requests'
+                                        }
+                                    />
+                                    <NavText>Requests</NavText>
+                                </DesktopNavigationItem>
+                            </BubbleWrapper>
                             <DesktopNavigationItem
                                 $isactive={
                                     (router?.pathname === `/profile/[id]` &&
@@ -139,10 +166,17 @@ const Navigation: React.FC = () => {
                                 }
                                 onClick={() => router.push('/events/create')}
                             />
-                            <StyledRequestsIcon
-                                $isactive={router?.pathname === '/requests'}
-                                onClick={() => router.push('/requests')}
-                            />
+                            <BubbleWrapper>
+                                <StyledRequestsIcon
+                                    $isactive={router?.pathname === '/requests'}
+                                    onClick={() => router.push('/requests')}
+                                />
+                                {pendingRequestsLength > 0 && (
+                                    <NotificationBubble>
+                                        {pendingRequestsLength}
+                                    </NotificationBubble>
+                                )}
+                            </BubbleWrapper>
                             <StyledProfileIcon
                                 $isactive={
                                     (router?.pathname === `/profile/[id]` &&
@@ -278,6 +312,7 @@ const DesktopNavigationItem = styled.div<NavProps>`
     align-items: center;
     width: 200px;
     cursor: pointer;
+    position: relative;
 
     font-size: ${({ theme }) => theme.fonts.normal.paragraph};
 
@@ -316,4 +351,8 @@ const DesktopFooter = styled.div`
 const StyledLogo = styled(Logo)`
     margin: 35px;
     cursor: pointer;
+`;
+
+const BubbleWrapper = styled.div`
+    position: relative;
 `;
