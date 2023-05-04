@@ -398,7 +398,7 @@ const EventDetail = () => {
                 <ActionPopUp
                     onClose={() => setshowInfoPopUpOnCancel(false)}
                     onAction={() => cancelEvent(event.id)}
-                    textButtonAction={'Cancel Event'}
+                    textButtonAction={'Cancel'}
                     textButtonClose={'Close'}>
                     Are your sure you want to cancel this event?
                 </ActionPopUp>
@@ -423,7 +423,7 @@ const EventDetail = () => {
                 <ActionPopUp
                     onClose={() => setShowQuestionDeleteEvent(false)}
                     onAction={() => deleteEvent(event.id)}
-                    textButtonAction={'Delete event'}
+                    textButtonAction={'Delete'}
                     textButtonClose={'Cancel'}>
                     Do you really want to delete <strong>{event.title}</strong>?
                 </ActionPopUp>
