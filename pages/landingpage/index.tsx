@@ -9,7 +9,6 @@ import { signIn } from 'next-auth/react';
 import { LandingPageHeader } from '../../components/organisms/LandingpageHeader';
 import { Quote } from '../../components/organisms/Quote';
 import { Steps } from '../../components/organisms/Steps';
-import Head from 'next/head';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
 import Image from 'next/image';
 
@@ -57,9 +56,6 @@ const Landingpage = () => {
 
     return (
         <>
-            <Head>
-                <title>{'Studentenfutter'}</title>
-            </Head>
             <GoogleAnalytics trackPageViews />
             <LandingPageHeader hideLogin>
                 <>

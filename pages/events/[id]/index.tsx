@@ -24,9 +24,11 @@ import MenuItem from '../../../components/organisms/events/MenuItem';
 import GuestListItem from '../../../components/organisms/events/GuestListItem';
 import { EventStatus, RequestStatus } from '.prisma/client';
 import {
+    getOverallRating,
     hasUserSendRequestHelper,
     hostNameHelper,
     isRequestAcceptedHelper,
+    userHasSentReview,
     userIsHostHelper,
 } from '../../../helper/EventsAndUserHelper';
 import Link from 'next/link';
@@ -39,6 +41,10 @@ import { uploadImage } from '../../../helper/uploadHelper';
 import Image from 'next/image';
 import Discard from '../../../public/icons/discard.svg';
 import { RequestProps } from '../../../components/organisms/requests/Request';
+import ReviewPopUp from '../../../components/organisms/popups/ReviewPopUp';
+import ReviewListItem from '../../../components/organisms/events/ReviewListItem';
+import ReactStars from 'react-stars';
+import Head from 'next/head';
 
 type EventProps = {
     id: string;
@@ -102,6 +108,14 @@ const EventDetail = () => {
     const [deleteGuest, setDeleteGuest] = useState<undefined | RequestProps>();
     const [showQuestionDeleteEvent, setShowQuestionDeleteEvent] =
         React.useState(false);
+    const [showReviewPopUp, setShowReviewPopUp] = useState(false);
+    const [reviewData, setReviewData] = useState<{
+        food: number;
+        hospitality: number;
+        text: string;
+    }>({ food: 0, hospitality: 0, text: '' });
+
+    const overAllRating = getOverallRating(event?.reviews);
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
@@ -216,6 +230,38 @@ const EventDetail = () => {
             router.push('/404');
         }
     };
+    const addReview = async () => {
+        setLoading(true);
+        const data = {
+            eventId: event.id,
+            userId: session.user.userId,
+            dish: reviewData.food,
+            environment: reviewData.hospitality,
+            text: reviewData.text,
+        };
+
+        const res = await fetch(`/api/events/${event.id}/review`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (res.status === 200) {
+            res.json().then((review) => {
+                let updatedEvent = {
+                    ...event,
+                    reviews: [...event.reviews, review],
+                };
+
+                setEvent(updatedEvent);
+                setLoading(false);
+                setShowReviewPopUp(false);
+            });
+        } else {
+            router.push('/404');
+        }
+    };
+
     const uploadEventPhoto = async (e: any) => {
         setLoading(true);
 
@@ -308,9 +354,12 @@ const EventDetail = () => {
 
     //TODO: Add onClick to PhoneButton to copy phone number
 
-    // @ts-ignore
     return (
         <>
+            <Head>
+                <title>{`Studentenfutter - ${event.title}`}</title>
+            </Head>
+
             {showInfoPopUpOnJoin && (
                 <InfoPopUp onClose={() => setShowInfoPopUpOnJoin(false)}>
                     Your Request to join <strong>{event.title}</strong> was
@@ -380,11 +429,49 @@ const EventDetail = () => {
                 </ActionPopUp>
             )}
 
+            {showReviewPopUp && (
+                <ReviewPopUp
+                    onClose={() => setShowReviewPopUp(false)}
+                    onAction={addReview}
+                    eventTitle={event.title}
+                    onChangeReview={(data: {
+                        food: number;
+                        hospitality: number;
+                        text: string;
+                    }) => {
+                        setReviewData(data);
+                    }}
+                    currentReviewData={reviewData}
+                />
+            )}
+
             <Layout>
                 <StyledDetailsWrapper>
                     <StyledInfoWrapper>
                         <Header />
                         <StyledHeading>{event.title}</StyledHeading>
+                        {event.reviews.length > 0 && (
+                            <EventRating>
+                                <StarsMobile>
+                                    <ReactStars
+                                        count={5}
+                                        size={25}
+                                        color2={'#ffd700'}
+                                        value={overAllRating}
+                                        edit={false}
+                                    />
+                                </StarsMobile>
+                                <StarsDesktop>
+                                    <ReactStars
+                                        count={5}
+                                        size={35}
+                                        color2={'#ffd700'}
+                                        value={overAllRating}
+                                        edit={false}
+                                    />
+                                </StarsDesktop>
+                            </EventRating>
+                        )}
 
                         <StyledInfoEventDetails>
                             <StyledInfoEventDetailsBoxes>
@@ -485,6 +572,22 @@ const EventDetail = () => {
                                 </EventImageWrapper>
                             </Card>
                         </>
+                    )}
+
+                    {event.reviews?.length > 0 && (
+                        <Card variant={'description'}>
+                            <StyledSectionHeadings>
+                                Reviews
+                            </StyledSectionHeadings>
+                            <ReviewList>
+                                {event.reviews.map((review, index) => (
+                                    <ReviewListItem
+                                        key={`reviewItem-${index}`}
+                                        review={review}
+                                    />
+                                ))}
+                            </ReviewList>
+                        </Card>
                     )}
 
                     {event.menu.length > 0 && (
@@ -634,6 +737,20 @@ const EventDetail = () => {
                                 </UploadButton>
                             </StyledButtons>
                         )}
+                    {event.status !== EventStatus.CANCELLED &&
+                        new Date() > new Date(event.date) &&
+                        !userIsHost &&
+                        !userHasSentReview(event, session) && (
+                            <StyledButtons>
+                                <Button
+                                    variant="primary"
+                                    onClick={() => {
+                                        setShowReviewPopUp(true);
+                                    }}>
+                                    Add review
+                                </Button>
+                            </StyledButtons>
+                        )}
                     {event.status == EventStatus.CANCELLED && userIsHost && (
                         <StyledButtons>
                             <Button
@@ -779,8 +896,8 @@ const StyledHeading = styled.h2`
         font-size: ${({ theme }) => theme.fonts.normal.headline3};
     }
     font-weight: 800;
-    margin-bottom: 10px;
     margin-top: 30px;
+    margin-bottom: 0;
     padding: 0 40px;
 `;
 
@@ -796,4 +913,30 @@ const StyledInfoEventDetailsBoxesMobile = styled.div`
     @media ${(props) => props.theme.breakpoint.tablet} {
         display: none;
     }
+`;
+
+const EventRating = styled.div`
+    padding-left: 40px;
+`;
+
+const StarsDesktop = styled.div`
+    display: none;
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        display: block;
+    }
+`;
+
+const StarsMobile = styled.div`
+    display: block;
+
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        display: none;
+    }
+`;
+
+const ReviewList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 `;

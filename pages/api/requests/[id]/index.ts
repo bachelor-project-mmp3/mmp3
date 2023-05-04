@@ -245,6 +245,11 @@ export default async function handler(
                                 },
                                 include: { User: true },
                             },
+                            reviews: {
+                                include: {
+                                    User: true,
+                                },
+                            },
                         },
                     });
 

@@ -8,4 +8,4 @@ jobs:
         steps:
             - name: Event is over Cron Job
               run: |
-                  curl --request POST --url "https://mmp3.vercel.app/api/cron/eventOver" --header "Authorization: Bearer ${{ secrets.API_SECRET_KEY }}"
+                  curl --request POST --url "https://studentenfutter.vercel.app/api/cron/eventOver" --header "Authorization: Bearer ${{ secrets.API_SECRET_KEY }}"

@@ -16,7 +16,9 @@ export function getEmailTemplate(data: {
         | 'kickGuest'
         | 'imageUpload'
         | 'reminder-host'
-        | 'reminder-guest';
+        | 'reminder-guest'
+        | 'reviewReminder'
+        | 'newReview';
     eventId?: string;
     eventDetail?: { amountOfGuests: number };
 }) {
@@ -30,7 +32,7 @@ export function getEmailTemplate(data: {
                 data.eventTitle
             }</strong>!<br>
         Check out your possible guest <a href=${
-            'https://mmp3.vercel.app/profile/' + data.guestId
+            `${process.env.NEXT_PUBLIC_BASE_URL}/profile/` + data.guestId
         }>${data.guestName}</a> and answer the request to join.</p>`,
         };
     }
@@ -44,7 +46,7 @@ export function getEmailTemplate(data: {
                 data.eventTitle
             }</strong>!<br>
             Check out the event for all information that will be important for you to know <a href=${
-                'https://mmp3.vercel.app/events/' + data.eventId
+                `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
             }>here</a>.<br><br>Enjoy your time at the event, make new friends and have fun!
         `,
         };
@@ -63,7 +65,7 @@ export function getEmailTemplate(data: {
             subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.guestName} left event`,
             text: `${data.guestName} left event`,
             html: `<div>Hi ${data.hostFirstName},<br></div><p><a href=${
-                'https://mmp3.vercel.app/profile/' + data.guestId
+                `${process.env.NEXT_PUBLIC_BASE_URL}/profile/` + data.guestId
             }>${data.guestName}</a> just left your event <strong>${
                 data.eventTitle
             }</strong>!<br>
@@ -78,7 +80,7 @@ export function getEmailTemplate(data: {
 <p>${data.hostFirstName} just edited <strong>${
                 data.eventTitle
             }</strong> you will be joining! <br>Check out what changed: <a href=${
-                'https://mmp3.vercel.app/events/' + data.eventId
+                `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
             }>${data.eventTitle}</a></p>
         `,
         };
@@ -93,7 +95,7 @@ export function getEmailTemplate(data: {
             }</strong> you wanted to attend!<br>Maybe ${
                 data.hostFirstName
             } will host different events you can join in the future.<br>
- In the meantime check out other <a href=${'https://mmp3.vercel.app/events/'}>events</a></p>
+ In the meantime check out other <a href=${`${process.env.NEXT_PUBLIC_BASE_URL}/events/`}>events</a></p>
         `,
         };
     }
@@ -104,7 +106,7 @@ export function getEmailTemplate(data: {
             html: `<div>Hi ${
                 data.hostFirstName
             },<br></div><p>the time to join your event <a href=${
-                'https://mmp3.vercel.app/events/' + data.eventId
+                `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
             }>${data.eventTitle}</a> is over!<br>
             Final amount of guests:  ${data.eventDetail.amountOfGuests}<br>
             Get ready, make your grocery run and show your cooking skills.<br>
@@ -116,10 +118,10 @@ export function getEmailTemplate(data: {
         return {
             subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= You will not attend ${data.eventTitle}`,
             text: `Yout will not attend ${data.eventTitle}`,
-            html: `<div>Hi ${data.guestName},<br></div><p>Unfortunately, ${data.hostFirstName} decided you shouldn't join the event.<br>You should check out other <a href=
-                'https://mmp3.vercel.app/events/'
-            >events</a> you could join, tho!
-        `,
+            html: `<div>Hi ${data.guestName},<br></div><p>Unfortunately, ${
+                data.hostFirstName
+            } decided you shouldn't join the event.<br>
+            You should check out other <a href=${`${process.env.NEXT_PUBLIC_BASE_URL}/events/`}>events</a> you could join, tho!`,
         };
     }
     if (data.type === 'imageUpload') {
@@ -129,7 +131,7 @@ export function getEmailTemplate(data: {
             html: `<div>Hi ${data.hostFirstName},<br></div><p>your event ${
                 data.eventTitle
             } is over now, we hope you had a good time and met new friends.<br>Please upload a picture of your dinner <a href=${
-                'https://mmp3.vercel.app/events/' + data.eventId
+                `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
             }>here</a> to show your cooking skills to the community.<br><br>See you at the next event!
         `,
         };
@@ -141,7 +143,7 @@ export function getEmailTemplate(data: {
             html: `<div>Hi ${
                 data.hostFirstName
             },<br></div><p>your event <a href=${
-                'https://mmp3.vercel.app/events/' + data.eventId
+                `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
             }>${
                 data.eventTitle
             }</a> takes place tomorrow! Don't forget to take a picture, which you can upload afterwards!<br>Prepare yourself and have fun! 
@@ -153,10 +155,36 @@ export function getEmailTemplate(data: {
             subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.eventTitle} takes place tomorrow`,
             text: `${data.eventTitle} takes place tomorrow`,
             html: `<div>Hi ${data.guestName},<br></div><p>the event <a href=${
-                'https://mmp3.vercel.app/events/' + data.eventId
+                `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
             }>${
                 data.eventTitle
             }</a> takes place tomorrow! Don't forget to leave a review after the event and have fun! 
+        `,
+        };
+    }
+    if (data.type === 'reviewReminder') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= It's time to review ${data.eventTitle}`,
+            text: `It's time to review ${data.eventTitle}`,
+            html: `<div>Hi ${data.guestName},<br></div><p>the event <a href=${
+                `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
+            }>${
+                data.eventTitle
+            }</a> is over! Now it's time to leave a short <a href=${
+                `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
+            }>review</a>!
+        `,
+        };
+    }
+    if (data.type === 'newReview') {
+        return {
+            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= New review for ${data.eventTitle}`,
+            text: `New review for ${data.eventTitle}`,
+            html: `<div>Hi ${data.hostFirstName},<br></div><p>${
+                data.guestName
+            } added a review to your event <a href=${
+                `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
+            }>${data.eventTitle}</a>. Check it out!
         `,
         };
     }

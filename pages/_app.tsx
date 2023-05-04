@@ -11,9 +11,9 @@ const App = ({
 }: AppProps<{ session: Session }>) => {
     {
         return (
-            <SessionProvider session={session}>
-                <ThemeProvider theme={theme}>
-                    <GlobalStyles />
+            <ThemeProvider theme={theme}>
+                <GlobalStyles />
+                <SessionProvider session={session}>
                     <Head>
                         <link
                             rel="apple-touch-icon"
@@ -42,11 +42,29 @@ const App = ({
                             name="msapplication-TileColor"
                             content="#da532c"
                         />
+                        <title>{'Studentenfutter'}</title>
                         <meta name="theme-color" content="#ffffff" />
+                        <style>{`
+                        @font-face {
+                            font-family: HankenGrotesk;
+                            src: url(/fonts/hanken-grotesk-v5-latin-regular.woff2);
+                            format: ('woff2');
+                            font-display: swap;
+                            font-weight:400;
+                        }
+
+                        @font-face {
+                            font-family: HankenGrotesk;
+                            src: url(/fonts/hanken-grotesk-v7-latin-800.woff2);
+                            format: ('woff2');
+                            font-display: swap;
+                            font-weight:800;
+                        }
+                        `}</style>
                     </Head>
                     <Component {...pageProps} />
-                </ThemeProvider>
-            </SessionProvider>
+                </SessionProvider>
+            </ThemeProvider>
         );
     }
 };
