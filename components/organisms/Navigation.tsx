@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Button } from '../atoms/Button';
 import Logo from '../../public/icons/logo.svg';
 import { RequestStatus } from '@prisma/client';
+import { NotificationBubble } from '../atoms/NotificationBubble';
 
 const hideNavigationOnPaths = [
     '/profile/[id]/edit',
@@ -38,6 +39,8 @@ const Navigation: React.FC = () => {
                 setPendingRequestsLength(pendingRequests);
             });
     }, [session.user.userId]);
+
+    const [requestCount, setRequestCount] = useState(5);
 
     return (
         <>
@@ -92,6 +95,11 @@ const Navigation: React.FC = () => {
                                     $isactive={router?.pathname === '/requests'}
                                 />
                                 <NavText>Requests</NavText>
+                                {requestCount > 0 && (
+                                    <NotificationBubble>
+                                        {requestCount}
+                                    </NotificationBubble>
+                                )}
                             </DesktopNavigationItem>
                             <DesktopNavigationItem
                                 $isactive={
@@ -156,10 +164,17 @@ const Navigation: React.FC = () => {
                                 }
                                 onClick={() => router.push('/events/create')}
                             />
-                            <StyledRequestsIcon
-                                $isactive={router?.pathname === '/requests'}
-                                onClick={() => router.push('/requests')}
-                            />
+                            <BubbleMobileWrapper>
+                                <StyledRequestsIcon
+                                    $isactive={router?.pathname === '/requests'}
+                                    onClick={() => router.push('/requests')}
+                                />
+                                {requestCount > 0 && (
+                                    <NotificationBubble>
+                                        {requestCount}
+                                    </NotificationBubble>
+                                )}
+                            </BubbleMobileWrapper>
                             <StyledProfileIcon
                                 $isactive={
                                     (router?.pathname === `/profile/[id]` &&
@@ -295,6 +310,7 @@ const DesktopNavigationItem = styled.div<NavProps>`
     align-items: center;
     width: 200px;
     cursor: pointer;
+    position: relative;
 
     font-size: ${({ theme }) => theme.fonts.normal.paragraph};
 
@@ -333,4 +349,8 @@ const DesktopFooter = styled.div`
 const StyledLogo = styled(Logo)`
     margin: 35px;
     cursor: pointer;
+`;
+
+const BubbleMobileWrapper = styled.div`
+    position: relative;
 `;
