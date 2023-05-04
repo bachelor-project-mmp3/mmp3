@@ -154,8 +154,8 @@ const CreateEvent = () => {
             const body = {
                 title,
                 info,
-                date,
-                timeLimit,
+                date: new Date(date).toISOString(),
+                timeLimit: new Date(timeLimit).toISOString(),
                 costs,
                 capacity,
                 dishes,
