@@ -52,13 +52,14 @@ export type EventProps = {
 
 const ExtendedEventPreview: React.FC<{
     event: EventProps;
-    onSubmitJoin: (eventId: string, userId: string) => void;
+    onSubmitDelete?: (eventId: string) => any;
+    onSubmitJoin?: (eventId: string, userId: string) => void;
     onSubmitLeave: (
         requestId: string,
         eventId: string,
         type: 'leave' | 'withdraw'
     ) => void;
-}> = ({ event, onSubmitJoin, onSubmitLeave }) => {
+}> = ({ event, onSubmitJoin, onSubmitLeave, onSubmitDelete }) => {
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -70,6 +71,8 @@ const ExtendedEventPreview: React.FC<{
         ? event?.host.firstName
         : 'Unknown host';
     const [showQuestion, setShowQuestion] = React.useState(false);
+    const [showQuestionDeleteEvent, setShowQuestionDeleteEvent] =
+        React.useState(false);
 
     // TODO use from helper
     const hasUserSendRequest = event.requests.find(
@@ -92,6 +95,19 @@ const ExtendedEventPreview: React.FC<{
                     textButtonAction={'Leave'}
                     textButtonClose={'Cancel'}>
                     Do you really want to leave <strong>{event.title}</strong>?
+                </ActionPopUp>
+            )}
+            {showQuestionDeleteEvent && (
+                <ActionPopUp
+                    onClose={() => setShowQuestionDeleteEvent(false)}
+                    onAction={(e) => {
+                        onSubmitDelete(event.id);
+                        /* to prevent navigation to eventdetail */
+                        e.stopPropagation();
+                    }}
+                    textButtonAction={'Delete event'}
+                    textButtonClose={'Cancel'}>
+                    Do you really want to delete <strong>{event.title}</strong>?
                 </ActionPopUp>
             )}
 
@@ -232,6 +248,19 @@ const ExtendedEventPreview: React.FC<{
                                     e.stopPropagation();
                                 }}>
                                 Edit Event
+                            </Button>
+                        </ButtonWrapper>
+                    )}
+                    {event.status == EventStatus.CANCELLED && userIsHost && (
+                        <ButtonWrapper>
+                            <Button
+                                variant="red"
+                                onClick={(e) => {
+                                    setShowQuestionDeleteEvent(true);
+                                    /* to prevent navigation to eventdetail */
+                                    e.stopPropagation();
+                                }}>
+                                Delete event
                             </Button>
                         </ButtonWrapper>
                     )}

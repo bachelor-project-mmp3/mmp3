@@ -97,9 +97,7 @@ const EventDetail = () => {
     const [event, setEvent] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const [showInfoPopUpOnJoin, setShowInfoPopUpOnJoin] = useState(false);
-    const [showInfoPopOpOnLeave, setShowInfoPopOpOnLeave] = useState<
-        string | undefined
-    >();
+    const [showInfoPopUp, setShowInfoPopUp] = useState<string | undefined>();
     const [showQuestion, setShowQuestion] = useState(false);
     const [showInfoPopUpOnCancel, setshowInfoPopUpOnCancel] = useState(false);
     const [showInfoPopUpOnUploadPhoto, setshowInfoPopUpOnUploadPhoto] =
@@ -108,6 +106,8 @@ const EventDetail = () => {
     const [showInfoPopUpOnDeleteGuest, setShowInfoPopUpOnDeleteGuest] =
         useState(false);
     const [deleteGuest, setDeleteGuest] = useState<undefined | RequestProps>();
+    const [showQuestionDeleteEvent, setShowQuestionDeleteEvent] =
+        React.useState(false);
     const [showReviewPopUp, setShowReviewPopUp] = useState(false);
     const [reviewData, setReviewData] = useState<{
         food: number;
@@ -174,7 +174,7 @@ const EventDetail = () => {
             });
 
             if (type === 'deleteGuest' && userIsHost) {
-                setShowInfoPopOpOnLeave(
+                setShowInfoPopUp(
                     `${deleteGuest.User.firstName} got deleted from the event.`
                 );
                 setDeleteGuest(undefined);
@@ -182,11 +182,9 @@ const EventDetail = () => {
                 setShowQuestion(false);
 
                 if (type === 'leave') {
-                    setShowInfoPopOpOnLeave('You left the event.');
+                    setShowInfoPopUp('You left the event.');
                 } else {
-                    setShowInfoPopOpOnLeave(
-                        'Your Request was deleted successfully.'
-                    );
+                    setShowInfoPopUp('Your Request was deleted successfully.');
                 }
             }
 
@@ -218,6 +216,20 @@ const EventDetail = () => {
         }
     };
 
+    const deleteEvent = async (eventId: string) => {
+        setLoading(true);
+
+        const res = await fetch(`/api/events/${eventId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (res.status === 200) {
+            router.back();
+        } else {
+            router.push('/404');
+        }
+    };
     const addReview = async () => {
         setLoading(true);
         const data = {
@@ -359,9 +371,9 @@ const EventDetail = () => {
                 </InfoPopUp>
             )}
 
-            {showInfoPopOpOnLeave && (
-                <InfoPopUp onClose={() => setShowInfoPopOpOnLeave(undefined)}>
-                    {showInfoPopOpOnLeave}
+            {showInfoPopUp && (
+                <InfoPopUp onClose={() => setShowInfoPopUp(undefined)}>
+                    {showInfoPopUp}
                 </InfoPopUp>
             )}
             {showInfoPopUpOnUploadPhoto && (
@@ -405,6 +417,15 @@ const EventDetail = () => {
                     Are your sure you want to delete{' '}
                     {deleteGuest.User.firstName} from{' '}
                     <strong>{event.title}</strong>?
+                </ActionPopUp>
+            )}
+            {showQuestionDeleteEvent && (
+                <ActionPopUp
+                    onClose={() => setShowQuestionDeleteEvent(false)}
+                    onAction={() => deleteEvent(event.id)}
+                    textButtonAction={'Delete event'}
+                    textButtonClose={'Cancel'}>
+                    Do you really want to delete <strong>{event.title}</strong>?
                 </ActionPopUp>
             )}
 
@@ -594,29 +615,34 @@ const EventDetail = () => {
 
                     {event.requests.filter(
                         (request) => request.status == RequestStatus.ACCEPTED
-                    ).length > 0 && (
-                        <Card variant={'description'}>
-                            <StyledSectionHeadings style={{ marginTop: 0 }}>
-                                Guestlist
-                            </StyledSectionHeadings>
-                            {event.requests
-                                .filter(
-                                    (request) =>
-                                        request.status == RequestStatus.ACCEPTED
-                                )
-                                .map((request, index) => (
-                                    <GuestListItem
-                                        key={`guestlistitem-${index}`}
-                                        guest={request.User}
-                                        userIsHost={userIsHost}
-                                        onClick={() => {
-                                            setShowInfoPopUpOnDeleteGuest(true);
-                                            setDeleteGuest(request);
-                                        }}
-                                    />
-                                ))}
-                        </Card>
-                    )}
+                    ).length > 0 &&
+                        event.status !== EventStatus.CANCELLED && (
+                            <Card variant={'description'}>
+                                <StyledSectionHeadings style={{ marginTop: 0 }}>
+                                    Guestlist
+                                </StyledSectionHeadings>
+                                {event.requests
+                                    .filter(
+                                        (request) =>
+                                            request.status ==
+                                            RequestStatus.ACCEPTED
+                                    )
+                                    .map((request, index) => (
+                                        <GuestListItem
+                                            key={`guestlistitem-${index}`}
+                                            guest={request.User}
+                                            eventStatus={event.status}
+                                            userIsHost={userIsHost}
+                                            onClick={() => {
+                                                setShowInfoPopUpOnDeleteGuest(
+                                                    true
+                                                );
+                                                setDeleteGuest(request);
+                                            }}
+                                        />
+                                    ))}
+                            </Card>
+                        )}
                     {event.status !== EventStatus.CANCELLED &&
                         new Date() < new Date(event.date) &&
                         (userIsHost ? (
@@ -695,9 +721,17 @@ const EventDetail = () => {
                             </StyledButtons>
                         ))}
                     {event.status !== EventStatus.CANCELLED &&
-                        new Date() > new Date(event.date) &&
+                        event.status === EventStatus.OVER &&
                         userIsHost && (
-                            <StyledButtons>
+                            <StyledButtons userIsHost={userIsHost}>
+                                <Button
+                                    variant={'red'}
+                                    onClick={() =>
+                                        setShowQuestionDeleteEvent(true)
+                                    }
+                                    width={45}>
+                                    Delete Event
+                                </Button>
                                 <UploadButton onChange={uploadEventPhoto}>
                                     Upload photo
                                 </UploadButton>
@@ -717,6 +751,18 @@ const EventDetail = () => {
                                 </Button>
                             </StyledButtons>
                         )}
+                    {event.status == EventStatus.CANCELLED && userIsHost && (
+                        <StyledButtons>
+                            <Button
+                                variant="red"
+                                width={45}
+                                onClick={() => {
+                                    setShowQuestionDeleteEvent(true);
+                                }}>
+                                Delete event
+                            </Button>
+                        </StyledButtons>
+                    )}
                 </StyledDetailsWrapper>
             </Layout>
         </>

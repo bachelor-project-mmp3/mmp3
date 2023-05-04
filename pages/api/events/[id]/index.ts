@@ -15,6 +15,19 @@ export default async function handler(
             // DELETE api/events/{id}
             if (req.method === 'DELETE') {
                 const eventId = req.query.id.toString();
+                // delete relations before event entry
+                await prisma.notification.deleteMany({
+                    where: { eventId: eventId },
+                });
+                await prisma.request.deleteMany({
+                    where: { eventId: eventId },
+                });
+                await prisma.review.deleteMany({
+                    where: { eventId: eventId },
+                });
+                await prisma.dish.deleteMany({
+                    where: { eventId: eventId },
+                });
                 await prisma.event.delete({
                     where: { id: eventId },
                 });
