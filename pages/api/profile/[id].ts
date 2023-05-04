@@ -72,9 +72,12 @@ export default async function handler(
                                     date: true,
                                 },
                                 where: {
-                                    date: {
-                                        lte: new Date(),
-                                    },
+                                    AND: [
+                                        {
+                                            date: { lte: new Date() },
+                                            NOT: { status: 'CANCELLED' },
+                                        },
+                                    ],
                                 },
                             },
                         },
