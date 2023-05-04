@@ -203,6 +203,7 @@ const Profile = () => {
                                                 title={event.title}
                                                 imageEvent={event.image}
                                                 imageHost={profile.image}
+                                                reviews={event.reviews}
                                                 onClick={() =>
                                                     router.push(
                                                         `/events/${event.id}`
@@ -416,7 +417,7 @@ const StyledAboutMeText = styled.p`
 
 const EventItem = styled.div`
     width: 45%;
-    height: 170px;
+    height: 190px;
     margin-bottom: 20px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         margin-bottom: 80px;

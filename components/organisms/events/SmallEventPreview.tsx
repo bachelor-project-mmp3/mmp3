@@ -1,8 +1,9 @@
-import { ReactNode } from 'react';
 import styled from 'styled-components';
 import React from 'react';
 import { Card } from '../../atoms/Card';
 import Image from 'next/image';
+import ReactStars from 'react-stars';
+import { getOverallRating } from '../../../helper/EventsAndUserHelper';
 
 interface SmallEventProps {
     title: string;
@@ -11,6 +12,7 @@ interface SmallEventProps {
     date: string;
     myEventsPage?: boolean;
     onClick?: (e: any) => void;
+    reviews: { total: number }[];
 }
 
 const getFormattedDate = (date: string) => {
@@ -25,7 +27,9 @@ export const SmallEventPreview: React.FC<SmallEventProps> = ({
     date,
     onClick,
     myEventsPage,
+    reviews,
 }: SmallEventProps) => {
+    const overAllRating = getOverallRating(reviews);
     return (
         <SmallEventWrapper onClick={onClick} myEventsPage={myEventsPage}>
             <Card variant={'small-event'}>
@@ -35,6 +39,20 @@ export const SmallEventPreview: React.FC<SmallEventProps> = ({
                     width="300"
                     height="300"
                 />
+                <ReviewWrapper>
+                    {reviews?.length > 0 ? (
+                        <ReactStars
+                            count={5}
+                            half={false}
+                            size={29}
+                            color2={'#ffd700'}
+                            value={overAllRating}
+                            edit={false}
+                        />
+                    ) : (
+                        <NoReviews></NoReviews>
+                    )}
+                </ReviewWrapper>
                 <RowWrapper className="padding">
                     <ColumnWrapper className="col-1">
                         <RowWrapper>
@@ -64,6 +82,11 @@ const SmallEventWrapper = styled.div<SmallEventWrapperProps>`
     ${(props) => props.myEventsPage && 'max-width: 300px; width:100%;'};
 `;
 
+const ReviewWrapper = styled.div`
+    padding-left: 20px;
+    height: 40px;
+`;
+
 const ColumnWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -85,7 +108,7 @@ const RowWrapper = styled.div`
     flex-wrap: wrap;
     flex-direction: row;
     &.padding {
-        padding: 10px;
+        padding: 0 10px 10px;
     }
     @media ${(props) => props.theme.breakpoint.tablet} {
         padding: 5px;
@@ -138,4 +161,8 @@ const StyledTitle = styled.p`
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.smallParagraph};
     }
+`;
+
+const NoReviews = styled.div`
+    padding-top: 10px;
 `;

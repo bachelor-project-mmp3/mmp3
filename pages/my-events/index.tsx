@@ -313,6 +313,7 @@ const MyEvents = () => {
                                         title={event.title}
                                         imageEvent={event.image}
                                         imageHost={event.host.image}
+                                        reviews={event.reviews}
                                         myEventsPage={true}
                                         onClick={() =>
                                             router.push(`/events/${event.id}`)

@@ -64,6 +64,7 @@ export default async function handler(
                         },
                         menu: true,
                         requests: true,
+                        reviews: true,
                     },
                     where: {
                         OR: [
@@ -141,6 +142,7 @@ export default async function handler(
                         },
                         menu: true,
                         requests: true,
+                        reviews: true,
                     },
                     where: {
                         OR: [

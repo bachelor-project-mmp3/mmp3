@@ -70,6 +70,7 @@ export default async function handler(
                                     title: true,
                                     image: true,
                                     date: true,
+                                    reviews: { select: { total: true } },
                                 },
                                 where: {
                                     AND: [
@@ -111,6 +112,7 @@ export default async function handler(
                         include: {
                             events: {
                                 select: {
+                                    reviews: { select: { total: true } },
                                     id: true,
                                     title: true,
                                     image: true,
