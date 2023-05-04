@@ -145,10 +145,12 @@ const Profile = () => {
                                         <p>{profile.dormitory}</p>
                                     )}
                                 </InfoRow>
-                                <InfoRow>
-                                    <StyledStudy />
-                                    <p>{profile.study}</p>
-                                </InfoRow>
+                                {profile.study && (
+                                    <InfoRow>
+                                        <StyledStudy />
+                                        <p>{profile.study}</p>
+                                    </InfoRow>
+                                )}
                                 {profile.id === session?.user?.userId &&
                                     profile.phone && (
                                         <InfoRow>
