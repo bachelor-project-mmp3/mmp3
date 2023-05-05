@@ -380,7 +380,7 @@ const DateAndTime = styled.div<DateAndTimeProps>`
     border-top-right-radius: 16px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 32px;
-    width: 208px;
+    width: 215px;
     position: relative;
     z-index: 10;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagrap};

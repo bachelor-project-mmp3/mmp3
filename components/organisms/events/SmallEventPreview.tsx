@@ -44,7 +44,7 @@ export const SmallEventPreview: React.FC<SmallEventProps> = ({
                         <ReactStars
                             count={5}
                             half={false}
-                            size={29}
+                            size={20}
                             color2={'#ffd700'}
                             value={overAllRating}
                             edit={false}
@@ -84,7 +84,7 @@ const SmallEventWrapper = styled.div<SmallEventWrapperProps>`
 
 const ReviewWrapper = styled.div`
     padding-left: 20px;
-    height: 40px;
+    height: 35px;
 `;
 
 const ColumnWrapper = styled.div`
