@@ -138,7 +138,7 @@ const Profile = () => {
                                     {profile.id === session?.user?.userId ? (
                                         <p>
                                             {profile.dormitory}
-                                            {', No.'}
+                                            {', No. '}
                                             {profile.roomNumber}
                                         </p>
                                     ) : (

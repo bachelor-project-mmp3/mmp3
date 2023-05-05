@@ -735,6 +735,8 @@ const EventDetail = () => {
                     {event.status !== EventStatus.CANCELLED &&
                         new Date() > new Date(event.date) &&
                         !userIsHost &&
+                        hasUserSendRequest &&
+                        isRequestAccepted &&
                         !userHasSentReview(event, session) && (
                             <StyledButtons>
                                 <Button

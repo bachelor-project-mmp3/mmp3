@@ -460,6 +460,10 @@ const DishEntry = styled.div`
 
     :first-child {
         flex-shrink: 0;
+        max-width: 300px;
+        @media ${(props) => props.theme.breakpoint.tablet} {
+            max-width: 500px;
+        }
     }
 `;
 
