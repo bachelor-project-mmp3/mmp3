@@ -86,7 +86,7 @@ const StyledTextArea = styled.textarea`
     border-radius: 20px;
     border: none;
     padding: 13px 20px;
-    box-shadow: 8px 8px 20px -11px ${({ theme }) => theme.darkgrey};
+    border: 1px solid ${({ theme }) => theme.midGrey};
     font-size: ${({ theme }) => theme.fonts.mobile.info};
     @media ${({ theme }) => theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.info};
