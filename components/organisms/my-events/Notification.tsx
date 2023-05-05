@@ -57,16 +57,13 @@ const Notification: React.FC<{
 export default Notification;
 
 const StyledTitle = styled.p`
-    width: 300px;
+    width: 220px;
     font-weight: 800;
     margin: 0;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     display: inline-block;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        width: 220px;
-    }
 `;
 
 const StyledMessage = styled.p`
