@@ -115,12 +115,15 @@ const StyledImage = styled(Image)`
 const ReviewStarsWrapper = styled.div`
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
 `;
 
 const ReviewCategory = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
+    color: ${({ theme }) => theme.midGrey};
 `;
 
 const Text = styled.div`
