@@ -5,12 +5,19 @@ import { Footer } from '../components/organisms/Footer';
 import { Steps } from '../components/organisms/Steps';
 import styled from 'styled-components';
 import { Button } from '../components/atoms/Button';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
 
-const LandingPage: React.FC = () => {
+export async function getServerSideProps({ req, res }) {
+    const session = await getServerSession(req, res, authOptions);
+
+    return { props: { user: session?.user ?? null } };
+}
+
+function LandingPage({ user }) {
     const router = useRouter();
-    const { data: session, status } = useSession();
 
     return (
         <>
@@ -26,7 +33,7 @@ const LandingPage: React.FC = () => {
                         <p>Join the mix and meet new people - meal by meal!</p>
 
                         <ButtonWrapperDesktop>
-                            {status != 'authenticated' ? (
+                            {!user ? (
                                 <Button
                                     variant={'primary'}
                                     onClick={() =>
@@ -46,7 +53,7 @@ const LandingPage: React.FC = () => {
                         </ButtonWrapperDesktop>
 
                         <ButtonWrapperMobile>
-                            {status != 'authenticated' ? (
+                            {!user ? (
                                 <Button
                                     variant={'primary'}
                                     onClick={() =>
@@ -76,7 +83,7 @@ const LandingPage: React.FC = () => {
             <Footer />
         </>
     );
-};
+}
 
 export default LandingPage;
 
