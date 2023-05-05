@@ -33,6 +33,7 @@ export default async function handler(
                     hostFirstName: review.Event.host.firstName,
                     eventTitle: review.Event.title,
                     guestName: review.User.firstName,
+                    eventId: review.Event.id,
                     type: 'newReview',
                 });
 

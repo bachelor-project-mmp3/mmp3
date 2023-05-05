@@ -125,9 +125,13 @@ const EventDetail = () => {
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    setEvent(data.event);
-                    setEventImage(data.event.image);
-                    setLoading(false);
+                    if (!data.event) {
+                        router.replace('/404');
+                    } else {
+                        setEvent(data.event);
+                        setEventImage(data.event.image);
+                        setLoading(false);
+                    }
                 });
         }
     }, [router.isReady, router.query.id]);
@@ -225,7 +229,7 @@ const EventDetail = () => {
         });
 
         if (res.status === 200) {
-            router.back();
+            router.push('/my-events');
         } else {
             router.push('/404');
         }
@@ -318,20 +322,6 @@ const EventDetail = () => {
             router.push('/404');
         }
     };
-
-    useEffect(() => {
-        // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
-        if (router.isReady) {
-            fetch(`/api/events/${router.query.id}`, {
-                method: 'GET',
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    setEvent(data.event);
-                    setLoading(false);
-                });
-        }
-    }, [router.isReady, router.query.id]);
 
     if (isLoading) return <Loading />;
     if (!event) return <div>No event detail </div>;

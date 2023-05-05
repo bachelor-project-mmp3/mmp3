@@ -27,8 +27,8 @@ import Head from 'next/head';
 const schema = yup
     .object({
         title: yup.string().min(1).required(),
-        date: yup.string().required(),
-        timelimit: yup.string(),
+        date: yup.date(),
+        timelimit: yup.date(),
         costs: yup.number().positive().min(0).max(99),
         guests: yup.number().positive().integer().min(1).max(99).required(),
     })
@@ -50,8 +50,10 @@ const CreateEvent = () => {
     const [roomnumber, setRoomnumber] = useState('');
     const [title, setTitle] = useState('');
     const [info, setInfo] = useState('');
-    const [date, setDate] = useState(dateTimeNow);
-    const [timeLimit, setTimeLimit] = useState(dateTimePlusOneHour);
+    const [date, setDate] = useState();
+    const [timeLimit, setTimeLimit] = useState(
+        date ? dateTimePlusOneHour : null
+    );
     const [costs, setCosts] = useState('');
     const [capacity, setCapacity] = useState('');
     const [dishes, setDishes] = useState([
@@ -72,6 +74,8 @@ const CreateEvent = () => {
     } = useForm<FormData>({
         resolver: yupResolver(schema),
     });
+
+    console.log({ errors });
 
     React.useEffect(() => {
         register('title');
@@ -123,7 +127,14 @@ const CreateEvent = () => {
     const CheckDateInputTime = (e) => {
         const inputDate = new Date(e);
 
-        if (inputDate <= currentDate) {
+        if (inputDate.toString() === 'Invalid Date') {
+            setError('date', { type: 'date' });
+            return;
+        } else {
+            clearErrors('date');
+        }
+
+        if (inputDate <= dateTimePlusOneHourDate) {
             setError('date', { type: 'min' });
         } else {
             if (errors.date) {
@@ -135,6 +146,13 @@ const CreateEvent = () => {
     const CheckTimelimitInputTime = (e) => {
         const inputTimelimit = new Date(e);
         const eventDate = new Date(date);
+
+        if (inputTimelimit.toString() === 'Invalid Date') {
+            setError('timelimit', { type: 'date' });
+            return;
+        } else {
+            clearErrors('timelimit');
+        }
 
         if (
             inputTimelimit <= dateTimePlusOneHourDate ||
@@ -222,7 +240,7 @@ const CreateEvent = () => {
                         <InputDateTime
                             id="date"
                             value={date}
-                            min={dateTimeNow}
+                            min={dateTimePlusOneHour}
                             onChange={(e) => {
                                 setValue('date', e?.target?.value);
                                 setDate(e?.target?.value);
@@ -241,7 +259,12 @@ const CreateEvent = () => {
                         </InputDateTime>
                         {errors.date && errors.date.type === 'min' && (
                             <ErrorMessage>
-                                Please enter a date in the future
+                                Please enter a date at least one hour from now
+                            </ErrorMessage>
+                        )}
+                        {errors.date && errors.date.type === 'date' && (
+                            <ErrorMessage>
+                                Please enter a valid date
                             </ErrorMessage>
                         )}
                     </StyledInputWithError>
@@ -265,6 +288,12 @@ const CreateEvent = () => {
                                 <ErrorMessage>
                                     Please enter a date and time between an hour
                                     from now and the event
+                                </ErrorMessage>
+                            )}
+                        {errors.timelimit &&
+                            errors.timelimit.type === 'date' && (
+                                <ErrorMessage>
+                                    Please enter a valid date
                                 </ErrorMessage>
                             )}
                     </StyledInputWithError>
