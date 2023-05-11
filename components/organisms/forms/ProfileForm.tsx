@@ -388,7 +388,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                                 }
                             }}>
                             I have read and agree to the{' '}
-                            <Link href="/privacy">privacy policy</Link>
+                            <Link href="/privacy" target="_blank">privacy policy</Link>
                         </Checkbox>
                     </StyledWrapper>
                     {/*errors will return when field validation fails */}
