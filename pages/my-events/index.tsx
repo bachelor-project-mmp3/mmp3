@@ -81,6 +81,7 @@ const MyEvents = () => {
     };
 
     const onClickLink = async (notificationId: string, eventId: string) => {
+        setLoading(true);
         const res = await fetch(`/api/notifications/${notificationId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
