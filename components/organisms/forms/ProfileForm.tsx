@@ -36,7 +36,7 @@ const schema = yup.object({
     image: yup.string().notRequired(),
     firstName: yup.string().min(2).required(),
     lastName: yup.string().min(2).required(),
-    roomNumber: yup.string().max(10).required(),
+    roomNumber: yup.string().max(5).required(),
     aboutYou: yup.string().notRequired(),
     instagram: yup.string().notRequired(),
     phone: yup.string().notRequired(),
@@ -302,7 +302,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                             }
                         }}
                         id="roomNumber"
-                        maxLength={10}
+                        maxLength={5}
                         placeholder="000"
                         value={roomNumber}
                         required={true}
@@ -319,7 +319,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                         )}
                     {errors.roomNumber && errors.roomNumber.type === 'max' && (
                         <ErrorMessage>
-                            Please enter a room number up to 10 characters
+                            Please enter a room number up to 5 characters
                         </ErrorMessage>
                     )}
                     <StyledInfo>

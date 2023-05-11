@@ -37,10 +37,14 @@ const Profile = () => {
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    setProfile(data.profile);
-                    setEvents(data.profile.events);
-                    setPageCount(data.pageCount);
-                    setLoading(false);
+                    if (!data.profile) {
+                        router.replace('/404');
+                    } else {
+                        setProfile(data.profile);
+                        setEvents(data.profile.events);
+                        setPageCount(data.pageCount);
+                        setLoading(false);
+                    }
                 });
         }
     }, [router.isReady, router.query.id, pageIndex]);
@@ -107,8 +111,7 @@ const Profile = () => {
                                     <StyledImage
                                         src={profile.image}
                                         alt="Image"
-                                        width="300"
-                                        height="300"
+                                        fill
                                     />
                                 </ProfileImage>
                             )}
@@ -348,12 +351,21 @@ const InfoRow = styled.div`
     flex-direction: row;
     align-items: center;
     height: 30px;
-    min-width: 250px;
+    min-width: 270px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        min-width: 320px;
+    }
 `;
 
 const StyledImage = styled(Image)`
     border-radius: 100%;
     object-fit: cover;
+    width: 250px;
+    height: 250px;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        width: 300px;
+        height: 300px;
+    }
 `;
 
 const StyledLocation = styled(Location)`
@@ -425,9 +437,11 @@ const EventItem = styled.div`
 `;
 
 const StyledBurger = styled(Burger)`
-    position: absolute;
+    position: fixed;
     right: 20px;
-    top: 35px;
+    top: 25px;
+    z-index: 1;
+    width: 35px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         display: none;
     }
@@ -506,9 +520,13 @@ const ButtonWrapper = styled.div`
 const ProfileImage = styled.div`
     position: relative;
     border-radius: 50%;
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
     background: white;
+    @media ${(props) => props.theme.breakpoint.tablet} {
+        width: 300px;
+        height: 300px;
+    }
 `;
 
 const Pagination = styled.div`
