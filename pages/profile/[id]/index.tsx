@@ -37,10 +37,14 @@ const Profile = () => {
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    setProfile(data.profile);
-                    setEvents(data.profile.events);
-                    setPageCount(data.pageCount);
-                    setLoading(false);
+                    if (!data.profile) {
+                        router.replace('/404');
+                    } else {
+                        setProfile(data.profile);
+                        setEvents(data.profile.events);
+                        setPageCount(data.pageCount);
+                        setLoading(false);
+                    }
                 });
         }
     }, [router.isReady, router.query.id, pageIndex]);
