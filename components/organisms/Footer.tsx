@@ -16,8 +16,8 @@ export const Footer = () => {
                         status === 'authenticated'
                             ? router.push('/events')
                             : signIn('fhs', {
-                                  callbackUrl: '/api/auth/signin',
-                              })
+                                callbackUrl: '/api/auth/signin',
+                            })
                     }>
                     Join the mix
                 </StyledText>
@@ -65,6 +65,9 @@ const LinksWrapper = styled.div`
 const StyledText = styled.p`
     color: ${({ theme }) => theme.darkGrey};
     cursor: pointer;
+    &:nth-child(2){
+        cursor: default;
+    }
     font-size: ${({ theme }) => theme.fonts.mobile.info};
     @media ${({ theme }) => theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.info};
