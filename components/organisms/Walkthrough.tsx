@@ -11,89 +11,90 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import SwiperCore from 'swiper';
 
-const Walkthrough: React.FC = () => {
-    const [showWalkthrough, setShowWalkthrough] = useState(true);
+interface WalkthroughProps {
+    onClick: (e: any) => void;
+}
+
+const Walkthrough: React.FC<WalkthroughProps> = ({
+    onClick,
+}: WalkthroughProps) => {
     const [introState, setIntroState] = useState(0);
     const swiperRef = useRef<SwiperCore>();
     return (
         <>
-            {showWalkthrough && (
-                <StyledBackground>
-                    <StyledSkip onClick={() => setShowWalkthrough(false)}>
-                        Skip Intro
-                    </StyledSkip>
-                    <StyledHeadline>Welcome to Studentenfutter</StyledHeadline>
+            <StyledBackground>
+                <StyledSkip onClick={onClick}>Skip Intro</StyledSkip>
+                <StyledHeadline>Welcome to Studentenfutter</StyledHeadline>
 
-                    <Swiper
-                        modules={[Pagination]}
-                        pagination
-                        onBeforeInit={(swiper) => (swiperRef.current = swiper)}
-                        onSlideChange={() =>
-                            swiperRef.current?.swipeDirection == 'prev'
-                                ? setIntroState(introState - 1)
-                                : setIntroState(introState + 1)
-                        }>
-                        <SwiperSlide>
-                            <StyledText>
-                                Join events or simply create them yourself - all
-                                to your preferences!
-                            </StyledText>
-                            <StyledImage>
-                                <ImageState1 />
-                            </StyledImage>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <StyledText>
-                                The plattform that brings students together at a
-                                shared meal
-                            </StyledText>
-                            <StyledImage>
-                                <ImageState2 />
-                            </StyledImage>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <StyledText>
-                                But before you get going: Please fill out your
-                                profile page!
-                            </StyledText>
-                            <StyledImage>
-                                <ImageState3 />
-                            </StyledImage>
-                        </SwiperSlide>
-                        <ButtonWrapper>
-                            {introState != 0 && (
-                                <Button
-                                    variant="secondary"
-                                    width={40}
-                                    onClick={function () {
-                                        swiperRef.current?.slidePrev();
-                                        setIntroState(introState - 1);
-                                    }}>
-                                    Go Back
-                                </Button>
-                            )}
-                            {introState == 2 ? (
-                                <Button
-                                    variant="primary"
-                                    width={40}
-                                    onClick={() => setShowWalkthrough(false)}>
-                                    Got it!
-                                </Button>
-                            ) : (
-                                <Button
-                                    variant="primary"
-                                    width={40}
-                                    onClick={function () {
-                                        swiperRef.current?.slideNext();
-                                        setIntroState(introState + 1);
-                                    }}>
-                                    Next
-                                </Button>
-                            )}
-                        </ButtonWrapper>
-                    </Swiper>
-                </StyledBackground>
-            )}
+                <Swiper
+                    modules={[Pagination]}
+                    pagination
+                    onBeforeInit={(swiper) => (swiperRef.current = swiper)}
+                    onSlideChange={() =>
+                        swiperRef.current?.swipeDirection == 'prev'
+                            ? setIntroState(introState - 1)
+                            : setIntroState(introState + 1)
+                    }>
+                    <SwiperSlide>
+                        <StyledText>
+                            Join events or simply create them yourself - all to
+                            your preferences!
+                        </StyledText>
+                        <StyledImage>
+                            <ImageState1 />
+                        </StyledImage>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <StyledText>
+                            The plattform that brings students together at a
+                            shared meal
+                        </StyledText>
+                        <StyledImage>
+                            <ImageState2 />
+                        </StyledImage>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <StyledText>
+                            But before you get going: Please fill out your
+                            profile page!
+                        </StyledText>
+                        <StyledImage>
+                            <ImageState3 />
+                        </StyledImage>
+                    </SwiperSlide>
+                    <ButtonWrapper>
+                        {introState != 0 && (
+                            <Button
+                                variant="secondary"
+                                width={40}
+                                onClick={function () {
+                                    swiperRef.current?.slidePrev();
+                                    setIntroState(introState - 1);
+                                }}>
+                                Go Back
+                            </Button>
+                        )}
+                        {introState == 2 ? (
+                            <Button
+                                variant="primary"
+                                width={40}
+                                onClick={onClick}>
+                                Got it!
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="primary"
+                                width={40}
+                                onClick={function () {
+                                    swiperRef.current?.slideNext();
+                                    setIntroState(introState + 1);
+                                }}>
+                                Next
+                            </Button>
+                        )}
+                    </ButtonWrapper>
+                </Swiper>
+            </StyledBackground>
         </>
     );
 };
@@ -128,9 +129,6 @@ const StyledBackground = styled.div`
     left: 0;
     top: 0;
     z-index: 1;
-    @media ${(props) => props.theme.breakpoint.tablet} {
-        display: none;
-    }
 `;
 
 const ButtonWrapper = styled.div`
