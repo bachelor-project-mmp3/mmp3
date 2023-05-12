@@ -848,7 +848,7 @@ const StyledSectionHeadings = styled.p`
 `;
 
 const StyledCancelNote = styled.p`
-    color: red;
+    color: ${({ theme }) => theme.red};
     font-weight: 800;
 `;
 

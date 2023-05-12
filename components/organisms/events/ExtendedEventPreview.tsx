@@ -477,6 +477,6 @@ const ButtonWrapper = styled.div`
 `;
 
 const StyledCancelNote = styled.p`
-    color: red;
+    color: ${({ theme }) => theme.red};
     font-weight: 800;
 `;

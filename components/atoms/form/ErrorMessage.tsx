@@ -11,7 +11,7 @@ export const ErrorMessage = ({ children }: ErrorMessageProps) => {
 };
 
 const StyledSpan = styled.span`
-    color: red;
+    color: ${({ theme }) => theme.red};
     font-size: ${theme.fonts.mobile.info};
     margin-left: 20px;
 
