@@ -157,7 +157,7 @@ const ExtendedEventPreview: React.FC<{
                             <HostImage userIsHost={userIsHost}>
                                 <StyledImage
                                     src={event.host.image}
-                                    alt="Image"
+                                    alt="profile photo"
                                     fill
                                     sizes="100"
                                     style={{ objectFit: 'cover' }}
