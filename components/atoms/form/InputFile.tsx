@@ -9,7 +9,9 @@ interface InputFileProps {
 export const InputFile = ({ id, onChange }: InputFileProps) => {
     return (
         <>
-            <StyledUpload>
+            <StyledUpload htmlFor={id}>
+                {/* label is required for accessibility */}
+                <FakeLabel>photo</FakeLabel>
                 <StyledCamera></StyledCamera>
                 <StyledInputFile
                     id={id}
@@ -23,6 +25,10 @@ export const InputFile = ({ id, onChange }: InputFileProps) => {
 };
 
 export const StyledInputFile = styled.input`
+    display: none;
+`;
+
+export const FakeLabel = styled.p`
     display: none;
 `;
 
