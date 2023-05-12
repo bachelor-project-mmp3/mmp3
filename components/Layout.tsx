@@ -50,7 +50,7 @@ const StyledLayout = styled.div<StyledLayoutProps>`
     }
 `;
 
-const LayoutWrapper = styled.div`
+const LayoutWrapper = styled.main`
     @media ${({ theme }) => theme.breakpoint.tablet} {
         margin-left: 320px;
     }
