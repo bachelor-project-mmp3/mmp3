@@ -203,7 +203,7 @@ const Navigation: React.FC = () => {
 
 export default Navigation;
 
-const MobileNavigation = styled.div`
+const MobileNavigation = styled.nav`
     height: 70px;
     position: fixed;
     bottom: 0;
@@ -278,7 +278,7 @@ const StyledRequestsIcon = styled(RequestsIcon)<NavProps>`
     }
 `;
 
-const DesktopNavigation = styled.div`
+const DesktopNavigation = styled.nav`
     display: none;
 
     @media ${({ theme }) => theme.breakpoint.tablet} {

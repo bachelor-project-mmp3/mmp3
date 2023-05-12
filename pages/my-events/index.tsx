@@ -371,7 +371,7 @@ const MyEvents = () => {
 
 export default MyEvents;
 
-const StyledHeadline = styled.p`
+const StyledHeadline = styled.h2`
     width: 100%;
     margin-bottom: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.headline5};
@@ -477,7 +477,7 @@ const StyledP = styled.p`
     text-align: center;
 `;
 
-const StyledHeading = styled.h2`
+const StyledHeading = styled.h1`
     font-size: ${({ theme }) => theme.fonts.mobile.headline3};
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline3};
