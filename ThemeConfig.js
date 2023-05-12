@@ -8,9 +8,9 @@ const size = {
 export const theme = {
     body: '#FFFFFF',
     text: '#343434',
-    red: '#EF4B4B',
+    red: '#DB1F1F',
     hoverRed: '#8a0606',
-    primary: '#3d754c',
+    primary: '#457251',
     hoverPrimary: '#306145',
     secondary: '#B3F0A8',
     green: '#a7dbbc',
