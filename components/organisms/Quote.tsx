@@ -53,7 +53,7 @@ const BackgroundWrapper = styled.div`
     background: ${({ theme }) => theme.body};
 `;
 
-const StyledTitle = styled.p`
+const StyledTitle = styled.h2`
     text-align: center;
     font-weight: 800;
     margin: 0;
