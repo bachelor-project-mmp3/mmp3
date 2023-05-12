@@ -17,14 +17,14 @@ export const Quote: React.FC<QuoteProps> = ({
             <BackgroundWrapper>
                 <MobileImage
                     src={'/images/background_quote_mobile.svg'}
-                    alt="Image"
+                    alt="background with drawn tomatoes, almonds, pepper and carrots"
                     fill
                     sizes="100"
                     style={{ objectFit: 'cover' }}
                 />
                 <DesktopImage
                     src={'/images/background_quote_desktop.svg'}
-                    alt="Image"
+                    alt="background with drawn tomatoes, almonds, pepper and carrots"
                     fill
                     sizes="100"
                     style={{ objectFit: 'cover' }}
