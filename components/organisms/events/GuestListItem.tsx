@@ -18,13 +18,14 @@ const GuestListItem: React.FC<{
     eventStatus: EventStatus;
     onClick?: (e: any) => void;
 }> = ({ guest, userIsHost, eventStatus, onClick }) => {
+    const altText = `photo of ${guest.firstName}`;
     return (
         <StyledGuestListItem>
             <StyledImageAndName
                 onClick={() => router.push(`/profile/${guest.id}`)}>
                 <StyledImage
                     src={guest.image}
-                    alt="Image"
+                    alt={altText}
                     style={{ objectFit: 'cover' }}
                     width={60}
                     height={60}

@@ -170,7 +170,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     <ProfileImage>
                         <StyledImage
                             src={selectedImage ? selectedImage : image}
-                            alt="Image"
+                            alt="profile photo"
                             fill
                             sizes="100"
                             style={{ objectFit: 'cover' }}
@@ -255,7 +255,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
             <StyledDiv>
                 <InputText
-                    id=""
+                    id="study"
                     placeholder="000"
                     value={profile.study}
                     disabled={true}>
@@ -264,7 +264,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
             </StyledDiv>
 
             <StyledDiv>
-                <InputText id="study" value={profile.email} disabled={true}>
+                <InputText id="email" value={profile.email} disabled={true}>
                     FH email address:
                 </InputText>
                 <StyledInfo>
@@ -366,7 +366,10 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     id="phone"
                     placeholder="+43 123 45 67 890"
                     value={phone}
-                    padding="left"></InputText>
+                    padding="left">
+                    {/* label is required for accessibility */}
+                    <FakeLabel>Phone number</FakeLabel>
+                </InputText>
             </StyledDivPhone>
             <StyledInfo>
                 <Info>The phone number will only be shared with guests</Info>
@@ -388,7 +391,9 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                                 }
                             }}>
                             I have read and agree to the{' '}
-                            <Link href="/privacy" target="_blank">privacy policy</Link>
+                            <Link href="/privacy" target="_blank">
+                                privacy policy
+                            </Link>
                         </Checkbox>
                     </StyledWrapper>
                     {/*errors will return when field validation fails */}
@@ -508,4 +513,8 @@ const ProfileImage = styled.div`
     width: 300px;
     height: 300px;
     background: white;
+`;
+
+const FakeLabel = styled.p`
+    display: none;
 `;

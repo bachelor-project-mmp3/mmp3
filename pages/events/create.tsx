@@ -300,7 +300,7 @@ const CreateEvent = () => {
                     <StyledFormComponentsInRow>
                         <StyledInputWithError className="small">
                             <InputText
-                                id=""
+                                id="dormitory"
                                 placeholder="000"
                                 value={dormitory}
                                 disabled={true}>
@@ -309,7 +309,7 @@ const CreateEvent = () => {
                         </StyledInputWithError>
                         <StyledInputWithError className="small">
                             <InputText
-                                id=""
+                                id="roomNumber"
                                 placeholder="000"
                                 value={roomnumber}
                                 disabled={true}>
@@ -608,7 +608,7 @@ const StyledMoneyIcon = styled.div`
     }
 `;
 
-const StyledHeading = styled.h2`
+const StyledHeading = styled.h1`
     font-size: ${({ theme }) => theme.fonts.mobile.headline3};
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline3};

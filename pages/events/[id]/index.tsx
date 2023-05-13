@@ -531,11 +531,17 @@ const EventDetail = () => {
                                             <Link
                                                 href={`tel:${event.host.phone}`}>
                                                 <StyledPhoneIcon />
+                                                {/* text is required for accessibility */}
+                                                <FakeLinkText>
+                                                    Phone
+                                                </FakeLinkText>
                                             </Link>
                                         )}
                                         <Link
                                             href={`mailto:${event.host.email}`}>
                                             <StyledEmailIcon />
+                                            {/* text is required for accessibility */}
+                                            <FakeLinkText>Email</FakeLinkText>
                                         </Link>
                                     </div>
                                 )}
@@ -837,7 +843,7 @@ const StyledButtons = styled.div<HostImageProps>`
     }
 `;
 
-const StyledSectionHeadings = styled.p`
+const StyledSectionHeadings = styled.h2`
     font-weight: 800;
     margin-top: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
@@ -848,7 +854,7 @@ const StyledSectionHeadings = styled.p`
 `;
 
 const StyledCancelNote = styled.p`
-    color: red;
+    color: ${({ theme }) => theme.red};
     font-weight: 800;
 `;
 
@@ -892,7 +898,7 @@ const StyledDiscard = styled(Discard)`
     transform: translate(-50%, -50%);
 `;
 
-const StyledHeading = styled.h2`
+const StyledHeading = styled.h1`
     font-size: ${({ theme }) => theme.fonts.mobile.headline3};
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline3};
@@ -942,4 +948,8 @@ const ReviewList = styled.div`
     display: flex;
     flex-direction: column;
     gap: 40px;
+`;
+
+const FakeLinkText = styled.p`
+    display: none;
 `;

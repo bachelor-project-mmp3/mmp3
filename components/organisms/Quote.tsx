@@ -17,14 +17,14 @@ export const Quote: React.FC<QuoteProps> = ({
             <BackgroundWrapper>
                 <MobileImage
                     src={'/images/background_quote_mobile.svg'}
-                    alt="Image"
+                    alt="background with drawn tomatoes, almonds, pepper and carrots"
                     fill
                     sizes="100"
                     style={{ objectFit: 'cover' }}
                 />
                 <DesktopImage
                     src={'/images/background_quote_desktop.svg'}
-                    alt="Image"
+                    alt="background with drawn tomatoes, almonds, pepper and carrots"
                     fill
                     sizes="100"
                     style={{ objectFit: 'cover' }}
@@ -53,7 +53,7 @@ const BackgroundWrapper = styled.div`
     background: ${({ theme }) => theme.body};
 `;
 
-const StyledTitle = styled.p`
+const StyledTitle = styled.h2`
     text-align: center;
     font-weight: 800;
     margin: 0;

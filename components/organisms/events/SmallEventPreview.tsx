@@ -30,12 +30,13 @@ export const SmallEventPreview: React.FC<SmallEventProps> = ({
     reviews,
 }: SmallEventProps) => {
     const overAllRating = getOverallRating(reviews);
+    const imageText = `photo of ${title}`;
     return (
         <SmallEventWrapper onClick={onClick} myEventsPage={myEventsPage}>
             <Card variant={'small-event'}>
                 <StyledImageEvent
                     src={imageEvent}
-                    alt="Image"
+                    alt={imageText}
                     width="300"
                     height="300"
                 />
@@ -63,7 +64,7 @@ export const SmallEventPreview: React.FC<SmallEventProps> = ({
                     <ColumnWrapper className="col-2">
                         <StyledImageHost
                             src={imageHost}
-                            alt="Image"
+                            alt="photo of host"
                             width="300"
                             height="300"
                         />

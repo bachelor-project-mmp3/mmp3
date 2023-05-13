@@ -18,14 +18,14 @@ const Layout: React.FC<LayoutProps> = ({
             <BackgroundImageWrapper>
                 <MobileImage
                     src={'/images/background_mobile.svg'}
-                    alt="Image"
+                    alt="Green background with drawn vegetables icons"
                     fill
                     sizes="100"
                     style={{ objectFit: 'cover', objectPosition: '0 0' }}
                 />
                 <DesktopImage
                     src={'/images/background_desktop.svg'}
-                    alt="Image"
+                    alt="Green background with drawn vegetables icons"
                     fill
                     sizes="100"
                     style={{ objectFit: 'cover', objectPosition: '0 0' }}
@@ -50,7 +50,7 @@ const StyledLayout = styled.div<StyledLayoutProps>`
     }
 `;
 
-const LayoutWrapper = styled.div`
+const LayoutWrapper = styled.main`
     @media ${({ theme }) => theme.breakpoint.tablet} {
         margin-left: 320px;
     }

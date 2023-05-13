@@ -29,6 +29,8 @@ export const MenuItem: React.FC<MenuItemProps> = ({
                 {dishLink && (
                     <a href={dishLink}>
                         <StyledLinkIcon />
+                        {/* text is required for accessibility */}
+                        <FakeLinkText>Dish Link</FakeLinkText>
                     </a>
                 )}
                 {dishDescription && (
@@ -93,4 +95,8 @@ const ToolTipBox = styled.div`
     top: 0;
     width: 100vw;
     height: 100vh;
+`;
+
+const FakeLinkText = styled.p`
+    display: none;
 `;

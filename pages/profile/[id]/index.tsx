@@ -92,7 +92,7 @@ const Profile = () => {
                                         {profile.image && (
                                             <StyledImageLogout
                                                 src={profile.image}
-                                                alt="Image"
+                                                alt="profile photo"
                                                 width="300"
                                                 height="300"
                                             />
@@ -110,7 +110,7 @@ const Profile = () => {
                                 <ProfileImage>
                                     <StyledImage
                                         src={profile.image}
-                                        alt="Image"
+                                        alt="profile photo"
                                         fill
                                     />
                                 </ProfileImage>
@@ -413,7 +413,7 @@ const StyledMember = styled.p`
     }
 `;
 
-const StyledAboutMeHeadline = styled.p`
+const StyledAboutMeHeadline = styled.h2`
     font-weight: 800;
     margin-top: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};

@@ -330,7 +330,7 @@ const EditEvent = () => {
                     <StyledFormComponentsInRow>
                         <StyledInputWithError className="small">
                             <InputText
-                                id=""
+                                id="dormitory"
                                 placeholder={event.host.dormitory}
                                 value={event.host.dormitory}
                                 disabled={true}>
@@ -339,7 +339,7 @@ const EditEvent = () => {
                         </StyledInputWithError>
                         <StyledInputWithError className="small">
                             <InputText
-                                id=""
+                                id="roomNumber"
                                 placeholder={event.host.roomNumber}
                                 value={event.host.roomNumber}
                                 disabled={true}>
@@ -667,7 +667,7 @@ const StyledMoneyIcon = styled.div`
     }
 `;
 
-const StyledHeading = styled.h2`
+const StyledHeading = styled.h1`
     font-size: ${({ theme }) => theme.fonts.mobile.headline3};
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline3};
