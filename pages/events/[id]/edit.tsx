@@ -67,10 +67,10 @@ type EventProps = {
 
 const schema = yup
     .object({
-        title: yup.string().min(1).required(),
+        title: yup.string().min(1).max(100).required(),
         date: yup.string().required(),
         timelimit: yup.string().required(),
-        costs: yup.number().positive().min(0).max(99),
+        costs: yup.number().positive().min(0).max(99).required(),
         guests: yup.number().positive().integer().min(1).max(99).required(),
     })
     .required();
@@ -130,27 +130,32 @@ const EditEvent = () => {
             })
                 .then((res) => res.json())
                 .then((data) => {
-                    const dateInput = new Date(data.event.date);
-                    const timeLimitInput = new Date(data.event.timeLimit);
+                    // only host shall edit event
+                    if (session.user?.userId !== data?.event.host.id) {
+                        router.replace('/404');
+                    } else {
+                        const dateInput = new Date(data.event.date);
+                        const timeLimitInput = new Date(data.event.timeLimit);
 
-                    let dateInputString = formatDateForForm(dateInput);
-                    let timeLimitInputString =
-                        formatDateForForm(timeLimitInput);
+                        let dateInputString = formatDateForForm(dateInput);
+                        let timeLimitInputString =
+                            formatDateForForm(timeLimitInput);
 
-                    setEvent(data.event);
-                    setTitle(data.event.title);
-                    setInfo(data.event.info);
-                    setDate(dateInputString);
-                    setTimeLimit(timeLimitInputString);
-                    setCosts(data.event.costs);
-                    setCapacity(data.event.capacity);
-                    setDishes(data.event.menu);
-                    setValue('title', data.event.title);
-                    setValue('date', data.event.date);
-                    setValue('timelimit', data.event.timeLimit);
-                    setValue('costs', data.event.costs);
-                    setValue('guests', data.event.capacity);
-                    setLoading(false);
+                        setEvent(data.event);
+                        setTitle(data.event.title);
+                        setInfo(data.event.info);
+                        setDate(dateInputString);
+                        setTimeLimit(timeLimitInputString);
+                        setCosts(data.event.costs);
+                        setCapacity(data.event.capacity);
+                        setDishes(data.event.menu);
+                        setValue('title', data.event.title);
+                        setValue('date', data.event.date);
+                        setValue('timelimit', data.event.timeLimit);
+                        setValue('costs', data.event.costs);
+                        setValue('guests', data.event.capacity);
+                        setLoading(false);
+                    }
                 });
         }
     }, [register, session, setValue, router?.query.id]);
@@ -260,6 +265,8 @@ const EditEvent = () => {
                                     e.target.value.length < 2
                                 ) {
                                     setError('title', { type: 'min' });
+                                } else if (e.target.value.length > 100) {
+                                    setError('title', { type: 'max' });
                                 } else {
                                     if (errors.title) {
                                         clearErrors('title');
@@ -281,6 +288,11 @@ const EditEvent = () => {
                         {errors.title && errors.title.type === 'min' && (
                             <ErrorMessage>
                                 Please enter a title of at least 2 characters
+                            </ErrorMessage>
+                        )}
+                        {errors.title && errors.title.type === 'max' && (
+                            <ErrorMessage>
+                                Please enter a title of max 99 characters
                             </ErrorMessage>
                         )}
                     </StyledInputWithError>
@@ -382,7 +394,8 @@ const EditEvent = () => {
                                     }
                                 }}
                                 isInvalid={errors.costs ? 'true' : 'false'}
-                                padding="left">
+                                padding="left"
+                                required>
                                 Costs per person
                             </InputNumber>
                             {errors.costs &&

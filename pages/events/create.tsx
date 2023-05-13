@@ -26,10 +26,10 @@ import Head from 'next/head';
 
 const schema = yup
     .object({
-        title: yup.string().min(1).required(),
+        title: yup.string().min(1).max(100).required(),
         date: yup.date(),
         timelimit: yup.date(),
-        costs: yup.number().positive().min(0).max(99),
+        costs: yup.number().positive().min(0).max(99).required(),
         guests: yup.number().positive().integer().min(1).max(99).required(),
     })
     .required();
@@ -54,8 +54,8 @@ const CreateEvent = () => {
     const [timeLimit, setTimeLimit] = useState(
         date ? dateTimePlusOneHour : null
     );
-    const [costs, setCosts] = useState('');
-    const [capacity, setCapacity] = useState('');
+    const [costs, setCosts] = useState('0');
+    const [capacity, setCapacity] = useState('1');
     const [dishes, setDishes] = useState([
         {
             title: '',
@@ -212,6 +212,8 @@ const CreateEvent = () => {
                                     e.target.value.length < 2
                                 ) {
                                     setError('title', { type: 'min' });
+                                } else if (e.target.value.length > 100) {
+                                    setError('title', { type: 'max' });
                                 } else {
                                     if (errors.title) {
                                         clearErrors('title');
@@ -233,6 +235,11 @@ const CreateEvent = () => {
                         {errors.title && errors.title.type === 'min' && (
                             <ErrorMessage>
                                 Please enter a title of at least 2 characters
+                            </ErrorMessage>
+                        )}
+                        {errors.title && errors.title.type === 'max' && (
+                            <ErrorMessage>
+                                Please enter a title of max 99 characters
                             </ErrorMessage>
                         )}
                     </StyledInputWithError>
@@ -352,7 +359,8 @@ const CreateEvent = () => {
                                     }
                                 }}
                                 isInvalid={errors.costs ? 'true' : 'false'}
-                                padding="left">
+                                padding="left"
+                                required>
                                 Costs per person
                             </InputNumber>
                             {errors.costs &&
@@ -369,6 +377,12 @@ const CreateEvent = () => {
                                     Cannot be a negative amount
                                 </ErrorMessage>
                             )}
+                            {errors.costs &&
+                                errors.costs.type === 'optionality' && (
+                                    <ErrorMessage>
+                                        Field is required
+                                    </ErrorMessage>
+                                )}
                         </StyledInputWithError>
                         <StyledMoneyIcon> &#8364;</StyledMoneyIcon>
                         <StyledInputWithError className="small">
@@ -399,7 +413,7 @@ const CreateEvent = () => {
                                 Guests*
                             </InputNumber>
                             {errors.guests &&
-                                errors.guests.type === 'required' && (
+                                errors.guests.type === 'optionality' && (
                                     <ErrorMessage>
                                         Please enter the number of guests
                                     </ErrorMessage>
