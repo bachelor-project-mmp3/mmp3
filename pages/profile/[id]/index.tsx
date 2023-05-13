@@ -413,7 +413,7 @@ const StyledMember = styled.p`
     }
 `;
 
-const StyledAboutMeHeadline = styled.p`
+const StyledAboutMeHeadline = styled.h2`
     font-weight: 800;
     margin-top: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
