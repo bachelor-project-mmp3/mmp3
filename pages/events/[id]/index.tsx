@@ -531,11 +531,17 @@ const EventDetail = () => {
                                             <Link
                                                 href={`tel:${event.host.phone}`}>
                                                 <StyledPhoneIcon />
+                                                {/* text is required for accessibility */}
+                                                <FakeLinkText>
+                                                    Phone
+                                                </FakeLinkText>
                                             </Link>
                                         )}
                                         <Link
                                             href={`mailto:${event.host.email}`}>
                                             <StyledEmailIcon />
+                                            {/* text is required for accessibility */}
+                                            <FakeLinkText>Email</FakeLinkText>
                                         </Link>
                                     </div>
                                 )}
@@ -942,4 +948,8 @@ const ReviewList = styled.div`
     display: flex;
     flex-direction: column;
     gap: 40px;
+`;
+
+const FakeLinkText = styled.p`
+    display: none;
 `;
