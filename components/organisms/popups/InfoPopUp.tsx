@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import DiscardIcon from '../../../public/icons/discard.svg';
+import { Button } from '../../atoms/Button';
 
 interface InfoPopUpProps {
     children: React.ReactNode;
@@ -16,7 +17,13 @@ const InfoPopUp: React.FC<InfoPopUpProps> = ({
             <FakeBlur onClick={onClose} />
             <Dialog>
                 <StyledDiscard onClick={onClose} />
-                {children}
+                <Content>{children}</Content>
+
+                <ButtonWrapper>
+                    <Button variant="primary" onClick={onClose}>
+                        Got it
+                    </Button>
+                </ButtonWrapper>
             </Dialog>
         </>
     );
@@ -45,7 +52,9 @@ const Dialog = styled.div`
     z-index: 120;
     padding: 40px 20px 20px;
     transform: translate(-50%, -50%);
-    gap: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 
     @media ${(props) => props.theme.breakpoint.tablet} {
         left: calc(50% + 160px);
@@ -60,4 +69,10 @@ const StyledDiscard = styled(DiscardIcon)`
     right: 20px;
     top: 20px;
     cursor: pointer;
+`;
+
+const Content = styled.div``;
+
+const ButtonWrapper = styled.div`
+    margin: auto;
 `;
