@@ -190,7 +190,14 @@ const EditEvent = () => {
     const CheckDateInputTime = (e) => {
         const inputDate = new Date(e);
 
-        if (inputDate <= currentDate) {
+        if (inputDate.toString() === 'Invalid Date') {
+            setError('date', { type: 'date' });
+            return;
+        } else {
+            clearErrors('date');
+        }
+
+        if (inputDate <= dateTimePlusOneHourDate) {
             setError('date', { type: 'min' });
         } else {
             if (errors.date) {
@@ -203,6 +210,13 @@ const EditEvent = () => {
         const inputTimelimit = new Date(e);
         const eventDate = new Date(date);
 
+        if (inputTimelimit.toString() === 'Invalid Date') {
+            setError('timelimit', { type: 'date' });
+            return;
+        } else {
+            clearErrors('timelimit');
+        }
+
         if (
             inputTimelimit <= dateTimePlusOneHourDate ||
             inputTimelimit >= eventDate
@@ -213,6 +227,15 @@ const EditEvent = () => {
                 clearErrors('timelimit');
             }
         }
+    };
+    const CheckForDecimal = (e) => {
+        const costs = e.toString();
+        const costsArray = costs.split('.');
+
+        if (costsArray[1] !== undefined || costsArray[1] !== '') {
+            return costsArray[1].length > 2;
+        }
+        return false;
     };
 
     const onSubmit = async () => {
@@ -315,6 +338,11 @@ const EditEvent = () => {
                                 Please enter a date in the future
                             </ErrorMessage>
                         )}
+                        {errors.date && errors.date.type === 'date' && (
+                            <ErrorMessage>
+                                Please enter a valid date
+                            </ErrorMessage>
+                        )}
                     </StyledInputWithError>
                     <StyledInputWithError>
                         <InputDateTime
@@ -336,6 +364,12 @@ const EditEvent = () => {
                                 <ErrorMessage>
                                     Please enter a date and time between an hour
                                     from now and the event
+                                </ErrorMessage>
+                            )}
+                        {errors.timelimit &&
+                            errors.timelimit.type === 'date' && (
+                                <ErrorMessage>
+                                    Please enter a valid date
                                 </ErrorMessage>
                             )}
                     </StyledInputWithError>
@@ -377,6 +411,10 @@ const EditEvent = () => {
                                 min="0"
                                 value={costs}
                                 onChange={(e) => {
+                                    e.target.value = e.target.value.replace(
+                                        /,/g,
+                                        '.'
+                                    );
                                     setValue('costs', e.target.value);
                                     setCosts(e.target.value);
                                     if (isNaN(e.target.value)) {
@@ -387,6 +425,12 @@ const EditEvent = () => {
                                         setError('costs', { type: 'min' });
                                     } else if (e.target.value > 99) {
                                         setError('costs', { type: 'max' });
+                                    } else if (
+                                        CheckForDecimal(e.target.value)
+                                    ) {
+                                        setError('costs', {
+                                            type: 'decimals',
+                                        });
                                     } else {
                                         if (errors.costs) {
                                             clearErrors('costs');
@@ -412,6 +456,18 @@ const EditEvent = () => {
                                     Cannot be a negative amount
                                 </ErrorMessage>
                             )}
+                            {errors.costs &&
+                                errors.costs.type === 'decimals' && (
+                                    <ErrorMessage>
+                                        Amount cannot have more than 2 decimals.
+                                    </ErrorMessage>
+                                )}
+                            {errors.costs &&
+                                errors.costs.type === 'optionality' && (
+                                    <ErrorMessage>
+                                        Field is required
+                                    </ErrorMessage>
+                                )}
                         </StyledInputWithError>
                         <StyledMoneyIcon> &#8364;</StyledMoneyIcon>
                         <StyledInputWithError className="small">
@@ -427,6 +483,12 @@ const EditEvent = () => {
                                         setError('guests', {
                                             type: 'notnumber',
                                         });
+                                    } else if (e.target.value % 1 !== 0) {
+                                        setError('guests', {
+                                            type: 'notInteger',
+                                        });
+                                    } else if (e.target.value < 1) {
+                                        setError('guests', { type: 'min' });
                                     } else if (
                                         e.target.value <
                                         event.requests.filter(
@@ -435,7 +497,9 @@ const EditEvent = () => {
                                                 RequestStatus.ACCEPTED
                                         ).length
                                     ) {
-                                        setError('guests', { type: 'min' });
+                                        setError('guests', {
+                                            type: 'minGuests',
+                                        });
                                     } else if (e.target.value > 99) {
                                         setError('guests', { type: 'max' });
                                     } else {
@@ -460,19 +524,29 @@ const EditEvent = () => {
                                         You must enter a number
                                     </ErrorMessage>
                                 )}
+                            {errors.guests &&
+                                errors.guests.type === 'notInteger' && (
+                                    <ErrorMessage>
+                                        You can not enter a comma
+                                    </ErrorMessage>
+                                )}
                             {errors.guests && errors.guests.type === 'min' && (
-                                <ErrorMessage>
-                                    {
-                                        event.requests.filter(
-                                            (x) =>
-                                                x.status ===
-                                                RequestStatus.ACCEPTED
-                                        ).length
-                                    }{' '}
-                                    people already joined, you can&apos;t set
-                                    the number of guests lower.
-                                </ErrorMessage>
+                                <ErrorMessage>Must be minimum 1</ErrorMessage>
                             )}
+                            {errors.guests &&
+                                errors.guests.type === 'minGuests' && (
+                                    <ErrorMessage>
+                                        {
+                                            event.requests.filter(
+                                                (x) =>
+                                                    x.status ===
+                                                    RequestStatus.ACCEPTED
+                                            ).length
+                                        }{' '}
+                                        people already joined, you can&apos;t
+                                        set the number of guests lower.
+                                    </ErrorMessage>
+                                )}
                             {errors.guests && errors.guests.type === 'max' && (
                                 <ErrorMessage>Must be maximum 99</ErrorMessage>
                             )}
