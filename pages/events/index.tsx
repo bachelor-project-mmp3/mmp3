@@ -106,8 +106,8 @@ const Events = () => {
             .then((data) => {
                 setEvents(data.events);
                 setPageCount(data.pageCount);
+                setLoading(false);
             });
-        setLoading(false);
     }, [pageIndex]);
 
     const onFilterEvents = async (filter: string) => {
