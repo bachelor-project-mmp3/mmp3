@@ -204,7 +204,7 @@ const Navigation: React.FC = () => {
 export default Navigation;
 
 const MobileNavigation = styled.nav`
-    height: 70px;
+    height: 80px;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -217,6 +217,7 @@ const MobileNavigation = styled.nav`
     border-top-right-radius: 40px;
     border-top-left-radius: 40px;
     box-shadow: 0px 10px 25px 2px ${({ theme }) => theme.darkGrey};
+    padding-bottom: 10px;
 
     @media ${({ theme }) => theme.breakpoint.tablet} {
         display: none;
