@@ -4,7 +4,7 @@ import ImageState1 from '../../public/images/intro_1.svg';
 import ImageState2 from '../../public/images/intro_2.svg';
 import ImageState3 from '../../public/images/intro_3.svg';
 import { Button } from '../atoms/Button';
-import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -21,81 +21,76 @@ const Walkthrough: React.FC<WalkthroughProps> = ({
     const [introState, setIntroState] = useState(0);
     const swiperRef = useRef<SwiperCore>();
     return (
-        <>
-            <StyledBackground>
-                <StyledSkip onClick={onClick}>Skip Intro</StyledSkip>
-                <StyledHeadline>Welcome to Studentenfutter</StyledHeadline>
+        <StyledBackground>
+            <StyledSkip onClick={onClick}>Skip Intro</StyledSkip>
+            <StyledHeadline>Welcome to Studentenfutter</StyledHeadline>
 
-                <Swiper
-                    modules={[Pagination]}
-                    pagination
-                    onBeforeInit={(swiper) => (swiperRef.current = swiper)}
-                    onSlideChange={() =>
-                        swiperRef.current?.swipeDirection == 'prev'
-                            ? setIntroState(introState - 1)
-                            : setIntroState(introState + 1)
-                    }>
-                    <SwiperSlide>
-                        <StyledText>
-                            Join events or simply create them yourself - all to
-                            your preferences!
-                        </StyledText>
-                        <StyledImage>
-                            <ImageState1 />
-                        </StyledImage>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <StyledText>
-                            The plattform that brings students together at a
-                            shared meal
-                        </StyledText>
-                        <StyledImage>
-                            <ImageState2 />
-                        </StyledImage>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <StyledText>
-                            But before you get going: Please fill out your
-                            profile page!
-                        </StyledText>
-                        <StyledImage>
-                            <ImageState3 />
-                        </StyledImage>
-                    </SwiperSlide>
-                    <ButtonWrapper>
-                        {introState != 0 && (
-                            <Button
-                                variant="secondary"
-                                width={40}
-                                onClick={function () {
-                                    swiperRef.current?.slidePrev();
-                                    setIntroState(introState - 1);
-                                }}>
-                                Go Back
-                            </Button>
-                        )}
-                        {introState == 2 ? (
-                            <Button
-                                variant="primary"
-                                width={40}
-                                onClick={onClick}>
-                                Got it!
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="primary"
-                                width={40}
-                                onClick={function () {
-                                    swiperRef.current?.slideNext();
-                                    setIntroState(introState + 1);
-                                }}>
-                                Next
-                            </Button>
-                        )}
-                    </ButtonWrapper>
-                </Swiper>
-            </StyledBackground>
-        </>
+            <Swiper
+                modules={[Pagination]}
+                pagination
+                onBeforeInit={(swiper) => (swiperRef.current = swiper)}
+                onSlideChange={() =>
+                    swiperRef.current?.swipeDirection == 'prev'
+                        ? setIntroState(introState - 1)
+                        : setIntroState(introState + 1)
+                }>
+                <SwiperSlide>
+                    <StyledText>
+                        Join events or simply create them yourself - all to your
+                        preferences!
+                    </StyledText>
+                    <StyledImage>
+                        <ImageState1 />
+                    </StyledImage>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <StyledText>
+                        The plattform that brings students together at a shared
+                        meal
+                    </StyledText>
+                    <StyledImage>
+                        <ImageState2 />
+                    </StyledImage>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <StyledText>
+                        But before you get going: Please fill out your profile
+                        page!
+                    </StyledText>
+                    <StyledImage>
+                        <ImageState3 />
+                    </StyledImage>
+                </SwiperSlide>
+                <ButtonWrapper>
+                    {introState != 0 && (
+                        <Button
+                            variant="secondary"
+                            width={40}
+                            onClick={function () {
+                                swiperRef.current?.slidePrev();
+                                setIntroState(introState - 1);
+                            }}>
+                            Go Back
+                        </Button>
+                    )}
+                    {introState == 2 ? (
+                        <Button variant="primary" width={40} onClick={onClick}>
+                            Got it!
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="primary"
+                            width={40}
+                            onClick={function () {
+                                swiperRef.current?.slideNext();
+                                setIntroState(introState + 1);
+                            }}>
+                            Next
+                        </Button>
+                    )}
+                </ButtonWrapper>
+            </Swiper>
+        </StyledBackground>
     );
 };
 

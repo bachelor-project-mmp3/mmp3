@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import GoBackIcon from '../../public/icons/goBack.svg';
 import { useRouter } from 'next/router';

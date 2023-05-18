@@ -5,7 +5,6 @@ import prisma from '../../../../lib/prisma';
 import { authOptions } from '../../auth/[...nextauth]';
 import { getEmailTemplate } from '../../../../helper/mailTemplaes';
 import { getNodeMailerTransporter } from '../../../../helper/nodemailer';
-import { getSession } from 'next-auth/react';
 
 export default async function handler(
     req: NextApiRequest,
