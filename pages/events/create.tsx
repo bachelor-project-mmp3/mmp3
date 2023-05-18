@@ -26,10 +26,10 @@ import Head from 'next/head';
 
 const schema = yup
     .object({
-        title: yup.string().min(1).required(),
+        title: yup.string().min(1).max(100).required(),
         date: yup.date(),
         timelimit: yup.date(),
-        costs: yup.number().positive().min(0).max(99),
+        costs: yup.number().positive().min(0).max(99).required(),
         guests: yup.number().positive().integer().min(1).max(99).required(),
     })
     .required();
@@ -51,11 +51,9 @@ const CreateEvent = () => {
     const [title, setTitle] = useState('');
     const [info, setInfo] = useState('');
     const [date, setDate] = useState();
-    const [timeLimit, setTimeLimit] = useState(
-        date ? dateTimePlusOneHour : null
-    );
-    const [costs, setCosts] = useState('');
-    const [capacity, setCapacity] = useState('');
+    const [timeLimit, setTimeLimit] = useState(date ? dateTimePlusOneHour : '');
+    const [costs, setCosts] = useState('0');
+    const [capacity, setCapacity] = useState('1');
     const [dishes, setDishes] = useState([
         {
             title: '',
@@ -74,8 +72,6 @@ const CreateEvent = () => {
     } = useForm<FormData>({
         resolver: yupResolver(schema),
     });
-
-    console.log({ errors });
 
     React.useEffect(() => {
         register('title');
@@ -166,6 +162,16 @@ const CreateEvent = () => {
         }
     };
 
+    const CheckForDecimal = (e) => {
+        const costs = e.toString();
+        const costsArray = costs.split('.');
+
+        if (costsArray[1] !== undefined || costsArray[1] !== '') {
+            return costsArray[1].length > 2;
+        }
+        return false;
+    };
+
     const onSubmit = async () => {
         setLoading(true);
 
@@ -212,6 +218,8 @@ const CreateEvent = () => {
                                     e.target.value.length < 2
                                 ) {
                                     setError('title', { type: 'min' });
+                                } else if (e.target.value.length > 100) {
+                                    setError('title', { type: 'max' });
                                 } else {
                                     if (errors.title) {
                                         clearErrors('title');
@@ -233,6 +241,11 @@ const CreateEvent = () => {
                         {errors.title && errors.title.type === 'min' && (
                             <ErrorMessage>
                                 Please enter a title of at least 2 characters
+                            </ErrorMessage>
+                        )}
+                        {errors.title && errors.title.type === 'max' && (
+                            <ErrorMessage>
+                                Please enter a title of max 99 characters
                             </ErrorMessage>
                         )}
                     </StyledInputWithError>
@@ -335,6 +348,10 @@ const CreateEvent = () => {
                                 min="0"
                                 value={costs}
                                 onChange={(e) => {
+                                    e.target.value = e.target.value.replace(
+                                        /,/g,
+                                        '.'
+                                    );
                                     setValue('costs', e.target.value);
                                     setCosts(e.target.value);
                                     if (isNaN(e.target.value)) {
@@ -345,6 +362,12 @@ const CreateEvent = () => {
                                         setError('costs', { type: 'min' });
                                     } else if (e.target.value > 99) {
                                         setError('costs', { type: 'max' });
+                                    } else if (
+                                        CheckForDecimal(e.target.value)
+                                    ) {
+                                        setError('costs', {
+                                            type: 'decimals',
+                                        });
                                     } else {
                                         if (errors.costs) {
                                             clearErrors('costs');
@@ -352,7 +375,8 @@ const CreateEvent = () => {
                                     }
                                 }}
                                 isInvalid={errors.costs ? 'true' : 'false'}
-                                padding="left">
+                                padding="left"
+                                required>
                                 Costs per person
                             </InputNumber>
                             {errors.costs &&
@@ -369,6 +393,18 @@ const CreateEvent = () => {
                                     Cannot be a negative amount
                                 </ErrorMessage>
                             )}
+                            {errors.costs &&
+                                errors.costs.type === 'decimals' && (
+                                    <ErrorMessage>
+                                        Amount cannot have more than 2 decimals.
+                                    </ErrorMessage>
+                                )}
+                            {errors.costs &&
+                                errors.costs.type === 'optionality' && (
+                                    <ErrorMessage>
+                                        Field is required
+                                    </ErrorMessage>
+                                )}
                         </StyledInputWithError>
                         <StyledMoneyIcon> &#8364;</StyledMoneyIcon>
                         <StyledInputWithError className="small">
@@ -383,6 +419,10 @@ const CreateEvent = () => {
                                     if (isNaN(e.target.value)) {
                                         setError('guests', {
                                             type: 'notnumber',
+                                        });
+                                    } else if (e.target.value % 1 !== 0) {
+                                        setError('guests', {
+                                            type: 'notInteger',
                                         });
                                     } else if (e.target.value < 0) {
                                         setError('guests', { type: 'min' });
@@ -399,7 +439,7 @@ const CreateEvent = () => {
                                 Guests*
                             </InputNumber>
                             {errors.guests &&
-                                errors.guests.type === 'required' && (
+                                errors.guests.type === 'optionality' && (
                                     <ErrorMessage>
                                         Please enter the number of guests
                                     </ErrorMessage>
@@ -408,6 +448,12 @@ const CreateEvent = () => {
                                 errors.guests.type === 'notnumber' && (
                                     <ErrorMessage>
                                         You must enter a number
+                                    </ErrorMessage>
+                                )}
+                            {errors.guests &&
+                                errors.guests.type === 'notInteger' && (
+                                    <ErrorMessage>
+                                        You can not enter a comma
                                     </ErrorMessage>
                                 )}
                             {errors.guests && errors.guests.type === 'min' && (

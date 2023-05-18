@@ -24,10 +24,16 @@ export const MenuItem: React.FC<MenuItemProps> = ({
 
     return (
         <StyledMenuItem>
-            {dishLink ? <a href={dishLink}>{dishTitle}</a> : <p>{dishTitle}</p>}
+            {dishLink ? (
+                <a href={dishLink} target="_blank" rel={'noreferrer'}>
+                    {dishTitle}
+                </a>
+            ) : (
+                <StyledP>{dishTitle}</StyledP>
+            )}
             <div>
                 {dishLink && (
-                    <a href={dishLink}>
+                    <a href={dishLink} target="_blank" rel={'noreferrer'}>
                         <StyledLinkIcon />
                         {/* text is required for accessibility */}
                         <FakeLinkText>Dish Link</FakeLinkText>
@@ -64,7 +70,6 @@ const StyledMenuItem = styled.div`
 
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
 `;
 
 const StyledToolTip = styled.div`
@@ -99,4 +104,8 @@ const ToolTipBox = styled.div`
 
 const FakeLinkText = styled.p`
     display: none;
+`;
+
+const StyledP = styled.p`
+    margin: 10px 0;
 `;

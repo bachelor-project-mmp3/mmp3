@@ -519,15 +519,15 @@ const EventDetail = () => {
                                         source={event.host.image}
                                         hostName={hostName}></ChefAndImage>
                                 )}
-
-                                {event.requests?.filter(
-                                    (request) =>
-                                        request.status ==
-                                            RequestStatus.ACCEPTED &&
-                                        request.userId == session?.user?.userId
-                                ).length > 0 && (
-                                    <div>
-                                        {event.host?.phone && (
+                                <div>
+                                    {event.requests?.filter(
+                                        (request) =>
+                                            request.status ==
+                                                RequestStatus.ACCEPTED &&
+                                            request.userId ==
+                                                session?.user?.userId
+                                    ).length > 0 &&
+                                        event.host?.phone && (
                                             <Link
                                                 href={`tel:${event.host.phone}`}>
                                                 <StyledPhoneIcon />
@@ -537,14 +537,12 @@ const EventDetail = () => {
                                                 </FakeLinkText>
                                             </Link>
                                         )}
-                                        <Link
-                                            href={`mailto:${event.host.email}`}>
-                                            <StyledEmailIcon />
-                                            {/* text is required for accessibility */}
-                                            <FakeLinkText>Email</FakeLinkText>
-                                        </Link>
-                                    </div>
-                                )}
+                                    <Link href={`mailto:${event.host.email}`}>
+                                        <StyledEmailIcon />
+                                        {/* text is required for accessibility */}
+                                        <FakeLinkText>Email</FakeLinkText>
+                                    </Link>
+                                </div>
                             </StyledInfoEventDetailsBoxes>
                         </StyledInfoEventDetails>
                     </StyledInfoWrapper>
