@@ -90,7 +90,9 @@ export default async function handler(
                         },
                     },
                 });
-                res.status(200).json({ event: event });
+
+                if (event) res.status(200).json({ event: event });
+                res.status(404).json({ message: 'Not event detail found' });
             } else if (req.method === 'PATCH') {
                 const eventId = req.query.id.toString();
                 const cancelFlag = req.headers.cancel;

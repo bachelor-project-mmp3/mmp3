@@ -57,7 +57,7 @@ const Events = () => {
                 setShowInfoPopOpOnJoin(joinedEvent.title);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -90,7 +90,7 @@ const Events = () => {
                 }
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -128,7 +128,7 @@ const Events = () => {
                 setLoading(false);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -150,7 +150,7 @@ const Events = () => {
                 setLoading(false);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -172,7 +172,7 @@ const Events = () => {
                 setLoading(false);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -196,7 +196,7 @@ const Events = () => {
                 setLoading(false);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
