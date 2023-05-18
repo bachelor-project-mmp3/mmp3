@@ -1,5 +1,3 @@
-import { getFormattedDate, getFormattedTime } from './helperFunctions';
-
 export function getEmailTemplate(data: {
     hostFirstName: string;
     eventTitle: string;

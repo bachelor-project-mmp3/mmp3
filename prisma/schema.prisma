@@ -11,8 +11,8 @@ model Event {
   id                  String         @id @default(cuid())
   title               String         @db.VarChar(100)
   info                String?        @db.Text
-  host                User?          @relation(fields: [authorId], references: [id]) //TODO: change authorId to hostId
-  authorId            String? //TODO: naming change to hostId
+  host                User?          @relation(fields: [authorId], references: [id])
+  authorId            String?
   createdAt           DateTime       @default(now()) @map(name: "created_at")
   updatedAt           DateTime       @updatedAt @map(name: "updated_at")
   date                DateTime

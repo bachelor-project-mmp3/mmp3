@@ -16,6 +16,7 @@ import {
 } from '../../../helper/helperFunctions';
 import { EventStatus, RequestStatus } from '.prisma/client';
 import ActionPopUp from '../popups/ActionPopUp';
+import { hasUserSendRequestHelper } from '../../../helper/EventsAndUserHelper';
 
 export type EventProps = {
     id: string;
@@ -76,10 +77,11 @@ const ExtendedEventPreview: React.FC<{
 
     const altText = `profile photo of ${event?.host.firstName}`;
 
-    // TODO use from helper
-    const hasUserSendRequest = event.requests.find(
-        (request) => request.userId === session?.user?.userId
+    const hasUserSendRequest = hasUserSendRequestHelper(
+        event.requests,
+        session
     );
+
     const isRequestAccepted = hasUserSendRequest
         ? hasUserSendRequest.status === RequestStatus.ACCEPTED
         : false;
