@@ -69,6 +69,10 @@ const CreateEvent = () => {
         formState: { errors },
     } = useForm<FormData>({
         resolver: yupResolver(schema),
+        defaultValues: {
+            costs: Number(costs),
+            guests: Number(capacity),
+        },
     });
 
     React.useEffect(() => {
@@ -158,16 +162,6 @@ const CreateEvent = () => {
                 clearErrors('timelimit');
             }
         }
-    };
-
-    const CheckForDecimal = (e) => {
-        const costs = e.toString();
-        const costsArray = costs.split('.');
-
-        if (costsArray[1] !== undefined || costsArray[1] !== '') {
-            return costsArray[1].length > 2;
-        }
-        return false;
     };
 
     const onSubmit = async () => {
@@ -346,26 +340,14 @@ const CreateEvent = () => {
                                 min="0"
                                 value={costs}
                                 onChange={(e) => {
-                                    e.target.value = e.target.value.replace(
-                                        /,/g,
-                                        '.'
-                                    );
                                     setValue('costs', e.target.value);
                                     setCosts(e.target.value);
-                                    if (isNaN(e.target.value)) {
-                                        setError('costs', {
-                                            type: 'notnumber',
-                                        });
-                                    } else if (e.target.value < 0) {
+                                    if (e.target.value < 0) {
                                         setError('costs', { type: 'min' });
                                     } else if (e.target.value > 99) {
                                         setError('costs', { type: 'max' });
-                                    } else if (
-                                        CheckForDecimal(e.target.value)
-                                    ) {
-                                        setError('costs', {
-                                            type: 'decimals',
-                                        });
+                                    } else if (!e.target.value) {
+                                        setError('costs', { type: 'required' });
                                     } else {
                                         if (errors.costs) {
                                             clearErrors('costs');
@@ -377,12 +359,6 @@ const CreateEvent = () => {
                                 required>
                                 Costs per person
                             </InputNumber>
-                            {errors.costs &&
-                                errors.costs.type === 'notnumber' && (
-                                    <ErrorMessage>
-                                        You must enter a number
-                                    </ErrorMessage>
-                                )}
                             {errors.costs && errors.costs.type === 'max' && (
                                 <ErrorMessage>Must be maximum 99</ErrorMessage>
                             )}
@@ -392,13 +368,7 @@ const CreateEvent = () => {
                                 </ErrorMessage>
                             )}
                             {errors.costs &&
-                                errors.costs.type === 'decimals' && (
-                                    <ErrorMessage>
-                                        Amount cannot have more than 2 decimals.
-                                    </ErrorMessage>
-                                )}
-                            {errors.costs &&
-                                errors.costs.type === 'optionality' && (
+                                errors.costs.type === 'required' && (
                                     <ErrorMessage>
                                         Field is required
                                     </ErrorMessage>
@@ -414,18 +384,18 @@ const CreateEvent = () => {
                                 onChange={(e) => {
                                     setValue('guests', e.target.value);
                                     setCapacity(e.target.value);
-                                    if (isNaN(e.target.value)) {
-                                        setError('guests', {
-                                            type: 'notnumber',
-                                        });
-                                    } else if (e.target.value % 1 !== 0) {
+                                    if (e.target.value % 1 !== 0) {
                                         setError('guests', {
                                             type: 'notInteger',
                                         });
-                                    } else if (e.target.value < 0) {
+                                    } else if (e.target.value < 1) {
                                         setError('guests', { type: 'min' });
                                     } else if (e.target.value > 99) {
                                         setError('guests', { type: 'max' });
+                                    } else if (!e.target.value) {
+                                        setError('guests', {
+                                            type: 'required',
+                                        });
                                     } else {
                                         if (errors.guests) {
                                             clearErrors('guests');
@@ -437,15 +407,9 @@ const CreateEvent = () => {
                                 Guests*
                             </InputNumber>
                             {errors.guests &&
-                                errors.guests.type === 'optionality' && (
+                                errors.guests.type === 'required' && (
                                     <ErrorMessage>
                                         Please enter the number of guests
-                                    </ErrorMessage>
-                                )}
-                            {errors.guests &&
-                                errors.guests.type === 'notnumber' && (
-                                    <ErrorMessage>
-                                        You must enter a number
                                     </ErrorMessage>
                                 )}
                             {errors.guests &&
