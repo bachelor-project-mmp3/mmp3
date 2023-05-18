@@ -32,7 +32,7 @@ export const InputNumber = ({
             <StyledInput
                 id={id}
                 name={id}
-                type="text"
+                type="number"
                 step={step}
                 min={min}
                 placeholder={placeholder}
@@ -41,6 +41,7 @@ export const InputNumber = ({
                 isInvalid={isInvalid}
                 onChange={onChange}
                 required={required}
+                lang="en_EN"
             />
         </>
     );
