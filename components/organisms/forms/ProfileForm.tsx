@@ -100,12 +100,15 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
-        if (session) {
+        if (session && session.user.userId === router.query.id) {
             fetch(`/api/profile/${session.user.userId}`, {
                 method: 'GET',
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    if (!data.profile) {
+                        router.replace('/404');
+                    }
                     setProfile(data.profile);
                     setFirstName(data.profile.firstName);
                     setLastName(data.profile.lastName);
@@ -120,8 +123,9 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     setValue('lastName', data.profile.lastName);
                     setValue('roomNumber', data.profile.roomNumber);
                 });
+        } else {
+            router.replace('/404');
         }
-
         register('firstName');
         register('lastName');
         register('roomNumber');
@@ -129,9 +133,8 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     }, [register, session, setValue]);
 
     if (isLoading) return <Loading withoutLayout />;
-    if (!profile) return <p>No profile</p>;
 
-    const onSubmit = async (data: FormData) => {
+    const onSubmit = async () => {
         setLoading(true);
 
         try {
@@ -160,7 +163,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
             await Router.replace(`/profile/${profile.id}`);
         } catch (error) {
-            router.push('/404');
+            router.push('/500');
         }
     };
     return (

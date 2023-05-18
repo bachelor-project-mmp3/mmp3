@@ -32,7 +32,7 @@ const Landingpage = () => {
         if (res.status === 200) {
             setSuccess(true);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
