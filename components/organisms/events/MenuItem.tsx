@@ -25,7 +25,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
     return (
         <StyledMenuItem>
             {dishLink ? (
-                <a href={dishLink} target="_blank">
+                <a href={dishLink} target="_blank" rel={'noreferrer'}>
                     {dishTitle}
                 </a>
             ) : (
@@ -33,7 +33,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
             )}
             <div>
                 {dishLink && (
-                    <a href={dishLink} target="_blank">
+                    <a href={dishLink} target="_blank" rel={'noreferrer'}>
                         <StyledLinkIcon />
                         {/* text is required for accessibility */}
                         <FakeLinkText>Dish Link</FakeLinkText>
