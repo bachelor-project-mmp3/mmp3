@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import EventsIcon from '../../public/icons/events_feed.svg';
 import CreateIcon from '../../public/icons/menu_create.svg';
@@ -12,6 +12,7 @@ import { Button } from '../atoms/Button';
 import Logo from '../../public/icons/logo.svg';
 import { RequestStatus } from '@prisma/client';
 import { NotificationBubble } from '../atoms/NotificationBubble';
+import NotificationsContext from '../../context/requestState';
 
 const hideNavigationOnPaths = [
     '/profile/[id]/edit',
@@ -23,7 +24,9 @@ const hideNavigationOnPaths = [
 const Navigation: React.FC = () => {
     const router = useRouter();
     const { data: session } = useSession();
-    const [pendingRequestsLength, setPendingRequestsLength] = useState(0);
+
+    const { currentRequestNotifications, setCurrentRequestNotifications } =
+        useContext(NotificationsContext);
 
     useEffect(() => {
         fetch('/api/requests', {
@@ -36,7 +39,7 @@ const Navigation: React.FC = () => {
                         request.status === RequestStatus.PENDING &&
                         request.Event.host.id === session?.user.userId
                 ).length;
-                setPendingRequestsLength(pendingRequests);
+                setCurrentRequestNotifications(pendingRequests);
             });
     }, []);
 
@@ -87,9 +90,9 @@ const Navigation: React.FC = () => {
                                 <NavText>Create Event</NavText>
                             </DesktopNavigationItem>
                             <BubbleWrapper>
-                                {pendingRequestsLength > 0 && (
+                                {currentRequestNotifications > 0 && (
                                     <NotificationBubble>
-                                        {pendingRequestsLength}
+                                        {currentRequestNotifications}
                                     </NotificationBubble>
                                 )}
                                 <DesktopNavigationItem
@@ -171,9 +174,9 @@ const Navigation: React.FC = () => {
                                     $isactive={router?.pathname === '/requests'}
                                     onClick={() => router.push('/requests')}
                                 />
-                                {pendingRequestsLength > 0 && (
+                                {currentRequestNotifications > 0 && (
                                     <NotificationBubble>
-                                        {pendingRequestsLength}
+                                        {currentRequestNotifications}
                                     </NotificationBubble>
                                 )}
                             </BubbleWrapper>
