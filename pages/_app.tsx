@@ -4,6 +4,7 @@ import { Session } from 'next-auth';
 import { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyles } from '../ThemeConfig';
 import Head from 'next/head';
+import { RequestNotificationsProvider } from '../context/requestState'; // import based on where you put it
 
 const App = ({
     Component,
@@ -11,40 +12,41 @@ const App = ({
 }: AppProps<{ session: Session }>) => {
     {
         return (
-            <ThemeProvider theme={theme}>
-                <GlobalStyles />
-                <SessionProvider session={session}>
-                    <Head>
-                        <link
-                            rel="apple-touch-icon"
-                            sizes="180x180"
-                            href="/apple-touch-icon.jpg"
-                        />
-                        <link
-                            rel="icon"
-                            type="image/svg"
-                            sizes="32x32"
-                            href="/favicon-32x32.svg"
-                        />
-                        <link
-                            rel="icon"
-                            type="image/svg"
-                            sizes="16x16"
-                            href="/favicon-16x16.svg"
-                        />
-                        <link rel="manifest" href="/site.webmanifest" />
-                        <link
-                            rel="mask-icon"
-                            href="/safari-pinned-tab.svg"
-                            color="#5bbad5"
-                        />
-                        <meta
-                            name="msapplication-TileColor"
-                            content="#da532c"
-                        />
-                        <title>{'Studentenfutter'}</title>
-                        <meta name="theme-color" content="#ffffff" />
-                        <style>{`
+            <RequestNotificationsProvider>
+                <ThemeProvider theme={theme}>
+                    <GlobalStyles />
+                    <SessionProvider session={session}>
+                        <Head>
+                            <link
+                                rel="apple-touch-icon"
+                                sizes="180x180"
+                                href="/apple-touch-icon.jpg"
+                            />
+                            <link
+                                rel="icon"
+                                type="image/svg"
+                                sizes="32x32"
+                                href="/favicon-32x32.svg"
+                            />
+                            <link
+                                rel="icon"
+                                type="image/svg"
+                                sizes="16x16"
+                                href="/favicon-16x16.svg"
+                            />
+                            <link rel="manifest" href="/site.webmanifest" />
+                            <link
+                                rel="mask-icon"
+                                href="/safari-pinned-tab.svg"
+                                color="#5bbad5"
+                            />
+                            <meta
+                                name="msapplication-TileColor"
+                                content="#da532c"
+                            />
+                            <title>{'Studentenfutter'}</title>
+                            <meta name="theme-color" content="#ffffff" />
+                            <style>{`
                         @font-face {
                             font-family: HankenGrotesk;
                             src: url(/fonts/hanken-grotesk-v5-latin-regular.woff2);
@@ -61,10 +63,11 @@ const App = ({
                             font-weight:800;
                         }
                         `}</style>
-                    </Head>
-                    <Component {...pageProps} />
-                </SessionProvider>
-            </ThemeProvider>
+                        </Head>
+                        <Component {...pageProps} />
+                    </SessionProvider>
+                </ThemeProvider>
+            </RequestNotificationsProvider>
         );
     }
 };
