@@ -93,7 +93,7 @@ const defaultImage =
 const EventDetail = () => {
     const { data: session } = useSession();
     const router = useRouter();
-    // TODO add type definition
+    // TODO use EventProps for type definition
     const [event, setEvent] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const [showInfoPopUpOnJoin, setShowInfoPopUpOnJoin] = useState(false);
@@ -341,8 +341,6 @@ const EventDetail = () => {
     );
 
     const isRequestAccepted = isRequestAcceptedHelper(hasUserSendRequest);
-
-    //TODO: Add onClick to PhoneButton to copy phone number
 
     return (
         <>

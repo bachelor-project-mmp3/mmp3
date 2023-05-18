@@ -42,7 +42,7 @@ function getCanJoinByTimeLimit(timeLimit: string) {
 function getIsPlaceLeft(currentParticipants: number, capacity: number) {
     return currentParticipants < capacity;
 }
-//todo helper
+
 const getPastTime = (updatedAt: string) => {
     const today = new Date();
     const timeLimitDate = new Date(updatedAt);
