@@ -157,7 +157,7 @@ const EventDetail = () => {
             setLoading(false);
             setShowInfoPopUpOnJoin(true);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     }
 
@@ -194,7 +194,7 @@ const EventDetail = () => {
 
             setLoading(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -216,7 +216,7 @@ const EventDetail = () => {
             setLoading(false);
             setshowInfoPopUpOnCancel(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -231,7 +231,7 @@ const EventDetail = () => {
         if (res.status === 200) {
             router.push('/my-events');
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
     const addReview = async () => {
@@ -262,7 +262,7 @@ const EventDetail = () => {
                 setShowReviewPopUp(false);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -292,7 +292,7 @@ const EventDetail = () => {
             setshowInfoPopUpOnUploadPhoto(true);
             setLoading(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -319,7 +319,7 @@ const EventDetail = () => {
             });
             setLoading(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -519,26 +519,30 @@ const EventDetail = () => {
                                         source={event.host.image}
                                         hostName={hostName}></ChefAndImage>
                                 )}
-
-                                {event.requests?.filter(
-                                    (request) =>
-                                        request.status ==
-                                            RequestStatus.ACCEPTED &&
-                                        request.userId == session?.user?.userId
-                                ).length > 0 && (
-                                    <div>
-                                        {event.host?.phone && (
+                                <div>
+                                    {event.requests?.filter(
+                                        (request) =>
+                                            request.status ==
+                                                RequestStatus.ACCEPTED &&
+                                            request.userId ==
+                                                session?.user?.userId
+                                    ).length > 0 &&
+                                        event.host?.phone && (
                                             <Link
                                                 href={`tel:${event.host.phone}`}>
                                                 <StyledPhoneIcon />
+                                                {/* text is required for accessibility */}
+                                                <FakeLinkText>
+                                                    Phone
+                                                </FakeLinkText>
                                             </Link>
                                         )}
-                                        <Link
-                                            href={`mailto:${event.host.email}`}>
-                                            <StyledEmailIcon />
-                                        </Link>
-                                    </div>
-                                )}
+                                    <Link href={`mailto:${event.host.email}`}>
+                                        <StyledEmailIcon />
+                                        {/* text is required for accessibility */}
+                                        <FakeLinkText>Email</FakeLinkText>
+                                    </Link>
+                                </div>
                             </StyledInfoEventDetailsBoxes>
                         </StyledInfoEventDetails>
                     </StyledInfoWrapper>
@@ -837,7 +841,7 @@ const StyledButtons = styled.div<HostImageProps>`
     }
 `;
 
-const StyledSectionHeadings = styled.p`
+const StyledSectionHeadings = styled.h2`
     font-weight: 800;
     margin-top: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.smallParagraph};
@@ -848,7 +852,7 @@ const StyledSectionHeadings = styled.p`
 `;
 
 const StyledCancelNote = styled.p`
-    color: red;
+    color: ${({ theme }) => theme.red};
     font-weight: 800;
 `;
 
@@ -892,7 +896,7 @@ const StyledDiscard = styled(Discard)`
     transform: translate(-50%, -50%);
 `;
 
-const StyledHeading = styled.h2`
+const StyledHeading = styled.h1`
     font-size: ${({ theme }) => theme.fonts.mobile.headline3};
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline3};
@@ -942,4 +946,8 @@ const ReviewList = styled.div`
     display: flex;
     flex-direction: column;
     gap: 40px;
+`;
+
+const FakeLinkText = styled.p`
+    display: none;
 `;

@@ -102,6 +102,10 @@ const Request: React.FC<{
         request.Event.capacity
     );
 
+    const altText = `photo of ${
+        !userIsHost ? request.Event.host.firstName : request.User.firstName
+    }`;
+
     return (
         //TODO: use Card comonent
         <Card>
@@ -116,7 +120,7 @@ const Request: React.FC<{
                                         ? request.Event.host.image
                                         : request.User.image
                                 }
-                                alt="Image"
+                                alt={altText}
                                 fill
                                 sizes="100"
                                 style={{ objectFit: 'cover' }}

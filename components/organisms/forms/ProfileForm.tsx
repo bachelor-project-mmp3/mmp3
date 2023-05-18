@@ -36,7 +36,7 @@ const schema = yup.object({
     image: yup.string().notRequired(),
     firstName: yup.string().min(2).required(),
     lastName: yup.string().min(2).required(),
-    roomNumber: yup.string().max(10).required(),
+    roomNumber: yup.string().max(5).required(),
     aboutYou: yup.string().notRequired(),
     instagram: yup.string().notRequired(),
     phone: yup.string().notRequired(),
@@ -100,12 +100,15 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
-        if (session) {
+        if (session && session.user.userId === router.query.id) {
             fetch(`/api/profile/${session.user.userId}`, {
                 method: 'GET',
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    if (!data.profile) {
+                        router.replace('/404');
+                    }
                     setProfile(data.profile);
                     setFirstName(data.profile.firstName);
                     setLastName(data.profile.lastName);
@@ -120,8 +123,9 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     setValue('lastName', data.profile.lastName);
                     setValue('roomNumber', data.profile.roomNumber);
                 });
+        } else {
+            router.replace('/404');
         }
-
         register('firstName');
         register('lastName');
         register('roomNumber');
@@ -129,9 +133,8 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     }, [register, session, setValue]);
 
     if (isLoading) return <Loading withoutLayout />;
-    if (!profile) return <p>No profile</p>;
 
-    const onSubmit = async (data: FormData) => {
+    const onSubmit = async () => {
         setLoading(true);
 
         try {
@@ -160,7 +163,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
             await Router.replace(`/profile/${profile.id}`);
         } catch (error) {
-            router.push('/404');
+            router.push('/500');
         }
     };
     return (
@@ -170,7 +173,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     <ProfileImage>
                         <StyledImage
                             src={selectedImage ? selectedImage : image}
-                            alt="Image"
+                            alt="profile photo"
                             fill
                             sizes="100"
                             style={{ objectFit: 'cover' }}
@@ -255,7 +258,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
             <StyledDiv>
                 <InputText
-                    id=""
+                    id="study"
                     placeholder="000"
                     value={profile.study}
                     disabled={true}>
@@ -264,7 +267,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
             </StyledDiv>
 
             <StyledDiv>
-                <InputText id="study" value={profile.email} disabled={true}>
+                <InputText id="email" value={profile.email} disabled={true}>
                     FH email address:
                 </InputText>
                 <StyledInfo>
@@ -302,7 +305,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                             }
                         }}
                         id="roomNumber"
-                        maxLength={10}
+                        maxLength={5}
                         placeholder="000"
                         value={roomNumber}
                         required={true}
@@ -319,7 +322,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                         )}
                     {errors.roomNumber && errors.roomNumber.type === 'max' && (
                         <ErrorMessage>
-                            Please enter a room number up to 10 characters
+                            Please enter a room number up to 5 characters
                         </ErrorMessage>
                     )}
                     <StyledInfo>
@@ -366,7 +369,10 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     id="phone"
                     placeholder="+43 123 45 67 890"
                     value={phone}
-                    padding="left"></InputText>
+                    padding="left">
+                    {/* label is required for accessibility */}
+                    <FakeLabel>Phone number</FakeLabel>
+                </InputText>
             </StyledDivPhone>
             <StyledInfo>
                 <Info>The phone number will only be shared with guests</Info>
@@ -388,7 +394,9 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                                 }
                             }}>
                             I have read and agree to the{' '}
-                            <Link href="/privacy">privacy policy</Link>
+                            <Link href="/privacy" target="_blank">
+                                privacy policy
+                            </Link>
                         </Checkbox>
                     </StyledWrapper>
                     {/*errors will return when field validation fails */}
@@ -508,4 +516,8 @@ const ProfileImage = styled.div`
     width: 300px;
     height: 300px;
     background: white;
+`;
+
+const FakeLabel = styled.p`
+    display: none;
 `;

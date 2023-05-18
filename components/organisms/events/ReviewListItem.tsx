@@ -8,19 +8,20 @@ interface ReviewItemProps {
 }
 
 type Review = {
-    User: { image: string };
+    User: { image: string; firstName: string };
     dish: number;
     environment: number;
     text: string;
 };
 
 const ReviewListItem: React.FC<ReviewItemProps> = ({ review }) => {
+    const altText = `photo of ${review.User.firstName}`;
     return (
         <Wrapper>
             <ImageWrapper>
                 <StyledImage
                     src={review?.User?.image}
-                    alt="Reviewer Image"
+                    alt={altText}
                     fill
                     sizes="100"
                     style={{ objectFit: 'cover' }}

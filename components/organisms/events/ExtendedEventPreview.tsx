@@ -74,6 +74,8 @@ const ExtendedEventPreview: React.FC<{
     const [showQuestionDeleteEvent, setShowQuestionDeleteEvent] =
         React.useState(false);
 
+    const altText = `profile photo of ${event?.host.firstName}`;
+
     // TODO use from helper
     const hasUserSendRequest = event.requests.find(
         (request) => request.userId === session?.user?.userId
@@ -157,7 +159,7 @@ const ExtendedEventPreview: React.FC<{
                             <HostImage userIsHost={userIsHost}>
                                 <StyledImage
                                     src={event.host.image}
-                                    alt="Image"
+                                    alt={altText}
                                     fill
                                     sizes="100"
                                     style={{ objectFit: 'cover' }}
@@ -477,6 +479,6 @@ const ButtonWrapper = styled.div`
 `;
 
 const StyledCancelNote = styled.p`
-    color: red;
+    color: ${({ theme }) => theme.red};
     font-weight: 800;
 `;

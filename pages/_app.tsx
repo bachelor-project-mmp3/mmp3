@@ -18,7 +18,7 @@ const App = ({
                         <link
                             rel="apple-touch-icon"
                             sizes="180x180"
-                            href="/apple-touch-icon.svg"
+                            href="/apple-touch-icon.jpg"
                         />
                         <link
                             rel="icon"

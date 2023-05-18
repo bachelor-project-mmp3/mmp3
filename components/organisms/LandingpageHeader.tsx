@@ -48,7 +48,7 @@ export const LandingPageHeader: React.FC<LandingPageHeaderProps> = ({
                         <MobileImageWrapper>
                             <MobileImage
                                 src={'/images/hands_mobile.svg'}
-                                alt="Image"
+                                alt="Drawn hands and bubbles with chef hat"
                                 fill
                                 sizes="100"
                                 style={{
@@ -59,7 +59,7 @@ export const LandingPageHeader: React.FC<LandingPageHeaderProps> = ({
                         <TabletImageWrapper>
                             <TabletImage
                                 src={'/images/hands_tablet.svg'}
-                                alt="Image"
+                                alt="Drawn hands and bubbles with chef hat"
                                 fill
                                 sizes="100"
                                 style={{
@@ -70,7 +70,7 @@ export const LandingPageHeader: React.FC<LandingPageHeaderProps> = ({
                         <DesktopImageWrapper>
                             <DesktopImage
                                 src={'/images/hands_desktop.svg'}
-                                alt="Image"
+                                alt="Drawn hands and bubbles with chef hat"
                                 fill
                                 sizes="100"
                                 style={{
@@ -85,7 +85,7 @@ export const LandingPageHeader: React.FC<LandingPageHeaderProps> = ({
     );
 };
 
-const Navbar = styled.div`
+const Navbar = styled.nav`
     display: flex;
     justify-content: center;
     padding-top: 30px;

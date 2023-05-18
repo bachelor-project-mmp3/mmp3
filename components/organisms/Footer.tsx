@@ -42,7 +42,7 @@ export const Footer = () => {
     );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.footer`
     padding: 60px 30px;
     @media ${(props) => props.theme.breakpoint.tablet} {
         padding: 60px;
@@ -65,6 +65,9 @@ const LinksWrapper = styled.div`
 const StyledText = styled.p`
     color: ${({ theme }) => theme.darkGrey};
     cursor: pointer;
+    &:nth-child(2) {
+        cursor: default;
+    }
     font-size: ${({ theme }) => theme.fonts.mobile.info};
     @media ${({ theme }) => theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.info};

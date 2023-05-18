@@ -16,6 +16,7 @@ export const ChefAndImage: React.FC<ChefAndImageProps> = ({
     hostName,
     source,
 }: ChefAndImageProps) => {
+    const altText = `photo of ${hostName}`;
     return (
         <>
             <StyledChefAndImage onClick={onClick}>
@@ -23,7 +24,7 @@ export const ChefAndImage: React.FC<ChefAndImageProps> = ({
                 <HostImage userIsHost={userIsHost}>
                     <StyledImage
                         src={source}
-                        alt="Image"
+                        alt={altText}
                         fill
                         sizes="100"
                         style={{ objectFit: 'cover' }}

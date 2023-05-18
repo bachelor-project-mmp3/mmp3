@@ -15,19 +15,7 @@ export default async function handler(
             // DELETE api/events/{id}
             if (req.method === 'DELETE') {
                 const eventId = req.query.id.toString();
-                // delete relations before event entry
-                await prisma.notification.deleteMany({
-                    where: { eventId: eventId },
-                });
-                await prisma.request.deleteMany({
-                    where: { eventId: eventId },
-                });
-                await prisma.review.deleteMany({
-                    where: { eventId: eventId },
-                });
-                await prisma.dish.deleteMany({
-                    where: { eventId: eventId },
-                });
+
                 await prisma.event.delete({
                     where: { id: eventId },
                 });
@@ -90,7 +78,9 @@ export default async function handler(
                         },
                     },
                 });
-                res.status(200).json({ event: event });
+
+                if (event) res.status(200).json({ event: event });
+                res.status(404).json({ message: 'Not event detail found' });
             } else if (req.method === 'PATCH') {
                 const eventId = req.query.id.toString();
                 const cancelFlag = req.headers.cancel;

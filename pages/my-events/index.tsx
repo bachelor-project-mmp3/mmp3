@@ -76,11 +76,12 @@ const MyEvents = () => {
             setNotfications(updatedNotifications);
             setLoading(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
     const onClickLink = async (notificationId: string, eventId: string) => {
+        setLoading(true);
         const res = await fetch(`/api/notifications/${notificationId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
@@ -89,7 +90,7 @@ const MyEvents = () => {
         if (res.status === 200) {
             router.push(`events/${eventId}`);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -110,7 +111,7 @@ const MyEvents = () => {
             setLoading(false);
             setShowInfoPopOpOnLeave(true);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -129,7 +130,7 @@ const MyEvents = () => {
             setUpcomingEvents(updatedEvents);
             setLoading(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
     if (isLoading) return <Loading />;
@@ -370,7 +371,7 @@ const MyEvents = () => {
 
 export default MyEvents;
 
-const StyledHeadline = styled.p`
+const StyledHeadline = styled.h2`
     width: 100%;
     margin-bottom: 0;
     font-size: ${({ theme }) => theme.fonts.mobile.headline5};
@@ -476,7 +477,7 @@ const StyledP = styled.p`
     text-align: center;
 `;
 
-const StyledHeading = styled.h2`
+const StyledHeading = styled.h1`
     font-size: ${({ theme }) => theme.fonts.mobile.headline3};
     @media ${(props) => props.theme.breakpoint.tablet} {
         font-size: ${({ theme }) => theme.fonts.normal.headline3};
