@@ -18,6 +18,7 @@ export const InputFile = ({ id, onChange }: InputFileProps) => {
                     name={id}
                     type="file"
                     accept="image/*"
+                    capture="filesystem"
                     onChange={onChange}></StyledInputFile>
             </StyledUpload>
         </>
