@@ -27,6 +27,7 @@ model Event {
   menu                Dish[]
   status              EventStatus    @default(UPCOMING)
 
+  @@index([status], type: BTree)
   @@map(name: "events")
 }
 
@@ -41,7 +42,7 @@ model Dish {
   title       String  @db.VarChar(100)
   link        String?
   description String? @db.Text
-  Event       Event?  @relation(fields: [eventId], references: [id])
+  Event       Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId     String?
 
   @@map(name: "dishes")
@@ -67,6 +68,7 @@ model User {
   notifications     Notification[] @relation("userId")
   fromNotifications Notification[] @relation("userFromId")
 
+  @@index([dormitory], type: BTree)
   @@map(name: "users")
 }
 
@@ -75,7 +77,7 @@ model Request {
   status    RequestStatus @default(PENDING)
   User      User?         @relation(fields: [userId], references: [id])
   userId    String?
-  Event     Event?        @relation(fields: [eventId], references: [id])
+  Event     Event?        @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId   String?
   createdAt DateTime      @default(now()) @map(name: "created_at")
   updatedAt DateTime      @updatedAt @map(name: "updated_at")
@@ -99,7 +101,7 @@ model Review {
   text        String?  @db.Text
   User        User?    @relation(fields: [userId], references: [id])
   userId      String?
-  Event       Event?   @relation(fields: [eventId], references: [id])
+  Event       Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId     String?
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
@@ -116,7 +118,7 @@ model Notification {
   userId     String?
   UserFrom   User?            @relation(fields: [userFromId], references: [id], name: "userFromId")
   userFromId String?
-  Event      Event?           @relation(fields: [eventId], references: [id])
+  Event      Event?           @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId    String?
   createdAt  DateTime         @default(now()) @map(name: "created_at")
   updatedAt  DateTime         @updatedAt @map(name: "updated_at")
