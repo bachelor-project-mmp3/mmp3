@@ -41,8 +41,6 @@ const CreateEvent = () => {
     let currentDate = new Date();
     let dateTimePlusOneHourDate = new Date(currentDate);
     dateTimePlusOneHourDate.setHours(dateTimePlusOneHourDate.getHours() + 1);
-
-    let dateTimeNow = formatDateForForm(currentDate);
     let dateTimePlusOneHour = formatDateForForm(dateTimePlusOneHourDate);
 
     const [isLoading, setLoading] = useState(true);

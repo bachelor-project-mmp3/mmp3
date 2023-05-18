@@ -105,12 +105,14 @@ export default async function handler(
                         hostedEventsCount / entriesPerPage
                     );
 
-                    if (profile)
+                    if (profile) {
                         res.status(200).json({
                             profile: profile,
                             pageCount: pageCount,
                         });
-                    res.status(404).json({ message: 'No profile found' });
+                    } else {
+                        res.status(404).json({ message: 'No profile found' });
+                    }
                 } else {
                     const profile = await prisma.user.findUnique({
                         where: {
