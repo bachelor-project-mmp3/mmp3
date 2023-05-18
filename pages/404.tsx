@@ -1,20 +1,17 @@
-import React from 'react';
-import Layout from '../../components/Layout';
-import ErrorImage from '../../public/images/error.svg';
+import Layout from '../components/Layout';
+import ErrorImage from '../public/images/error.svg';
 import styled from 'styled-components';
 
-const ErrorPage: React.FC = () => {
+export default function Custom404() {
     return (
         <Layout>
             <ErrorWrapper>
-                <h1>{'Oh no, something went wrong'}</h1>
+                <h1>{'404 - Page not found'}</h1>
                 <StyledErrorImage />
             </ErrorWrapper>
         </Layout>
     );
-};
-
-export default ErrorPage;
+}
 
 const ErrorWrapper = styled.div`
     text-align: center;

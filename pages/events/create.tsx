@@ -194,7 +194,7 @@ const CreateEvent = () => {
             const eventId = await res.json();
             router.replace(`/events/${eventId}`);
         } catch (error) {
-            router.push('/404');
+            router.push('/500');
         }
     };
 

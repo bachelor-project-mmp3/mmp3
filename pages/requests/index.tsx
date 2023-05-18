@@ -68,7 +68,7 @@ const Requests = () => {
                 });
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -98,7 +98,7 @@ const Requests = () => {
                 setCancelRequest(undefined);
             }
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 

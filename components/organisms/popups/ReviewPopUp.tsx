@@ -58,7 +58,7 @@ const ReviewPopUp: React.FC<ReviewPopUpProps> = ({
                     />
                 </RatingRow>
                 <RatingRow>
-                    <p>Hospitality</p>
+                    <p>Atmosphere</p>
                     <ReactStars
                         count={5}
                         half={false}

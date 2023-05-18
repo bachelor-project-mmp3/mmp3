@@ -131,7 +131,7 @@ const EditEvent = () => {
                 .then((res) => res.json())
                 .then((data) => {
                     // only host shall edit event
-                    if (session.user?.userId !== data?.event.host.id) {
+                    if (!data.event || session.user?.userId !== data?.event.host.id) {
                         router.replace('/404');
                     } else {
                         const dateInput = new Date(data.event.date);
@@ -263,7 +263,7 @@ const EditEvent = () => {
 
             await router.replace(`/events/${event.id}`);
         } catch (error) {
-            router.push('/404');
+            router.push('/500');
         }
     };
 

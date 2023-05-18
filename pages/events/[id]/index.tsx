@@ -157,7 +157,7 @@ const EventDetail = () => {
             setLoading(false);
             setShowInfoPopUpOnJoin(true);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     }
 
@@ -194,7 +194,7 @@ const EventDetail = () => {
 
             setLoading(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -216,7 +216,7 @@ const EventDetail = () => {
             setLoading(false);
             setshowInfoPopUpOnCancel(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -231,7 +231,7 @@ const EventDetail = () => {
         if (res.status === 200) {
             router.push('/my-events');
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
     const addReview = async () => {
@@ -262,7 +262,7 @@ const EventDetail = () => {
                 setShowReviewPopUp(false);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -292,7 +292,7 @@ const EventDetail = () => {
             setshowInfoPopUpOnUploadPhoto(true);
             setLoading(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -319,7 +319,7 @@ const EventDetail = () => {
             });
             setLoading(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 

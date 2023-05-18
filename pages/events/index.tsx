@@ -57,7 +57,7 @@ const Events = () => {
                 setShowInfoPopOpOnJoin(joinedEvent.title);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -90,7 +90,7 @@ const Events = () => {
                 }
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -106,8 +106,8 @@ const Events = () => {
             .then((data) => {
                 setEvents(data.events);
                 setPageCount(data.pageCount);
+                setLoading(false);
             });
-        setLoading(false);
     }, [pageIndex]);
 
     const onFilterEvents = async (filter: string) => {
@@ -128,7 +128,7 @@ const Events = () => {
                 setLoading(false);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -150,7 +150,7 @@ const Events = () => {
                 setLoading(false);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -172,7 +172,7 @@ const Events = () => {
                 setLoading(false);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -196,7 +196,7 @@ const Events = () => {
                 setLoading(false);
             });
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 

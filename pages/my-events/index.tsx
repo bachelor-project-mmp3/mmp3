@@ -76,7 +76,7 @@ const MyEvents = () => {
             setNotfications(updatedNotifications);
             setLoading(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -90,7 +90,7 @@ const MyEvents = () => {
         if (res.status === 200) {
             router.push(`events/${eventId}`);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -111,7 +111,7 @@ const MyEvents = () => {
             setLoading(false);
             setShowInfoPopOpOnLeave(true);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
 
@@ -130,7 +130,7 @@ const MyEvents = () => {
             setUpcomingEvents(updatedEvents);
             setLoading(false);
         } else {
-            router.push('/404');
+            router.push('/500');
         }
     };
     if (isLoading) return <Loading />;
