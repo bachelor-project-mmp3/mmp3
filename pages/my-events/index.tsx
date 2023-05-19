@@ -295,7 +295,7 @@ const MyEvents = () => {
                 ) : (
                     <WrapperColumn className="top">
                         <StyledHeadline>My past events</StyledHeadline>
-                        <EventsWrapper>
+                        <EventsWrapper pastEvents>
                             {pastEvents?.length > 0 ? (
                                 pastEvents.map((event) => (
                                     <SmallEventPreview
@@ -395,13 +395,23 @@ const WrapperColumn = styled.div`
     }
 `;
 
-const EventsWrapper = styled.div`
+interface EventsWrapperProps {
+    pastEvents: boolean;
+}
+
+const EventsWrapper = styled.div<EventsWrapperProps>`
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     width: 100%;
     row-gap: 50px;
     justify-content: center;
+    ${(props) =>
+        props.pastEvents &&
+        `
+        max-width: 960px;
+
+    `}
 
     @media ${(props) => props.theme.breakpoint.tablet} {
         justify-content: flex-start;
