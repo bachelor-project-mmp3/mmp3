@@ -179,7 +179,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                             style={{ objectFit: 'cover' }}
                         />
                         <InputFile
-                            id="image"
+                            id="profileImage"
                             onChange={(e) => {
                                 setValue('image', e.target.files[0]);
                                 setImage(e.target.files[0]);
