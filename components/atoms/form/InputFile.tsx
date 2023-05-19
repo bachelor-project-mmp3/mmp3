@@ -3,7 +3,7 @@ import Camera from '../../../public/icons/kamera.svg';
 
 interface InputFileProps {
     id: string;
-    onChange?: (e: any) => void;
+    onChange?: (e: File) => void;
 }
 
 export const InputFile = ({ id, onChange }: InputFileProps) => {
