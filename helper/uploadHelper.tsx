@@ -12,10 +12,7 @@ export async function uploadImage(image, uploadFolder) {
 
     const { data } = await supabase.storage
         .from('images')
-        .upload(`${uploadFolder}/${fileName}`, image, {
-            cacheControl: '3600',
-            upsert: false,
-        });
+        .upload(`${uploadFolder}/${fileName}`, image as File);
 
     const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL}/storage/v1/object/public/images/${data.path}`;
     return publicUrl;
