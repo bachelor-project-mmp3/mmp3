@@ -42,7 +42,9 @@ import Image from 'next/image';
 import Discard from '../../../public/icons/discard.svg';
 import { RequestProps } from '../../../components/organisms/requests/Request';
 import ReviewPopUp from '../../../components/organisms/popups/ReviewPopUp';
-import ReviewListItem from '../../../components/organisms/events/ReviewListItem';
+import ReviewListItem, {
+    Review,
+} from '../../../components/organisms/events/ReviewListItem';
 import ReactStars from 'react-stars';
 import Head from 'next/head';
 
@@ -82,9 +84,24 @@ type EventProps = {
             lastName: string;
             image: string;
         } | null;
+        Event: {
+            title: string;
+            id: string;
+            timeLimit: string;
+            currentParticipants: number;
+            capacity: number;
+            host: {
+                firstName: string;
+                lastName: string;
+                id: string;
+                image: string;
+            };
+        };
         id: string;
         status: string;
+        updatedAt: string;
     }> | null;
+    reviews: Array<Review>;
 };
 
 const defaultImage =
@@ -93,8 +110,7 @@ const defaultImage =
 const EventDetail = () => {
     const { data: session } = useSession();
     const router = useRouter();
-    // TODO use EventProps for type definition
-    const [event, setEvent] = useState(null);
+    const [event, setEvent] = useState<EventProps>(null);
     const [isLoading, setLoading] = useState(true);
     const [showInfoPopUpOnJoin, setShowInfoPopUpOnJoin] = useState(false);
     const [showInfoPopUp, setShowInfoPopUp] = useState<string | undefined>();
