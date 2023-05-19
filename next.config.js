@@ -1,6 +1,9 @@
 module.exports = {
     images: {
-        domains: ['firebasestorage.googleapis.com'],
+        domains: [
+            'firebasestorage.googleapis.com',
+            'nkszrksvxqmzvjxdzkft.supabase.co',
+        ],
     },
     webpack(config) {
         config.module.rules.push({
