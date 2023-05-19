@@ -134,6 +134,12 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
     if (isLoading) return <Loading withoutLayout />;
 
+    const handlePhoto = (e: any) => {
+        setValue('image', e.target.files[0]);
+        setImage(e.target.files[0]);
+        setSelectedImage(URL.createObjectURL(e.target.files[0]));
+    };
+
     const onSubmit = async () => {
         setLoading(true);
 
@@ -180,13 +186,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                         />
                         <InputFile
                             id="profileImage"
-                            onChange={(e) => {
-                                setValue('image', e.target.files[0]);
-                                setImage(e.target.files[0]);
-                                setSelectedImage(
-                                    URL.createObjectURL(e.target.files[0])
-                                );
-                            }}></InputFile>
+                            onChange={handlePhoto}></InputFile>
                     </ProfileImage>
                 )}
             </StyledDiv>
