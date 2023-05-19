@@ -7,11 +7,12 @@ interface ReviewItemProps {
     review: Review;
 }
 
-type Review = {
+export type Review = {
     User: { image: string; firstName: string };
     dish: number;
     environment: number;
     text: string;
+    total: number;
 };
 
 const ReviewListItem: React.FC<ReviewItemProps> = ({ review }) => {

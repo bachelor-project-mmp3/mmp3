@@ -25,7 +25,6 @@ export default async function handler(
                     dishes,
                 } = req.body;
 
-                console.log(costs);
                 const dateTimeDate = new Date(date);
                 const dateTimeTimeLimit = new Date(timeLimit);
                 const floatCosts = parseFloat(costs);
