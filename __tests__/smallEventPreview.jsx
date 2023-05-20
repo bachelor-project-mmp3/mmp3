@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import SmallEventPreview from '../components/organisms/events/SmallEventPreview';
+import { SmallEventPreview } from '../components/organisms/events/SmallEventPreview';
 import { ThemeProvider } from 'styled-components';
 import '@testing-library/jest-dom/extend-expect';
 
