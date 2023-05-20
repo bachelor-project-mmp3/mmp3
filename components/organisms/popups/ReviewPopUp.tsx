@@ -2,6 +2,7 @@ import React from 'react';
 import ActionPopUp from './ActionPopUp';
 import ReactStars from 'react-stars';
 import styled from 'styled-components';
+import { theme } from '../../../ThemeConfig';
 
 interface ReviewPopUpProps {
     onClose: (e: any) => void;
@@ -53,7 +54,8 @@ const ReviewPopUp: React.FC<ReviewPopUpProps> = ({
                         half={false}
                         onChange={foodRatingChanged}
                         size={30}
-                        color2={'#ffd700'}
+                        color1={theme.midGrey}
+                        color2={theme.primary}
                         value={currentReviewData.food}
                     />
                 </RatingRow>
@@ -64,7 +66,8 @@ const ReviewPopUp: React.FC<ReviewPopUpProps> = ({
                         half={false}
                         onChange={hospitalityRatingChanged}
                         size={30}
-                        color2={'#ffd700'}
+                        color1={theme.midGrey}
+                        color2={theme.primary}
                         value={currentReviewData.hospitality}
                     />
                 </RatingRow>
