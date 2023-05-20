@@ -161,7 +161,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
             await Router.replace(`/profile/${profile.id}`);
         } catch (error) {
-            console.log(error);
             router.push('/500');
         }
     };
