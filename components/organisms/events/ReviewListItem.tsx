@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
 import ReactStars from 'react-stars';
+import { theme } from '../../../ThemeConfig';
 
 interface ReviewItemProps {
     review: Review;
@@ -36,7 +37,8 @@ const ReviewListItem: React.FC<ReviewItemProps> = ({ review }) => {
                                 count={5}
                                 half={false}
                                 size={18}
-                                color2={'#ffd700'}
+                                color1={theme.midGrey}
+                                color2={theme.primary}
                                 value={review.dish}
                                 edit={false}
                             />
@@ -46,7 +48,8 @@ const ReviewListItem: React.FC<ReviewItemProps> = ({ review }) => {
                                 count={5}
                                 half={false}
                                 size={30}
-                                color2={'#ffd700'}
+                                color1={theme.midGrey}
+                                color2={theme.primary}
                                 value={review.dish}
                                 edit={false}
                             />
@@ -59,7 +62,8 @@ const ReviewListItem: React.FC<ReviewItemProps> = ({ review }) => {
                                 count={5}
                                 half={false}
                                 size={18}
-                                color2={'#ffd700'}
+                                color1={theme.midGrey}
+                                color2={theme.primary}
                                 value={review.environment}
                                 edit={false}
                             />
@@ -69,7 +73,8 @@ const ReviewListItem: React.FC<ReviewItemProps> = ({ review }) => {
                                 count={5}
                                 half={false}
                                 size={30}
-                                color2={'#ffd700'}
+                                color1={theme.midGrey}
+                                color2={theme.primary}
                                 value={review.environment}
                                 edit={false}
                             />
