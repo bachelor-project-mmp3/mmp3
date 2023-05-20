@@ -101,6 +101,7 @@ const Navbar = styled.nav`
 const StyledLog = styled.p`
     display: none;
     @media ${(props) => props.theme.breakpoint.tablet} {
+        font-weight: 800;
         display: block;
         cursor: pointer;
         text-decoration: none;
