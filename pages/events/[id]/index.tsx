@@ -47,6 +47,7 @@ import ReviewListItem, {
 } from '../../../components/organisms/events/ReviewListItem';
 import ReactStars from 'react-stars';
 import Head from 'next/head';
+import { theme } from '../../../ThemeConfig';
 
 type EventProps = {
     id: string;
@@ -460,7 +461,8 @@ const EventDetail = () => {
                                     <ReactStars
                                         count={5}
                                         size={25}
-                                        color2={'#ffd700'}
+                                        color1={theme.midGrey}
+                                        color2={theme.primary}
                                         value={overAllRating}
                                         edit={false}
                                     />
@@ -469,7 +471,8 @@ const EventDetail = () => {
                                     <ReactStars
                                         count={5}
                                         size={35}
-                                        color2={'#ffd700'}
+                                        color1={theme.midGrey}
+                                        color2={theme.primary}
                                         value={overAllRating}
                                         edit={false}
                                     />

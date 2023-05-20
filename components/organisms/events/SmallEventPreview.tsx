@@ -4,6 +4,7 @@ import { Card } from '../../atoms/Card';
 import Image from 'next/image';
 import ReactStars from 'react-stars';
 import { getOverallRating } from '../../../helper/EventsAndUserHelper';
+import { theme } from '../../../ThemeConfig';
 
 interface SmallEventProps {
     title: string;
@@ -46,7 +47,8 @@ export const SmallEventPreview: React.FC<SmallEventProps> = ({
                             count={5}
                             half={false}
                             size={20}
-                            color2={'#ffd700'}
+                            color1={theme.midGrey}
+                            color2={theme.primary}
                             value={overAllRating}
                             edit={false}
                         />
