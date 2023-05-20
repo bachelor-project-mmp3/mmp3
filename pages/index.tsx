@@ -76,8 +76,8 @@ function LandingPage({ user }) {
             </LandingPageHeader>
             <Quote
                 title="Studentenfutter"
-                subtitle="the German word for trail mix"
-                text="Studentenfutter wants to bring different people outside of their usual environment together to create a mixed variety - just as the namesake."
+                subtitle="the German word for trail mix or literally: students' food"
+                text="Studentenfutter is a web application designed for students to organize and coordinate meal-sharing events. Its purpose is to bring different people outside of hteir usual environment together to create a mixed variety - just as the namesake."
             />
             <Steps />
             <Footer />
