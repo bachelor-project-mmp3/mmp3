@@ -33,7 +33,6 @@ interface ProfileFormProps {
 }
 
 const schema = yup.object({
-    image: yup.string().notRequired(),
     firstName: yup.string().min(2).required(),
     lastName: yup.string().min(2).required(),
     roomNumber: yup.string().max(5).required(),
@@ -86,7 +85,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     } = useForm<FormData>({
         resolver: yupResolver(schema),
         defaultValues: {
-            image: image,
             firstName: firstName,
             lastName: lastName,
             roomNumber: roomNumber,
@@ -134,12 +132,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
     if (isLoading) return <Loading withoutLayout />;
 
-    const handlePhoto = (e: any) => {
-        setValue('image', e.target.files[0]);
-        setImage(e.target.files[0]);
-        setSelectedImage(URL.createObjectURL(e.target.files[0]));
-    };
-
     const onSubmit = async () => {
         setLoading(true);
 
@@ -186,8 +178,12 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                             style={{ objectFit: 'cover' }}
                         />
                         <InputFile
-                            id="profileImage"
-                            onChange={handlePhoto}></InputFile>
+                            id="image"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                setImage(file);
+                                setSelectedImage(URL.createObjectURL(file));
+                            }}></InputFile>
                     </ProfileImage>
                 )}
             </StyledDiv>
