@@ -1,5 +1,10 @@
-import { supabase } from '../lib/supabase';
+import { storage } from '../firebaseConfig';
 import imageCompression from 'browser-image-compression';
+import {
+    ref,
+    uploadBytes as upload,
+    getDownloadURL as getUrl,
+} from 'firebase/storage';
 import { v4 as randomId } from 'uuid';
 
 export async function uploadImage(image, uploadFolder) {
@@ -8,17 +13,14 @@ export async function uploadImage(image, uploadFolder) {
         image = await imageCompression(image, options);
     }
 
-    const extension = image.name.split('.').pop();
-    const fileName = `${randomId()}.${extension}`;
+    return new Promise(function (resolve) {
+        const fileName = `${randomId()}_${image.name}`;
+        const imageRef = ref(storage, `${uploadFolder}/${fileName}`);
 
-    const { data, error } = await supabase.storage
-        .from('images')
-        .upload(`${uploadFolder}/${fileName}`, image as File);
-
-    if (error) {
-        console.log(error);
-    }
-
-    const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL}/storage/v1/object/public/images/${data.path}`;
-    return publicUrl;
+        upload(imageRef, image).then((snapshot) => {
+            getUrl(snapshot.ref).then((url) => {
+                resolve(url);
+            });
+        });
+    });
 }
