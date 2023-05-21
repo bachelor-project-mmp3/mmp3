@@ -21,7 +21,7 @@ const getFormattedDate = (date: string) => {
     return formattedDate.toLocaleDateString('en-US');
 };
 
-const SmallEventPreview: React.FC<SmallEventProps> = ({
+export const SmallEventPreview: React.FC<SmallEventProps> = ({
     title,
     imageEvent,
     imageHost,
@@ -76,8 +76,6 @@ const SmallEventPreview: React.FC<SmallEventProps> = ({
         </SmallEventWrapper>
     );
 };
-
-export default SmallEventPreview;
 
 interface SmallEventWrapperProps {
     myEventsPage?: boolean;
