@@ -74,7 +74,7 @@ const Profile = () => {
                                 <NavItemsWrapper>
                                     <StyledNavItem
                                         href={`/profile/${profile.id}/edit`}>
-                                        Edit Profile
+                                        Edit profile
                                     </StyledNavItem>
                                     <StyledLine />
                                     <StyledNavItem href="/privacy">

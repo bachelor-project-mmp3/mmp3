@@ -213,7 +213,7 @@ const Events = () => {
             </Head>
             {showInfoPopOpOnJoin && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnJoin(undefined)}>
-                    Your Request to join <strong>{showInfoPopOpOnJoin}</strong>{' '}
+                    Your request to join <strong>{showInfoPopOpOnJoin}</strong>{' '}
                     was successfully sent. Check your{' '}
                     <strong>
                         <Link href="/requests">requests</Link>

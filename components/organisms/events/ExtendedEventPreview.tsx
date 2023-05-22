@@ -190,7 +190,7 @@ const ExtendedEventPreview: React.FC<{
                                                 setShowQuestion(true);
                                                 e.stopPropagation();
                                             }}>
-                                            Leave Event
+                                            Leave event
                                         </Button>
                                     ) : (
                                         <>
@@ -251,7 +251,7 @@ const ExtendedEventPreview: React.FC<{
                                     /* to prevent navigation to eventdetail */
                                     e.stopPropagation();
                                 }}>
-                                Edit Event
+                                Edit event
                             </Button>
                         </ButtonWrapper>
                     )}

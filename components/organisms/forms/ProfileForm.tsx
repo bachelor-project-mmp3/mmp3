@@ -351,7 +351,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     placeholder="Enter your instagram username"
                     value={instagram}
                     padding="left">
-                    Contact Information
+                    Contact information
                 </InputText>
             </StyledContactBlock>
 
