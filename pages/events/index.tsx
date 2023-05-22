@@ -8,12 +8,12 @@ import Link from 'next/link';
 import FilterCampus from '../../components/organisms/filter/FilterCampus';
 import NoEventsImage from '../../public/images/no-events.svg';
 import FilterDate from '../../components/organisms/filter/FilterDate';
-import FilterIcon from '../../public/icons/goBack.svg';
 import SortByDate, {
     sortOptions,
 } from '../../components/organisms/filter/SortByDate';
 import ExtendedEventPreview from '../../components/organisms/events/ExtendedEventPreview';
 import Head from 'next/head';
+import Pagination from '../../components/organisms/Pagination';
 
 const Events = () => {
     const [events, setEvents] = useState(null);
@@ -213,7 +213,7 @@ const Events = () => {
             </Head>
             {showInfoPopOpOnJoin && (
                 <InfoPopUp onClose={() => setShowInfoPopOpOnJoin(undefined)}>
-                    Your Request to join <strong>{showInfoPopOpOnJoin}</strong>{' '}
+                    Your request to join <strong>{showInfoPopOpOnJoin}</strong>{' '}
                     was successfully sent. Check your{' '}
                     <strong>
                         <Link href="/requests">requests</Link>
@@ -266,33 +266,11 @@ const Events = () => {
                     )}
                 </EventsList>
                 {events?.length > 0 && (
-                    <Pagination>
-                        <PaginationAction
-                            onClick={
-                                pageIndex !== 1
-                                    ? () => {
-                                          setPageIndex(pageIndex - 1);
-                                      }
-                                    : null
-                            }
-                            disabled={pageIndex === 1}>
-                            <StyledFilterIcon option="prev" />
-                            Prev
-                        </PaginationAction>
-                        <PaginationPageCount>{`${pageIndex}/${pageCount}`}</PaginationPageCount>
-                        <PaginationAction
-                            onClick={
-                                pageIndex !== pageCount
-                                    ? () => {
-                                          setPageIndex(pageIndex + 1);
-                                      }
-                                    : null
-                            }
-                            disabled={pageIndex === pageCount}>
-                            Next
-                            <StyledFilterIcon option="next" />
-                        </PaginationAction>
-                    </Pagination>
+                    <Pagination
+                        eventsPageIndex={pageIndex}
+                        eventsPageCount={pageCount}
+                        setEventsPageIndex={setPageIndex}
+                    />
                 )}
             </Layout>
         </>
@@ -343,66 +321,6 @@ const Reset = styled.div`
 
 const StyledNoEventsImage = styled(NoEventsImage)``;
 
-const Pagination = styled.div`
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    align-items: center;
-    font-weight: bold;
-    margin-top: 20px;
-    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
-
-    @media ${({ theme }) => theme.breakpoint.tablet} {
-        justify-content: flex-start;
-        margin-left: 10px;
-        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
-        gap: 30px;
-    }
-`;
-
-interface PaginationIconProps {
-    disabled: boolean;
-    option: 'prev' | 'next';
-}
-
-interface PaginationActionProps {
-    disabled: boolean;
-}
-
-const StyledFilterIcon = styled(FilterIcon)<PaginationIconProps>`
-    height: 16px;
-    width: 16px;
-
-    transform: ${(props) =>
-        props.option === 'prev' ? 'rotate(0deg)' : 'rotate(180deg)'};
-
-    @media ${({ theme }) => theme.breakpoint.tablet} {
-        height: 20px;
-        width: 20px;
-    }
-`;
-
-const PaginationAction = styled.div<PaginationActionProps>`
-    display: flex;
-    align-items: center;
-    color: ${(props) => `${props.theme.primary}`};
-    cursor: pointer;
-
-    ${(props) =>
-        !props.disabled &&
-        `
-        :hover {
-            color: ${props.theme.hoverPrimary};
-        }
-    `}
-    ${(props) =>
-        props.disabled &&
-        `
-        color: ${props.theme.midGrey};
-        cursor: auto;
-    `}
-`;
-
 const StyledHeading = styled.h1`
     font-size: ${({ theme }) => theme.fonts.mobile.headline3};
     @media ${(props) => props.theme.breakpoint.tablet} {
@@ -412,5 +330,3 @@ const StyledHeading = styled.h1`
     margin-bottom: 10px;
     margin-top: 30px;
 `;
-
-const PaginationPageCount = styled.div``;

@@ -367,7 +367,7 @@ const EventDetail = () => {
 
             {showInfoPopUpOnJoin && (
                 <InfoPopUp onClose={() => setShowInfoPopUpOnJoin(false)}>
-                    Your Request to join <strong>{event.title}</strong> was
+                    Your request to join <strong>{event.title}</strong> was
                     successfully sent. Check your{' '}
                     <strong>
                         <Link href="/requests">requests</Link>
@@ -746,7 +746,7 @@ const EventDetail = () => {
                                         setShowQuestionDeleteEvent(true)
                                     }
                                     width={45}>
-                                    Delete Event
+                                    Delete event
                                 </Button>
                                 <UploadButton onChange={uploadEventPhoto}>
                                     Upload photo

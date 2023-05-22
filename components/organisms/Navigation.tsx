@@ -61,7 +61,7 @@ const Navigation: React.FC = () => {
                                         router?.pathname === '/my-events'
                                     }
                                 />
-                                <NavText>My Events</NavText>
+                                <NavText>My events</NavText>
                             </DesktopNavigationItem>
                             <DesktopNavigationItem
                                 $isactive={
@@ -75,7 +75,7 @@ const Navigation: React.FC = () => {
                                         router?.pathname === '/events/[id]'
                                     }
                                 />
-                                <NavText>All Events</NavText>
+                                <NavText>All events</NavText>
                             </DesktopNavigationItem>
                             <DesktopNavigationItem
                                 $isactive={
@@ -147,7 +147,7 @@ const Navigation: React.FC = () => {
                         </DesktopNavigationItems>
                         <DesktopFooter>
                             <Link href="/imprint">Imprint</Link>
-                            <Link href="/privacy">Data Privacy</Link>
+                            <Link href="/privacy">Data privacy</Link>
                         </DesktopFooter>
                     </DesktopNavigation>
                     {!hideNavigationOnPaths.includes(router?.pathname) && (

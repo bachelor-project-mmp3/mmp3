@@ -22,7 +22,7 @@ const Walkthrough: React.FC<WalkthroughProps> = ({
     const swiperRef = useRef<SwiperCore>();
     return (
         <StyledBackground>
-            <StyledSkip onClick={onClick}>Skip Intro</StyledSkip>
+            <StyledSkip onClick={onClick}>Skip intro</StyledSkip>
             <StyledHeadline>Welcome to Studentenfutter</StyledHeadline>
 
             <Swiper
@@ -45,7 +45,7 @@ const Walkthrough: React.FC<WalkthroughProps> = ({
                 </SwiperSlide>
                 <SwiperSlide>
                     <StyledText>
-                        The plattform that brings students together at a shared
+                        The platform that brings students together at a shared
                         meal
                     </StyledText>
                     <StyledImage>
@@ -70,7 +70,7 @@ const Walkthrough: React.FC<WalkthroughProps> = ({
                                 swiperRef.current?.slidePrev();
                                 setIntroState(introState - 1);
                             }}>
-                            Go Back
+                            Go back
                         </Button>
                     )}
                     {introState == 2 ? (
