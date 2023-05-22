@@ -15,6 +15,7 @@ export const authOptions: NextAuthOptions = {
                 'https://auth.projects.multimediatechnology.at/.well-known/openid-configuration',
             clientId: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
+            checks: 'none',
 
             async profile(profile, token) {
                 const response = await fetch(
