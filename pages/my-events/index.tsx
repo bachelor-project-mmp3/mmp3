@@ -10,13 +10,12 @@ import InfoPopUp from '../../components/organisms/popups/InfoPopUp';
 import { hasUserSendRequestHelper } from '../../helper/EventsAndUserHelper';
 import Notification from '../../components/organisms/my-events/Notification';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper';
+import Pagination from '../../components/organisms/Pagination';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import NoPastEventsIllustration from '../../public/images/no_past_events.svg';
 import NoUpcomingEventsIllustration from '../../public/images/no_upcoming_events.svg';
-import FilterIcon from '../../public/icons/goBack.svg';
 import Head from 'next/head';
 
 const MyEvents = () => {
@@ -238,47 +237,12 @@ const MyEvents = () => {
                                         );
                                     })}
                                 </EventsWrapper>
-                                <StyledPagination>
-                                    <PaginationEvents>
-                                        <PaginationAction
-                                            onClick={
-                                                upcomingEventsPageIndex !== 1
-                                                    ? () => {
-                                                          setUpcomingEventsPageIndex(
-                                                              upcomingEventsPageIndex -
-                                                                  1
-                                                          );
-                                                      }
-                                                    : null
-                                            }
-                                            disabled={
-                                                upcomingEventsPageIndex === 1
-                                            }>
-                                            <StyledFilterIcon option="prev" />
-                                            Prev
-                                        </PaginationAction>
-                                        <PaginationPageCount>{`${upcomingEventsPageIndex}/${upcomingEventsPageCount}`}</PaginationPageCount>
-                                        <PaginationAction
-                                            onClick={
-                                                upcomingEventsPageIndex !==
-                                                upcomingEventsPageCount
-                                                    ? () => {
-                                                          setUpcomingEventsPageIndex(
-                                                              upcomingEventsPageIndex +
-                                                                  1
-                                                          );
-                                                      }
-                                                    : null
-                                            }
-                                            disabled={
-                                                upcomingEventsPageIndex ===
-                                                upcomingEventsPageCount
-                                            }>
-                                            Next
-                                            <StyledFilterIcon option="next" />
-                                        </PaginationAction>
-                                    </PaginationEvents>
-                                </StyledPagination>
+                                <Pagination
+                                    eventsPageIndex={upcomingEventsPageIndex}
+                                    eventsPageCount={upcomingEventsPageCount}
+                                    setEventsPageIndex={
+                                        setUpcomingEventsPageIndex
+                                    }></Pagination>
                             </>
                         ) : (
                             <StyledNoEvents>
@@ -321,46 +285,14 @@ const MyEvents = () => {
                                 </StyledNoEvents>
                             )}
                         </EventsWrapper>
+
                         {pastEvents?.length > 0 && (
-                            <StyledPagination>
-                                <PaginationEvents>
-                                    <PaginationAction
-                                        onClick={
-                                            pastEventsPageIndex !== 1
-                                                ? () => {
-                                                      setPastEventsPageIndex(
-                                                          pastEventsPageIndex -
-                                                              1
-                                                      );
-                                                  }
-                                                : null
-                                        }
-                                        disabled={pastEventsPageIndex === 1}>
-                                        <StyledFilterIcon option="prev" />
-                                        Prev
-                                    </PaginationAction>
-                                    <PaginationPageCount>{`${pastEventsPageIndex}/${pastEventsPageCount}`}</PaginationPageCount>
-                                    <PaginationAction
-                                        onClick={
-                                            pastEventsPageIndex !==
-                                            pastEventsPageCount
-                                                ? () => {
-                                                      setPastEventsPageIndex(
-                                                          pastEventsPageIndex +
-                                                              1
-                                                      );
-                                                  }
-                                                : null
-                                        }
-                                        disabled={
-                                            pastEventsPageIndex ===
-                                            pastEventsPageCount
-                                        }>
-                                        Next
-                                        <StyledFilterIcon option="next" />
-                                    </PaginationAction>
-                                </PaginationEvents>
-                            </StyledPagination>
+                            <Pagination
+                                eventsPageIndex={pastEventsPageIndex}
+                                eventsPageCount={pastEventsPageCount}
+                                setEventsPageIndex={
+                                    setPastEventsPageIndex
+                                }></Pagination>
                         )}
                     </WrapperColumn>
                 )}
@@ -495,76 +427,4 @@ const StyledHeading = styled.h1`
     font-weight: 800;
     margin-bottom: 10px;
     margin-top: 30px;
-`;
-
-interface PaginationIconProps {
-    disabled: boolean;
-    option: 'prev' | 'next';
-}
-
-interface PaginationActionProps {
-    disabled: boolean;
-}
-
-const StyledFilterIcon = styled(FilterIcon)<PaginationIconProps>`
-    height: 16px;
-    width: 16px;
-
-    transform: ${(props) =>
-        props.option === 'prev' ? 'rotate(0deg)' : 'rotate(180deg)'};
-
-    @media ${({ theme }) => theme.breakpoint.tablet} {
-        height: 20px;
-        width: 20px;
-    }
-`;
-
-const PaginationAction = styled.div<PaginationActionProps>`
-    display: flex;
-    align-items: center;
-    color: ${(props) => `${props.theme.primary}`};
-    cursor: pointer;
-
-    ${(props) =>
-        !props.disabled &&
-        `
-        :hover {
-            color: ${props.theme.hoverPrimary};
-        }
-    `}
-    ${(props) =>
-        props.disabled &&
-        `
-        color: ${props.theme.midGrey};
-        cursor: auto;
-    `}
-`;
-
-const PaginationEvents = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    gap: 20px;
-    align-items: center;
-    font-weight: bold;
-    margin-bottom: 20px;
-    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
-
-    @media ${({ theme }) => theme.breakpoint.tablet} {
-        justify-content: flex-start;
-        margin-left: 10px;
-        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
-        gap: 30px;
-    }
-`;
-
-const PaginationPageCount = styled.div``;
-
-const StyledPagination = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    @media ${({ theme }) => theme.breakpoint.tablet} {
-        justify-content: start;
-    }
 `;
