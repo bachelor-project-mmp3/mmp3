@@ -33,6 +33,7 @@ interface ProfileFormProps {
 }
 
 const schema = yup.object({
+    image: yup.mixed().notRequired(),
     firstName: yup.string().min(2).required(),
     lastName: yup.string().min(2).required(),
     roomNumber: yup.string().max(5).required(),
@@ -63,9 +64,9 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
     const [profile, setProfile] = useState(null);
     const [isLoading, setLoading] = useState(true);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImage, setSelectedImage] = useState('');
 
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [roomNumber, setRoomNumber] = useState('');
@@ -85,6 +86,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     } = useForm<FormData>({
         resolver: yupResolver(schema),
         defaultValues: {
+            image: image,
             firstName: firstName,
             lastName: lastName,
             roomNumber: roomNumber,
@@ -173,15 +175,15 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                             src={selectedImage ? selectedImage : image}
                             alt="profile photo"
                             fill
-                            sizes="100"
-                            style={{ objectFit: 'cover' }}
+                            sizes="width: 100vw"
                         />
                         <InputFile
                             id="image"
                             onChange={(e) => {
-                                const file = e.target.files[0];
-                                setImage(file);
-                                setSelectedImage(URL.createObjectURL(file));
+                                setImage(e.target.files[0]);
+                                setSelectedImage(
+                                    URL.createObjectURL(e.target.files[0])
+                                );
                             }}></InputFile>
                     </ProfileImage>
                 )}
@@ -277,10 +279,9 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 <StyledDiv className="small">
                     <Select
                         id="dormitory"
+                        defaultValue={dormitory}
                         options={dormitories}
-                        selected={dormitory}
                         onChange={(e) => {
-                            setValue('dormitory', e.target.value);
                             setDormitory(e.target.value);
                         }}>
                         Accommodation*
@@ -344,7 +345,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 <StyledInstagram />
                 <InputText
                     onChange={(e) => {
-                        setValue('instagram', e.target.value);
                         setInstagram(e.target.value);
                     }}
                     id="instagram"
@@ -359,7 +359,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 <StyledPhone />
                 <InputText
                     onChange={(e) => {
-                        setValue('phone', e.target.value);
                         setPhone(e.target.value);
                     }}
                     id="phone"
@@ -504,6 +503,7 @@ const StyledInfo = styled.div`
 const StyledImage = styled(Image)`
     opacity: 0.5;
     border-radius: 50%;
+    object-fit: cover;
 `;
 
 const ProfileImage = styled.div`
