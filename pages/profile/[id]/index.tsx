@@ -15,8 +15,8 @@ import Burger from '../../../public/icons/burger_menu.svg';
 import Link from 'next/link';
 import { Loading } from '../../../components/organisms/Loading';
 import { Header } from '../../../components/organisms/Header';
-import FilterIcon from '../../../public/icons/goBack.svg';
 import Head from 'next/head';
+import Pagination from '../../../components/organisms/Pagination';
 
 const Profile = () => {
     const { data: session } = useSession();
@@ -74,7 +74,7 @@ const Profile = () => {
                                 <NavItemsWrapper>
                                     <StyledNavItem
                                         href={`/profile/${profile.id}/edit`}>
-                                        Edit Profile
+                                        Edit profile
                                     </StyledNavItem>
                                     <StyledLine />
                                     <StyledNavItem href="/privacy">
@@ -112,6 +112,8 @@ const Profile = () => {
                                         src={profile.image}
                                         alt="profile photo"
                                         fill
+                                        priority={true}
+                                        sizes="width: 100vw"
                                     />
                                 </ProfileImage>
                             )}
@@ -221,37 +223,11 @@ const Profile = () => {
                                     ))}
                                 </EventsWrapper>
 
-                                <Pagination>
-                                    <PaginationAction
-                                        onClick={
-                                            pageIndex !== 1
-                                                ? () => {
-                                                      setPageIndex(
-                                                          pageIndex - 1
-                                                      );
-                                                  }
-                                                : null
-                                        }
-                                        disabled={pageIndex === 1}>
-                                        <StyledFilterIcon option="prev" />
-                                        Prev
-                                    </PaginationAction>
-                                    <PaginationPageCount>{`${pageIndex}/${pageCount}`}</PaginationPageCount>
-                                    <PaginationAction
-                                        onClick={
-                                            pageIndex !== pageCount
-                                                ? () => {
-                                                      setPageIndex(
-                                                          pageIndex + 1
-                                                      );
-                                                  }
-                                                : null
-                                        }
-                                        disabled={pageIndex === pageCount}>
-                                        Next
-                                        <StyledFilterIcon option="next" />
-                                    </PaginationAction>
-                                </Pagination>
+                                <Pagination
+                                    eventsPageIndex={pageIndex}
+                                    eventsPageCount={pageCount}
+                                    setEventsPageIndex={setPageIndex}
+                                />
                             </WrapperColumn>
                         )}
                     </WrapperRow>
@@ -528,68 +504,6 @@ const ProfileImage = styled.div`
         height: 300px;
     }
 `;
-
-const Pagination = styled.div`
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    align-items: center;
-    font-weight: bold;
-    margin-top: 20px;
-    font-size: ${({ theme }) => theme.fonts.mobile.paragraph};
-
-    @media ${({ theme }) => theme.breakpoint.tablet} {
-        justify-content: flex-start;
-        margin-left: 10px;
-        font-size: ${({ theme }) => theme.fonts.normal.paragraph};
-        gap: 30px;
-    }
-`;
-
-interface PaginationIconProps {
-    disabled: boolean;
-    option: 'prev' | 'next';
-}
-
-interface PaginationActionProps {
-    disabled: boolean;
-}
-
-const StyledFilterIcon = styled(FilterIcon)<PaginationIconProps>`
-    height: 16px;
-    width: 16px;
-
-    transform: ${(props) =>
-        props.option === 'prev' ? 'rotate(0deg)' : 'rotate(180deg)'};
-
-    @media ${({ theme }) => theme.breakpoint.tablet} {
-        height: 20px;
-        width: 20px;
-    }
-`;
-
-const PaginationAction = styled.div<PaginationActionProps>`
-    display: flex;
-    align-items: center;
-    color: ${(props) => `${props.theme.primary}`};
-    cursor: pointer;
-
-    ${(props) =>
-        !props.disabled &&
-        `
-        :hover {
-            color: ${props.theme.hoverPrimary};
-        }
-    `}
-    ${(props) =>
-        props.disabled &&
-        `
-        color: ${props.theme.midGrey};
-        cursor: auto;
-    `}
-`;
-
-const PaginationPageCount = styled.div``;
 
 const FakeGreenBackgroundWrapper = styled.div`
     position: relative;

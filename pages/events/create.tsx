@@ -198,7 +198,7 @@ const CreateEvent = () => {
             </Head>
             <Layout>
                 <Header />
-                <StyledHeading>Create a new Event</StyledHeading>
+                <StyledHeading>Create a new event</StyledHeading>
                 <EventForm onSubmit={handleSubmit(onSubmit)}>
                     <StyledInputWithError>
                         <InputText
@@ -318,7 +318,7 @@ const CreateEvent = () => {
                                 placeholder="000"
                                 value={roomnumber}
                                 disabled={true}>
-                                Roomnumber
+                                Room number
                             </InputText>
                         </StyledInputWithError>
                     </StyledFormComponentsInRow>

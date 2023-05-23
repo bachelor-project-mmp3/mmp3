@@ -83,3 +83,8 @@ After pushing changes to master branch, run `git push heroku HEAD:master`
 
 -   naming should be self-descriptive
 -   camelCase
+
+## Cypress (E2E-Test)
+
+-   npm run cypress
+-   add your tests: cypress/e2e

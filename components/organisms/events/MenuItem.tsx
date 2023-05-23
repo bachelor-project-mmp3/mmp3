@@ -36,7 +36,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
                     <a href={dishLink} target="_blank" rel={'noreferrer'}>
                         <StyledLinkIcon />
                         {/* text is required for accessibility */}
-                        <FakeLinkText>Dish Link</FakeLinkText>
+                        <FakeLinkText>Dish link</FakeLinkText>
                     </a>
                 )}
                 {dishDescription && (
