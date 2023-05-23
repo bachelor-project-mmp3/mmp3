@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { StyledForm } from './EventForm';
 import Router, { useRouter } from 'next/router';
 import { InputFile } from '../../../components/atoms/form/InputFile';
 import { SubmitButton } from '../../../components/atoms/form/SubmitButton';
@@ -405,7 +404,8 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     <Button
                         variant="red"
                         onClick={() => router.replace(`/profile/${profile.id}`)}
-                        width={45}>
+                        width={45}
+                        type="button">
                         Cancel
                     </Button>
                 )}
@@ -416,6 +416,10 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 };
 
 export default ProfileForm;
+
+export const StyledForm = styled.form`
+    max-width: 600px;
+`;
 
 const StyledDiv = styled.div`
     position: relative;

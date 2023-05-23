@@ -501,7 +501,8 @@ const CreateEvent = () => {
                             <Button
                                 variant="red"
                                 onClick={() => router.replace(`/events`)}
-                                width={45}>
+                                width={45}
+                                type="button">
                                 Cancel
                             </Button>
                             {Object.keys(errors).length !== 0 ? (
