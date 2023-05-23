@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 interface InputSelectProps {
     id: string;
+    defaultValue: string;
     options: Array<string>;
     selected?: string;
     onChange?: (e: any) => void;
@@ -10,6 +11,7 @@ interface InputSelectProps {
 }
 export const Select = ({
     id,
+    defaultValue,
     options,
     selected,
     onChange,
@@ -18,15 +20,16 @@ export const Select = ({
     return (
         <>
             <StyledLabel htmlFor={id}>{children}</StyledLabel>
-            <StyledSelect id={id} name={id} onChange={onChange}>
+            <StyledSelect
+                id={id}
+                defaultValue={defaultValue}
+                name={id}
+                onChange={onChange}>
                 <option disabled={true} value="">
                     --- Choose an option ---
                 </option>
                 {options.map((option) => (
-                    <option
-                        value={option}
-                        key={option}
-                        selected={selected === option ? true : false}>
+                    <option value={option} key={option}>
                         {option}
                     </option>
                 ))}

@@ -161,6 +161,8 @@ const EditEvent = () => {
                     }
                 });
         }
+
+        console.log(title);
     }, [register, session, setValue, router?.query.id]);
 
     const handleChange = (event, index) => {
