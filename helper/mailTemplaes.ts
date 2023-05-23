@@ -22,7 +22,7 @@ export function getEmailTemplate(data: {
 }) {
     if (data.type === 'join') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.guestName} wants to join`,
+            subject: `${data.guestName} wants to join`,
             text: `${data.guestName} wants to join`,
             html: `<div>Hi ${
                 data.hostFirstName
@@ -36,7 +36,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'accepted') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} accepts join request`,
+            subject: `${data.hostFirstName} accepts join request`,
             text: `${data.hostFirstName} accepts join request`,
             html: `<div>Hi ${data.guestName},<br></div><p>${
                 data.hostFirstName
@@ -51,7 +51,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'declined') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} declined join request`,
+            subject: `${data.hostFirstName} declined join request`,
             text: `${data.hostFirstName} declined join request`,
             html: `<div>Hi ${data.guestName},<br></div><p>We're sorry, ${data.hostFirstName}  just declined your join request for <strong>${data.eventTitle}</strong>!<br>
             But we are sure you can find another event to join. Keep your head up and get ready to join another event!
@@ -60,7 +60,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'leave') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.guestName} left event`,
+            subject: `${data.guestName} left event`,
             text: `${data.guestName} left event`,
             html: `<div>Hi ${data.hostFirstName},<br></div><p><a href=${
                 `${process.env.NEXT_PUBLIC_BASE_URL}/profile/` + data.guestId
@@ -72,7 +72,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'edit') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} edited event`,
+            subject: `${data.hostFirstName} edited event`,
             text: `${data.hostFirstName} edited event`,
             html: `<div>Hi ${data.guestName},<br></div>
 <p>${data.hostFirstName} just edited <strong>${
@@ -85,7 +85,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'cancel') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.hostFirstName} cancelled event`,
+            subject: `${data.hostFirstName} cancelled event`,
             text: `${data.hostFirstName} cancelled event`,
             html: `<div>Hi ${data.guestName},<br></div>
 <p>Unfortunately ${data.hostFirstName} decided to cancel the event <strong>${
@@ -99,7 +99,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'timelimit-host') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= Timelimit to join your event ${data.eventTitle} is over`,
+            subject: `Timelimit to join your event ${data.eventTitle} is over`,
             text: `Timelimit to join your event ${data.eventTitle} is over`,
             html: `<div>Hi ${
                 data.hostFirstName
@@ -114,7 +114,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'kickGuest') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= You will not attend ${data.eventTitle}`,
+            subject: `You will not attend ${data.eventTitle}`,
             text: `Yout will not attend ${data.eventTitle}`,
             html: `<div>Hi ${data.guestName},<br></div><p>Unfortunately, ${
                 data.hostFirstName
@@ -124,7 +124,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'imageUpload') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?=  Upload image for ${data.eventTitle}`,
+            subject: `Upload image for ${data.eventTitle}`,
             text: ` Upload image for ${data.eventTitle}`,
             html: `<div>Hi ${data.hostFirstName},<br></div><p>your event ${
                 data.eventTitle
@@ -136,7 +136,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'reminder-host') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.eventTitle} takes place tomorrow`,
+            subject: `${data.eventTitle} takes place tomorrow`,
             text: `${data.eventTitle} takes place tomorrow`,
             html: `<div>Hi ${
                 data.hostFirstName
@@ -150,7 +150,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'reminder-guest') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= ${data.eventTitle} takes place tomorrow`,
+            subject: `${data.eventTitle} takes place tomorrow`,
             text: `${data.eventTitle} takes place tomorrow`,
             html: `<div>Hi ${data.guestName},<br></div><p>the event <a href=${
                 `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
@@ -162,7 +162,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'reviewReminder') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= It's time to review ${data.eventTitle}`,
+            subject: `It's time to review ${data.eventTitle}`,
             text: `It's time to review ${data.eventTitle}`,
             html: `<div>Hi ${data.guestName},<br></div><p>the event <a href=${
                 `${process.env.NEXT_PUBLIC_BASE_URL}/events/` + data.eventId
@@ -176,7 +176,7 @@ export function getEmailTemplate(data: {
     }
     if (data.type === 'newReview') {
         return {
-            subject: `=?utf-8?Q?=F0=9F=A5=84?= =?utf-8?Q?=F0=9F=A5=99?= New review for ${data.eventTitle}`,
+            subject: `New review for ${data.eventTitle}`,
             text: `New review for ${data.eventTitle}`,
             html: `<div>Hi ${data.hostFirstName},<br></div><p>${
                 data.guestName
