@@ -28,29 +28,12 @@ export const dormitories = [
     'Campus Schwarzach',
 ];
 
-const acceptedFiles = [
-    'image/jpg',
-    'image/heic',
-    'image/heif',
-    'image/gif',
-    'image/png',
-    'image/jpeg',
-    'image/svg',
-    'image/webp',
-];
-
 interface ProfileFormProps {
     cancelButton?: boolean;
 }
 
 const schema = yup.object({
-    image: yup.mixed().test('fileFormat', (value) => {
-        if (value instanceof File) {
-            return acceptedFiles.includes(value.type);
-        } else {
-            return false;
-        }
-    }),
+    image: yup.mixed().notRequired(),
     firstName: yup.string().min(2).required(),
     lastName: yup.string().min(2).required(),
     roomNumber: yup.string().max(5).required(),
@@ -103,7 +86,7 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
     } = useForm<FormData>({
         resolver: yupResolver(schema),
         defaultValues: {
-            image: undefined,
+            image: image,
             firstName: firstName,
             lastName: lastName,
             roomNumber: roomNumber,
@@ -139,7 +122,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                     setValue('firstName', data.profile.firstName);
                     setValue('lastName', data.profile.lastName);
                     setValue('roomNumber', data.profile.roomNumber);
-                    setValue('image', undefined);
                 });
         } else {
             router.replace('/404');
@@ -148,7 +130,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
         register('lastName');
         register('roomNumber');
         register('privacy');
-        register('image');
     }, [register, session, setValue]);
 
     if (isLoading) return <Loading withoutLayout />;
@@ -194,25 +175,17 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                             src={selectedImage ? selectedImage : image}
                             alt="profile photo"
                             fill
-                            sizes="100"
-                            style={{ objectFit: 'cover' }}
+                            sizes="width: 100vw"
                         />
                         <InputFile
                             id="image"
                             onChange={(e) => {
-                                const file = e.target.files[0];
-                                setValue('image', file);
-                                setImage(file);
-                                setSelectedImage(URL.createObjectURL(file));
-                                clearErrors('image');
+                                setImage(e.target.files[0]);
+                                setSelectedImage(
+                                    URL.createObjectURL(e.target.files[0])
+                                );
                             }}></InputFile>
                     </ProfileImage>
-                )}
-                {/*errors will return when field validation fails  */}
-                {errors.image && (
-                    <ErrorMessage>
-                        Please use a valid image format like png or jpg
-                    </ErrorMessage>
                 )}
             </StyledDiv>
 
@@ -309,7 +282,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                         defaultValue={dormitory}
                         options={dormitories}
                         onChange={(e) => {
-                            setValue('dormitory', e.target.value);
                             setDormitory(e.target.value);
                         }}>
                         Accommodation*
@@ -373,7 +345,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 <StyledInstagram />
                 <InputText
                     onChange={(e) => {
-                        setValue('instagram', e.target.value);
                         setInstagram(e.target.value);
                     }}
                     id="instagram"
@@ -388,7 +359,6 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 <StyledPhone />
                 <InputText
                     onChange={(e) => {
-                        setValue('phone', e.target.value);
                         setPhone(e.target.value);
                     }}
                     id="phone"
@@ -533,6 +503,7 @@ const StyledInfo = styled.div`
 const StyledImage = styled(Image)`
     opacity: 0.5;
     border-radius: 50%;
+    object-fit: cover;
 `;
 
 const ProfileImage = styled.div`
