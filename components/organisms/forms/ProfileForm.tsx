@@ -28,7 +28,16 @@ export const dormitories = [
     'Campus Schwarzach',
 ];
 
-const acceptedFiles = ['image/png', 'image/jpeg', 'image/jpg'];
+const acceptedFiles = [
+    'image/jpg',
+    'image/heic',
+    'image/heif',
+    'image/gif',
+    'image/png',
+    'image/jpeg',
+    'image/svg',
+    'image/webp',
+];
 
 interface ProfileFormProps {
     cancelButton?: boolean;
@@ -201,7 +210,9 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
                 )}
                 {/*errors will return when field validation fails  */}
                 {errors.image && (
-                    <ErrorMessage>Please use a png or jpg</ErrorMessage>
+                    <ErrorMessage>
+                        Please use a valid image format like png or jpg
+                    </ErrorMessage>
                 )}
             </StyledDiv>
 
