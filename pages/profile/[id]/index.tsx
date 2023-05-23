@@ -112,6 +112,8 @@ const Profile = () => {
                                         src={profile.image}
                                         alt="profile photo"
                                         fill
+                                        priority={true}
+                                        sizes="width: 100vw"
                                     />
                                 </ProfileImage>
                             )}
