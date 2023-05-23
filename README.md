@@ -88,3 +88,4 @@ After pushing changes to master branch, run `git push heroku HEAD:master`
 
 -   npm run cypress
 -   add your tests: cypress/e2e
+-   for running the tests successfully fill in username,password,id and firstname into `cypress.config.ts`:
