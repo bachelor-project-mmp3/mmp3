@@ -1,4 +1,12 @@
-# Setup with starter (Kerstin already did that)
+# MMP3 Studentenfutter
+
+
+## Beurteilungsdokument
+
+[Beurteilungsdokument](https://wiki.mediacube.at/wiki/images/d/da/Beurteilungsdokument-Studentenfutter.pdf)
+
+
+# Setup with starter
 
 -   https://vercel.com/guides/nextjs-prisma-postgres
 
