@@ -99,7 +99,10 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
 
     useEffect(() => {
         // check isReady to prevent query of undefiend https://stackoverflow.com/questions/69412453/next-js-router-query-getting-undefined-on-refreshing-page-but-works-if-you-navi
-        if (session && session.user.userId === router.query.id) {
+        if (!session) {
+            return;
+        }
+        if (session.user.userId === router.query.id) {
             fetch(`/api/profile/${session.user.userId}`, {
                 method: 'GET',
             })
