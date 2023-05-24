@@ -87,13 +87,13 @@ const Requests = () => {
 
             setRequests(updatedRequests);
             setLoading(false);
-            if (cancelRequest.Event.host.id !== session?.user.userId)
+            if (cancelRequest?.Event.host.id !== session?.user.userId)
                 setShowInfoPopOpOnLeave(
                     'Your request was deleted successfully.'
                 );
             else {
                 setShowInfoPopOpOnLeave(
-                    `${cancelRequest.User.firstName} got deleted from the event.`
+                    `${cancelRequest?.User.firstName} got deleted from the event.`
                 );
                 setCancelRequest(undefined);
             }
