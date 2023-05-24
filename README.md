@@ -1,4 +1,12 @@
-# Setup with starter (Kerstin already did that)
+# MMP3 Studentenfutter
+
+
+## Beurteilungsdokument
+
+[Beurteilungsdokument](https://wiki.mediacube.at/wiki/images/d/da/Beurteilungsdokument-Studentenfutter.pdf)
+
+
+# Setup with starter
 
 -   https://vercel.com/guides/nextjs-prisma-postgres
 
@@ -88,3 +96,4 @@ After pushing changes to master branch, run `git push heroku HEAD:master`
 
 -   npm run cypress
 -   add your tests: cypress/e2e
+-   for running the tests successfully fill in username,password,id and firstname into `cypress.config.ts`:

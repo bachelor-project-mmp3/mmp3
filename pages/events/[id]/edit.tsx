@@ -161,6 +161,8 @@ const EditEvent = () => {
                     }
                 });
         }
+
+        console.log(title);
     }, [register, session, setValue, router?.query.id]);
 
     const handleChange = (event, index) => {
@@ -604,7 +606,8 @@ const EditEvent = () => {
                             <Button
                                 variant="red"
                                 onClick={() => router.replace(`/events`)}
-                                width={45}>
+                                width={45}
+                                type="button">
                                 Cancel
                             </Button>
                             {Object.keys(errors).length !== 0 ? (

@@ -9,6 +9,7 @@ interface ButtonProps {
     width?: number;
     smallFont?: boolean;
     disabled?: boolean;
+    type?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -18,6 +19,7 @@ export const Button: React.FC<ButtonProps> = ({
     width,
     disabled,
     smallFont,
+    type,
 }: ButtonProps) => {
     return (
         <StyledButton
@@ -25,7 +27,8 @@ export const Button: React.FC<ButtonProps> = ({
             disabled={disabled}
             variant={variant}
             smallFont={smallFont}
-            width={width}>
+            width={width}
+            type={type}>
             {children}
         </StyledButton>
     );
