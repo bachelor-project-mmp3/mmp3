@@ -102,7 +102,11 @@ export const ProfileForm = ({ cancelButton }: ProfileFormProps) => {
         if (!session) {
             return;
         }
-        if (session.user.userId === router.query.id) {
+
+        if (
+            session.user.userId === router.query.id ||
+            router.pathname === '/profile/create'
+        ) {
             fetch(`/api/profile/${session.user.userId}`, {
                 method: 'GET',
             })
